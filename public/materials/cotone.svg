@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="900" height="700">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C8DFF0"/>
+      <stop offset="55%" stop-color="#A8C8E2"/>
+      <stop offset="100%" stop-color="#85B3D3"/>
+    </linearGradient>
+    <!-- Water gradient -->
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A7AAF"/>
+      <stop offset="60%" stop-color="#2D6090"/>
+      <stop offset="100%" stop-color="#234E78"/>
+    </linearGradient>
+    <!-- Ground gradient -->
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C8B89A"/>
+      <stop offset="100%" stop-color="#A89275"/>
+    </linearGradient>
+    <!-- Soft vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(15,30,45,0.28)"/>
+    </radialGradient>
+    <!-- Cotton fluff radial -->
+    <radialGradient id="fluff1" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#F5F2ED"/>
+      <stop offset="100%" stop-color="#E8E2D8"/>
+    </radialGradient>
+    <radialGradient id="fluff2" cx="40%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#FEFEFE"/>
+      <stop offset="100%" stop-color="#E0D9CE"/>
+    </radialGradient>
+    <radialGradient id="fluff3" cx="60%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#DDD8CE"/>
+    </radialGradient>
+    <!-- Warm overlay -->
+    <linearGradient id="warmOverlay" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="rgba(210,175,100,0.12)"/>
+      <stop offset="100%" stop-color="rgba(210,175,100,0)"/>
+    </linearGradient>
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+    <filter id="cottonBlur">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <filter id="shadowDrop">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="rgba(20,40,60,0.25)"/>
+    </filter>
+  </defs>
+
+  <!-- SKY -->
+  <rect width="900" height="700" fill="url(#sky)"/>
+
+  <!-- Distant mountains - far left -->
+  <ellipse cx="120" cy="230" rx="180" ry="90" fill="#8BA89A" opacity="0.5"/>
+  <ellipse cx="80" cy="240" rx="120" ry="70" fill="#7A9B8C" opacity="0.4"/>
+
+  <!-- Mountain range - background -->
+  <path d="M0,310 Q80,180 180,200 Q260,165 340,185 Q420,145 500,175 Q580,150 660,180 Q740,160 820,190 Q870,200 900,210 L900,340 L0,340Z" fill="#6B8E7A" opacity="0.55"/>
+  <!-- Mountain range - mid -->
+  <path d="M0,340 Q100,250 200,270 Q300,245 400,265 Q500,240 600,260 Q700,250 800,265 L900,275 L900,380 L0,380Z" fill="#557A68" opacity="0.65"/>
+  <!-- Mountain range - near -->
+  <path d="M0,370 Q150,295 280,310 Q400,290 520,305 Q650,285 780,300 Q850,295 900,305 L900,410 L0,410Z" fill="#4A6E5C" opacity="0.70"/>
+
+  <!-- WATER -->
+  <rect x="0" y="400" width="900" height="160" fill="url(#water)"/>
+  <!-- Water shimmer lines -->
+  <line x1="50" y1="420" x2="200" y2="420" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+  <line x1="300" y1="432" x2="480" y2="432" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <line x1="600" y1="418" x2="750" y2="418" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  <line x1="100" y1="445" x2="260" y2="445" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+  <line x1="500" y1="455" x2="680" y2="455" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+  <line x1="150" y1="470" x2="350" y2="470" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <line x1="700" y1="440" x2="870" y2="440" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <!-- Water mountain reflection -->
+  <path d="M0,400 Q150,430 300,420 Q450,410 600,425 Q750,415 900,410 L900,450 Q750,440 600,450 Q450,460 300,445 Q150,455 0,440Z" fill="rgba(50,90,130,0.4)"/>
+
+  <!-- SHORE / GROUND -->
+  <path d="M0,540 Q200,510 400,520 Q600,510 800,525 L900,530 L900,700 L0,700Z" fill="url(#ground)"/>
+  <!-- Ground texture pebbles -->
+  <ellipse cx="180" cy="570" rx="18" ry="8" fill="rgba(160,140,110,0.5)"/>
+  <ellipse cx="320" cy="580" rx="24" ry="10" fill="rgba(150,130,105,0.45)"/>
+  <ellipse cx="520" cy="565" rx="20" ry="9" fill="rgba(155,135,108,0.4)"/>
+  <ellipse cx="700" cy="575" rx="22" ry="9" fill="rgba(148,128,102,0.5)"/>
+  <ellipse cx="820" cy="560" rx="15" ry="7" fill="rgba(162,142,115,0.4)"/>
+
+  <!-- COTTON BOLL - main element, centered -->
+  <g filter="url(#shadowDrop)" transform="translate(450,460)">
+    <!-- Cotton calyx / base (brown-green) -->
+    <g>
+      <!-- Calyx petals -->
+      <path d="M0,55 Q-15,30 -8,10 Q-3,20 0,45 Q3,20 8,10 Q15,30 0,55Z" fill="#7A6A45" opacity="0.9"/>
+      <path d="M0,55 Q-28,20 -22,-5 Q-12,8 -5,38 Q-3,20 8,10 Q10,35 0,55Z" fill="#6B5B38" opacity="0.8"/>
+      <path d="M0,55 Q28,20 22,-5 Q12,8 5,38 Q3,20 -8,10 Q-10,35 0,55Z" fill="#6B5B38" opacity="0.8"/>
+      <!-- Calyx stem -->
+      <rect x="-4" y="55" width="8" height="20" rx="3" fill="#5C4E2C" opacity="0.85"/>
+    </g>
+
+    <!-- Main cotton fluff lobes -->
+    <!-- Center lobe -->
+    <ellipse cx="0" cy="-15" rx="42" ry="38" fill="url(#fluff1)"/>
+    <!-- Left lobe -->
+    <ellipse cx="-35" cy="0" rx="34" ry="30" fill="url(#fluff2)"/>
+    <!-- Right lobe -->
+    <ellipse cx="35" cy="0" rx="34" ry="30" fill="url(#fluff3)"/>
+    <!-- Top-left lobe -->
+    <ellipse cx="-20" cy="-35" rx="28" ry="25" fill="url(#fluff1)"/>
+    <!-- Top-right lobe -->
+    <ellipse cx="20" cy="-35" rx="28" ry="25" fill="url(#fluff2)"/>
+    <!-- Top center peak -->
+    <ellipse cx="0" cy="-50" rx="22" ry="20" fill="url(#fluff3)"/>
+
+    <!-- Subtle shadow folds -->
+    <path d="M-42,0 Q-20,10 0,-15 Q20,10 42,0" stroke="rgba(200,195,185,0.5)" stroke-width="2" fill="none" filter="url(#softBlur)"/>
+    <path d="M-35,-30 Q0,-20 35,-30" stroke="rgba(210,205,195,0.4)" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Second smaller cotton boll - left -->
+  <g transform="translate(255,520) scale(0.6)">
+    <path d="M0,45 Q-12,25 -6,8 Q0,38 6,8 Q12,25 0,45Z" fill="#7A6A45" opacity="0.8"/>
+    <rect x="-3" y="45" width="6" height="15" rx="2" fill="#5C4E2C" opacity="0.8"/>
+    <ellipse cx="0" cy="-10" rx="32" ry="28" fill="url(#fluff1)"/>
+    <ellipse cx="-26" cy="2" rx="26" ry="22" fill="url(#fluff2)"/>
+    <ellipse cx="26" cy="2" rx="26" ry="22" fill="url(#fluff3)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="16" fill="url(#fluff1)"/>
+  </g>
+
+  <!-- Third tiny cotton boll - right -->
+  <g transform="translate(660,530) scale(0.45)">
+    <path d="M0,40 Q-10,22 -5,6 Q0,34 5,6 Q10,22 0,40Z" fill="#7A6A45" opacity="0.8"/>
+    <rect x="-3" y="40" width="6" height="13" rx="2" fill="#5C4E2C" opacity="0.8"/>
+    <ellipse cx="0" cy="-8" rx="28" ry="24" fill="url(#fluff1)"/>
+    <ellipse cx="-22" cy="2" rx="22" ry="18" fill="url(#fluff2)"/>
+    <ellipse cx="22" cy="2" rx="22" ry="18" fill="url(#fluff3)"/>
+    <ellipse cx="0" cy="-32" rx="16" ry="14" fill="url(#fluff3)"/>
+  </g>
+
+  <!-- Warm overlay to unify -->
+  <rect width="900" height="700" fill="url(#warmOverlay)"/>
+  <!-- Vignette -->
+  <rect width="900" height="700" fill="url(#vignette)"/>
+  <!-- Subtle haze at horizon -->
+  <rect x="0" y="355" width="900" height="60" fill="rgba(200,220,240,0.25)" filter="url(#softBlur)"/>
+</svg>

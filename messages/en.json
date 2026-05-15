@@ -1,0 +1,1099 @@
+{
+  "common": {
+    "brand": "SILKinCOM",
+    "tagline": "Silk and cashmere maison — Made in Como",
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "continue": "Continue",
+    "edit": "Edit",
+    "delete": "Delete",
+    "remove": "Remove",
+    "add": "Add",
+    "search": "Search",
+    "menu": "Menu",
+    "free": "Free",
+    "from": "from",
+    "to": "to",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "language": "Language",
+    "currency": "Currency"
+  },
+  "nav": {
+    "home": "Home",
+    "collections": "Collections",
+    "products": "Products",
+    "story": "Our Story",
+    "materials": "Materials",
+    "atelier": "Atelier",
+    "contacts": "Contact",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "search": "Search",
+    "login": "Sign in",
+    "register": "Sign up",
+    "logout": "Sign out",
+    "admin": "Admin"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Join the Maison",
+      "description": "Collection previews, limited editions and stories from Lake Como.",
+      "placeholder": "Your email",
+      "submit": "Subscribe",
+      "success": "Welcome aboard. Subscription confirmed.",
+      "error": "Subscription failed. Please try again."
+    },
+    "sections": {
+      "boutique": "Boutique",
+      "maison": "Maison",
+      "support": "Support",
+      "legal": "Legal"
+    },
+    "links": {
+      "shipping": "Shipping",
+      "returns": "Returns",
+      "care": "Garment Care",
+      "faq": "FAQ",
+      "contacts": "Contact",
+      "privacy": "Privacy",
+      "cookies": "Cookies",
+      "terms": "Terms",
+      "dataProcessing": "Data Processing"
+    },
+    "rights": "All rights reserved.",
+    "madeIn": "100% Made in Como"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Maison SILKinCOM — 2026 Collection",
+      "titleMain": "Lakeside elegance",
+      "titleAccent": "woven in Como.",
+      "subtitle": "Scarves, foulards, twillies and pashminas in pure silk and cashmere. Six centuries of Como textile tradition, in hands that still finish every hem by hand.",
+      "cta": "Discover the collection",
+      "ctaSecondary": "Our story",
+      "scrollLabel": "Scroll",
+      "slideAria": "Go to slide {n}"
+    },
+    "featured": {
+      "eyebrow": "The Collections",
+      "titlePlain": "Three seasons,",
+      "titleAccent": "one elegance.",
+      "viewAll": "All collections",
+      "explore": "Explore",
+      "collectionLabel": "Collection",
+      "items": {
+        "inverno": {
+          "name": "Winter Collection",
+          "tagline": "Cashmere pashminas, warmth without weight",
+          "accent": "Seasonal",
+          "shortName": "Winter"
+        },
+        "iconica": {
+          "name": "Iconic Collection",
+          "tagline": "Silk twillies and foulards — Como heritage",
+          "accent": "Heritage",
+          "shortName": "Iconic"
+        },
+        "primavera": {
+          "name": "Spring 2026",
+          "tagline": "European linen and extra-long cotton for summer",
+          "accent": "New",
+          "shortName": "Spring 2026"
+        }
+      }
+    },
+    "values": {
+      "heritage": {
+        "title": "Como heritage",
+        "description": "A textile tradition that since 1800 has transformed raw silk into timeless garments."
+      },
+      "craft": {
+        "title": "Artisan craftsmanship",
+        "description": "Every piece passes through the hands of specialised craftsmen."
+      },
+      "natural": {
+        "title": "Natural fibres",
+        "description": "First-quality cashmere, silk and wool, selected one by one."
+      },
+      "limited": {
+        "title": "Limited editions",
+        "description": "Small, refined productions — never industrial."
+      }
+    },
+    "perks": {
+      "madeInComo": {
+        "title": "100% Made in Como",
+        "desc": "Spinning, dyeing and finishing within the silk district."
+      },
+      "shipping": {
+        "title": "Express shipping",
+        "desc": "Free in Italy over €200 — EU 4–7 days."
+      },
+      "giftBox": {
+        "title": "Gift wrapping",
+        "desc": "Maison gift box included, personalised note."
+      },
+      "returns": {
+        "title": "Free returns",
+        "desc": "14 days to reconsider, doorstep collection."
+      }
+    },
+    "bestsellers": {
+      "eyebrow": "Most loved",
+      "titlePlain": "Iconic",
+      "titleAccent": "pieces",
+      "viewAll": "See all"
+    },
+    "materials": {
+      "eyebrow": "Our Materials",
+      "titlePlain": "We select only",
+      "titleAccent": "natural fibres of excellence.",
+      "description": "We source our yarns from the finest districts in Italy and Europe. Every material has its origin, its gesture, its story.",
+      "discover": "All materials",
+      "discoverShort": "Discover",
+      "tabs": {
+        "origine": "Origin",
+        "caratteristiche": "Texture",
+        "beneficio": "Benefit"
+      },
+      "cards": {
+        "seta": {
+          "name": "Silk",
+          "tabs": {
+            "origine": {
+              "title": "Como tradition",
+              "body": "Como silk has roots in the 15th century, when the first spinning mills made the city a global reference point. Today, this heritage translates into a supply chain that unites artisan mastery and contemporary innovation."
+            },
+            "caratteristiche": {
+              "title": "Precious and luminous",
+              "body": "Ultra-fine natural fibres that reflect light in a unique way. Silk is cool in summer and warm in winter, with an unmistakable softness."
+            },
+            "beneficio": {
+              "title": "Elegance that caresses",
+              "body": "Hypoallergenic and breathable, silk is delicate on the skin and gives a sensation of luxury and comfort on every occasion."
+            }
+          }
+        },
+        "cashmere": {
+          "name": "Cashmere",
+          "tabs": {
+            "origine": {
+              "title": "From the noblest lands",
+              "body": "Cashmere comes from the soft fleece of goats that live in the coldest regions of Central Asia. Only the finest fibres are selected."
+            },
+            "caratteristiche": {
+              "title": "Fineness and softness",
+              "body": "With ultra-fine fibres of 14–16 microns, cashmere is among the rarest and most precious yarns in the world."
+            },
+            "beneficio": {
+              "title": "Warmth without weight",
+              "body": "Wearing cashmere means experiencing enveloping, natural and lasting comfort."
+            }
+          }
+        },
+        "lana": {
+          "name": "Wool",
+          "tabs": {
+            "origine": {
+              "title": "Versatile and resilient",
+              "body": "Wool has accompanied humanity for millennia. From sheep raised in the purest regions comes a natural fibre."
+            },
+            "caratteristiche": {
+              "title": "Warm and breathable",
+              "body": "Wool is warm, elastic and naturally breathable. It regulates body temperature."
+            },
+            "beneficio": {
+              "title": "Natural comfort",
+              "body": "A fabric that envelops and protects, resistant over time and pleasant to wear."
+            }
+          }
+        },
+        "cotone": {
+          "name": "Cotton",
+          "tabs": {
+            "origine": {
+              "title": "Extra-long fibre",
+              "body": "SILKinCOM selects extra-long staple cotton, grown in the most suitable regions of the Mediterranean and Egypt."
+            },
+            "caratteristiche": {
+              "title": "Fresh and resistant",
+              "body": "Extra-long cotton offers a compact and silky fabric, with a natural lustre."
+            },
+            "beneficio": {
+              "title": "Summer lightness",
+              "body": "Delicate on the skin, hypoallergenic and easy to wear, perfect for spring foulards."
+            }
+          }
+        },
+        "lino": {
+          "name": "Linen",
+          "tabs": {
+            "origine": {
+              "title": "European tradition",
+              "body": "European linen, grown in France and Belgium, is among the oldest and noblest natural fibres."
+            },
+            "caratteristiche": {
+              "title": "Natural and precious",
+              "body": "Linen is up to four times more resistant than cotton, breathable and naturally fresh."
+            },
+            "beneficio": {
+              "title": "Summer elegance",
+              "body": "Linen becomes softer with every wash, acquiring a lived-in patina."
+            }
+          }
+        }
+      }
+    },
+    "editorial": {
+      "eyebrow": "Private atelier — By appointment",
+      "titlePlain": "A unique piece,",
+      "titleAccent": "designed for you.",
+      "description": "Bespoke scarves, foulards and pashminas. Choose the fibre, colour, size, embroidery and initials. Entirely handcrafted in Como, in 4–6 weeks.",
+      "cta": "Book an appointment"
+    },
+    "instagram": {
+      "eyebrow": "@silkincom.official",
+      "title": "The Maison on Instagram",
+      "subtitle": "Atelier, details, lifestyle from Lake Como.",
+      "follow": "Follow"
+    },
+    "brandStory": {
+      "eyebrow": "The Maison",
+      "titlePlain": "Since the 1400s, on Lake Como,",
+      "titleAccent": "an art passed down through generations.",
+      "paragraph1": "SILKinCOM was born in the heart of Europe's oldest silk district. Six centuries of textile know-how live in the hands of our masters — from the historic dye-houses of Cernobbio to the spinning mills of Bellagio, each step remains entrusted to those who know silk as a mother tongue.",
+      "paragraph2": "We select only noble fibres: Como silk, extra-fine cashmere, merino wool, European linen, extra-long staple cotton. We craft each piece one by one, with hand-finished hems, along the shores of the lake that has always inspired our aesthetic: discreet, timeless, profoundly Italian.",
+      "quote": "Every thread holds a memory.",
+      "quoteAuthor": "— Master weaver, Como",
+      "imageMainAlt": "SILKinCOM textile craftsmanship, Como",
+      "imageTileAlt": "Como textile industry",
+      "cta": "Discover our story"
+    },
+    "newsletter": {
+      "eyebrow": "A letter from the Maison",
+      "titlePlain": "Previews, numbered editions,",
+      "titleAccent": "stories from Lake Como.",
+      "description": "One email a month. New collection previews, priority access to limited editions, stories from the heart of the silk district. Never invasive promotions.",
+      "success": "Thank you. We will write to you soon.",
+      "placeholder": "Your email",
+      "submit": "Subscribe",
+      "submitting": "Loading…",
+      "privacyDisclaimer": "By subscribing you accept our <link>Privacy Policy</link>. Unsubscribe at any time."
+    }
+  },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Discover the season's pieces, handcrafted in Como.",
+    "filters": {
+      "title": "Filters",
+      "category": "Category",
+      "material": "Material",
+      "color": "Colour",
+      "price": "Price",
+      "sort": "Sort",
+      "clear": "Clear filters",
+      "apply": "Apply",
+      "collection": "Collection",
+      "all": "All",
+      "showResults": "Show {count} products",
+      "recommended": "Recommended"
+    },
+    "sort": {
+      "newest": "New arrivals",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "popular": "Most popular"
+    },
+    "results": {
+      "count": "{count, plural, =0 {No pieces} =1 {1 piece} other {# pieces}}",
+      "empty": "No pieces match the selected filters.",
+      "productSingular": "product",
+      "productPlural": "products",
+      "sortLabel": "Sort:",
+      "noResults": "No products match the selected filters.",
+      "clearFilters": "Clear filters",
+      "clearTag": "Clear"
+    }
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "addedToCart": "Added to cart",
+    "outOfStock": "Out of stock",
+    "lowStock": "Last few pieces available",
+    "wishlist": {
+      "add": "Add to wishlist",
+      "remove": "Remove from wishlist"
+    },
+    "tabs": {
+      "description": "Description",
+      "composition": "Composition & care",
+      "shipping": "Shipping & returns",
+      "care": "Garment care"
+    },
+    "details": {
+      "composition": "Composition",
+      "dimensions": "Dimensions",
+      "sku": "Item code",
+      "origin": "Origin",
+      "originValue": "Made in Como, Italy"
+    },
+    "perks": {
+      "madeInComo": "Made in Como, Italy",
+      "artisan": "100% Italian craftsmanship",
+      "shipping": "Free shipping over €200",
+      "returns": "14-day returns"
+    },
+    "related": {
+      "eyebrow": "Continue",
+      "title": "Pieces from the same family",
+      "viewAll": "View the full collection"
+    },
+    "taxIncluded": "Taxes included — Shipping calculated at checkout",
+    "shippingDetails": {
+      "standard": "Standard shipping 3–5 working days. Free for orders over €200.",
+      "returns": "Free returns within 14 days of receipt.",
+      "allDetails": "Full details"
+    },
+    "wishlistAdd": "Add to wishlist",
+    "wishlistRemove": "Remove from wishlist"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty.",
+    "emptyAction": "Explore the boutique",
+    "item": "item",
+    "items": "items",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shippingFree": "Free shipping",
+    "shippingThreshold": "Free shipping over {amount}",
+    "total": "Total",
+    "checkout": "Proceed to checkout",
+    "continueShopping": "Continue shopping",
+    "remove": "Remove",
+    "summary": "Summary"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "steps": {
+      "info": "Shipping details",
+      "payment": "Payment",
+      "review": "Confirmation"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "fullName": "Recipient name",
+      "address": "Address",
+      "city": "City",
+      "postalCode": "Postcode",
+      "country": "Country",
+      "phone": "Phone"
+    },
+    "actions": {
+      "continueToPayment": "Continue to payment",
+      "confirmPayment": "Confirm payment",
+      "processing": "Processing…",
+      "backToCart": "Back to cart"
+    },
+    "security": {
+      "stripe": "Secure payment via Stripe",
+      "ssl": "SSL encrypted"
+    },
+    "success": {
+      "title": "Order confirmed",
+      "subtitle": "Thank you for your purchase.",
+      "description": "You will receive a confirmation email with shipping details.",
+      "orderNumber": "Order number",
+      "viewOrders": "My orders",
+      "continueShopping": "Continue shopping"
+    },
+    "errors": {
+      "emptyCart": "Cart is empty",
+      "missingData": "Please fill in all required fields",
+      "paymentFailed": "Payment failed. Please try again.",
+      "networkError": "Network error. Please try again."
+    },
+    "countries": {
+      "IT": "Italy",
+      "CH": "Switzerland",
+      "DE": "Germany",
+      "FR": "France",
+      "GB": "United Kingdom",
+      "US": "United States"
+    }
+  },
+  "account": {
+    "title": "My account",
+    "greeting": "Hello, {name}",
+    "greetingDefault": "Your account",
+    "dashboard": {
+      "orders": "Orders",
+      "ordersDescription": "{count, plural, =0 {No orders} =1 {1 order} other {# orders}}",
+      "addresses": "Addresses",
+      "addressesDescription": "Shipping and billing",
+      "wishlist": "Wishlist",
+      "wishlistDescription": "Favourite editions",
+      "profile": "Profile",
+      "profileDescription": "Personal data"
+    },
+    "orders": {
+      "title": "Your orders",
+      "empty": "No orders yet.",
+      "emptySuggestion": "Explore the Maison collections: pashminas, twillies, accessories 100% Made in Como.",
+      "orderNumber": "Order",
+      "viewDetails": "Details",
+      "status": {
+        "pending": "Pending",
+        "paid": "Paid",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "refunded": "Refunded",
+        "failed": "Failed"
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "saved": "Profile updated."
+    },
+    "wishlistPage": {
+      "title": "Wishlist",
+      "empty": "Your wishlist is empty.",
+      "emptySuggestion": "Add the pieces you love from the boutique. They will be here waiting for you.",
+      "browseAction": "Explore the boutique",
+      "unavailable": "Product no longer available"
+    },
+    "addressesPage": {
+      "title": "Addresses",
+      "empty": "No address saved",
+      "emptyDesc": "Add an address to speed up your next orders.",
+      "shipping": "Shipping",
+      "billing": "Billing",
+      "defaultLabel": "Default",
+      "deleteAria": "Delete address",
+      "fullName": "Recipient name",
+      "street": "Street address",
+      "postalCode": "Postcode",
+      "city": "City",
+      "country": "Country",
+      "phone": "Phone",
+      "type": "Type",
+      "setDefault": "Set as default",
+      "addAddress": "Add address"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back. Sign in to access orders, addresses and preferences.",
+      "email": "Email",
+      "password": "Password",
+      "forgot": "Forgotten?",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "noAccount": "Don't have an account yet?",
+      "createAccount": "Create account",
+      "invalidCredentials": "Invalid credentials.",
+      "missingFields": "Please enter email and password."
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Collection previews, limited editions, faster checkout.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password (min. 8 characters)",
+      "acceptTerms": "I accept the <termsLink>Terms</termsLink> and the <privacyLink>Privacy Policy</privacyLink>.",
+      "termsLabel": "Terms",
+      "privacyLabel": "Privacy Policy",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "passwordTooShort": "Password too short (minimum 8 characters).",
+      "termsRequired": "Please accept terms and privacy to proceed.",
+      "missingFields": "Please complete all required fields.",
+      "emailSent": "Account created. Check your email to confirm."
+    },
+    "forgotPassword": {
+      "tag": "Account recovery",
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email. We'll send you instructions to reset it.",
+      "emailLabel": "Email",
+      "submit": "Send instructions",
+      "submitting": "Sending…",
+      "successMessage": "If that email is registered, you'll receive a reset link shortly.",
+      "backToLogin": "Back to login",
+      "errorDefault": "Failed to send. Please try again."
+    },
+    "resetPassword": {
+      "tag": "Security",
+      "title": "New password",
+      "subtitle": "Enter your new password to access your account.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "submit": "Update password",
+      "submitting": "Updating…",
+      "successMessage": "Password updated. You'll be redirected to your account.",
+      "goToAccount": "Go to your account",
+      "invalidLink": "Reset link is invalid or expired.",
+      "requestNewLink": "Request a new link",
+      "errorMinLength": "Password must be at least 8 characters.",
+      "errorMismatch": "Passwords do not match.",
+      "errorDefault": "Error during reset."
+    }
+  },
+  "legal": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "lastUpdated": "Last updated"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "selectLanguage": "Select language"
+  },
+  "announcement": {
+    "messages": [
+      "Free shipping in Italy for orders over €200",
+      "Maison gift wrapping included with every order",
+      "100% Made in Como — Silk tradition since 1400",
+      "Free returns within 14 days — Doorstep collection"
+    ]
+  },
+  "cookies": {
+    "description": "We use technical cookies and, with your consent, profiling cookies to improve your experience and our communications. You can accept them or reject the non-essential ones.",
+    "accept": "Accept all",
+    "reject": "Reject"
+  },
+  "collezioni": {
+    "eyebrow": "The Collections",
+    "titlePlain": "All",
+    "titleAccent": "collections",
+    "description": "The essence of your style, signed Como. Scarves, foulards and accessories in silk, cashmere, wool, linen and cotton.",
+    "collectionLabel": "Collection",
+    "explore": "Explore",
+    "browseBy": "Browse by",
+    "byMaterial": "Material",
+    "byCategory": "Category",
+    "allLabel": "All",
+    "allTitle": "Accessories"
+  },
+  "contatti": {
+    "eyebrow": "Customer care",
+    "title": "Contact us",
+    "description": "We are at your disposal for any request on products, orders, shipments or personalisations.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "orderNumber": "Order number",
+    "message": "Message",
+    "submit": "Send message",
+    "submitting": "Sending…",
+    "success": "Message sent successfully. We will be in touch shortly.",
+    "error": "Unknown error",
+    "emailLabel": "Email",
+    "addressLabel": "Address",
+    "socialLabel": "Social"
+  },
+  "storia": {
+    "eyebrow": "The Maison",
+    "titleP1": "From the heart of Como,",
+    "titleP2": "a heritage that",
+    "titleAccent": "becomes style.",
+    "quote": "SILKinCOM is born from passion and experience in the Como textile world. A centuries-old tradition, reinterpreted with contemporary design and precious materials.",
+    "chapterI": "Chapter I",
+    "storyTitlePlain": "Our",
+    "storyTitleAccent": "story",
+    "storyP1": "SILKinCOM was born in the heart of Como's silk district, where textile tradition meets innovation. After years of experience in dyehouses, printing mills, weavers and research laboratories, the brand transforms technical knowledge into a creative vision.",
+    "storyP2": "The aim is to give new life to Como's excellence through accessories in silk, cashmere and wool of absolute quality. Each piece carries the identity of a territory and the care of those who know it deeply.",
+    "chapterII": "Chapter II",
+    "essenceTitlePlain": "Our",
+    "essenceTitleAccent": "essence",
+    "essenceP1": "SILKinCOM exists to transform the Como textile heritage into contemporary silk and cashmere accessories. Every creation combines artisan mastery with modern design, with the goal of bringing to the world an authentic, elegant and timeless luxury.",
+    "essenceP2": "100% Made in Como — from raw materials to final crafting, every phase takes place within the silk district, preserving the know-how of a tradition spanning centuries.",
+    "stat1": "Unique designs",
+    "stat2": "Made in Como",
+    "stat3": "Years of experience",
+    "chapterIII": "Chapter III",
+    "liveTitlePlain": "Live SILKinCOM",
+    "liveTitleAccent": "every day",
+    "liveDescription": "Our story continues beyond these pages. Follow SILKinCOM on social media and let yourself be inspired by collections, details and impressions from the heart of Como.",
+    "followInstagram": "Follow us on Instagram",
+    "exploreCollections": "Explore the collections"
+  },
+  "spedizioniPage": {
+    "title": "Shipping",
+    "subtitle": "We ship worldwide",
+    "section1": "Italy",
+    "section1Items": [
+      "Standard tracked shipping: 2–4 working days — €9",
+      "Free shipping on orders over €200"
+    ],
+    "section2": "European Union",
+    "section2Items": [
+      "Standard tracked shipping: 4–7 working days — €18",
+      "Free shipping on orders over €350"
+    ],
+    "section3": "United Kingdom, Switzerland, Norway",
+    "section3Items": [
+      "DDP shipping (duties included): 5–8 working days — €25"
+    ],
+    "section4": "Rest of the world",
+    "section4Items": [
+      "Express tracked shipping: 7–12 working days — from €35",
+      "Customs duties are at the recipient's expense, unless otherwise indicated"
+    ],
+    "section5": "Tracking",
+    "section5Body": "Once your order has been dispatched, you will receive an email with the tracking number to monitor the shipment in real time. All orders are insured during transport.",
+    "section6": "Processing time",
+    "section6Body": "Orders received before 2:00 PM (CET) on working days are processed the same day. Orders received during the weekend or on holidays are processed on the next working day."
+  },
+  "resi": {
+    "title": "Returns and Refunds",
+    "subtitle": "Last updated: October 2025",
+    "s1": "1. Return period",
+    "s1Body": "Customers worldwide can return items purchased within 14 days of receipt of the order. Some jurisdictions (e.g. UK, USA, Canada, Australia) provide longer periods; in such cases, SILKinCOM will apply the most favourable term provided by local law.",
+    "s2": "2. How to request a return",
+    "s2Body": "To request a return, fill in the contact form in the Contact section of the Site, indicating the order number, purchase details and the product to be returned. You will receive return shipping instructions within 24–48 hours.",
+    "s3": "3. Return acceptance conditions",
+    "s3Body": "For acceptance, the product must:",
+    "s3Items": [
+      "Not have been worn, washed or damaged",
+      "Be returned in the original packaging with intact labels",
+      "Be in conditions suitable for resale"
+    ],
+    "s3Note": "SILKinCOM reserves the right to reject returns that do not meet these conditions or show signs of use.",
+    "s4": "4. Excluded products",
+    "s4Body": "The following cannot be returned:",
+    "s4Items": [
+      "Personalised or made-to-measure products",
+      "Sale or promotional items, if indicated on the product page",
+      "Opened or used items that cannot be resold for hygiene reasons"
+    ],
+    "s5": "5. Return shipping costs",
+    "s5Body1": "Return shipping costs are at the customer's expense, except in the case of incorrect or defective products. Original delivery charges will not be refunded. We recommend using tracked shipping with insurance.",
+    "s5AddressLabel": "Return address:",
+    "s6": "6. Refunds",
+    "s6Body": "After receipt and inspection of the return, SILKinCOM will issue the refund within 14 working days, using the same original payment method. The refund will concern only the product price, excluding any import taxes, customs duties or shipping costs, which remain at the customer's expense.",
+    "s7": "7. Defective or incorrect products",
+    "s7Body": "In case of receipt of a defective, damaged or incorrect product, contact customer service immediately via the contact form or via email at"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "faqs": [
+      {
+        "q": "Which payment methods do you accept?",
+        "a": "We accept all major credit cards (Visa, Mastercard, American Express), Apple Pay, Google Pay, and PayPal. All payments are SSL encrypted and processed via Stripe."
+      },
+      {
+        "q": "Do prices include VAT and duties?",
+        "a": "Prices displayed always include Italian VAT (22%). For non-EU orders, any customs duties and import taxes are at the recipient's expense, except for DDP shipments (UK, Switzerland, Norway) where duties are included."
+      },
+      {
+        "q": "How long does shipping take?",
+        "a": "Italy: 2–4 working days. EU: 4–7 days. Rest of world: 7–12 days. All orders are tracked and insured. See <a href=\"/spedizioni\">Shipping</a> for full details."
+      },
+      {
+        "q": "Can I return an item?",
+        "a": "Yes, you have 14 days from receipt to return any unused item. Returns are free for orders within Italy. See <a href=\"/resi\">Returns</a> for the procedure."
+      },
+      {
+        "q": "How do I find the right size?",
+        "a": "Every product page includes precise dimensions (e.g. 180×45 cm). For pashminas and scarves, standard sizes range from 180×35 cm to 200×70 cm. For shirts and t-shirts, contact us if you need assistance."
+      },
+      {
+        "q": "Are the products really Made in Italy?",
+        "a": "Yes, every garment is entirely produced in Como — from spinning to final crafting. We work with the finest mills, dyehouses and ateliers of the oldest silk district in Europe."
+      },
+      {
+        "q": "How do I wash a cashmere scarf?",
+        "a": "Hand wash in cold water with neutral cashmere detergent, never rub. Dry flat away from heat sources. See <a href=\"/cura-prodotto\">Garment Care</a> for detailed instructions."
+      },
+      {
+        "q": "Can I modify or cancel an order?",
+        "a": "You can modify or cancel an order within 2 hours of confirmation. After this window, the order enters production. Contact <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a> as soon as possible."
+      },
+      {
+        "q": "Do you offer gift wrapping?",
+        "a": "Yes, every order includes elegant Maison gift wrapping at no extra charge. You can add a personalised note at checkout."
+      },
+      {
+        "q": "Do you have a loyalty programme?",
+        "a": "We are working on an exclusive programme for our most loyal customers. Subscribe to the newsletter to be informed first."
+      },
+      {
+        "q": "How long has Como been the silk capital?",
+        "a": "Como has been Europe's leading silk district since the 15th century. Como mills existed as early as 1400; today the area produces over 70% of Italian silk and hosts the world's most prestigious luxury maisons."
+      },
+      {
+        "q": "Who founded SILKinCOM?",
+        "a": "SILKinCOM was founded by Marco Dibenedetto, with operations based in Cermenate (Como). The maison was born to bring Como's textile heritage directly to the final customer, without intermediaries."
+      },
+      {
+        "q": "What does \"Made in Como\" mean?",
+        "a": "Made in Como means every step — from spinning to weaving to printing to finishing — happens physically within the Como silk district. It is not just a label: it is a fully local supply chain."
+      },
+      {
+        "q": "Do you work with independent artisans?",
+        "a": "Yes. We collaborate with independent weavers, printers and finishers in the Como district, many of whom pass the craft down through generations. Every piece bears the mark of the workshop that made it."
+      },
+      {
+        "q": "Do you have a showroom or visitable atelier?",
+        "a": "Our atelier is in Cermenate (Como). Visits are by appointment — contact us by email to schedule a personalised meeting with our customer experience manager."
+      },
+      {
+        "q": "Where does your cashmere come from?",
+        "a": "Our cashmere comes from the coldest regions of Central Asia (Inner Mongolia), where the fiber is finest (14-16 microns) due to the harsh climate. We select only the under-neck fleece, harvested by hand."
+      },
+      {
+        "q": "Is your silk really Italian?",
+        "a": "Yes. The silk is spun, woven and finished in the Como district. Raw cocoons come mainly from China (Italy no longer produces raw silk since WWII), but all textile transformation is Italian."
+      },
+      {
+        "q": "What makes silk twill special?",
+        "a": "Twill is a weave structure creating a visible diagonal on the fabric. Como silk twill is renowned for its weight (60-65g/m²), fluid hand and color stability — ideal for luxury scarves."
+      },
+      {
+        "q": "What is extra-long staple cotton?",
+        "a": "Extra-long staple cotton (over 35mm fiber) is the most prized category: it produces finer, stronger and more lustrous yarns than standard cotton. We source it from Mediterranean and Egyptian growers."
+      },
+      {
+        "q": "Are your fabrics certified?",
+        "a": "We work with OEKO-TEX Standard 100 certified suppliers, guaranteeing no harmful substances in finished fabrics. For Como silk we follow the Seri.co district standards."
+      },
+      {
+        "q": "What are SILKinCOM's standard scarf sizes?",
+        "a": "Long scarf: 180×45 cm. Pashmina: 200×70 cm. Stole: 200×100 cm. Square scarf (carré): 90×90 cm. Twilly: 85×5 cm. Each product page specifies exact dimensions."
+      },
+      {
+        "q": "Do scarves shrink after washing?",
+        "a": "No, if you follow the washing instructions. Cashmere and silk may lose 1-2% dimensional stability at first wash: always respect cold temperatures and specific detergents to avoid shrinkage."
+      },
+      {
+        "q": "How do I choose the right size as a gift?",
+        "a": "For a classic gift we recommend the long scarf 180×45 cm: versatile size, suitable for men and women. For a more refined gift, the 200×70 cm pashmina is a safe choice for those who love to wrap in warmth."
+      },
+      {
+        "q": "Do you make custom pieces?",
+        "a": "Yes. Our Atelier service allows customisation of colours, sizes and finishes. Production time is 4-6 weeks. Visit the Atelier page for details and pricing."
+      },
+      {
+        "q": "Do you sell to hotels, restaurants or businesses?",
+        "a": "Yes. We have a dedicated hospitality and corporate gifting channel with special terms for orders over 20 pieces. Contact us by email to request the B2B price list."
+      }
+    ]
+  },
+  "atelier": {
+    "eyebrow": "Bespoke atelier",
+    "titleP1": "A unique piece,",
+    "titleAccent": "designed for you.",
+    "subtitle": "Bespoke scarves, foulards and pashminas. Choose fibre, colour, dimension, embroidery and initials. Fully artisan crafted in Como, in 4–6 weeks.",
+    "howItWorks": "How it works",
+    "step1Title": "Initial consultation",
+    "step1Body": "Tell us your idea: occasion, palette, dimension, style. We can meet at the atelier or via video call.",
+    "step2Title": "Material selection",
+    "step2Body": "Together we select the fibre (silk, cashmere, wool, linen, cotton) and colours from our Como palette.",
+    "step3Title": "Prototype and approval",
+    "step3Body": "We craft a prototype for your approval. Every detail — hem, embroidery, initials — is finished by hand.",
+    "step4Title": "Delivery",
+    "step4Body": "The finished piece is delivered in a Maison box with a personalised note. Free worldwide shipping.",
+    "bookAppointment": "Book a consultation",
+    "orAiUpload": "Or upload an inspiration image",
+    "formName": "Full name",
+    "formEmail": "Email",
+    "formPhone": "Phone",
+    "formMessage": "Tell us about your project",
+    "submit": "Send request"
+  },
+  "cura": {
+    "title": "Garment care",
+    "subtitle": "For accessories that last over time",
+    "seta": "Silk",
+    "setaItems": [
+      "Dry cleaning recommended",
+      "Alternatively, hand-wash in cold water with a neutral silk detergent",
+      "Do not wring. Dry flat away from heat sources and direct light",
+      "Iron at low temperature on the reverse side, ideally with a steamer"
+    ],
+    "cashmere": "Cashmere",
+    "cashmereItems": [
+      "Hand-wash in lukewarm water (max 30°C) with a cashmere-specific detergent",
+      "Do not twist. Press gently to remove excess water",
+      "Dry flat on a towel",
+      "Store folded (never hung) in a dry place, with natural moth sachets"
+    ],
+    "lana": "Wool",
+    "lanaItems": [
+      "Hand-wash in cold water with a gentle detergent",
+      "Dry flat away from heat sources",
+      "Steam iron at medium temperature"
+    ],
+    "general": "General tips",
+    "generalBody": "Store your SILKinCOM accessories in a cool, dry place, away from direct light. For folded scarves and foulards, periodically alternate the folds to avoid permanent marks.",
+    "lino": "Linen",
+    "linoItems": [
+      "Machine wash 30°C delicate cycle with neutral detergent",
+      "Alternatively hand wash in cold water",
+      "Dry flat or hang in shade without wringing",
+      "Iron hot while damp to bring out the fluid hand"
+    ],
+    "cotone": "Cotton",
+    "cotoneItems": [
+      "Machine wash 30-40°C with neutral detergent for natural fibers",
+      "Do not use bleach or harsh fabric softeners",
+      "Dry flat or hang; avoid high-heat tumble dry",
+      "Iron medium-high, on the reverse side for prints"
+    ]
+  },
+  "materialiPage": {
+    "eyebrow": "Our Materials",
+    "titleP1": "We select only",
+    "titleAccent": "natural fibres of excellence",
+    "description": "Every SILKinCOM accessory is born from raw materials selected with extreme care. Silk, cashmere, wool, linen and cotton: five stories of absolute quality, from Lake Como to the world.",
+    "bestIn": "Finest in {material}",
+    "discoverProduct": "Discover product",
+    "exploreCta": "Explore the collections",
+    "ctaTitle": "Textile tradition",
+    "ctaTitleAccent": "in every thread.",
+    "exploreCollections": "View all collections",
+    "materials": {
+      "seta": {
+        "name": "Silk",
+        "subtitle": "of Como",
+        "sections": {
+          "origine": {
+            "label": "Origin",
+            "title": "Como tradition",
+            "body": "Como silk has roots in the 15th century, when the first spinning mills made the city a global reference point. Today, this heritage translates into a supply chain that unites artisan mastery and contemporary innovation."
+          },
+          "caratteristiche": {
+            "label": "Characteristics",
+            "title": "Naturally luminous",
+            "body": "Ultra-fine natural fibres that reflect light in a unique way. Silk is cool in summer and warm in winter, with an unmistakable softness."
+          },
+          "beneficio": {
+            "label": "Benefit",
+            "title": "Elegance that caresses",
+            "body": "Hypoallergenic and breathable, silk is delicate on the skin and gives a feeling of luxury and comfort on every occasion. A material that elevates every detail with natural refinement."
+          }
+        }
+      },
+      "cashmere": {
+        "name": "Cashmere",
+        "subtitle": "Precious",
+        "sections": {
+          "origine": {
+            "label": "Origin",
+            "title": "Selection of the noblest fibres",
+            "body": "Cashmere comes from the ultra-fine fleece of goats raised in the coldest regions of the world. Only the finest fibres, hand-collected during the spring moult, are selected to guarantee a quality rooted in a millennia-old tradition."
+          },
+          "caratteristiche": {
+            "label": "Characteristics",
+            "title": "Fineness and softness",
+            "body": "With ultra-fine fibres of 14–16 microns, cashmere is among the rarest and most precious yarns in the world. Warm yet light, enveloping yet breathable, it offers a unique tactile sensation."
+          },
+          "beneficio": {
+            "label": "Benefit",
+            "title": "Warmth without weight",
+            "body": "Wearing cashmere means experiencing enveloping, natural and lasting comfort. A material that protects, warms and accompanies with elegance in every season."
+          }
+        }
+      },
+      "merino": {
+        "name": "Wool",
+        "subtitle": "Merino",
+        "sections": {
+          "origine": {
+            "label": "Origin",
+            "title": "Versatile and resilient",
+            "body": "Wool has accompanied humanity for millennia. From sheep raised in the purest regions comes a natural fibre that combines resistance and comfort, preserving its authenticity intact."
+          },
+          "caratteristiche": {
+            "label": "Characteristics",
+            "title": "Naturally breathable",
+            "body": "Wool is warm, elastic and naturally breathable. Its structure allows for body temperature regulation, offering protection in every season."
+          },
+          "beneficio": {
+            "label": "Benefit",
+            "title": "Natural comfort",
+            "body": "A fabric that envelops and protects, resistant over time and pleasant to wear. Wool represents the perfect balance between functionality and elegance."
+          }
+        }
+      },
+      "linoCotone": {
+        "name": "Linen & Cotton",
+        "subtitle": "of Summer",
+        "sections": {
+          "linoOrigine": {
+            "label": "Linen — Origin",
+            "title": "Fibre of Mediterranean summer",
+            "body": "Linen comes from the Linum usitatissimum plant, cultivated for over 8000 years in the most fertile soils of Europe. An ancient fibre, symbol of purity and elegance, elected by Mediterranean culture as the textile par excellence of warm months."
+          },
+          "cotoneOrigine": {
+            "label": "Cotton — Origin",
+            "title": "Extra-long selection",
+            "body": "Our cotton comes from the finest extra-long staple cultivations, where each filament measures over 35mm. A rare quality, hand-picked and selected to guarantee compactness, lustre and resistance superior to standard cotton."
+          },
+          "caratteristiche": {
+            "label": "Characteristics",
+            "title": "Freshness and softness",
+            "body": "Linen's hollow fibres absorb up to 20% of their weight in moisture — a natural thermoregulator that stays cool to the touch. Extra-long cotton accompanies with a silk-like hand, lustre and exceptional colour rendering."
+          },
+          "beneficio": {
+            "label": "Benefit",
+            "title": "Informal summer elegance",
+            "body": "Both antibacterial, hypoallergenic and biodegradable. Linen becomes softer with every wash, its creases tell of authenticity. Cotton ages with grace, ever more familiar on the skin. The perfect wardrobe for Italian summer."
+          }
+        }
+      }
+    }
+  },
+  "legalPages": {
+    "legalNotice": "<strong>Note:</strong> The authoritative version of this document is the Italian one. This translation is provided for convenience only.",
+    "privacy": {
+      "title": "Privacy Policy",
+      "subtitle": "Last updated: May 2026",
+      "intro": "This notice is drafted pursuant to Regulation (EU) 2016/679 (\"GDPR\") and Italian Legislative Decree 196/2003 as amended by Legislative Decree 101/2018. It describes how personal data of users who visit or make purchases on www.silkincom.com (the \"Site\") is collected, used, stored and protected.",
+      "sections": [
+        {
+          "h": "1. Data Controller",
+          "body": "The Data Controller is:<br>Marco Dibenedetto, sole proprietor of SILKinCOM<br>Registered office: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italy<br>Tax code: DBNMRC80E04C933Q<br>VAT: 03786790133<br>REA: CO – 333010<br>Email: <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>"
+        },
+        {
+          "h": "2. Categories of data processed",
+          "body": "<ul><li>Identification and contact data (first name, last name, email, phone, address)</li><li>Shipping and billing data for order fulfilment</li><li>Payment data (handled by external providers)</li><li>Browsing data (IP address, browser type, access times, pages visited)</li><li>Data collected via cookies, Google Analytics, Meta Pixel and marketing tools</li><li>Data voluntarily provided through contact forms or newsletter sign-up</li></ul>"
+        },
+        {
+          "h": "3. Purposes of processing and legal bases",
+          "body": "<ul><li>Order fulfilment, shipping and payments — Performance of contract</li><li>Handling requests via contact forms — Pre-contractual measures</li><li>Newsletter and promotional communications — Explicit consent</li><li>Statistical analysis and site improvement — Legitimate interest</li><li>Remarketing and personalised advertising — Explicit consent</li></ul>"
+        },
+        {
+          "h": "4. Methods of processing",
+          "body": "Data is processed using IT, electronic and paper tools, in compliance with the principles of lawfulness, fairness and transparency. Appropriate technical and organisational measures are adopted to guarantee the security and confidentiality of personal data."
+        },
+        {
+          "h": "5. Data recipients",
+          "body": "Data may be communicated to collaborators of the Controller (accountant, marketing agency, couriers) and external service providers including Stripe (payments), Vercel (hosting), Resend (transactional email), Google Ireland Ltd. (Analytics) and Meta Platforms Ireland Ltd. (Facebook/Instagram Pixel)."
+        },
+        {
+          "h": "6. International data transfers",
+          "body": "The Site sells and ships worldwide. Some data may be transferred to non-EU countries (e.g. United States, UK, Switzerland) via providers that adhere to standard contractual clauses approved by the European Commission."
+        },
+        {
+          "h": "7. Retention period",
+          "body": "Purchase and billing data: for the time necessary to fulfil legal and tax obligations (10 years). Marketing data: until consent is withdrawn. Browsing data: maximum 26 months."
+        },
+        {
+          "h": "8. Rights of the data subject",
+          "body": "The user has the right to access, rectification, erasure, restriction, portability and objection. To exercise these rights, write to <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>."
+        }
+      ]
+    },
+    "termini": {
+      "title": "Terms and Conditions",
+      "subtitle": "Last updated: May 2026",
+      "sections": [
+        {
+          "h": "1. Seller",
+          "body": "The site www.silkincom.com is operated by Marco Dibenedetto, sole proprietor of SILKinCOM, VAT 03786790133, registered office Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italy."
+        },
+        {
+          "h": "2. Products",
+          "body": "The products sold through the Site are accessories in silk, cashmere, wool, linen and cotton, designed and made in the Como silk district. Images are illustrative only: small variations in colour or appearance are normal for handcrafted products."
+        },
+        {
+          "h": "3. Prices",
+          "body": "All prices are expressed in Euro (EUR), VAT included for shipments within the EU. For non-EU shipments, any customs duties and import taxes are at the customer's expense."
+        },
+        {
+          "h": "4. Orders",
+          "body": "The submission of an order constitutes a purchase offer. The contract is concluded with the acceptance confirmation sent by email. SILKinCOM reserves the right to refuse orders in case of product unavailability, incorrect payment data or suspicion of fraud."
+        },
+        {
+          "h": "5. Payment",
+          "body": "We accept credit cards (Visa, Mastercard, American Express), Apple Pay, Google Pay, PayPal and bank transfer. Payments are handled by PCI-DSS certified providers. SILKinCOM does not store credit card data."
+        },
+        {
+          "h": "6. Shipping",
+          "body": "Shipping times and costs are detailed on the <a href=\"/spedizioni\">Shipping</a> page. SILKinCOM is not responsible for delays attributable to the courier."
+        },
+        {
+          "h": "7. Right of withdrawal",
+          "body": "The consumer has the right to withdraw from the contract within 14 days of receipt of the order. Methods and conditions are detailed on the <a href=\"/resi\">Returns and Refunds</a> page."
+        },
+        {
+          "h": "8. Legal warranty",
+          "body": "All products are covered by the 24-month legal warranty of conformity provided by the Italian Consumer Code (Legislative Decree 206/2005)."
+        },
+        {
+          "h": "9. Place of jurisdiction",
+          "body": "For consumers, the competent court is that of the place of residence or domicile. For other disputes, exclusive jurisdiction is Como."
+        },
+        {
+          "h": "10. Applicable law",
+          "body": "This contract is governed by Italian law and EU rules applicable to electronic commerce."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "subtitle": "Last updated: May 2026",
+      "intro": "The site www.silkincom.com uses technical, analytical and profiling cookies to ensure proper operation, analyse traffic and personalise the user experience.",
+      "sections": [
+        {
+          "h": "1. What cookies are",
+          "body": "Cookies are small text files stored by the browser during navigation. They allow the site to recognise the user and improve the browsing experience."
+        },
+        {
+          "h": "2. Types of cookies used",
+          "body": "<ul><li><strong>Technical cookies (necessary):</strong> indispensable for the functioning of the site (session, authentication, cart). They do not require consent.</li><li><strong>Analytical cookies:</strong> Google Analytics, to measure traffic in aggregated and anonymous form.</li><li><strong>Profiling and marketing cookies:</strong> Meta Pixel, Google Ads. They require explicit consent.</li></ul>"
+        },
+        {
+          "h": "3. Consent management",
+          "body": "On first access, a consent banner is shown that allows you to accept or refuse non-essential cookies. Preferences can be modified at any time by deleting cookies from the browser."
+        },
+        {
+          "h": "4. Disabling cookies",
+          "body": "The user can disable cookies from their browser. Disabling technical cookies may compromise the proper functioning of the site."
+        },
+        {
+          "h": "5. Contacts",
+          "body": "For requests relating to data processing: <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>"
+        }
+      ]
+    }
+  },
+  "notFound": {
+    "tag": "404",
+    "title": "Page not found",
+    "subtitle": "The page you're looking for doesn't exist or has been moved.",
+    "browseCollections": "Browse collections",
+    "home": "Home"
+  },
+  "errorPage": {
+    "tag": "Error",
+    "title": "Something went wrong",
+    "subtitle": "An unexpected error occurred. Please try again or return home.",
+    "retry": "Try again",
+    "home": "Back to home"
+  }
+}

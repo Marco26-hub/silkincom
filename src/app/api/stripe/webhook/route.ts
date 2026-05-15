@@ -1,0 +1,185 @@
+import { NextRequest, NextResponse } from 'next/server';
+import Stripe from 'stripe';
+import { getStripe } from '@/lib/stripe';
+import { createServiceClient } from '@/lib/supabase/server';
+import { sendOrderConfirmationEmail } from '@/lib/email';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: NextRequest) {
+  const body = await req.text();
+  const sig = req.headers.get('stripe-signature');
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
+  }
+
+  let event: Stripe.Event;
+
+  try {
+    event = getStripe().webhooks.constructEvent(
+      body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err);
+    return NextResponse.json(
+      { error: 'Webhook signature verification failed' },
+      { status: 400 }
+    );
+  }
+
+  const supabase = createServiceClient();
+
+  switch (event.type) {
+    case 'payment_intent.succeeded': {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      const orderId = paymentIntent.metadata.order_id;
+
+      if (!orderId) {
+        console.error('Missing order_id in metadata', { paymentIntentId: paymentIntent.id });
+        return NextResponse.json({ error: 'Missing order_id in metadata' }, { status: 400 });
+      }
+
+      // Idempotency check
+      const { data: order } = await supabase
+        .from('orders')
+        .select('id, status, customer_email, order_number, total_amount, order_items(product_id, quantity)')
+        .eq('id', orderId)
+        .single();
+
+      if (!order) {
+        console.error(`Order ${orderId} not found`);
+        return NextResponse.json({ error: 'Order not found' }, { status: 400 });
+      }
+
+      if (order.status !== 'pending') {
+        console.log(`Order ${orderId} already processed (status=${order.status})`);
+        return NextResponse.json({ received: true });
+      }
+
+      // Update order
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+          status: 'paid',
+          payment_status: 'succeeded',
+          paid_at: new Date().toISOString(),
+          stripe_payment_intent_id: paymentIntent.id,
+        })
+        .eq('id', orderId);
+
+      if (updateError) {
+        console.error('Order update error:', updateError);
+        return NextResponse.json({ error: 'Update failed' }, { status: 500 });
+      }
+
+      // Create payment record
+      await supabase.from('payments').insert({
+        order_id: orderId,
+        stripe_payment_intent_id: paymentIntent.id,
+        amount: paymentIntent.amount / 100,
+        currency: paymentIntent.currency.toUpperCase(),
+        status: 'succeeded',
+        payment_method: paymentIntent.payment_method_types[0],
+      });
+
+      // Decrement inventory (with FOR UPDATE lock via RPC function)
+      for (const item of order.order_items || []) {
+        await supabase.rpc('decrement_inventory', {
+          p_product_id: item.product_id,
+          p_quantity: item.quantity,
+        });
+      }
+
+      // Record coupon redemption if applied at checkout
+      const couponId = paymentIntent.metadata.coupon_id;
+      if (couponId) {
+        try {
+          await supabase.from('coupon_redemptions').insert({
+            coupon_id: couponId,
+            order_id: orderId,
+            customer_id: (order as { customer_id?: string }).customer_id || null,
+          });
+        } catch (couponErr) {
+          console.error('Coupon redemption insert failed:', couponErr);
+        }
+      }
+
+      // Send confirmation email (non-blocking)
+      try {
+        await sendOrderConfirmationEmail(
+          order.customer_email,
+          order.order_number,
+          Number(order.total_amount)
+        );
+      } catch (emailError) {
+        console.error('Email send failed:', emailError);
+      }
+
+      return NextResponse.json({ received: true });
+    }
+
+    case 'payment_intent.payment_failed': {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      const orderId = paymentIntent.metadata.order_id;
+
+      if (orderId) {
+        await supabase
+          .from('orders')
+          .update({
+            status: 'failed',
+            payment_status: 'failed',
+          })
+          .eq('id', orderId);
+      }
+
+      return NextResponse.json({ received: true });
+    }
+
+    case 'charge.refunded': {
+      const charge = event.data.object as Stripe.Charge;
+      const paymentIntentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id;
+      if (!paymentIntentId) return NextResponse.json({ received: true });
+
+      const { data: order } = await supabase
+        .from('orders')
+        .select('id, status, total_amount, customer_email, order_number')
+        .eq('stripe_payment_intent_id', paymentIntentId)
+        .single();
+
+      if (!order) {
+        console.error(`Refund: order not found for PI ${paymentIntentId}`);
+        return NextResponse.json({ received: true });
+      }
+
+      const refundedAmount = charge.amount_refunded / 100;
+      const fullRefund = charge.amount === charge.amount_refunded;
+
+      await supabase
+        .from('orders')
+        .update({
+          status: fullRefund ? 'refunded' : order.status,
+          payment_status: fullRefund ? 'refunded' : 'partially_refunded',
+        })
+        .eq('id', order.id);
+
+      await supabase.from('payments').insert({
+        order_id: order.id,
+        stripe_payment_intent_id: paymentIntentId,
+        amount: -refundedAmount,
+        currency: charge.currency.toUpperCase(),
+        status: 'refunded',
+        payment_method: 'card',
+        metadata: { stripe_charge_id: charge.id, refund_id: charge.refunds?.data[0]?.id },
+      });
+
+      return NextResponse.json({ received: true });
+    }
+
+    default:
+      return NextResponse.json({ received: true, type: event.type });
+  }
+}

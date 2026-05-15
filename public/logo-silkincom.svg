@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 140" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <style>
+      .silk-text { font-family: 'Cormorant Garamond', 'Cormorant', Georgia, serif; font-weight: 300; fill: #D4AF37; letter-spacing: 0.1em; }
+      .silk-italic { font-style: italic; }
+    </style>
+  </defs>
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" class="silk-text" font-size="120">SILK<tspan class="silk-italic" font-size="100">in</tspan>COM</text>
+</svg>

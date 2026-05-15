@@ -1,0 +1,1099 @@
+{
+  "common": {
+    "brand": "SILKinCOM",
+    "tagline": "Maison für Seide und Kaschmir — Made in Como",
+    "loading": "Lädt…",
+    "error": "Ein Fehler ist aufgetreten",
+    "retry": "Erneut versuchen",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "back": "Zurück",
+    "continue": "Weiter",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "remove": "Entfernen",
+    "add": "Hinzufügen",
+    "search": "Suchen",
+    "menu": "Menü",
+    "free": "Kostenlos",
+    "from": "ab",
+    "to": "bis",
+    "all": "Alles",
+    "none": "Keine",
+    "yes": "Ja",
+    "no": "Nein",
+    "or": "oder",
+    "language": "Sprache",
+    "currency": "Währung"
+  },
+  "nav": {
+    "home": "Startseite",
+    "collections": "Kollektionen",
+    "products": "Produkte",
+    "story": "Unsere Geschichte",
+    "materials": "Materialien",
+    "atelier": "Atelier",
+    "contacts": "Kontakt",
+    "account": "Konto",
+    "wishlist": "Wunschliste",
+    "cart": "Warenkorb",
+    "search": "Suchen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "admin": "Administration"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Werden Sie Teil der Maison",
+      "description": "Vorschauen unserer Kollektionen, limitierte Editionen und Geschichten vom Comer See.",
+      "placeholder": "Ihre E-Mail-Adresse",
+      "submit": "Abonnieren",
+      "success": "Anmeldung bestätigt. Herzlich willkommen.",
+      "error": "Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+    },
+    "sections": {
+      "boutique": "Boutique",
+      "maison": "Maison",
+      "support": "Service",
+      "legal": "Rechtliches"
+    },
+    "links": {
+      "shipping": "Versand",
+      "returns": "Rückgabe",
+      "care": "Pflegehinweise",
+      "faq": "Häufige Fragen",
+      "contacts": "Kontakt",
+      "privacy": "Datenschutz",
+      "cookies": "Cookies",
+      "terms": "AGB",
+      "dataProcessing": "Datenverarbeitung"
+    },
+    "rights": "Alle Rechte vorbehalten.",
+    "madeIn": "100% Made in Como"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Maison SILKinCOM — Kollektion 2026",
+      "titleMain": "Eleganz vom See,",
+      "titleAccent": "gewebt in Como.",
+      "subtitle": "Schals, Foulards, Twillies und Pashminas aus reiner Seide und Kaschmir. Sechs Jahrhunderte Como-Textiltradition, in Händen, die jeden Saum noch heute von Hand veredeln.",
+      "cta": "Kollektion entdecken",
+      "ctaSecondary": "Unsere Geschichte",
+      "scrollLabel": "Scrollen",
+      "slideAria": "Zu Folie {n} gehen"
+    },
+    "featured": {
+      "eyebrow": "Die Kollektionen",
+      "titlePlain": "Drei Jahreszeiten,",
+      "titleAccent": "eine einzige Eleganz.",
+      "viewAll": "Alle Kollektionen",
+      "explore": "Entdecken",
+      "collectionLabel": "Kollektion",
+      "items": {
+        "inverno": {
+          "name": "Winterkollektion",
+          "tagline": "Pashminas aus Kaschmir, Wärme ohne Gewicht",
+          "accent": "Saison",
+          "shortName": "Winter"
+        },
+        "iconica": {
+          "name": "Ikonische Kollektion",
+          "tagline": "Twillies und Foulards aus Seide — Como-Erbe",
+          "accent": "Heritage",
+          "shortName": "Ikonisch"
+        },
+        "primavera": {
+          "name": "Frühling 2026",
+          "tagline": "Europäisches Leinen und extralange Baumwolle für den Sommer",
+          "accent": "Neu",
+          "shortName": "Frühling 2026"
+        }
+      }
+    },
+    "values": {
+      "heritage": {
+        "title": "Como-Erbe",
+        "description": "Eine Textiltradition, die seit 1800 Rohseide in zeitlose Stücke verwandelt."
+      },
+      "craft": {
+        "title": "Handwerkskunst",
+        "description": "Jedes Stück geht durch die Hände spezialisierter Handwerker."
+      },
+      "natural": {
+        "title": "Naturfasern",
+        "description": "Kaschmir, Seide und Wolle erster Qualität, einzeln ausgewählt."
+      },
+      "limited": {
+        "title": "Limitierte Editionen",
+        "description": "Kleine, sorgfältig gefertigte Produktionen, niemals industriell."
+      }
+    },
+    "perks": {
+      "madeInComo": {
+        "title": "100% Made in Como",
+        "desc": "Spinnen, Färben und Konfektion im Seidenviertel."
+      },
+      "shipping": {
+        "title": "Express-Versand",
+        "desc": "Kostenlos in Italien ab 200 € — EU 4–7 Tage."
+      },
+      "giftBox": {
+        "title": "Geschenkverpackung",
+        "desc": "Maison-Box inklusive, personalisierbare Karte."
+      },
+      "returns": {
+        "title": "Kostenlose Rückgabe",
+        "desc": "14 Tage Bedenkzeit, Abholung an der Haustür."
+      }
+    },
+    "bestsellers": {
+      "eyebrow": "Die beliebtesten",
+      "titlePlain": "Ikonische",
+      "titleAccent": "Stücke",
+      "viewAll": "Alle ansehen"
+    },
+    "materials": {
+      "eyebrow": "Unsere Materialien",
+      "titlePlain": "Wir wählen nur",
+      "titleAccent": "Naturfasern von Exzellenz.",
+      "description": "Wir beziehen unsere Garne aus den besten Distrikten Italiens und Europas. Jedes Material hat seinen Ursprung, seine Geste, seine Geschichte.",
+      "discover": "Alle Materialien",
+      "discoverShort": "Entdecken",
+      "tabs": {
+        "origine": "Ursprung",
+        "caratteristiche": "Textur",
+        "beneficio": "Vorteil"
+      },
+      "cards": {
+        "seta": {
+          "name": "Seide",
+          "tabs": {
+            "origine": {
+              "title": "Como-Tradition",
+              "body": "Die Como-Seide hat ihre Wurzeln im 15. Jahrhundert, als die ersten Spinnereien die Stadt zu einem weltweiten Bezugspunkt machten."
+            },
+            "caratteristiche": {
+              "title": "Edel und leuchtend",
+              "body": "Feinste, natürliche Fasern, die das Licht einzigartig reflektieren. Seide ist im Sommer kühl und im Winter warm."
+            },
+            "beneficio": {
+              "title": "Eleganz, die liebkost",
+              "body": "Hypoallergen und atmungsaktiv, ist Seide sanft zur Haut und vermittelt Luxus und Komfort."
+            }
+          }
+        },
+        "cashmere": {
+          "name": "Kaschmir",
+          "tabs": {
+            "origine": {
+              "title": "Aus edelsten Regionen",
+              "body": "Kaschmir entsteht aus dem weichen Vlies der Ziegen, die in den kältesten Regionen Zentralasiens leben."
+            },
+            "caratteristiche": {
+              "title": "Feinheit und Weichheit",
+              "body": "Mit feinsten Fasern von 14–16 Mikron gehört Kaschmir zu den seltensten und kostbarsten Garnen der Welt."
+            },
+            "beneficio": {
+              "title": "Wärme ohne Gewicht",
+              "body": "Kaschmir zu tragen bedeutet, einen umhüllenden, natürlichen und dauerhaften Komfort zu erleben."
+            }
+          }
+        },
+        "lana": {
+          "name": "Wolle",
+          "tabs": {
+            "origine": {
+              "title": "Vielseitig und widerstandsfähig",
+              "body": "Wolle begleitet den Menschen seit Jahrtausenden. Aus Schafen aus den reinsten Regionen entsteht eine Naturfaser."
+            },
+            "caratteristiche": {
+              "title": "Warm und atmungsaktiv",
+              "body": "Wolle ist warm, elastisch und natürlich atmungsaktiv. Sie reguliert die Körpertemperatur."
+            },
+            "beneficio": {
+              "title": "Natürlicher Komfort",
+              "body": "Ein Stoff, der umhüllt und schützt, zeitbeständig und angenehm zu tragen."
+            }
+          }
+        },
+        "cotone": {
+          "name": "Baumwolle",
+          "tabs": {
+            "origine": {
+              "title": "Extralange Faser",
+              "body": "SILKinCOM wählt extralange Stapel-Baumwolle, angebaut in den geeignetsten Regionen des Mittelmeerraums und Ägyptens."
+            },
+            "caratteristiche": {
+              "title": "Frisch und widerstandsfähig",
+              "body": "Extralange Baumwolle bietet einen kompakten und seidigen Stoff mit natürlichem Glanz."
+            },
+            "beneficio": {
+              "title": "Sommerliche Leichtigkeit",
+              "body": "Sanft zur Haut, hypoallergen und leicht zu tragen — perfekt für Frühlings-Foulards."
+            }
+          }
+        },
+        "lino": {
+          "name": "Leinen",
+          "tabs": {
+            "origine": {
+              "title": "Europäische Tradition",
+              "body": "Europäisches Leinen, angebaut in Frankreich und Belgien, gehört zu den ältesten und edelsten Naturfasern."
+            },
+            "caratteristiche": {
+              "title": "Natürlich und edel",
+              "body": "Leinen ist bis zu viermal widerstandsfähiger als Baumwolle, atmungsaktiv und natürlich frisch."
+            },
+            "beneficio": {
+              "title": "Sommerliche Eleganz",
+              "body": "Leinen wird mit jeder Wäsche weicher und entwickelt eine gelebte Patina."
+            }
+          }
+        }
+      }
+    },
+    "editorial": {
+      "eyebrow": "Privates Atelier — Nach Termin",
+      "titlePlain": "Ein Unikat,",
+      "titleAccent": "für Sie entworfen.",
+      "description": "Maßgefertigte Schals, Foulards und Pashminas. Wählen Sie Faser, Farbe, Größe, Stickerei und Initialen. Vollständig handgefertigt in Como, in 4–6 Wochen.",
+      "cta": "Termin vereinbaren"
+    },
+    "instagram": {
+      "eyebrow": "@silkincom.official",
+      "title": "Die Maison auf Instagram",
+      "subtitle": "Atelier, Details, Lifestyle vom Comer See.",
+      "follow": "Folgen"
+    },
+    "brandStory": {
+      "eyebrow": "Die Maison",
+      "titlePlain": "Seit 1400, am Comer See,",
+      "titleAccent": "eine Kunst, die weitergegeben wird.",
+      "paragraph1": "SILKinCOM entsteht im Herzen des ältesten Seidenviertels Europas. Sechs Jahrhunderte textile Meisterschaft leben in den Händen unserer Meister — von den historischen Färbereien in Cernobbio bis zu den Spinnereien in Bellagio bleibt jeder Schritt jenen anvertraut, die Seide wie eine Muttersprache kennen.",
+      "paragraph2": "Wir wählen ausschließlich edle Fasern: Como-Seide, extrafeiner Kaschmir, Merinowolle, europäisches Leinen, Baumwolle mit extra-langer Faser. Jedes Stück fertigen wir einzeln, mit von Hand veredelten Säumen, am Ufer des Sees, der seit jeher unsere Ästhetik inspiriert: zurückhaltend, zeitlos, zutiefst italienisch.",
+      "quote": "Jeder Faden trägt eine Erinnerung.",
+      "quoteAuthor": "— Webmeister, Como",
+      "imageMainAlt": "SILKinCOM Textilhandwerk, Como",
+      "imageTileAlt": "Textilindustrie Como",
+      "cta": "Unsere Geschichte entdecken"
+    },
+    "newsletter": {
+      "eyebrow": "Brief aus der Maison",
+      "titlePlain": "Vorschauen, nummerierte Editionen,",
+      "titleAccent": "Geschichten vom Comer See.",
+      "description": "Eine E-Mail pro Monat. Vorschauen neuer Kollektionen, bevorzugter Zugang zu limitierten Editionen, Geschichten aus dem Herzen des Seidenviertels. Niemals aufdringliche Werbung.",
+      "success": "Danke. Wir melden uns bald.",
+      "placeholder": "Ihre E-Mail-Adresse",
+      "submit": "Abonnieren",
+      "submitting": "Wird geladen…",
+      "privacyDisclaimer": "Mit der Anmeldung akzeptieren Sie unsere <link>Datenschutzerklärung</link>. Jederzeit abmeldbar."
+    }
+  },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Entdecken Sie die Stücke der Saison, von Hand gefertigt in Como.",
+    "filters": {
+      "title": "Filter",
+      "category": "Kategorie",
+      "material": "Material",
+      "color": "Farbe",
+      "price": "Preis",
+      "sort": "Sortieren",
+      "clear": "Filter zurücksetzen",
+      "apply": "Anwenden",
+      "collection": "Kollektion",
+      "all": "Alle",
+      "showResults": "{count} Produkte anzeigen",
+      "recommended": "Empfohlen"
+    },
+    "sort": {
+      "newest": "Neuheiten",
+      "priceAsc": "Preis aufsteigend",
+      "priceDesc": "Preis absteigend",
+      "popular": "Beliebteste"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Keine Stücke} =1 {1 Stück} other {# Stücke}}",
+      "empty": "Keine Stücke entsprechen den ausgewählten Filtern.",
+      "productSingular": "Produkt",
+      "productPlural": "Produkte",
+      "sortLabel": "Sortieren:",
+      "noResults": "Keine Produkte entsprechen den ausgewählten Filtern.",
+      "clearFilters": "Filter löschen",
+      "clearTag": "Löschen"
+    }
+  },
+  "product": {
+    "addToCart": "In den Warenkorb",
+    "addedToCart": "Zum Warenkorb hinzugefügt",
+    "outOfStock": "Ausverkauft",
+    "lowStock": "Letzte Stücke verfügbar",
+    "wishlist": {
+      "add": "Zur Wunschliste hinzufügen",
+      "remove": "Aus Wunschliste entfernen"
+    },
+    "tabs": {
+      "description": "Beschreibung",
+      "composition": "Zusammensetzung und Pflege",
+      "shipping": "Versand und Rückgabe",
+      "care": "Pflegehinweise"
+    },
+    "details": {
+      "composition": "Zusammensetzung",
+      "dimensions": "Maße",
+      "sku": "Artikelnummer",
+      "origin": "Herkunft",
+      "originValue": "Made in Como, Italien"
+    },
+    "perks": {
+      "madeInComo": "Made in Como, Italien",
+      "artisan": "100% italienische Handwerkskunst",
+      "shipping": "Kostenloser Versand ab 200 €",
+      "returns": "14 Tage Rückgaberecht"
+    },
+    "related": {
+      "eyebrow": "Weitersehen",
+      "title": "Stücke aus derselben Familie",
+      "viewAll": "Gesamte Kollektion ansehen"
+    },
+    "taxIncluded": "Inkl. MwSt. — Versandkosten an der Kasse",
+    "shippingDetails": {
+      "standard": "Standardversand 3–5 Werktage. Kostenlos für Bestellungen über 200 €.",
+      "returns": "Kostenlose Rückgabe innerhalb von 14 Tagen nach Erhalt.",
+      "allDetails": "Alle Details"
+    },
+    "wishlistAdd": "Zu Favoriten hinzufügen",
+    "wishlistRemove": "Aus Favoriten entfernen"
+  },
+  "cart": {
+    "title": "Ihr Warenkorb",
+    "empty": "Ihr Warenkorb ist leer.",
+    "emptyAction": "Boutique entdecken",
+    "item": "Artikel",
+    "items": "Artikel",
+    "quantity": "Menge",
+    "subtotal": "Zwischensumme",
+    "shipping": "Versand",
+    "shippingFree": "Versand kostenlos",
+    "shippingThreshold": "Kostenloser Versand ab {amount}",
+    "total": "Gesamt",
+    "checkout": "Zur Kasse",
+    "continueShopping": "Weiter einkaufen",
+    "remove": "Entfernen",
+    "summary": "Übersicht"
+  },
+  "checkout": {
+    "title": "Kasse",
+    "steps": {
+      "info": "Versanddaten",
+      "payment": "Zahlung",
+      "review": "Bestätigung"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "E-Mail",
+      "fullName": "Empfängername",
+      "address": "Adresse",
+      "city": "Stadt",
+      "postalCode": "PLZ",
+      "country": "Land",
+      "phone": "Telefon"
+    },
+    "actions": {
+      "continueToPayment": "Weiter zur Zahlung",
+      "confirmPayment": "Zahlung bestätigen",
+      "processing": "Wird verarbeitet…",
+      "backToCart": "Zurück zum Warenkorb"
+    },
+    "security": {
+      "stripe": "Sichere Zahlung über Stripe",
+      "ssl": "SSL-verschlüsselt"
+    },
+    "success": {
+      "title": "Bestellung bestätigt",
+      "subtitle": "Vielen Dank für Ihren Einkauf.",
+      "description": "Sie erhalten eine Bestätigungs-E-Mail mit den Versanddetails.",
+      "orderNumber": "Bestellnummer",
+      "viewOrders": "Meine Bestellungen",
+      "continueShopping": "Weiter einkaufen"
+    },
+    "errors": {
+      "emptyCart": "Der Warenkorb ist leer",
+      "missingData": "Bitte alle Pflichtfelder ausfüllen",
+      "paymentFailed": "Zahlung fehlgeschlagen. Bitte erneut versuchen.",
+      "networkError": "Netzwerkfehler. Bitte erneut versuchen."
+    },
+    "countries": {
+      "IT": "Italien",
+      "CH": "Schweiz",
+      "DE": "Deutschland",
+      "FR": "Frankreich",
+      "GB": "Vereinigtes Königreich",
+      "US": "Vereinigte Staaten"
+    }
+  },
+  "account": {
+    "title": "Mein Bereich",
+    "greeting": "Hallo, {name}",
+    "greetingDefault": "Ihr Konto",
+    "dashboard": {
+      "orders": "Bestellungen",
+      "ordersDescription": "{count, plural, =0 {Keine Bestellungen} =1 {1 Bestellung} other {# Bestellungen}}",
+      "addresses": "Adressen",
+      "addressesDescription": "Versand und Rechnung",
+      "wishlist": "Wunschliste",
+      "wishlistDescription": "Lieblingseditionen",
+      "profile": "Profil",
+      "profileDescription": "Persönliche Daten"
+    },
+    "orders": {
+      "title": "Ihre Bestellungen",
+      "empty": "Noch keine Bestellungen.",
+      "emptySuggestion": "Entdecken Sie die Maison-Kollektionen: Pashminas, Twillies, Accessoires 100% Made in Como.",
+      "orderNumber": "Bestellung",
+      "viewDetails": "Details",
+      "status": {
+        "pending": "Ausstehend",
+        "paid": "Bezahlt",
+        "processing": "In Bearbeitung",
+        "shipped": "Versendet",
+        "delivered": "Zugestellt",
+        "cancelled": "Storniert",
+        "refunded": "Erstattet",
+        "failed": "Fehlgeschlagen"
+      }
+    },
+    "profile": {
+      "title": "Profil",
+      "fullName": "Vollständiger Name",
+      "phone": "Telefon",
+      "email": "E-Mail",
+      "saved": "Profil aktualisiert."
+    },
+    "wishlistPage": {
+      "title": "Wunschliste",
+      "empty": "Ihre Wunschliste ist leer.",
+      "emptySuggestion": "Fügen Sie die Stücke hinzu, die Sie aus der Boutique lieben. Sie warten hier auf Sie.",
+      "browseAction": "Boutique entdecken",
+      "unavailable": "Produkt nicht mehr verfügbar"
+    },
+    "addressesPage": {
+      "title": "Adressen",
+      "empty": "Keine Adresse gespeichert",
+      "emptyDesc": "Fügen Sie eine Adresse hinzu, um Ihre nächsten Bestellungen zu beschleunigen.",
+      "shipping": "Versand",
+      "billing": "Rechnung",
+      "defaultLabel": "Standard",
+      "deleteAria": "Adresse löschen",
+      "fullName": "Empfängername",
+      "street": "Straße",
+      "postalCode": "PLZ",
+      "city": "Stadt",
+      "country": "Land",
+      "phone": "Telefon",
+      "type": "Typ",
+      "setDefault": "Als Standard festlegen",
+      "addAddress": "Adresse hinzufügen"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "subtitle": "Willkommen zurück. Melden Sie sich an, um auf Bestellungen, Adressen und Präferenzen zuzugreifen.",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "forgot": "Vergessen?",
+      "submit": "Anmelden",
+      "submitting": "Anmeldung läuft…",
+      "noAccount": "Noch kein Konto?",
+      "createAccount": "Konto erstellen",
+      "invalidCredentials": "Ungültige Anmeldedaten.",
+      "missingFields": "Bitte E-Mail und Passwort eingeben."
+    },
+    "register": {
+      "title": "Konto erstellen",
+      "subtitle": "Vorschauen, limitierte Editionen, schnellerer Bestellvorgang.",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "password": "Passwort (mind. 8 Zeichen)",
+      "acceptTerms": "Ich akzeptiere die <termsLink>AGB</termsLink> und die <privacyLink>Datenschutzerklärung</privacyLink>.",
+      "termsLabel": "AGB",
+      "privacyLabel": "Datenschutzerklärung",
+      "submit": "Konto erstellen",
+      "submitting": "Konto wird erstellt…",
+      "haveAccount": "Sie haben bereits ein Konto?",
+      "signIn": "Anmelden",
+      "passwordTooShort": "Passwort zu kurz (mindestens 8 Zeichen).",
+      "termsRequired": "Bitte AGB und Datenschutz akzeptieren, um fortzufahren.",
+      "missingFields": "Bitte alle Pflichtfelder ausfüllen.",
+      "emailSent": "Konto erstellt. Bitte E-Mail zur Bestätigung prüfen."
+    },
+    "forgotPassword": {
+      "tag": "Kontowiederherstellung",
+      "title": "Passwort vergessen?",
+      "subtitle": "Geben Sie Ihre E-Mail ein. Wir senden Ihnen Anweisungen zum Zurücksetzen.",
+      "emailLabel": "E-Mail",
+      "submit": "Anweisungen senden",
+      "submitting": "Wird gesendet…",
+      "successMessage": "Falls diese E-Mail registriert ist, erhalten Sie in Kürze einen Reset-Link.",
+      "backToLogin": "Zurück zum Login",
+      "errorDefault": "Senden fehlgeschlagen. Bitte erneut versuchen."
+    },
+    "resetPassword": {
+      "tag": "Sicherheit",
+      "title": "Neues Passwort",
+      "subtitle": "Geben Sie Ihr neues Passwort ein, um auf Ihr Konto zuzugreifen.",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "submit": "Passwort aktualisieren",
+      "submitting": "Wird aktualisiert…",
+      "successMessage": "Passwort aktualisiert. Sie werden zu Ihrem Konto weitergeleitet.",
+      "goToAccount": "Zu Ihrem Konto",
+      "invalidLink": "Reset-Link ungültig oder abgelaufen.",
+      "requestNewLink": "Neuen Link anfordern",
+      "errorMinLength": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+      "errorMismatch": "Die Passwörter stimmen nicht überein.",
+      "errorDefault": "Fehler beim Zurücksetzen."
+    }
+  },
+  "legal": {
+    "privacy": "Datenschutzerklärung",
+    "terms": "Allgemeine Geschäftsbedingungen",
+    "cookies": "Cookie-Richtlinie",
+    "lastUpdated": "Zuletzt aktualisiert"
+  },
+  "languageSwitcher": {
+    "label": "Sprache",
+    "selectLanguage": "Sprache wählen"
+  },
+  "announcement": {
+    "messages": [
+      "Kostenloser Versand in Italien ab 200 €",
+      "Maison-Geschenkverpackung bei jeder Bestellung",
+      "100% Made in Como — Seidentradition seit 1400",
+      "Kostenlose Rückgabe innerhalb 14 Tage — Abholung an der Haustür"
+    ]
+  },
+  "cookies": {
+    "description": "Wir verwenden technische Cookies und, mit Ihrer Zustimmung, Profiling-Cookies, um Ihr Erlebnis und unsere Kommunikation zu verbessern. Sie können sie akzeptieren oder die nicht wesentlichen ablehnen.",
+    "accept": "Alle akzeptieren",
+    "reject": "Ablehnen"
+  },
+  "collezioni": {
+    "eyebrow": "Die Kollektionen",
+    "titlePlain": "Alle",
+    "titleAccent": "Kollektionen",
+    "description": "Die Essenz Ihres Stils, signiert in Como. Schals, Foulards und Accessoires aus Seide, Kaschmir, Wolle, Leinen und Baumwolle.",
+    "collectionLabel": "Kollektion",
+    "explore": "Entdecken",
+    "browseBy": "Durchsuchen nach",
+    "byMaterial": "Material",
+    "byCategory": "Kategorie",
+    "allLabel": "Alle",
+    "allTitle": "Accessoires"
+  },
+  "contatti": {
+    "eyebrow": "Kundenservice",
+    "title": "Kontaktieren Sie uns",
+    "description": "Wir stehen Ihnen für jede Anfrage zu Produkten, Bestellungen, Versand oder Personalisierungen zur Verfügung.",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "orderNumber": "Bestellnummer",
+    "message": "Nachricht",
+    "submit": "Nachricht senden",
+    "submitting": "Wird gesendet…",
+    "success": "Nachricht erfolgreich gesendet! Wir melden uns in Kürze.",
+    "error": "Unbekannter Fehler",
+    "emailLabel": "E-Mail",
+    "addressLabel": "Adresse",
+    "socialLabel": "Social"
+  },
+  "storia": {
+    "eyebrow": "Die Maison",
+    "titleP1": "Aus dem Herzen Comos,",
+    "titleP2": "ein Erbe, das",
+    "titleAccent": "zum Stil wird.",
+    "quote": "SILKinCOM entsteht aus Leidenschaft und Erfahrung in der Textilwelt Comos. Eine jahrhundertealte Tradition, neu interpretiert mit zeitgenössischem Design und edelsten Materialien.",
+    "chapterI": "Kapitel I",
+    "storyTitlePlain": "Unsere",
+    "storyTitleAccent": "Geschichte",
+    "storyP1": "SILKinCOM entsteht im Herzen des Seidenviertels von Como, wo Textiltradition auf Innovation trifft. Nach Jahren der Erfahrung in Färbereien, Druckereien, Webereien und Forschungslaboren verwandelt die Marke technisches Wissen in eine kreative Vision.",
+    "storyP2": "Ziel ist es, der Como-Exzellenz neues Leben einzuhauchen — durch Accessoires aus Seide, Kaschmir und Wolle von absoluter Qualität. Jedes Stück trägt die Identität eines Territoriums und die Sorgfalt jener, die es zutiefst kennen.",
+    "chapterII": "Kapitel II",
+    "essenceTitlePlain": "Unsere",
+    "essenceTitleAccent": "Essenz",
+    "essenceP1": "SILKinCOM existiert, um das Como-Textilerbe in zeitgenössische Seiden- und Kaschmir-Accessoires zu verwandeln. Jede Kreation verbindet handwerkliche Meisterschaft mit modernem Design — mit dem Ziel, der Welt einen authentischen, eleganten und zeitlosen Luxus zu bringen.",
+    "essenceP2": "100% Made in Como — von den Rohstoffen bis zur Endverarbeitung findet jede Phase im Seidenviertel statt und bewahrt das Know-how einer jahrhundertealten Tradition.",
+    "stat1": "Einzigartige Modelle",
+    "stat2": "Made in Como",
+    "stat3": "Jahre Erfahrung",
+    "chapterIII": "Kapitel III",
+    "liveTitlePlain": "SILKinCOM leben,",
+    "liveTitleAccent": "jeden Tag",
+    "liveDescription": "Unsere Geschichte geht auch über diese Seiten hinaus weiter. Folgen Sie SILKinCOM in den sozialen Medien und lassen Sie sich von Kollektionen, Details und Eindrücken aus dem Herzen Comos inspirieren.",
+    "followInstagram": "Auf Instagram folgen",
+    "exploreCollections": "Kollektionen entdecken"
+  },
+  "spedizioniPage": {
+    "title": "Versand",
+    "subtitle": "Wir versenden weltweit",
+    "section1": "Italien",
+    "section1Items": [
+      "Standard-Versand mit Sendungsverfolgung: 2–4 Werktage — 9 €",
+      "Kostenloser Versand bei Bestellungen über 200 €"
+    ],
+    "section2": "Europäische Union",
+    "section2Items": [
+      "Standard-Versand mit Sendungsverfolgung: 4–7 Werktage — 18 €",
+      "Kostenloser Versand bei Bestellungen über 350 €"
+    ],
+    "section3": "Vereinigtes Königreich, Schweiz, Norwegen",
+    "section3Items": [
+      "DDP-Versand (Zölle inklusive): 5–8 Werktage — 25 €"
+    ],
+    "section4": "Rest der Welt",
+    "section4Items": [
+      "Express-Versand mit Sendungsverfolgung: 7–12 Werktage — ab 35 €",
+      "Zollgebühren gehen zulasten des Empfängers, sofern nicht anders angegeben"
+    ],
+    "section5": "Sendungsverfolgung",
+    "section5Body": "Sobald Ihre Bestellung versandt wurde, erhalten Sie eine E-Mail mit der Sendungsnummer, um die Lieferung in Echtzeit zu verfolgen. Alle Bestellungen sind während des Transports versichert.",
+    "section6": "Bearbeitungszeiten",
+    "section6Body": "Bestellungen, die werktags bis 14:00 Uhr (MEZ) eingehen, werden noch am selben Tag bearbeitet. Am Wochenende oder an Feiertagen eingegangene Bestellungen werden am nächsten Werktag bearbeitet."
+  },
+  "resi": {
+    "title": "Rückgabe und Erstattung",
+    "subtitle": "Zuletzt aktualisiert: Oktober 2025",
+    "s1": "1. Rückgabefrist",
+    "s1Body": "Kunden weltweit können gekaufte Artikel innerhalb von 14 Tagen nach Erhalt der Bestellung zurücksenden. Einige Rechtsordnungen (z. B. Vereinigtes Königreich, USA, Kanada, Australien) sehen längere Fristen vor; in diesen Fällen wendet SILKinCOM die nach lokalem Recht günstigste Frist an.",
+    "s2": "2. So fordern Sie eine Rückgabe an",
+    "s2Body": "Um eine Rückgabe anzufordern, füllen Sie das Kontaktformular im Bereich „Kontakt\" der Website aus und geben Sie die Bestellnummer, die Kaufdaten und das zurückzugebende Produkt an. Sie erhalten innerhalb von 24–48 Stunden Versandanweisungen für die Rückgabe.",
+    "s3": "3. Voraussetzungen für die Annahme",
+    "s3Body": "Damit das Produkt angenommen wird, muss es:",
+    "s3Items": [
+      "Nicht getragen, gewaschen oder beschädigt sein",
+      "In der Originalverpackung mit intakten Etiketten zurückgesendet werden",
+      "In einem für den Wiederverkauf geeigneten Zustand sein"
+    ],
+    "s3Note": "SILKinCOM behält sich das Recht vor, Rückgaben abzulehnen, die diese Bedingungen nicht erfüllen oder Gebrauchsspuren aufweisen.",
+    "s4": "4. Ausgeschlossene Produkte",
+    "s4Body": "Folgendes kann nicht zurückgegeben werden:",
+    "s4Items": [
+      "Personalisierte oder maßgefertigte Produkte",
+      "Reduzierte oder Aktionsartikel, sofern auf der Produktseite angegeben",
+      "Geöffnete oder benutzte Artikel, die aus hygienischen Gründen nicht weiterverkauft werden können"
+    ],
+    "s5": "5. Rücksendekosten",
+    "s5Body1": "Die Rücksendekosten gehen zulasten des Kunden, außer bei falschem oder defektem Produkt. Die ursprünglichen Versandkosten werden nicht erstattet. Wir empfehlen einen versicherten Versand mit Sendungsverfolgung.",
+    "s5AddressLabel": "Rücksendeadresse:",
+    "s6": "6. Erstattung",
+    "s6Body": "Nach Erhalt und Prüfung der Rücksendung erstattet SILKinCOM den Betrag innerhalb von 14 Werktagen unter Verwendung der ursprünglichen Zahlungsmethode. Die Erstattung umfasst ausschließlich den Produktpreis und schließt eventuelle Einfuhrsteuern, Zollgebühren oder Versandkosten aus, die zulasten des Kunden bleiben.",
+    "s7": "7. Defekte oder falsche Produkte",
+    "s7Body": "Bei Erhalt eines defekten, beschädigten oder falschen Produkts wenden Sie sich bitte umgehend an den Kundenservice über das Kontaktformular oder per E-Mail an"
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "faqs": [
+      {
+        "q": "Welche Zahlungsmethoden akzeptieren Sie?",
+        "a": "Wir akzeptieren alle gängigen Kreditkarten (Visa, Mastercard, American Express), Apple Pay, Google Pay und PayPal. Alle Zahlungen sind SSL-verschlüsselt und werden über Stripe abgewickelt."
+      },
+      {
+        "q": "Sind MwSt. und Zölle im Preis enthalten?",
+        "a": "Die angezeigten Preise enthalten stets die italienische MwSt. (22%). Bei Bestellungen außerhalb der EU gehen eventuelle Zollgebühren und Einfuhrsteuern zulasten des Empfängers, außer bei DDP-Versand (UK, Schweiz, Norwegen), wo die Zölle inklusive sind."
+      },
+      {
+        "q": "Wie lange dauert der Versand?",
+        "a": "Italien: 2–4 Werktage. EU: 4–7 Tage. Rest der Welt: 7–12 Tage. Alle Bestellungen werden mit Sendungsverfolgung versendet und sind versichert. Siehe <a href=\"/spedizioni\">Versand</a> für vollständige Details."
+      },
+      {
+        "q": "Kann ich einen Artikel zurückgeben?",
+        "a": "Ja, Sie haben 14 Tage ab Erhalt Zeit, um unbenutzte Artikel zurückzugeben. Rücksendungen sind innerhalb Italiens kostenlos. Siehe <a href=\"/resi\">Rückgabe</a> für das Verfahren."
+      },
+      {
+        "q": "Wie finde ich die richtige Größe?",
+        "a": "Jede Produktseite enthält genaue Maße (z. B. 180×45 cm). Für Pashminas und Schals reichen Standardgrößen von 180×35 cm bis 200×70 cm. Für Hemden und T-Shirts kontaktieren Sie uns bei Bedarf."
+      },
+      {
+        "q": "Sind die Produkte wirklich Made in Italy?",
+        "a": "Ja, jedes Stück wird vollständig in Como hergestellt — vom Spinnen bis zur Endverarbeitung. Wir arbeiten mit den besten Spinnereien, Färbereien und Ateliers des ältesten Seidenviertels Europas."
+      },
+      {
+        "q": "Wie wäscht man einen Kaschmirschal?",
+        "a": "Handwäsche in kaltem Wasser mit neutralem Kaschmir-Waschmittel, niemals reiben. Liegend, fern von Wärmequellen trocknen. Siehe <a href=\"/cura-prodotto\">Pflegehinweise</a> für detaillierte Anweisungen."
+      },
+      {
+        "q": "Kann ich eine Bestellung ändern oder stornieren?",
+        "a": "Sie können eine Bestellung innerhalb von 2 Stunden nach Bestätigung ändern oder stornieren. Danach geht die Bestellung in Produktion. Kontaktieren Sie <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a> so bald wie möglich."
+      },
+      {
+        "q": "Bieten Sie Geschenkverpackung an?",
+        "a": "Ja, jede Bestellung enthält eine elegante Maison-Geschenkverpackung ohne Aufpreis. Sie können an der Kasse eine personalisierte Karte hinzufügen."
+      },
+      {
+        "q": "Haben Sie ein Treueprogramm?",
+        "a": "Wir arbeiten an einem exklusiven Programm für unsere treuesten Kunden. Abonnieren Sie den Newsletter, um zuerst informiert zu werden."
+      },
+      {
+        "q": "Seit wann ist Como die Hauptstadt der Seide?",
+        "a": "Como ist seit dem 15. Jahrhundert das wichtigste Seidendistrikt Europas. Bereits 1400 existierten Comasker Spinnereien; heute produziert die Region über 70% der italienischen Seide und beheimatet die prestigeträchtigsten Luxusmaisons der Welt."
+      },
+      {
+        "q": "Wer ist der Gründer von SILKinCOM?",
+        "a": "SILKinCOM wurde von Marco Dibenedetto gegründet, mit Sitz in Cermenate (Como). Die Maison entstand, um das Comasker Textilerbe direkt zum Endverbraucher zu bringen, ohne Zwischenhändler."
+      },
+      {
+        "q": "Was bedeutet \"Made in Como\"?",
+        "a": "Made in Como bedeutet, dass jeder Schritt — vom Spinnen zum Weben zum Druck zur Veredelung — physisch im Comasker Bezirk stattfindet. Es ist kein bloßes Etikett: Es ist eine vollständig lokale Lieferkette."
+      },
+      {
+        "q": "Arbeiten Sie mit unabhängigen Handwerkern?",
+        "a": "Ja. Wir kollaborieren mit unabhängigen Webern, Druckern und Veredlern aus dem Comasker Distrikt, von denen viele das Handwerk über Generationen weitergeben. Jedes Stück trägt die Signatur der Werkstatt, die es geschaffen hat."
+      },
+      {
+        "q": "Haben Sie einen Showroom oder besuchbares Atelier?",
+        "a": "Unser Atelier befindet sich in Cermenate (Como). Besuche nach Terminvereinbarung, kontaktieren Sie uns per E-Mail für einen persönlichen Termin mit unserer Customer-Experience-Managerin."
+      },
+      {
+        "q": "Woher kommt Ihr Kaschmir?",
+        "a": "Unser Kaschmir stammt aus den kältesten Regionen Zentralasiens (Innere Mongolei), wo die Faser am feinsten ist (14-16 Mikron) aufgrund des rauen Klimas. Wir wählen nur das Halsvlies, von Hand gesammelt."
+      },
+      {
+        "q": "Ist Ihre Seide wirklich italienisch?",
+        "a": "Ja. Die Seide wird im Comasker Distrikt gesponnen, gewebt und veredelt. Rohe Kokons kommen hauptsächlich aus China (Italien produziert seit der Nachkriegszeit keine Rohseide mehr), aber die gesamte Textilverarbeitung ist italienisch."
+      },
+      {
+        "q": "Was macht Seiden-Twill besonders?",
+        "a": "Twill ist eine Webstruktur, die eine sichtbare Diagonale erzeugt. Comasker Seiden-Twill ist berühmt für sein Gewicht (60-65g/m²), seinen fließenden Griff und seine Farbstabilität — ideal für Luxusschals."
+      },
+      {
+        "q": "Was ist extra-langstapelige Baumwolle?",
+        "a": "Extra-langstapelige Baumwolle (über 35mm) ist die wertvollste Kategorie: Sie produziert feinere, stärkere und glänzendere Garne. Wir beziehen sie aus mediterranen und ägyptischen Anbaugebieten."
+      },
+      {
+        "q": "Sind Ihre Stoffe zertifiziert?",
+        "a": "Wir arbeiten mit OEKO-TEX Standard 100 zertifizierten Lieferanten, was die Abwesenheit schädlicher Substanzen garantiert. Für Comasker Seide folgen wir den Standards des Seri.co-Distrikts."
+      },
+      {
+        "q": "Was sind die Standardmaße eines SILKinCOM-Schals?",
+        "a": "Langer Schal: 180×45 cm. Pashmina: 200×70 cm. Stola: 200×100 cm. Quadratischer Foulard (Carré): 90×90 cm. Twilly: 85×5 cm. Jede Produktseite spezifiziert die genauen Maße."
+      },
+      {
+        "q": "Laufen Schals nach dem Waschen ein?",
+        "a": "Nein, wenn Sie die Waschanleitung befolgen. Kaschmir und Seide können beim ersten Waschen 1-2% Maßhaltigkeit verlieren: Beachten Sie stets kalte Temperaturen und spezifische Waschmittel."
+      },
+      {
+        "q": "Wie wähle ich die richtige Größe als Geschenk?",
+        "a": "Für ein klassisches Geschenk empfehlen wir den langen Schal 180×45 cm: vielseitige Größe, für Männer und Frauen geeignet. Für ein raffinierteres Geschenk ist die 200×70 cm Pashmina eine sichere Wahl."
+      },
+      {
+        "q": "Stellen Sie Maßanfertigungen her?",
+        "a": "Ja. Unser Atelier-Service ermöglicht die Personalisierung von Farben, Größen und Verarbeitungen. Die Fertigungszeit beträgt 4-6 Wochen. Besuchen Sie die Atelier-Seite für Details und Preise."
+      },
+      {
+        "q": "Verkaufen Sie an Hotels, Restaurants oder Unternehmen?",
+        "a": "Ja. Wir haben einen dedizierten Hospitality- und Corporate-Gifting-Kanal mit besonderen Konditionen für Bestellungen über 20 Stück. Kontaktieren Sie uns per E-Mail für die B2B-Preisliste."
+      }
+    ]
+  },
+  "atelier": {
+    "eyebrow": "Maßgefertigtes Atelier",
+    "titleP1": "Ein Unikat,",
+    "titleAccent": "für Sie entworfen.",
+    "subtitle": "Maßgefertigte Schals, Foulards und Pashminas. Wählen Sie Faser, Farbe, Größe, Stickerei und Initialen. Vollständig handgefertigt in Como, in 4–6 Wochen.",
+    "howItWorks": "So funktioniert es",
+    "step1Title": "Erstberatung",
+    "step1Body": "Erzählen Sie uns Ihre Idee: Anlass, Palette, Größe, Stil. Wir treffen uns im Atelier oder per Videokonferenz.",
+    "step2Title": "Materialauswahl",
+    "step2Body": "Gemeinsam wählen wir die Faser (Seide, Kaschmir, Wolle, Leinen, Baumwolle) und die Farben aus unserer Como-Palette aus.",
+    "step3Title": "Prototyp und Freigabe",
+    "step3Body": "Wir fertigen einen Prototyp zur Freigabe. Jedes Detail — Saum, Stickerei, Initialen — wird von Hand veredelt.",
+    "step4Title": "Lieferung",
+    "step4Body": "Das fertige Stück wird in einer Maison-Box mit personalisierter Karte geliefert. Weltweit kostenloser Versand.",
+    "bookAppointment": "Beratungstermin buchen",
+    "orAiUpload": "Oder laden Sie ein Inspirationsbild hoch",
+    "formName": "Vollständiger Name",
+    "formEmail": "E-Mail",
+    "formPhone": "Telefon",
+    "formMessage": "Erzählen Sie uns von Ihrem Projekt",
+    "submit": "Anfrage senden"
+  },
+  "cura": {
+    "title": "Pflegehinweise",
+    "subtitle": "Für Accessoires, die Bestand haben",
+    "seta": "Seide",
+    "setaItems": [
+      "Chemische Reinigung empfohlen",
+      "Alternativ Handwäsche in kaltem Wasser mit einem neutralen Seidenwaschmittel",
+      "Nicht auswringen. Liegend trocknen, fern von Hitzequellen und direkter Sonne",
+      "Bei niedriger Temperatur auf links bügeln, idealerweise mit einem Dampfgerät"
+    ],
+    "cashmere": "Kaschmir",
+    "cashmereItems": [
+      "Handwäsche in lauwarmem Wasser (max. 30°C) mit speziellem Kaschmir-Waschmittel",
+      "Nicht wringen. Sanft drücken, um überschüssiges Wasser zu entfernen",
+      "Liegend auf einem Handtuch trocknen",
+      "Gefaltet (nie hängend) an einem trockenen Ort mit natürlichen Mottensäckchen aufbewahren"
+    ],
+    "lana": "Wolle",
+    "lanaItems": [
+      "Handwäsche in kaltem Wasser mit mildem Waschmittel",
+      "Liegend trocknen, fern von Hitzequellen",
+      "Mit Dampf bei mittlerer Temperatur bügeln"
+    ],
+    "general": "Allgemeine Tipps",
+    "generalBody": "Bewahren Sie Ihre SILKinCOM-Accessoires an einem kühlen, trockenen Ort fern von direktem Licht auf. Bei gefalteten Schals und Foulards regelmäßig die Falten wechseln, um dauerhafte Spuren zu vermeiden.",
+    "lino": "Leinen",
+    "linoItems": [
+      "Maschinenwäsche 30°C Schonprogramm mit neutralem Waschmittel",
+      "Alternativ: Handwäsche in kaltem Wasser",
+      "Liegend trocknen oder im Schatten aufhängen, nicht auswringen",
+      "Heiß auf feuchtem Stoff bügeln, um den fließenden Griff hervorzuheben"
+    ],
+    "cotone": "Baumwolle",
+    "cotoneItems": [
+      "Maschinenwäsche 30-40°C mit neutralem Waschmittel für Naturfasern",
+      "Keine Bleichmittel oder aggressiven Weichspüler verwenden",
+      "Liegend trocknen oder aufhängen; hohen Trocknerheizmodus vermeiden",
+      "Mittelhoch bügeln, bei Drucken auf links"
+    ]
+  },
+  "materialiPage": {
+    "eyebrow": "Unsere Materialien",
+    "titleP1": "Wir wählen nur",
+    "titleAccent": "Naturfasern von Exzellenz",
+    "description": "Jedes SILKinCOM-Accessoire entsteht aus mit größter Sorgfalt ausgewählten Rohstoffen. Seide, Kaschmir, Wolle, Leinen und Baumwolle: fünf Geschichten absoluter Qualität, vom Comer See in die Welt.",
+    "bestIn": "Das Beste in {material}",
+    "discoverProduct": "Produkt entdecken",
+    "exploreCta": "Kollektionen entdecken",
+    "ctaTitle": "Textiltradition",
+    "ctaTitleAccent": "in jedem Faden.",
+    "exploreCollections": "Alle Kollektionen ansehen",
+    "materials": {
+      "seta": {
+        "name": "Seide",
+        "subtitle": "aus Como",
+        "sections": {
+          "origine": {
+            "label": "Ursprung",
+            "title": "Como-Tradition",
+            "body": "Die Como-Seide hat ihre Wurzeln im 15. Jahrhundert, als die ersten Spinnereien die Stadt zu einem weltweiten Bezugspunkt machten. Heute übersetzt sich dieses Erbe in eine Lieferkette, die handwerkliche Meisterschaft und zeitgenössische Innovation vereint."
+          },
+          "caratteristiche": {
+            "label": "Eigenschaften",
+            "title": "Natürlich leuchtend",
+            "body": "Feinste, natürliche Fasern, die das Licht auf einzigartige Weise reflektieren. Seide ist im Sommer kühl und im Winter warm, mit einer unverwechselbaren Weichheit."
+          },
+          "beneficio": {
+            "label": "Vorteil",
+            "title": "Eleganz, die liebkost",
+            "body": "Hypoallergen und atmungsaktiv, ist Seide sanft zur Haut und vermittelt bei jeder Gelegenheit ein Gefühl von Luxus und Komfort. Ein Material, das mit natürlicher Raffinesse jedes Detail veredelt."
+          }
+        }
+      },
+      "cashmere": {
+        "name": "Kaschmir",
+        "subtitle": "Edel",
+        "sections": {
+          "origine": {
+            "label": "Ursprung",
+            "title": "Auswahl der edelsten Fasern",
+            "body": "Kaschmir entsteht aus dem feinsten Vlies der Ziegen, die in den kältesten Regionen der Welt gehalten werden. Nur die feinsten Fasern, die während des Frühlingshaarwechsels von Hand gesammelt werden, werden ausgewählt, um eine Qualität zu garantieren, die in einer jahrtausendealten Tradition verwurzelt ist."
+          },
+          "caratteristiche": {
+            "label": "Eigenschaften",
+            "title": "Feinheit und Weichheit",
+            "body": "Mit feinsten Fasern von 14–16 Mikron gehört Kaschmir zu den seltensten und kostbarsten Garnen der Welt. Warm, aber leicht, umhüllend, aber atmungsaktiv, bietet es ein einzigartiges Tastempfinden."
+          },
+          "beneficio": {
+            "label": "Vorteil",
+            "title": "Wärme ohne Gewicht",
+            "body": "Kaschmir zu tragen bedeutet, einen umhüllenden, natürlichen und dauerhaften Komfort zu erleben. Ein Material, das schützt, wärmt und in jeder Jahreszeit mit Eleganz begleitet."
+          }
+        }
+      },
+      "merino": {
+        "name": "Wolle",
+        "subtitle": "Merino",
+        "sections": {
+          "origine": {
+            "label": "Ursprung",
+            "title": "Vielseitig und widerstandsfähig",
+            "body": "Wolle begleitet den Menschen seit Jahrtausenden. Aus Schafen, die in den reinsten Regionen gehalten werden, entsteht eine Naturfaser, die Widerstandsfähigkeit und Komfort vereint und ihre Authentizität intakt bewahrt."
+          },
+          "caratteristiche": {
+            "label": "Eigenschaften",
+            "title": "Natürlich atmungsaktiv",
+            "body": "Wolle ist warm, elastisch und natürlich atmungsaktiv. Ihre Struktur erlaubt die Regulation der Körpertemperatur und bietet in jeder Jahreszeit Schutz."
+          },
+          "beneficio": {
+            "label": "Vorteil",
+            "title": "Natürlicher Komfort",
+            "body": "Ein Stoff, der umhüllt und schützt, zeitbeständig und angenehm zu tragen. Wolle steht für die perfekte Balance zwischen Funktionalität und Eleganz."
+          }
+        }
+      },
+      "linoCotone": {
+        "name": "Leinen & Baumwolle",
+        "subtitle": "des Sommers",
+        "sections": {
+          "linoOrigine": {
+            "label": "Leinen — Ursprung",
+            "title": "Faser des mediterranen Sommers",
+            "body": "Leinen entsteht aus der Pflanze Linum usitatissimum, die seit über 8000 Jahren auf den fruchtbarsten Böden Europas angebaut wird. Eine antike Faser, Symbol von Reinheit und Eleganz, von der mediterranen Kultur zum Stoff schlechthin der warmen Monate erkoren."
+          },
+          "cotoneOrigine": {
+            "label": "Baumwolle — Ursprung",
+            "title": "Extra-lange Auswahl",
+            "body": "Unsere Baumwolle stammt aus den besten Plantagen mit extralanger Faser, wo jedes Filament über 35mm misst. Eine seltene Qualität, von Hand gepflückt und ausgewählt, um Kompaktheit, Glanz und Widerstandsfähigkeit zu garantieren, die Standard-Baumwolle übertreffen."
+          },
+          "caratteristiche": {
+            "label": "Eigenschaften",
+            "title": "Frische und Weichheit",
+            "body": "Die hohlen Fasern des Leinens absorbieren bis zu 20% ihres Gewichts an Feuchtigkeit — ein natürlicher Thermoregulator, der sich kühl anfühlt. Extralange Baumwolle begleitet mit einem seidenähnlichen Griff, Glanz und außergewöhnlicher Farbwiedergabe."
+          },
+          "beneficio": {
+            "label": "Vorteil",
+            "title": "Lässige Eleganz des Sommers",
+            "body": "Beide antibakteriell, hypoallergen und biologisch abbaubar. Leinen wird mit jeder Wäsche weicher, seine Falten erzählen von Authentizität. Baumwolle altert mit Anmut, immer vertrauter auf der Haut. Die perfekte Garderobe für den italienischen Sommer."
+          }
+        }
+      }
+    }
+  },
+  "legalPages": {
+    "legalNotice": "<strong>Hinweis:</strong> Die maßgebliche Fassung dieses Dokuments ist die italienische Version. Diese Übersetzung wird ausschließlich zu Informationszwecken bereitgestellt.",
+    "privacy": {
+      "title": "Datenschutzerklärung",
+      "subtitle": "Zuletzt aktualisiert: Mai 2026",
+      "intro": "Diese Information wird gemäß der Verordnung (EU) 2016/679 („DSGVO\") und dem italienischen Gesetzesdekret 196/2003 in der durch das Gesetzesdekret 101/2018 geänderten Fassung erstellt. Sie beschreibt die Modalitäten der Erhebung, Nutzung, Aufbewahrung und Sicherheit der personenbezogenen Daten der Nutzer, die www.silkincom.com (die „Website\") besuchen oder dort einkaufen.",
+      "sections": [
+        {
+          "h": "1. Verantwortlicher",
+          "body": "Der Verantwortliche ist:<br>Marco Dibenedetto, Inhaber des Einzelunternehmens SILKinCOM<br>Sitz: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italien<br>Steuernummer: DBNMRC80E04C933Q<br>USt-ID: 03786790133<br>REA: CO – 333010<br>E-Mail: <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>"
+        },
+        {
+          "h": "2. Kategorien verarbeiteter Daten",
+          "body": "<ul><li>Identifikations- und Kontaktdaten (Vorname, Nachname, E-Mail, Telefon, Adresse)</li><li>Versand- und Rechnungsdaten zur Auftragsabwicklung</li><li>Zahlungsdaten (von externen Anbietern verwaltet)</li><li>Surfdaten (IP-Adresse, Browsertyp, Zugriffszeiten, besuchte Seiten)</li><li>Über Cookies, Google Analytics, Meta Pixel und Marketing-Tools erhobene Daten</li><li>Über Kontaktformulare oder Newsletter-Anmeldung freiwillig bereitgestellte Daten</li></ul>"
+        },
+        {
+          "h": "3. Verarbeitungszwecke und Rechtsgrundlagen",
+          "body": "<ul><li>Auftragsabwicklung, Versand und Zahlungen — Vertragserfüllung</li><li>Bearbeitung von Anfragen über Kontaktformulare — Vorvertragliche Maßnahmen</li><li>Versand von Newslettern und Werbemitteilungen — Ausdrückliche Einwilligung</li><li>Statistische Analysen und Verbesserung der Website — Berechtigtes Interesse</li><li>Remarketing und personalisierte Werbung — Ausdrückliche Einwilligung</li></ul>"
+        },
+        {
+          "h": "4. Verarbeitungsmodalitäten",
+          "body": "Die Datenverarbeitung erfolgt mit IT-, Telematik- und Papierwerkzeugen unter Beachtung der Grundsätze der Rechtmäßigkeit, Fairness und Transparenz. Geeignete technische und organisatorische Maßnahmen werden getroffen, um die Sicherheit und Vertraulichkeit der personenbezogenen Daten zu gewährleisten."
+        },
+        {
+          "h": "5. Empfänger der Daten",
+          "body": "Die Daten können an Mitarbeiter des Verantwortlichen (Steuerberater, Marketingagentur, Spediteure) und an externe Dienstleister wie Stripe (Zahlungen), Vercel (Hosting), Resend (transaktionale E-Mails), Google Ireland Ltd. (Analytics) und Meta Platforms Ireland Ltd. (Facebook/Instagram-Pixel) übermittelt werden."
+        },
+        {
+          "h": "6. Internationale Datenübermittlung",
+          "body": "Die Website verkauft und versendet weltweit. Einige Daten können in Nicht-EU-Länder übertragen werden (z. B. USA, Vereinigtes Königreich, Schweiz) über Anbieter, die sich an die von der Europäischen Kommission genehmigten Standardvertragsklauseln halten."
+        },
+        {
+          "h": "7. Aufbewahrungsdauer",
+          "body": "Kauf- und Rechnungsdaten: für die zur Erfüllung der gesetzlichen und steuerlichen Verpflichtungen erforderliche Dauer (10 Jahre). Marketingdaten: bis zum Widerruf der Einwilligung. Surfdaten: maximal 26 Monate."
+        },
+        {
+          "h": "8. Rechte der betroffenen Person",
+          "body": "Der Nutzer hat das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Übertragbarkeit und Widerspruch. Zur Ausübung dieser Rechte schreiben Sie an <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>."
+        }
+      ]
+    },
+    "termini": {
+      "title": "Allgemeine Geschäftsbedingungen",
+      "subtitle": "Zuletzt aktualisiert: Mai 2026",
+      "sections": [
+        {
+          "h": "1. Verkäufer",
+          "body": "Die Website www.silkincom.com wird betrieben von Marco Dibenedetto, Inhaber des Einzelunternehmens SILKinCOM, USt-ID 03786790133, Sitz Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italien."
+        },
+        {
+          "h": "2. Produkte",
+          "body": "Die über die Website verkauften Produkte sind Accessoires aus Seide, Kaschmir, Wolle, Leinen und Baumwolle, entworfen und hergestellt im Como-Seidenviertel. Die Bilder dienen der Veranschaulichung: kleine Farb- oder Erscheinungsabweichungen sind bei handgefertigten Produkten normal."
+        },
+        {
+          "h": "3. Preise",
+          "body": "Alle Preise sind in Euro (EUR) ausgedrückt, MwSt. inklusive für Versand innerhalb der EU. Für Versand außerhalb der EU gehen eventuelle Zollgebühren und Einfuhrsteuern zulasten des Kunden."
+        },
+        {
+          "h": "4. Bestellungen",
+          "body": "Die Bestellung stellt ein Kaufangebot dar. Der Vertrag wird mit der per E-Mail versandten Annahmebestätigung perfektioniert. SILKinCOM behält sich das Recht vor, Bestellungen bei Nichtverfügbarkeit des Produkts, falschen Zahlungsdaten oder Betrugsverdacht abzulehnen."
+        },
+        {
+          "h": "5. Zahlung",
+          "body": "Akzeptiert werden Kreditkarten (Visa, Mastercard, American Express), Apple Pay, Google Pay, PayPal und Banküberweisung. Zahlungen werden von PCI-DSS-zertifizierten Anbietern abgewickelt. SILKinCOM speichert keine Kreditkartendaten."
+        },
+        {
+          "h": "6. Versand",
+          "body": "Versandzeiten und -kosten sind auf der Seite <a href=\"/spedizioni\">Versand</a> aufgeführt. SILKinCOM ist nicht verantwortlich für Verzögerungen, die dem Kurier zuzuschreiben sind."
+        },
+        {
+          "h": "7. Widerrufsrecht",
+          "body": "Der Verbraucher hat das Recht, innerhalb von 14 Tagen nach Erhalt der Bestellung vom Vertrag zurückzutreten. Modalitäten und Bedingungen sind auf der Seite <a href=\"/resi\">Rückgabe und Erstattung</a> aufgeführt."
+        },
+        {
+          "h": "8. Gesetzliche Garantie",
+          "body": "Alle Produkte sind durch die im italienischen Verbraucherkodex (Gesetzesdekret 206/2005) vorgesehene 24-monatige gesetzliche Konformitätsgarantie abgedeckt."
+        },
+        {
+          "h": "9. Gerichtsstand",
+          "body": "Für Verbraucher ist das zuständige Gericht jenes des Wohn- oder Aufenthaltsorts. Für andere Streitigkeiten ist ausschließlich Como zuständig."
+        },
+        {
+          "h": "10. Anwendbares Recht",
+          "body": "Dieser Vertrag unterliegt italienischem Recht und den auf den elektronischen Handel anwendbaren EU-Vorschriften."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookie-Richtlinie",
+      "subtitle": "Zuletzt aktualisiert: Mai 2026",
+      "intro": "Die Website www.silkincom.com verwendet technische, analytische und Profiling-Cookies, um den ordnungsgemäßen Betrieb zu gewährleisten, den Verkehr zu analysieren und das Nutzererlebnis zu personalisieren.",
+      "sections": [
+        {
+          "h": "1. Was Cookies sind",
+          "body": "Cookies sind kleine Textdateien, die der Browser während des Surfens speichert. Sie ermöglichen es der Website, den Nutzer wiederzuerkennen und das Surferlebnis zu verbessern."
+        },
+        {
+          "h": "2. Verwendete Cookie-Typen",
+          "body": "<ul><li><strong>Technische Cookies (notwendig):</strong> unverzichtbar für den Betrieb der Website (Sitzung, Authentifizierung, Warenkorb). Sie erfordern keine Einwilligung.</li><li><strong>Analytische Cookies:</strong> Google Analytics, zur aggregierten und anonymen Verkehrsmessung.</li><li><strong>Profiling- und Marketing-Cookies:</strong> Meta Pixel, Google Ads. Erfordern ausdrückliche Einwilligung.</li></ul>"
+        },
+        {
+          "h": "3. Einwilligungsverwaltung",
+          "body": "Beim ersten Zugriff wird ein Einwilligungsbanner angezeigt, mit dem nicht wesentliche Cookies akzeptiert oder abgelehnt werden können. Die Einstellungen können jederzeit durch Löschen der Cookies im Browser geändert werden."
+        },
+        {
+          "h": "4. Deaktivierung der Cookies",
+          "body": "Der Nutzer kann Cookies in seinem Browser deaktivieren. Die Deaktivierung technischer Cookies kann den ordnungsgemäßen Betrieb der Website beeinträchtigen."
+        },
+        {
+          "h": "5. Kontakte",
+          "body": "Für Anfragen zur Datenverarbeitung: <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>"
+        }
+      ]
+    }
+  },
+  "notFound": {
+    "tag": "404",
+    "title": "Seite nicht gefunden",
+    "subtitle": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    "browseCollections": "Kollektionen entdecken",
+    "home": "Startseite"
+  },
+  "errorPage": {
+    "tag": "Fehler",
+    "title": "Etwas ist schiefgelaufen",
+    "subtitle": "Ein unerwarteter Fehler ist aufgetreten. Bitte erneut versuchen oder zur Startseite zurückkehren.",
+    "retry": "Erneut versuchen",
+    "home": "Zur Startseite"
+  }
+}

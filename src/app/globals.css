@@ -1,0 +1,284 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'pnum' 1;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-warm-white text-soft-black font-body;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
+    letter-spacing: 0.005em;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Prevent iOS zoom on input focus (font-size must be >= 16px) */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  @media (min-width: 640px) {
+    input, select, textarea {
+      font-size: inherit;
+    }
+  }
+
+  /* Mobile-first eyebrow tracking — reduces letter-spacing on small screens
+     so 9-11px uppercase labels stay readable. Apply via class on eyebrow spans. */
+  .eyebrow-tight {
+    letter-spacing: 0.25em;
+  }
+  @media (min-width: 640px) {
+    .eyebrow-tight { letter-spacing: 0.4em; }
+  }
+  @media (min-width: 768px) {
+    .eyebrow-tight { letter-spacing: 0.5em; }
+  }
+
+  h1, h2, h3 {
+    @apply font-display font-light;
+    font-feature-settings: 'dlig' 1, 'kern' 1, 'liga' 1, 'calt' 1, 'swsh' 1;
+    letter-spacing: -0.01em;
+  }
+
+  h1 { @apply text-display-lg md:text-display-xl; }
+  h2 { @apply text-display-md md:text-display-lg; }
+  h3 { @apply text-display-sm md:text-display-md; }
+
+  em, .italic {
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'swsh' 1;
+  }
+
+  /* Selection — luxury gold */
+  ::selection {
+    @apply bg-gold-primary text-soft-black;
+  }
+
+  ::-moz-selection {
+    @apply bg-gold-primary text-soft-black;
+  }
+
+  /* Refined scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-ivory;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-pearl-grey border-2 border-ivory;
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gold-primary;
+  }
+
+  /* Better focus states for keyboard nav */
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold-primary ring-offset-2 ring-offset-warm-white;
+  }
+
+  /* Disable focus ring on mouse */
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
+  }
+
+  /* Image rendering quality */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Premium gold hairline divider */
+  .gold-divider {
+    @apply h-px w-12 bg-gold-primary;
+  }
+
+  .gold-divider-center {
+    @apply h-px w-12 bg-gold-primary mx-auto;
+  }
+
+  /* Premium luxury spacing */
+  .luxury-letterspacing {
+    letter-spacing: 0.4em;
+  }
+
+  /* Subtle gold border glow */
+  .gold-border {
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
+    transition: box-shadow 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+  }
+
+  .gold-border:hover {
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.6);
+  }
+
+  /* Editorial caption — small, tracked, gold */
+  .eyebrow {
+    @apply text-[10px] uppercase tracking-[0.5em] text-gold-primary font-medium;
+  }
+
+  .eyebrow-soft {
+    @apply text-[10px] uppercase tracking-[0.4em] text-soft-grey font-light;
+  }
+
+  /* Magazine-grade body */
+  .body-luxe {
+    font-size: 15px;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+    @apply font-light text-soft-black/80;
+  }
+
+  /* Animation: fade up on load */
+  @keyframes luxury-fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-luxury-in {
+    animation: luxury-fade-in 1.2s cubic-bezier(0.21, 0.47, 0.32, 0.98) forwards;
+  }
+
+  /* Quick fade in — tab panel transitions */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Subtle ken burns infinite */
+  @keyframes ken-burns {
+    0%   { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.1) translate(-2%, -1%); }
+  }
+
+  .animate-ken-burns {
+    animation: ken-burns 12s ease-out infinite alternate;
+  }
+
+  /* Shimmer for loading */
+  @keyframes shimmer {
+    0%   { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(247, 242, 234, 0.6) 0%,
+      rgba(212, 175, 55, 0.15) 50%,
+      rgba(247, 242, 234, 0.6) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Premium underline reveal */
+  .underline-reveal {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 0.6s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+  }
+
+  .underline-reveal:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Glass morph for floating elements */
+  .glass-warm {
+    background: rgba(255, 253, 248, 0.7);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  .glass-dark {
+    background: rgba(23, 23, 23, 0.55);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  /* Premium shadow tiers */
+  .shadow-soft {
+    box-shadow: 0 1px 3px rgba(23,23,23,0.04), 0 8px 24px -8px rgba(23,23,23,0.06);
+  }
+
+  .shadow-luxe {
+    box-shadow:
+      0 2px 6px rgba(23,23,23,0.04),
+      0 12px 36px -12px rgba(23,23,23,0.10),
+      0 24px 80px -32px rgba(212,175,55,0.10);
+  }
+}
+
+@layer components {
+  /* Legal & FAQ pages — typographic rhythm */
+  .legal-content h2 {
+    @apply font-display font-light text-2xl md:text-3xl text-soft-black mt-14 mb-5 leading-[1.15];
+    letter-spacing: -0.005em;
+  }
+  .legal-content h2:first-child {
+    @apply mt-0;
+  }
+  .legal-content h3 {
+    @apply font-display font-light text-xl md:text-2xl text-soft-black mt-10 mb-4;
+  }
+  .legal-content p {
+    @apply text-[15px] md:text-base font-light leading-[1.8] text-soft-black/80 mb-5;
+  }
+  .legal-content ul, .legal-content ol {
+    @apply pl-6 mb-5 space-y-2 text-[15px] font-light leading-[1.7] text-soft-black/80;
+  }
+  .legal-content ul { @apply list-disc; }
+  .legal-content ol { @apply list-decimal; }
+  .legal-content a {
+    @apply text-gold-dark underline decoration-gold-primary/40 underline-offset-4 hover:decoration-gold-primary transition-colors;
+  }
+  .legal-content strong {
+    @apply font-medium text-soft-black;
+  }
+  .legal-content hr {
+    @apply my-12 border-pearl-grey;
+  }
+
+  .btn-primary {
+    @apply px-8 py-3 bg-soft-black text-warm-white text-sm uppercase tracking-wider hover:bg-gold-primary hover:text-soft-black transition-all duration-500;
+  }
+
+  .btn-secondary {
+    @apply px-8 py-3 border border-soft-black text-soft-black text-sm uppercase tracking-wider hover:bg-soft-black hover:text-warm-white transition-all duration-500;
+  }
+
+  .btn-tertiary {
+    @apply text-gold-primary hover:text-gold-dark text-sm transition-colors duration-500;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-pearl-grey bg-warm-white focus:outline-none focus:border-gold-primary transition-colors duration-500;
+  }
+
+  .container-page {
+    @apply max-w-7xl mx-auto px-6;
+  }
+}

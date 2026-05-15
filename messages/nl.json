@@ -1,0 +1,1099 @@
+{
+  "common": {
+    "brand": "SILKinCOM",
+    "tagline": "Maison voor zijde en kasjmier — Made in Como",
+    "loading": "Laden…",
+    "error": "Er is een fout opgetreden",
+    "retry": "Opnieuw proberen",
+    "save": "Opslaan",
+    "saving": "Bezig met opslaan…",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "back": "Terug",
+    "continue": "Doorgaan",
+    "edit": "Bewerken",
+    "delete": "Verwijderen",
+    "remove": "Verwijderen",
+    "add": "Toevoegen",
+    "search": "Zoeken",
+    "menu": "Menu",
+    "free": "Gratis",
+    "from": "vanaf",
+    "to": "tot",
+    "all": "Alles",
+    "none": "Geen",
+    "yes": "Ja",
+    "no": "Nee",
+    "or": "of",
+    "language": "Taal",
+    "currency": "Valuta"
+  },
+  "nav": {
+    "home": "Home",
+    "collections": "Collecties",
+    "products": "Producten",
+    "story": "Ons verhaal",
+    "materials": "Materialen",
+    "atelier": "Atelier",
+    "contacts": "Contact",
+    "account": "Account",
+    "wishlist": "Verlanglijst",
+    "cart": "Winkelmand",
+    "search": "Zoeken",
+    "login": "Inloggen",
+    "register": "Registreren",
+    "logout": "Uitloggen",
+    "admin": "Beheer"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Sluit u aan bij de Maison",
+      "description": "Voorvertoningen van collecties, gelimiteerde edities en verhalen van het Comomeer.",
+      "placeholder": "Uw e-mailadres",
+      "submit": "Aanmelden",
+      "success": "Aanmelding bevestigd. Welkom.",
+      "error": "Aanmelding mislukt. Probeer het opnieuw."
+    },
+    "sections": {
+      "boutique": "Boutique",
+      "maison": "Maison",
+      "support": "Klantenservice",
+      "legal": "Juridisch"
+    },
+    "links": {
+      "shipping": "Verzending",
+      "returns": "Retouren",
+      "care": "Onderhoud",
+      "faq": "Veelgestelde vragen",
+      "contacts": "Contact",
+      "privacy": "Privacy",
+      "cookies": "Cookies",
+      "terms": "Voorwaarden",
+      "dataProcessing": "Gegevensverwerking"
+    },
+    "rights": "Alle rechten voorbehouden.",
+    "madeIn": "100% Made in Como"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Maison SILKinCOM — Collectie 2026",
+      "titleMain": "De elegantie van het meer,",
+      "titleAccent": "geweven in Como.",
+      "subtitle": "Sjaals, foulards, twillies en pashminas in pure zijde en kasjmier. Zes eeuwen Como-textieltraditie, in handen die nog steeds elke zoom met de hand afwerken.",
+      "cta": "Ontdek de collectie",
+      "ctaSecondary": "Ons verhaal",
+      "scrollLabel": "Scrollen",
+      "slideAria": "Ga naar slide {n}"
+    },
+    "featured": {
+      "eyebrow": "De Collecties",
+      "titlePlain": "Drie seizoenen,",
+      "titleAccent": "één elegantie.",
+      "viewAll": "Alle collecties",
+      "explore": "Ontdekken",
+      "collectionLabel": "Collectie",
+      "items": {
+        "inverno": {
+          "name": "Wintercollectie",
+          "tagline": "Kasjmieren pashminas, warmte zonder gewicht",
+          "accent": "Seizoen",
+          "shortName": "Winter"
+        },
+        "iconica": {
+          "name": "Iconische Collectie",
+          "tagline": "Zijden twillies en foulards — Como-erfgoed",
+          "accent": "Heritage",
+          "shortName": "Iconisch"
+        },
+        "primavera": {
+          "name": "Lente 2026",
+          "tagline": "Europees linnen en extra-lang katoen voor de zomer",
+          "accent": "Nieuw",
+          "shortName": "Lente 2026"
+        }
+      }
+    },
+    "values": {
+      "heritage": {
+        "title": "Como-erfgoed",
+        "description": "Een textieltraditie die sinds 1800 ruwe zijde transformeert tot tijdloze stukken."
+      },
+      "craft": {
+        "title": "Ambachtelijk werk",
+        "description": "Elk stuk gaat door de handen van gespecialiseerde ambachtslieden."
+      },
+      "natural": {
+        "title": "Natuurlijke vezels",
+        "description": "Kasjmier, zijde en wol van eerste kwaliteit, stuk voor stuk geselecteerd."
+      },
+      "limited": {
+        "title": "Gelimiteerde edities",
+        "description": "Kleine, verfijnde producties — nooit industrieel."
+      }
+    },
+    "perks": {
+      "madeInComo": {
+        "title": "100% Made in Como",
+        "desc": "Spinnen, verven en afwerken in het zijdedistrict."
+      },
+      "shipping": {
+        "title": "Express verzending",
+        "desc": "Gratis in Italië vanaf €200 — EU 4–7 dagen."
+      },
+      "giftBox": {
+        "title": "Cadeauverpakking",
+        "desc": "Maison-geschenkdoos inbegrepen, gepersonaliseerd kaartje."
+      },
+      "returns": {
+        "title": "Gratis retourneren",
+        "desc": "14 dagen bedenktijd, ophalen aan huis."
+      }
+    },
+    "bestsellers": {
+      "eyebrow": "Meest geliefd",
+      "titlePlain": "Iconische",
+      "titleAccent": "stukken",
+      "viewAll": "Alles bekijken"
+    },
+    "materials": {
+      "eyebrow": "Onze Materialen",
+      "titlePlain": "We selecteren uitsluitend",
+      "titleAccent": "natuurlijke vezels van uitmuntendheid.",
+      "description": "We selecteren onze garens in de beste districten van Italië en Europa. Elk materiaal heeft zijn oorsprong, zijn gebaar, zijn verhaal.",
+      "discover": "Alle materialen",
+      "discoverShort": "Ontdekken",
+      "tabs": {
+        "origine": "Oorsprong",
+        "caratteristiche": "Textuur",
+        "beneficio": "Voordeel"
+      },
+      "cards": {
+        "seta": {
+          "name": "Zijde",
+          "tabs": {
+            "origine": {
+              "title": "Como-traditie",
+              "body": "De Como-zijde heeft haar wortels in de 15e eeuw, toen de eerste spinnerijen de stad tot een wereldwijd referentiepunt maakten."
+            },
+            "caratteristiche": {
+              "title": "Kostbaar en lichtend",
+              "body": "Zeer fijne, natuurlijke vezels die het licht op unieke wijze weerkaatsen. Zijde is koel in de zomer en warm in de winter."
+            },
+            "beneficio": {
+              "title": "Elegantie die streelt",
+              "body": "Hypoallergeen en ademend, is zijde delicaat op de huid en geeft een gevoel van luxe en comfort."
+            }
+          }
+        },
+        "cashmere": {
+          "name": "Kasjmier",
+          "tabs": {
+            "origine": {
+              "title": "Uit de edelste streken",
+              "body": "Kasjmier ontstaat uit het zachte vacht van geiten die in de koudste regio's van Centraal-Azië leven."
+            },
+            "caratteristiche": {
+              "title": "Fijnheid en zachtheid",
+              "body": "Met zeer fijne vezels van 14–16 micron behoort kasjmier tot de zeldzaamste en kostbaarste garens ter wereld."
+            },
+            "beneficio": {
+              "title": "Warmte zonder gewicht",
+              "body": "Kasjmier dragen betekent een omhullend, natuurlijk en duurzaam comfort ervaren."
+            }
+          }
+        },
+        "lana": {
+          "name": "Wol",
+          "tabs": {
+            "origine": {
+              "title": "Veelzijdig en duurzaam",
+              "body": "Wol begeleidt de mens al millennia. Uit schapen die in de zuiverste regio's worden gehouden, ontstaat een natuurlijke vezel."
+            },
+            "caratteristiche": {
+              "title": "Warm en ademend",
+              "body": "Wol is warm, elastisch en natuurlijk ademend. Regelt de lichaamstemperatuur."
+            },
+            "beneficio": {
+              "title": "Natuurlijk comfort",
+              "body": "Een stof die omhult en beschermt, tijdbestendig en aangenaam om te dragen."
+            }
+          }
+        },
+        "cotone": {
+          "name": "Katoen",
+          "tabs": {
+            "origine": {
+              "title": "Extra-lange vezel",
+              "body": "SILKinCOM selecteert katoen met extra-lange vezel, geteeld in de meest geschikte regio's van de Middellandse Zee en Egypte."
+            },
+            "caratteristiche": {
+              "title": "Fris en duurzaam",
+              "body": "Extra-lang katoen biedt een compacte en zijdeachtige stof, met een natuurlijke glans."
+            },
+            "beneficio": {
+              "title": "Zomerse lichtheid",
+              "body": "Delicaat op de huid, hypoallergeen en gemakkelijk te dragen — perfect voor lente-foulards."
+            }
+          }
+        },
+        "lino": {
+          "name": "Linnen",
+          "tabs": {
+            "origine": {
+              "title": "Europese traditie",
+              "body": "Europees linnen, geteeld in Frankrijk en België, behoort tot de oudste en edelste natuurlijke vezels."
+            },
+            "caratteristiche": {
+              "title": "Natuurlijk en kostbaar",
+              "body": "Linnen is tot vier keer duurzamer dan katoen, ademend en natuurlijk fris."
+            },
+            "beneficio": {
+              "title": "Zomerse elegantie",
+              "body": "Linnen wordt zachter bij elke wasbeurt en krijgt een doorleefde patina."
+            }
+          }
+        }
+      }
+    },
+    "editorial": {
+      "eyebrow": "Privé-atelier — Op afspraak",
+      "titlePlain": "Een uniek stuk,",
+      "titleAccent": "voor u ontworpen.",
+      "description": "Maatwerk sjaals, foulards en pashminas. Kies vezel, kleur, maat, borduurwerk en initialen. Volledig ambachtelijk vervaardigd in Como, in 4–6 weken.",
+      "cta": "Maak een afspraak"
+    },
+    "instagram": {
+      "eyebrow": "@silkincom.official",
+      "title": "De Maison op Instagram",
+      "subtitle": "Atelier, details, lifestyle van het Comomeer.",
+      "follow": "Volgen"
+    },
+    "brandStory": {
+      "eyebrow": "De Maison",
+      "titlePlain": "Sinds 1400, aan het Comomeer,",
+      "titleAccent": "een kunst die wordt doorgegeven.",
+      "paragraph1": "SILKinCOM ontstaat in het hart van het oudste zijdedistrict van Europa. Zes eeuwen textielkennis leven in de handen van onze meesters — van de historische ververijen van Cernobbio tot de spinnerijen van Bellagio blijft elke stap toevertrouwd aan wie zijde als moedertaal kent.",
+      "paragraph2": "We selecteren uitsluitend edele vezels: Como-zijde, extra fijne kasjmier, merinowol, Europees linnen, katoen met extra lange vezel. We vervaardigen elk stuk één voor één, met handafgewerkte zomen, langs de oevers van het meer dat onze esthetiek altijd heeft geïnspireerd: ingetogen, tijdloos, diep Italiaans.",
+      "quote": "Elke draad draagt een herinnering.",
+      "quoteAuthor": "— Meester-wever, Como",
+      "imageMainAlt": "SILKinCOM textielambacht, Como",
+      "imageTileAlt": "Como-textielindustrie",
+      "cta": "Ontdek ons verhaal"
+    },
+    "newsletter": {
+      "eyebrow": "Brief van de Maison",
+      "titlePlain": "Voorvertoningen, genummerde edities,",
+      "titleAccent": "verhalen van het Comomeer.",
+      "description": "Eén e-mail per maand. Voorvertoningen van nieuwe collecties, prioritaire toegang tot gelimiteerde edities, verhalen uit het hart van het zijdedistrict. Geen opdringerige promoties.",
+      "success": "Bedankt. We schrijven u snel.",
+      "placeholder": "Uw e-mailadres",
+      "submit": "Aanmelden",
+      "submitting": "Laden…",
+      "privacyDisclaimer": "Door u aan te melden accepteert u ons <link>Privacybeleid</link>. Op elk moment opzegbaar."
+    }
+  },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Ontdek de stukken van het seizoen, met de hand vervaardigd in Como.",
+    "filters": {
+      "title": "Filters",
+      "category": "Categorie",
+      "material": "Materiaal",
+      "color": "Kleur",
+      "price": "Prijs",
+      "sort": "Sorteren",
+      "clear": "Filters wissen",
+      "apply": "Toepassen",
+      "collection": "Collectie",
+      "all": "Alle",
+      "showResults": "{count} producten bekijken",
+      "recommended": "Aanbevolen"
+    },
+    "sort": {
+      "newest": "Nieuw",
+      "priceAsc": "Prijs oplopend",
+      "priceDesc": "Prijs aflopend",
+      "popular": "Populair"
+    },
+    "results": {
+      "count": "{count, plural, =0 {Geen stukken} =1 {1 stuk} other {# stukken}}",
+      "empty": "Geen stukken voldoen aan de geselecteerde filters.",
+      "productSingular": "product",
+      "productPlural": "producten",
+      "sortLabel": "Sorteren:",
+      "noResults": "Geen producten komen overeen met de geselecteerde filters.",
+      "clearFilters": "Filters wissen",
+      "clearTag": "Wissen"
+    }
+  },
+  "product": {
+    "addToCart": "In winkelmand",
+    "addedToCart": "Toegevoegd aan winkelmand",
+    "outOfStock": "Uitverkocht",
+    "lowStock": "Laatste stukken beschikbaar",
+    "wishlist": {
+      "add": "Toevoegen aan verlanglijst",
+      "remove": "Verwijderen uit verlanglijst"
+    },
+    "tabs": {
+      "description": "Beschrijving",
+      "composition": "Samenstelling en onderhoud",
+      "shipping": "Verzending en retouren",
+      "care": "Onderhoud"
+    },
+    "details": {
+      "composition": "Samenstelling",
+      "dimensions": "Afmetingen",
+      "sku": "Artikelcode",
+      "origin": "Herkomst",
+      "originValue": "Made in Como, Italië"
+    },
+    "perks": {
+      "madeInComo": "Made in Como, Italië",
+      "artisan": "100% Italiaans ambacht",
+      "shipping": "Gratis verzending vanaf € 200",
+      "returns": "14 dagen retourneren"
+    },
+    "related": {
+      "eyebrow": "Verder kijken",
+      "title": "Stukken uit dezelfde familie",
+      "viewAll": "Bekijk de hele collectie"
+    },
+    "taxIncluded": "Inclusief btw — Verzendkosten worden bij afrekenen berekend",
+    "shippingDetails": {
+      "standard": "Standaard verzending 3–5 werkdagen. Gratis voor bestellingen boven €200.",
+      "returns": "Gratis retourneren binnen 14 dagen na ontvangst.",
+      "allDetails": "Alle details"
+    },
+    "wishlistAdd": "Toevoegen aan favorieten",
+    "wishlistRemove": "Verwijderen uit favorieten"
+  },
+  "cart": {
+    "title": "Uw winkelmand",
+    "empty": "Uw winkelmand is leeg.",
+    "emptyAction": "Boutique verkennen",
+    "item": "artikel",
+    "items": "artikelen",
+    "quantity": "Aantal",
+    "subtotal": "Subtotaal",
+    "shipping": "Verzending",
+    "shippingFree": "Gratis verzending",
+    "shippingThreshold": "Gratis verzending vanaf {amount}",
+    "total": "Totaal",
+    "checkout": "Naar afrekenen",
+    "continueShopping": "Verder winkelen",
+    "remove": "Verwijderen",
+    "summary": "Overzicht"
+  },
+  "checkout": {
+    "title": "Afrekenen",
+    "steps": {
+      "info": "Verzendgegevens",
+      "payment": "Betaling",
+      "review": "Bevestiging"
+    },
+    "fields": {
+      "name": "Naam",
+      "email": "E-mail",
+      "fullName": "Naam ontvanger",
+      "address": "Adres",
+      "city": "Plaats",
+      "postalCode": "Postcode",
+      "country": "Land",
+      "phone": "Telefoon"
+    },
+    "actions": {
+      "continueToPayment": "Verder naar betaling",
+      "confirmPayment": "Betaling bevestigen",
+      "processing": "Bezig…",
+      "backToCart": "Terug naar winkelmand"
+    },
+    "security": {
+      "stripe": "Veilige betaling via Stripe",
+      "ssl": "SSL-versleuteld"
+    },
+    "success": {
+      "title": "Bestelling bevestigd",
+      "subtitle": "Bedankt voor uw aankoop.",
+      "description": "U ontvangt een bevestigingsmail met de verzendgegevens.",
+      "orderNumber": "Bestelnummer",
+      "viewOrders": "Mijn bestellingen",
+      "continueShopping": "Verder winkelen"
+    },
+    "errors": {
+      "emptyCart": "De winkelmand is leeg",
+      "missingData": "Vul alle verplichte velden in",
+      "paymentFailed": "Betaling mislukt. Probeer het opnieuw.",
+      "networkError": "Netwerkfout. Probeer het opnieuw."
+    },
+    "countries": {
+      "IT": "Italië",
+      "CH": "Zwitserland",
+      "DE": "Duitsland",
+      "FR": "Frankrijk",
+      "GB": "Verenigd Koninkrijk",
+      "US": "Verenigde Staten"
+    }
+  },
+  "account": {
+    "title": "Mijn account",
+    "greeting": "Hallo, {name}",
+    "greetingDefault": "Uw account",
+    "dashboard": {
+      "orders": "Bestellingen",
+      "ordersDescription": "{count, plural, =0 {Geen bestellingen} =1 {1 bestelling} other {# bestellingen}}",
+      "addresses": "Adressen",
+      "addressesDescription": "Verzending en facturatie",
+      "wishlist": "Verlanglijst",
+      "wishlistDescription": "Favoriete edities",
+      "profile": "Profiel",
+      "profileDescription": "Persoonsgegevens"
+    },
+    "orders": {
+      "title": "Uw bestellingen",
+      "empty": "Nog geen bestellingen.",
+      "emptySuggestion": "Verken de Maison-collecties: pashminas, twillies, accessoires 100% Made in Como.",
+      "orderNumber": "Bestelling",
+      "viewDetails": "Details",
+      "status": {
+        "pending": "In afwachting",
+        "paid": "Betaald",
+        "processing": "In behandeling",
+        "shipped": "Verzonden",
+        "delivered": "Bezorgd",
+        "cancelled": "Geannuleerd",
+        "refunded": "Terugbetaald",
+        "failed": "Mislukt"
+      }
+    },
+    "profile": {
+      "title": "Profiel",
+      "fullName": "Volledige naam",
+      "phone": "Telefoon",
+      "email": "E-mail",
+      "saved": "Profiel bijgewerkt."
+    },
+    "wishlistPage": {
+      "title": "Verlanglijst",
+      "empty": "Uw verlanglijst is leeg.",
+      "emptySuggestion": "Voeg uw favoriete stukken uit de boutique toe. Ze zullen hier op u wachten.",
+      "browseAction": "Boutique verkennen",
+      "unavailable": "Product niet meer beschikbaar"
+    },
+    "addressesPage": {
+      "title": "Adressen",
+      "empty": "Geen adres opgeslagen",
+      "emptyDesc": "Voeg een adres toe om uw volgende bestellingen te versnellen.",
+      "shipping": "Verzending",
+      "billing": "Facturatie",
+      "defaultLabel": "Standaard",
+      "deleteAria": "Adres verwijderen",
+      "fullName": "Naam ontvanger",
+      "street": "Adres",
+      "postalCode": "Postcode",
+      "city": "Plaats",
+      "country": "Land",
+      "phone": "Telefoon",
+      "type": "Type",
+      "setDefault": "Als standaard instellen",
+      "addAddress": "Adres toevoegen"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "subtitle": "Welkom terug. Log in om bestellingen, adressen en voorkeuren te beheren.",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "forgot": "Vergeten?",
+      "submit": "Inloggen",
+      "submitting": "Bezig met inloggen…",
+      "noAccount": "Nog geen account?",
+      "createAccount": "Account aanmaken",
+      "invalidCredentials": "Ongeldige inloggegevens.",
+      "missingFields": "Voer e-mailadres en wachtwoord in."
+    },
+    "register": {
+      "title": "Account aanmaken",
+      "subtitle": "Voorvertoningen, gelimiteerde edities, sneller afrekenen.",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "email": "E-mail",
+      "password": "Wachtwoord (min. 8 tekens)",
+      "acceptTerms": "Ik ga akkoord met de <termsLink>Voorwaarden</termsLink> en het <privacyLink>Privacybeleid</privacyLink>.",
+      "termsLabel": "Voorwaarden",
+      "privacyLabel": "Privacybeleid",
+      "submit": "Account aanmaken",
+      "submitting": "Account wordt aangemaakt…",
+      "haveAccount": "Heeft u al een account?",
+      "signIn": "Inloggen",
+      "passwordTooShort": "Wachtwoord te kort (minimaal 8 tekens).",
+      "termsRequired": "Aanvaard voorwaarden en privacy om verder te gaan.",
+      "missingFields": "Vul alle verplichte velden in.",
+      "emailSent": "Account aangemaakt. Controleer uw e-mail om te bevestigen."
+    },
+    "forgotPassword": {
+      "tag": "Accountherstel",
+      "title": "Wachtwoord vergeten?",
+      "subtitle": "Voer uw e-mail in. We sturen u instructies om het te resetten.",
+      "emailLabel": "E-mail",
+      "submit": "Instructies verzenden",
+      "submitting": "Wordt verzonden…",
+      "successMessage": "Als dit e-mailadres geregistreerd is, ontvangt u binnenkort een reset-link.",
+      "backToLogin": "Terug naar inloggen",
+      "errorDefault": "Verzenden mislukt. Probeer het opnieuw."
+    },
+    "resetPassword": {
+      "tag": "Beveiliging",
+      "title": "Nieuw wachtwoord",
+      "subtitle": "Voer uw nieuwe wachtwoord in om toegang te krijgen tot uw account.",
+      "newPassword": "Nieuw wachtwoord",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "submit": "Wachtwoord bijwerken",
+      "submitting": "Wordt bijgewerkt…",
+      "successMessage": "Wachtwoord bijgewerkt. U wordt doorgestuurd naar uw account.",
+      "goToAccount": "Naar uw account",
+      "invalidLink": "Reset-link ongeldig of verlopen.",
+      "requestNewLink": "Nieuwe link aanvragen",
+      "errorMinLength": "Het wachtwoord moet minimaal 8 tekens bevatten.",
+      "errorMismatch": "De wachtwoorden komen niet overeen.",
+      "errorDefault": "Fout bij het resetten."
+    }
+  },
+  "legal": {
+    "privacy": "Privacybeleid",
+    "terms": "Servicevoorwaarden",
+    "cookies": "Cookiebeleid",
+    "lastUpdated": "Laatst bijgewerkt"
+  },
+  "languageSwitcher": {
+    "label": "Taal",
+    "selectLanguage": "Taal kiezen"
+  },
+  "announcement": {
+    "messages": [
+      "Gratis verzending in Italië vanaf €200",
+      "Maison-cadeauverpakking bij elke bestelling",
+      "100% Made in Como — Zijdetraditie sinds 1400",
+      "Gratis retourneren binnen 14 dagen — Ophalen aan huis"
+    ]
+  },
+  "cookies": {
+    "description": "We gebruiken technische cookies en, met uw toestemming, profileringscookies om uw ervaring en onze communicatie te verbeteren. U kunt deze accepteren of de niet-essentiële weigeren.",
+    "accept": "Alles accepteren",
+    "reject": "Weigeren"
+  },
+  "collezioni": {
+    "eyebrow": "De Collecties",
+    "titlePlain": "Alle",
+    "titleAccent": "collecties",
+    "description": "De essentie van uw stijl, gesigneerd in Como. Sjaals, foulards en accessoires in zijde, kasjmier, wol, linnen en katoen.",
+    "collectionLabel": "Collectie",
+    "explore": "Ontdekken",
+    "browseBy": "Bladeren op",
+    "byMaterial": "Materiaal",
+    "byCategory": "Categorie",
+    "allLabel": "Alle",
+    "allTitle": "Accessoires"
+  },
+  "contatti": {
+    "eyebrow": "Klantenservice",
+    "title": "Neem contact op",
+    "description": "We staan tot uw beschikking voor vragen over producten, bestellingen, verzending of personalisatie.",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "orderNumber": "Bestelnummer",
+    "message": "Bericht",
+    "submit": "Bericht versturen",
+    "submitting": "Bezig met verzenden…",
+    "success": "Bericht succesvol verzonden! We nemen spoedig contact op.",
+    "error": "Onbekende fout",
+    "emailLabel": "E-mail",
+    "addressLabel": "Adres",
+    "socialLabel": "Social"
+  },
+  "storia": {
+    "eyebrow": "De Maison",
+    "titleP1": "Vanuit het hart van Como,",
+    "titleP2": "een erfgoed dat",
+    "titleAccent": "stijl wordt.",
+    "quote": "SILKinCOM ontstaat uit passie en ervaring in de Como-textielwereld. Een eeuwenoude traditie, opnieuw geïnterpreteerd met hedendaags design en kostbare materialen.",
+    "chapterI": "Hoofdstuk I",
+    "storyTitlePlain": "Ons",
+    "storyTitleAccent": "verhaal",
+    "storyP1": "SILKinCOM ontstaat in het hart van het zijdedistrict van Como, waar textieltraditie innovatie ontmoet. Na jaren ervaring in ververijen, drukkerijen, weverijen en onderzoekslaboratoria transformeert het merk technische kennis tot een creatieve visie.",
+    "storyP2": "Het doel is om Como-excellentie nieuw leven in te blazen via accessoires in zijde, kasjmier en wol van absolute kwaliteit. Elk stuk draagt de identiteit van een gebied en de zorg van wie het diepgaand kent.",
+    "chapterII": "Hoofdstuk II",
+    "essenceTitlePlain": "Onze",
+    "essenceTitleAccent": "essentie",
+    "essenceP1": "SILKinCOM bestaat om het textielerfgoed van Como te transformeren tot hedendaagse zijden en kasjmieren accessoires. Elke creatie verenigt ambachtelijk meesterschap met modern design, met als doel een authentieke, elegante en tijdloze luxe naar de wereld te brengen.",
+    "essenceP2": "100% Made in Como — van grondstof tot eindafwerking vindt elke fase plaats binnen het zijdedistrict, met behoud van de kennis van een traditie die eeuwen omvat.",
+    "stat1": "Unieke ontwerpen",
+    "stat2": "Made in Como",
+    "stat3": "Jaren ervaring",
+    "chapterIII": "Hoofdstuk III",
+    "liveTitlePlain": "Beleef SILKinCOM",
+    "liveTitleAccent": "elke dag",
+    "liveDescription": "Ons verhaal gaat ook buiten deze pagina door. Volg SILKinCOM op sociale media en laat u inspireren door collecties, details en impressies uit het hart van Como.",
+    "followInstagram": "Volg ons op Instagram",
+    "exploreCollections": "Ontdek de collecties"
+  },
+  "spedizioniPage": {
+    "title": "Verzending",
+    "subtitle": "We versturen wereldwijd",
+    "section1": "Italië",
+    "section1Items": [
+      "Standaardverzending met track & trace: 2–4 werkdagen — €9",
+      "Gratis verzending bij bestellingen boven €200"
+    ],
+    "section2": "Europese Unie",
+    "section2Items": [
+      "Standaardverzending met track & trace: 4–7 werkdagen — €18",
+      "Gratis verzending bij bestellingen boven €350"
+    ],
+    "section3": "Verenigd Koninkrijk, Zwitserland, Noorwegen",
+    "section3Items": [
+      "DDP-verzending (rechten inbegrepen): 5–8 werkdagen — €25"
+    ],
+    "section4": "Rest van de wereld",
+    "section4Items": [
+      "Express verzending met track & trace: 7–12 werkdagen — vanaf €35",
+      "Douanerechten zijn voor rekening van de ontvanger, tenzij anders aangegeven"
+    ],
+    "section5": "Track & trace",
+    "section5Body": "Zodra uw bestelling is verzonden, ontvangt u een e-mail met het tracking-nummer om de zending in real time te volgen. Alle bestellingen zijn verzekerd tijdens het transport.",
+    "section6": "Verwerkingstijd",
+    "section6Body": "Bestellingen ontvangen vóór 14:00 (CET) op werkdagen worden dezelfde dag verwerkt. Bestellingen ontvangen in het weekend of op feestdagen worden de volgende werkdag verwerkt."
+  },
+  "resi": {
+    "title": "Retouren en Terugbetalingen",
+    "subtitle": "Laatst bijgewerkt: oktober 2025",
+    "s1": "1. Retourtermijn",
+    "s1Body": "Klanten over de hele wereld kunnen gekochte artikelen binnen 14 dagen na ontvangst van de bestelling retourneren. Sommige rechtsgebieden (bijv. Verenigd Koninkrijk, VS, Canada, Australië) voorzien langere termijnen; in dergelijke gevallen past SILKinCOM de gunstigste termijn toe die door de lokale wetgeving wordt voorzien.",
+    "s2": "2. Hoe een retour aanvragen",
+    "s2Body": "Om een retour aan te vragen, vult u het contactformulier in de sectie Contact van de Site in, met vermelding van het bestelnummer, de aankoopgegevens en het te retourneren product. Binnen 24–48 uur ontvangt u retourinstructies.",
+    "s3": "3. Voorwaarden voor acceptatie van het retour",
+    "s3Body": "Om geaccepteerd te worden, moet het product:",
+    "s3Items": [
+      "Niet gedragen, gewassen of beschadigd zijn",
+      "In de originele verpakking met intacte labels worden geretourneerd",
+      "In voor wederverkoop geschikte staat verkeren"
+    ],
+    "s3Note": "SILKinCOM behoudt zich het recht voor retouren te weigeren die niet aan deze voorwaarden voldoen of gebruikssporen vertonen.",
+    "s4": "4. Uitgesloten producten",
+    "s4Body": "De volgende producten kunnen niet worden geretourneerd:",
+    "s4Items": [
+      "Gepersonaliseerde of op maat gemaakte producten",
+      "Artikelen in de uitverkoop of in promotie, indien aangegeven op de productpagina",
+      "Geopende of gebruikte artikelen die om hygiënische redenen niet kunnen worden doorverkocht"
+    ],
+    "s5": "5. Retourverzendkosten",
+    "s5Body1": "De retourverzendkosten zijn voor rekening van de klant, behalve in geval van een verkeerd of defect product. De oorspronkelijke verzendkosten worden niet terugbetaald. Wij raden aan een verzending met track & trace en verzekering te gebruiken.",
+    "s5AddressLabel": "Retouradres:",
+    "s6": "6. Terugbetalingen",
+    "s6Body": "Na ontvangst en controle van het retour zal SILKinCOM de terugbetaling binnen 14 werkdagen uitvoeren, met dezelfde oorspronkelijke betaalmethode. De terugbetaling betreft uitsluitend de productprijs, met uitsluiting van eventuele invoerrechten, douaneheffingen of verzendkosten, die voor rekening van de klant blijven.",
+    "s7": "7. Defecte of verkeerde producten",
+    "s7Body": "In geval van ontvangst van een defect, beschadigd of verkeerd product, neem onmiddellijk contact op met de klantenservice via het contactformulier of per e-mail naar"
+  },
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "faqs": [
+      {
+        "q": "Welke betaalmethoden accepteert u?",
+        "a": "We accepteren alle belangrijke creditcards (Visa, Mastercard, American Express), Apple Pay, Google Pay en PayPal. Alle betalingen zijn SSL-versleuteld en worden via Stripe verwerkt."
+      },
+      {
+        "q": "Zijn btw en rechten in de prijzen inbegrepen?",
+        "a": "De getoonde prijzen zijn altijd inclusief Italiaanse btw (22%). Voor bestellingen buiten de EU zijn eventuele douanerechten en invoerbelastingen voor rekening van de ontvanger, behalve voor DDP-zendingen (VK, Zwitserland, Noorwegen) waar de rechten inbegrepen zijn."
+      },
+      {
+        "q": "Hoe lang duurt de verzending?",
+        "a": "Italië: 2–4 werkdagen. EU: 4–7 dagen. Rest van de wereld: 7–12 dagen. Alle bestellingen worden gevolgd en zijn verzekerd. Zie <a href=\"/spedizioni\">Verzending</a> voor volledige details."
+      },
+      {
+        "q": "Kan ik een artikel retourneren?",
+        "a": "Ja, u heeft 14 dagen vanaf ontvangst om elk ongebruikt artikel te retourneren. Retouren zijn gratis voor bestellingen binnen Italië. Zie <a href=\"/resi\">Retouren</a> voor de procedure."
+      },
+      {
+        "q": "Hoe vind ik de juiste maat?",
+        "a": "Elke productpagina bevat exacte afmetingen (bijv. 180×45 cm). Voor pashminas en sjaals variëren standaardmaten van 180×35 cm tot 200×70 cm. Voor overhemden en t-shirts, neem contact op als u hulp nodig heeft."
+      },
+      {
+        "q": "Zijn de producten echt Made in Italy?",
+        "a": "Ja, elk stuk wordt volledig in Como geproduceerd — van spinnen tot eindafwerking. We werken met de beste spinnerijen, ververijen en ateliers van het oudste zijdedistrict van Europa."
+      },
+      {
+        "q": "Hoe was ik een kasjmieren sjaal?",
+        "a": "Met de hand wassen in koud water met neutraal kasjmierwasmiddel, nooit wrijven. Plat drogen, weg van warmtebronnen. Zie <a href=\"/cura-prodotto\">Onderhoud</a> voor gedetailleerde instructies."
+      },
+      {
+        "q": "Kan ik een bestelling wijzigen of annuleren?",
+        "a": "U kunt een bestelling binnen 2 uur na bevestiging wijzigen of annuleren. Daarna gaat de bestelling in productie. Neem zo snel mogelijk contact op met <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>."
+      },
+      {
+        "q": "Bieden jullie cadeauverpakking aan?",
+        "a": "Ja, elke bestelling bevat een elegante Maison-cadeauverpakking zonder extra kosten. U kunt bij het afrekenen een gepersonaliseerd kaartje toevoegen."
+      },
+      {
+        "q": "Hebben jullie een loyaliteitsprogramma?",
+        "a": "We werken aan een exclusief programma voor onze trouwste klanten. Schrijf u in voor de nieuwsbrief om als eerste geïnformeerd te worden."
+      },
+      {
+        "q": "Hoe lang is Como al de hoofdstad van zijde?",
+        "a": "Como is sinds de 15e eeuw het belangrijkste zijdedistrict van Europa. Al in 1400 bestonden Comasker spinnerijen; vandaag produceert het gebied meer dan 70% van de Italiaanse zijde en herbergt het de meest prestigieuze luxe maisons ter wereld."
+      },
+      {
+        "q": "Wie is de oprichter van SILKinCOM?",
+        "a": "SILKinCOM is opgericht door Marco Dibenedetto, met operationele zetel in Cermenate (Como). De maison ontstond om Como's textielerfgoed rechtstreeks naar de eindklant te brengen, zonder tussenpersonen."
+      },
+      {
+        "q": "Wat betekent \"Made in Como\"?",
+        "a": "Made in Como betekent dat elke stap — van spinnen tot weven tot bedrukken tot afwerking — fysiek plaatsvindt in het Comasker district. Het is geen simpel etiket: het is een volledig lokale toeleveringsketen."
+      },
+      {
+        "q": "Werken jullie met onafhankelijke ambachtslieden?",
+        "a": "Ja. We werken samen met onafhankelijke wevers, drukkers en afwerkers uit het Comasker district, van wie velen het vak generaties lang doorgeven. Elk stuk draagt de signatuur van het atelier dat het heeft gemaakt."
+      },
+      {
+        "q": "Hebben jullie een showroom of bezoekbaar atelier?",
+        "a": "Ons atelier bevindt zich in Cermenate (Como). Bezoeken zijn op afspraak, neem contact met ons op via email voor een gepersonaliseerde afspraak met onze customer experience manager."
+      },
+      {
+        "q": "Waar komt jullie cashmere vandaan?",
+        "a": "Onze cashmere komt uit de koudste regio's van Centraal-Azië (Binnen-Mongolië), waar de vezel het fijnst is (14-16 micron) door het barre klimaat. We selecteren alleen de halsvacht, met de hand verzameld."
+      },
+      {
+        "q": "Is jullie zijde echt Italiaans?",
+        "a": "Ja. De zijde wordt gesponnen, geweven en afgewerkt in het Comasker district. De ruwe cocon komt voornamelijk uit China (Italië produceert sinds de naoorlogse tijd geen ruwe zijde meer), maar alle textielverwerking is Italiaans."
+      },
+      {
+        "q": "Wat maakt zijden twill speciaal?",
+        "a": "Twill is een weefstructuur die een zichtbare diagonaal creëert. Comasker zijden twill staat bekend om zijn gewicht (60-65g/m²), vloeiende greep en kleurstabiliteit — ideaal voor luxe foulards."
+      },
+      {
+        "q": "Wat is extra-lange staple katoen?",
+        "a": "Extra-lange staple katoen (meer dan 35mm) is de meest gewaardeerde categorie: het produceert fijnere, sterkere en glanzendere garens. We selecteren het van mediterrane en Egyptische telers."
+      },
+      {
+        "q": "Zijn jullie stoffen gecertificeerd?",
+        "a": "We werken met OEKO-TEX Standard 100 gecertificeerde leveranciers, wat de afwezigheid van schadelijke stoffen garandeert. Voor Comasker zijde volgen we de Seri.co-districtsstandaarden."
+      },
+      {
+        "q": "Wat zijn de standaardmaten van een SILKinCOM-sjaal?",
+        "a": "Lange sjaal: 180×45 cm. Pashmina: 200×70 cm. Stola: 200×100 cm. Vierkante foulard (carré): 90×90 cm. Twilly: 85×5 cm. Elke productpagina specificeert de exacte afmetingen."
+      },
+      {
+        "q": "Krimpen sjaals na het wassen?",
+        "a": "Nee, als je de wasinstructies volgt. Cashmere en zijde kunnen bij de eerste wasbeurt 1-2% maatvastheid verliezen: respecteer altijd koude temperaturen en specifieke wasmiddelen."
+      },
+      {
+        "q": "Hoe kies ik de juiste maat als cadeau?",
+        "a": "Voor een klassiek cadeau raden we de lange sjaal 180×45 cm aan: veelzijdige maat, geschikt voor mannen en vrouwen. Voor een verfijnder cadeau is de 200×70 cm pashmina een veilige keuze."
+      },
+      {
+        "q": "Maken jullie maatwerk producten?",
+        "a": "Ja. Onze Atelier-service maakt het mogelijk kleuren, afmetingen en afwerkingen te personaliseren. De productietijd bedraagt 4-6 weken. Bezoek de Atelier-pagina voor details en prijzen."
+      },
+      {
+        "q": "Verkopen jullie aan hotels, restaurants of bedrijven?",
+        "a": "Ja. We hebben een dedicated hospitality en corporate gifting kanaal met speciale voorwaarden voor bestellingen boven 20 stuks. Neem contact met ons op via email voor de B2B-prijslijst."
+      }
+    ]
+  },
+  "atelier": {
+    "eyebrow": "Atelier op maat",
+    "titleP1": "Een uniek stuk,",
+    "titleAccent": "voor u ontworpen.",
+    "subtitle": "Sjaals, foulards en pashminas op maat. Kies vezel, kleur, afmeting, borduurwerk en initialen. Volledig ambachtelijk vervaardigd in Como, in 4–6 weken.",
+    "howItWorks": "Hoe het werkt",
+    "step1Title": "Initiële consultatie",
+    "step1Body": "Vertel ons uw idee: gelegenheid, palet, afmeting, stijl. We kunnen elkaar in het atelier of via videogesprek ontmoeten.",
+    "step2Title": "Materiaalselectie",
+    "step2Body": "Samen selecteren we de vezel (zijde, kasjmier, wol, linnen, katoen) en de kleuren uit ons Como-palet.",
+    "step3Title": "Prototype en goedkeuring",
+    "step3Body": "We maken een prototype ter goedkeuring. Elk detail — zoom, borduurwerk, initialen — wordt met de hand afgewerkt.",
+    "step4Title": "Levering",
+    "step4Body": "Het voltooide stuk wordt geleverd in een Maison-doos met gepersonaliseerd kaartje. Wereldwijde gratis verzending.",
+    "bookAppointment": "Een consultatie boeken",
+    "orAiUpload": "Of upload een inspiratiebeeld",
+    "formName": "Volledige naam",
+    "formEmail": "E-mail",
+    "formPhone": "Telefoon",
+    "formMessage": "Vertel ons over uw project",
+    "submit": "Verzoek versturen"
+  },
+  "cura": {
+    "title": "Onderhoud",
+    "subtitle": "Voor accessoires die lang meegaan",
+    "seta": "Zijde",
+    "setaItems": [
+      "Stomerij aanbevolen",
+      "Als alternatief, met de hand wassen in koud water met een neutraal wasmiddel voor zijde",
+      "Niet uitwringen. Plat drogen weg van warmtebronnen en direct licht",
+      "Strijken op lage temperatuur op de achterzijde, bij voorkeur met een stomer"
+    ],
+    "cashmere": "Kasjmier",
+    "cashmereItems": [
+      "Met de hand wassen in lauwwarm water (max. 30°C) met een kasjmier-specifiek wasmiddel",
+      "Niet uitdraaien. Voorzichtig drukken om overtollig water te verwijderen",
+      "Plat drogen op een handdoek",
+      "Gevouwen (nooit hangend) bewaren op een droge plaats, met natuurlijke mottenzakjes"
+    ],
+    "lana": "Wol",
+    "lanaItems": [
+      "Met de hand wassen in koud water met een mild wasmiddel",
+      "Plat drogen weg van warmtebronnen",
+      "Stomen op middelhoge temperatuur"
+    ],
+    "general": "Algemene tips",
+    "generalBody": "Bewaar uw SILKinCOM-accessoires op een koele, droge plaats, weg van direct licht. Wissel bij gevouwen sjaals en foulards regelmatig de vouwen om permanente lijnen te voorkomen.",
+    "lino": "Linnen",
+    "linoItems": [
+      "Machinewas 30°C fijnwasprogramma met neutraal wasmiddel",
+      "Alternatief: handwas in koud water",
+      "Plat drogen of in de schaduw hangen zonder uitwringen",
+      "Strijk heet op vochtig weefsel voor de vloeiende val"
+    ],
+    "cotone": "Katoen",
+    "cotoneItems": [
+      "Machinewas 30-40°C met neutraal wasmiddel voor natuurlijke vezels",
+      "Geen bleekmiddel of agressieve wasverzachters gebruiken",
+      "Plat drogen of hangen; vermijd droger op hoge hitte",
+      "Strijk middelhoog, bij prints op de achterkant"
+    ]
+  },
+  "materialiPage": {
+    "eyebrow": "Onze Materialen",
+    "titleP1": "Wij selecteren alleen",
+    "titleAccent": "natuurlijke vezels van uitmuntendheid",
+    "description": "Elk SILKinCOM-accessoire ontstaat uit grondstoffen die met uiterste zorg zijn geselecteerd. Zijde, kasjmier, wol, linnen en katoen: vijf verhalen van absolute kwaliteit, van het Comomeer naar de wereld.",
+    "bestIn": "Het beste in {material}",
+    "discoverProduct": "Product ontdekken",
+    "exploreCta": "Collecties ontdekken",
+    "ctaTitle": "Textieltraditie",
+    "ctaTitleAccent": "in elke draad.",
+    "exploreCollections": "Bekijk alle collecties",
+    "materials": {
+      "seta": {
+        "name": "Zijde",
+        "subtitle": "uit Como",
+        "sections": {
+          "origine": {
+            "label": "Oorsprong",
+            "title": "Como-traditie",
+            "body": "De Como-zijde heeft haar wortels in de 15e eeuw, toen de eerste spinnerijen van de stad een wereldwijd referentiepunt maakten. Vandaag vertaalt dit erfgoed zich in een keten die ambachtelijk meesterschap en hedendaagse innovatie verenigt."
+          },
+          "caratteristiche": {
+            "label": "Eigenschappen",
+            "title": "Natuurlijk lichtend",
+            "body": "Zeer fijne, natuurlijke vezels die het licht op unieke wijze weerkaatsen. Zijde is koel in de zomer en warm in de winter, met een onmiskenbare zachtheid."
+          },
+          "beneficio": {
+            "label": "Voordeel",
+            "title": "Elegantie die streelt",
+            "body": "Hypoallergeen en ademend, is zijde delicaat op de huid en geeft een gevoel van luxe en comfort bij elke gelegenheid. Een materiaal dat elk detail verheft, met natuurlijke verfijning."
+          }
+        }
+      },
+      "cashmere": {
+        "name": "Kasjmier",
+        "subtitle": "Kostbaar",
+        "sections": {
+          "origine": {
+            "label": "Oorsprong",
+            "title": "Selectie van de edelste vezels",
+            "body": "Kasjmier ontstaat uit het zeer fijne vacht van geiten die in de koudste regio's ter wereld worden gehouden. Alleen de fijnste vezels, met de hand verzameld tijdens de voorjaarsrui, worden geselecteerd om een kwaliteit te garanderen die geworteld is in een millennia-oude traditie."
+          },
+          "caratteristiche": {
+            "label": "Eigenschappen",
+            "title": "Fijnheid en zachtheid",
+            "body": "Met zeer fijne vezels van 14–16 micron behoort kasjmier tot de zeldzaamste en kostbaarste garens ter wereld. Warm maar licht, omhullend maar ademend, biedt het een uniek tastgevoel."
+          },
+          "beneficio": {
+            "label": "Voordeel",
+            "title": "Warmte zonder gewicht",
+            "body": "Kasjmier dragen betekent een omhullend, natuurlijk en duurzaam comfort ervaren. Een materiaal dat beschermt, verwarmt en met elegantie begeleidt in elk seizoen."
+          }
+        }
+      },
+      "merino": {
+        "name": "Wol",
+        "subtitle": "Merino",
+        "sections": {
+          "origine": {
+            "label": "Oorsprong",
+            "title": "Veelzijdig en duurzaam",
+            "body": "Wol begeleidt de mens al millennia. Uit schapen die in de zuiverste regio's worden gehouden, ontstaat een natuurlijke vezel die weerstand en comfort verenigt en haar authenticiteit intact bewaart."
+          },
+          "caratteristiche": {
+            "label": "Eigenschappen",
+            "title": "Natuurlijk ademend",
+            "body": "Wol is warm, elastisch en natuurlijk ademend. De structuur staat regulering van lichaamstemperatuur toe en biedt bescherming in elk seizoen."
+          },
+          "beneficio": {
+            "label": "Voordeel",
+            "title": "Natuurlijk comfort",
+            "body": "Een stof die omhult en beschermt, tijdbestendig en aangenaam om te dragen. Wol vertegenwoordigt de perfecte balans tussen functionaliteit en elegantie."
+          }
+        }
+      },
+      "linoCotone": {
+        "name": "Linnen & Katoen",
+        "subtitle": "van de Zomer",
+        "sections": {
+          "linoOrigine": {
+            "label": "Linnen — Oorsprong",
+            "title": "Vezel van de mediterrane zomer",
+            "body": "Linnen ontstaat uit de Linum usitatissimum-plant, al meer dan 8000 jaar gekweekt op de meest vruchtbare bodems van Europa. Een oude vezel, symbool van zuiverheid en elegantie, door de mediterrane cultuur uitverkoren als textiel bij uitstek voor de warme maanden."
+          },
+          "cotoneOrigine": {
+            "label": "Katoen — Oorsprong",
+            "title": "Extra-lange selectie",
+            "body": "Onze katoen komt uit de beste extra-lange-vezelteelt, waar elke filament meer dan 35mm meet. Een zeldzame kwaliteit, met de hand geplukt en geselecteerd om compactheid, glans en weerstand te garanderen die superieur zijn aan standaard katoen."
+          },
+          "caratteristiche": {
+            "label": "Eigenschappen",
+            "title": "Frisheid en zachtheid",
+            "body": "De holle vezels van linnen absorberen tot 20% van hun gewicht aan vocht — een natuurlijke thermoregulator die koel aanvoelt. Extra-lang katoen begeleidt met een zijdeachtige greep, glans en uitzonderlijke kleurweergave."
+          },
+          "beneficio": {
+            "label": "Voordeel",
+            "title": "Informele zomerelegantie",
+            "body": "Beide antibacterieel, hypoallergeen en biologisch afbreekbaar. Linnen wordt zachter bij elke wasbeurt, zijn vouwen vertellen authenticiteit. Katoen veroudert met gratie, steeds vertrouwder op de huid. De perfecte garderobe voor de Italiaanse zomer."
+          }
+        }
+      }
+    }
+  },
+  "legalPages": {
+    "legalNotice": "<strong>Opmerking:</strong> De bindende versie van dit document is de Italiaanse. Deze vertaling wordt enkel ter informatie verstrekt.",
+    "privacy": {
+      "title": "Privacybeleid",
+      "subtitle": "Laatst bijgewerkt: mei 2026",
+      "intro": "Deze kennisgeving is opgesteld krachtens Verordening (EU) 2016/679 (\"AVG\") en het Italiaanse Wetsdecreet 196/2003 zoals gewijzigd door Wetsdecreet 101/2018. Het beschrijft de wijze van verzameling, gebruik, bewaring en bescherming van de persoonsgegevens van gebruikers die www.silkincom.com (de \"Site\") bezoeken of er aankopen doen.",
+      "sections": [
+        {
+          "h": "1. Verwerkingsverantwoordelijke",
+          "body": "De Verwerkingsverantwoordelijke is:<br>Marco Dibenedetto, eigenaar van het eenmansbedrijf SILKinCOM<br>Zetel: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italië<br>Fiscaal nummer: DBNMRC80E04C933Q<br>BTW: 03786790133<br>REA: CO – 333010<br>E-mail: <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>"
+        },
+        {
+          "h": "2. Categorieën verwerkte gegevens",
+          "body": "<ul><li>Identificatie- en contactgegevens (voornaam, achternaam, e-mail, telefoon, adres)</li><li>Verzend- en factureringsgegevens voor de verwerking van bestellingen</li><li>Betalingsgegevens (beheerd door externe leveranciers)</li><li>Surfgegevens (IP-adres, browsertype, toegangstijden, bezochte pagina's)</li><li>Gegevens verzameld via cookies, Google Analytics, Meta Pixel en marketingtools</li><li>Vrijwillig verstrekte gegevens via contactformulieren of nieuwsbriefinschrijving</li></ul>"
+        },
+        {
+          "h": "3. Doeleinden van de verwerking en rechtsgrondslag",
+          "body": "<ul><li>Verwerking van bestellingen, verzendingen en betalingen — Uitvoering van de overeenkomst</li><li>Beheer van verzoeken via contactformulieren — Precontractuele maatregelen</li><li>Verzending van nieuwsbrief en promotionele communicatie — Uitdrukkelijke toestemming</li><li>Statistische analyses en verbetering van de site — Gerechtvaardigd belang</li><li>Remarketing en gepersonaliseerde reclame — Uitdrukkelijke toestemming</li></ul>"
+        },
+        {
+          "h": "4. Verwerkingsmethoden",
+          "body": "De gegevensverwerking gebeurt met IT-, telematische en papieren middelen, met inachtneming van de beginselen van rechtmatigheid, eerlijkheid en transparantie. Passende technische en organisatorische maatregelen worden genomen om de veiligheid en vertrouwelijkheid van de persoonsgegevens te waarborgen."
+        },
+        {
+          "h": "5. Ontvangers van de gegevens",
+          "body": "De gegevens kunnen worden meegedeeld aan medewerkers van de Verantwoordelijke (boekhouder, marketingbureau, vervoerders) en aan externe dienstverleners zoals Stripe (betalingen), Vercel (hosting), Resend (transactionele e-mails), Google Ireland Ltd. (Analytics) en Meta Platforms Ireland Ltd. (Facebook/Instagram-Pixel)."
+        },
+        {
+          "h": "6. Internationale gegevensoverdracht",
+          "body": "De Site verkoopt en verzendt wereldwijd. Sommige gegevens kunnen worden overgedragen naar niet-EU-landen (bijv. Verenigde Staten, Verenigd Koninkrijk, Zwitserland) via leveranciers die zich houden aan de door de Europese Commissie goedgekeurde modelcontractbepalingen."
+        },
+        {
+          "h": "7. Bewaartermijn",
+          "body": "Aankoop- en factureringsgegevens: voor de tijd nodig om aan de wettelijke en fiscale verplichtingen te voldoen (10 jaar). Marketinggegevens: tot intrekking van de toestemming. Surfgegevens: maximaal 26 maanden."
+        },
+        {
+          "h": "8. Rechten van de betrokkene",
+          "body": "De gebruiker heeft recht op inzage, rectificatie, wissing, beperking, overdraagbaarheid en bezwaar. Om deze rechten uit te oefenen, schrijf naar <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>."
+        }
+      ]
+    },
+    "termini": {
+      "title": "Algemene Voorwaarden",
+      "subtitle": "Laatst bijgewerkt: mei 2026",
+      "sections": [
+        {
+          "h": "1. Verkoper",
+          "body": "De website www.silkincom.com wordt beheerd door Marco Dibenedetto, eigenaar van het eenmansbedrijf SILKinCOM, BTW 03786790133, zetel Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italië."
+        },
+        {
+          "h": "2. Producten",
+          "body": "De producten verkocht via de Site zijn accessoires in zijde, kasjmier, wol, linnen en katoen, ontworpen en vervaardigd in het Como-zijdedistrict. De afbeeldingen zijn ter illustratie: kleine variaties in kleur of uiterlijk zijn normaal voor ambachtelijke producten."
+        },
+        {
+          "h": "3. Prijzen",
+          "body": "Alle prijzen zijn uitgedrukt in Euro (EUR), btw inbegrepen voor verzendingen binnen de EU. Voor verzendingen buiten de EU zijn eventuele douanerechten en invoerbelastingen voor rekening van de klant."
+        },
+        {
+          "h": "4. Bestellingen",
+          "body": "Het versturen van de bestelling vormt een aankoopaanbod. De overeenkomst komt tot stand met de per e-mail verzonden orderbevestiging. SILKinCOM behoudt zich het recht voor bestellingen te weigeren in geval van productonbeschikbaarheid, foutieve betaalgegevens of vermoeden van fraude."
+        },
+        {
+          "h": "5. Betaling",
+          "body": "Aanvaard worden creditcards (Visa, Mastercard, American Express), Apple Pay, Google Pay, PayPal en bankoverschrijving. Betalingen worden afgehandeld door PCI-DSS-gecertificeerde leveranciers. SILKinCOM bewaart geen creditcardgegevens."
+        },
+        {
+          "h": "6. Verzending",
+          "body": "Verzendtijden en -kosten zijn gedetailleerd op de pagina <a href=\"/spedizioni\">Verzending</a>. SILKinCOM is niet verantwoordelijk voor vertragingen die te wijten zijn aan de koerier."
+        },
+        {
+          "h": "7. Herroepingsrecht",
+          "body": "De consument heeft het recht binnen 14 dagen na ontvangst van de bestelling de overeenkomst te herroepen. Modaliteiten en voorwaarden zijn gedetailleerd op de pagina <a href=\"/resi\">Retouren en Terugbetalingen</a>."
+        },
+        {
+          "h": "8. Wettelijke garantie",
+          "body": "Alle producten worden gedekt door de wettelijke conformiteitsgarantie van 24 maanden voorzien door de Italiaanse Consumentenwet (Wetsdecreet 206/2005)."
+        },
+        {
+          "h": "9. Bevoegde rechtbank",
+          "body": "Voor consumenten is de bevoegde rechtbank die van de woon- of verblijfplaats. Voor andere geschillen is de exclusieve rechtbank Como."
+        },
+        {
+          "h": "10. Toepasselijk recht",
+          "body": "Deze overeenkomst wordt beheerst door het Italiaanse recht en de op elektronische handel toepasselijke EU-regels."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookiebeleid",
+      "subtitle": "Laatst bijgewerkt: mei 2026",
+      "intro": "De website www.silkincom.com gebruikt technische, analytische en profileringscookies om de juiste werking te waarborgen, het verkeer te analyseren en de gebruikerservaring te personaliseren.",
+      "sections": [
+        {
+          "h": "1. Wat cookies zijn",
+          "body": "Cookies zijn kleine tekstbestanden die door de browser tijdens het surfen worden opgeslagen. Ze stellen de site in staat de gebruiker te herkennen en de surfervaring te verbeteren."
+        },
+        {
+          "h": "2. Soorten gebruikte cookies",
+          "body": "<ul><li><strong>Technische cookies (noodzakelijk):</strong> onmisbaar voor de werking van de site (sessie, authenticatie, winkelmand). Vereisen geen toestemming.</li><li><strong>Analytische cookies:</strong> Google Analytics, om verkeer geaggregeerd en anoniem te meten.</li><li><strong>Profilerings- en marketingcookies:</strong> Meta Pixel, Google Ads. Vereisen uitdrukkelijke toestemming.</li></ul>"
+        },
+        {
+          "h": "3. Toestemmingsbeheer",
+          "body": "Bij eerste toegang wordt een toestemmingsbanner getoond waarmee niet-essentiële cookies kunnen worden geaccepteerd of geweigerd. De voorkeuren kunnen op elk moment worden gewijzigd door de cookies in de browser te verwijderen."
+        },
+        {
+          "h": "4. Cookies uitschakelen",
+          "body": "De gebruiker kan cookies uitschakelen via zijn browser. Het uitschakelen van technische cookies kan de juiste werking van de site in gevaar brengen."
+        },
+        {
+          "h": "5. Contacten",
+          "body": "Voor verzoeken met betrekking tot gegevensverwerking: <a href=\"mailto:silkincom.business@gmail.com\">silkincom.business@gmail.com</a>"
+        }
+      ]
+    }
+  },
+  "notFound": {
+    "tag": "404",
+    "title": "Pagina niet gevonden",
+    "subtitle": "De pagina die u zoekt bestaat niet of is verplaatst.",
+    "browseCollections": "Collecties bekijken",
+    "home": "Home"
+  },
+  "errorPage": {
+    "tag": "Fout",
+    "title": "Er is iets misgegaan",
+    "subtitle": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of ga terug naar de startpagina.",
+    "retry": "Opnieuw proberen",
+    "home": "Terug naar home"
+  }
+}
