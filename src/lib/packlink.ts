@@ -42,7 +42,8 @@ export type PacklinkService = {
   id: number;
   name: string;
   carrier_name: string;
-  price?: { base_price?: number; total_price?: number; currency?: string };
+  base_price?: string | number;
+  delivery_to_parcelshop?: boolean;
   [k: string]: unknown;
 };
 

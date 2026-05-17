@@ -112,7 +112,10 @@ async function createShipment(
       { status: 422 },
     );
   }
-  const svc = services[0];
+  // Prefer door-to-door delivery to the customer's address. Parcelshop/locker
+  // services need a dropoff-point id we don't have, so they are filtered out.
+  const homeServices = services.filter((s) => !s.delivery_to_parcelshop);
+  const svc = (homeServices.length > 0 ? homeServices : services)[0];
 
   // 2. Build + create the shipment
   const { name, surname } = splitName(addr.full_name || order.customer_email);
@@ -151,7 +154,7 @@ async function createShipment(
   const created = await createPacklinkShipment(shipmentBody);
   const reference = String((created.reference as string) || (created.id as string) || '');
   const carrierName = svc.carrier_name || svc.name;
-  const price = svc.price?.total_price ?? null;
+  const price = svc.base_price != null ? Number(svc.base_price) : null;
 
   // 3. Persist
   await supabase.from('shipments').insert({
