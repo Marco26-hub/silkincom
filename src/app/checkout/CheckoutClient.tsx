@@ -342,6 +342,9 @@ export function CheckoutClient() {
                 stripe={stripePromise}
                 options={{
                   clientSecret: initData.clientSecret,
+                  defaultValues: {
+                    billingDetails: { email: initData.customerEmail },
+                  },
                   appearance: {
                     theme: 'flat',
                     variables: {
