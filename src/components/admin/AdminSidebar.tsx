@@ -16,70 +16,148 @@ import {
   Settings,
   Store,
   Truck,
+  Mail,
+  CreditCard,
+  Layers,
+  FolderTree,
+  Library,
+  Palette,
+  Scissors,
+  Image as ImageIcon,
+  ClipboardList,
+  ScrollText,
   LogOut,
 } from 'lucide-react';
 
-const NAV = [
-  { href: '/admin', label: 'Overview', icon: LayoutDashboard, roles: ['admin', 'super_admin', 'order_manager', 'editor'] },
-  { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ['admin', 'super_admin', 'order_manager'] },
-  { href: '/admin/prodotti', label: 'Prodotti', icon: Package, roles: ['admin', 'super_admin', 'editor'] },
-  { href: '/admin/magazzino', label: 'Magazzino', icon: Boxes, roles: ['admin', 'super_admin', 'order_manager'] },
-  { href: '/admin/spedizioni', label: 'Spedizioni', icon: Truck, roles: ['admin', 'super_admin', 'order_manager'] },
-  { href: '/admin/recensioni', label: 'Recensioni', icon: Star, roles: ['admin', 'super_admin', 'editor'] },
-  { href: '/admin/clienti', label: 'Clienti', icon: Users, roles: ['admin', 'super_admin'] },
-  { href: '/admin/coupon', label: 'Coupon', icon: Tag, roles: ['admin', 'super_admin'] },
-  { href: '/admin/resi', label: 'Resi', icon: Undo2, roles: ['admin', 'super_admin', 'order_manager'] },
-  { href: '/admin/audit', label: 'Audit Log', icon: FileText, roles: ['super_admin'] },
-  { href: '/admin/errors', label: 'Errori', icon: AlertCircle, roles: ['admin', 'super_admin'] },
-  { href: '/admin/etsy', label: 'Etsy', icon: Store, roles: ['admin', 'super_admin'] },
-  { href: '/admin/impostazioni', label: 'Impostazioni', icon: Settings, roles: ['admin', 'super_admin'] },
+type NavItem = {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  roles: string[];
+};
+
+const ALL = ['admin', 'super_admin', 'editor', 'order_manager'];
+const ADMIN = ['admin', 'super_admin'];
+const EDITOR = ['admin', 'super_admin', 'editor'];
+const ORDERS = ['admin', 'super_admin', 'order_manager'];
+
+const SECTIONS: { label: string; items: NavItem[] }[] = [
+  {
+    label: 'Operatività',
+    items: [
+      { href: '/admin', label: 'Overview', icon: LayoutDashboard, roles: ALL },
+      { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ORDERS },
+      { href: '/admin/spedizioni', label: 'Spedizioni', icon: Truck, roles: ORDERS },
+      { href: '/admin/resi', label: 'Resi', icon: Undo2, roles: ORDERS },
+      { href: '/admin/contatti', label: 'Contatti', icon: Mail, roles: ORDERS },
+      { href: '/admin/pagamenti', label: 'Pagamenti', icon: CreditCard, roles: ADMIN },
+    ],
+  },
+  {
+    label: 'Catalogo',
+    items: [
+      { href: '/admin/prodotti', label: 'Prodotti', icon: Package, roles: EDITOR },
+      { href: '/admin/varianti', label: 'Varianti', icon: Layers, roles: EDITOR },
+      { href: '/admin/categorie', label: 'Categorie', icon: FolderTree, roles: EDITOR },
+      { href: '/admin/collezioni', label: 'Collezioni', icon: Library, roles: EDITOR },
+      { href: '/admin/colori', label: 'Colori', icon: Palette, roles: EDITOR },
+      { href: '/admin/materiali', label: 'Materiali', icon: Scissors, roles: EDITOR },
+      { href: '/admin/media', label: 'Media', icon: ImageIcon, roles: EDITOR },
+    ],
+  },
+  {
+    label: 'Magazzino',
+    items: [
+      { href: '/admin/magazzino', label: 'Magazzino', icon: Boxes, roles: ORDERS },
+      { href: '/admin/ordini-fornitori', label: 'Ordini Fornitori', icon: ClipboardList, roles: ORDERS },
+    ],
+  },
+  {
+    label: 'Marketing',
+    items: [
+      { href: '/admin/coupon', label: 'Coupon', icon: Tag, roles: ADMIN },
+      { href: '/admin/recensioni', label: 'Recensioni', icon: Star, roles: EDITOR },
+    ],
+  },
+  {
+    label: 'Clienti & Contenuti',
+    items: [
+      { href: '/admin/clienti', label: 'Clienti', icon: Users, roles: ADMIN },
+      { href: '/admin/pagine', label: 'Pagine', icon: FileText, roles: EDITOR },
+    ],
+  },
+  {
+    label: 'Sistema',
+    items: [
+      { href: '/admin/etsy', label: 'Etsy', icon: Store, roles: ADMIN },
+      { href: '/admin/audit', label: 'Audit Log', icon: ScrollText, roles: ['super_admin'] },
+      { href: '/admin/errors', label: 'Errori', icon: AlertCircle, roles: ADMIN },
+      { href: '/admin/impostazioni', label: 'Impostazioni', icon: Settings, roles: ADMIN },
+    ],
+  },
 ];
 
-const MOBILE_NAV = [
-  { href: '/admin', label: 'Home', icon: LayoutDashboard, roles: ['admin', 'super_admin', 'order_manager', 'editor'] },
-  { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ['admin', 'super_admin', 'order_manager'] },
-  { href: '/admin/prodotti', label: 'Prodotti', icon: Package, roles: ['admin', 'super_admin', 'editor'] },
-  { href: '/admin/magazzino', label: 'Magazzino', icon: Boxes, roles: ['admin', 'super_admin', 'order_manager'] },
-  { href: '/admin/impostazioni', label: 'Altro', icon: Settings, roles: ['admin', 'super_admin'] },
+const MOBILE_NAV: NavItem[] = [
+  { href: '/admin', label: 'Home', icon: LayoutDashboard, roles: ALL },
+  { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ORDERS },
+  { href: '/admin/prodotti', label: 'Prodotti', icon: Package, roles: EDITOR },
+  { href: '/admin/magazzino', label: 'Magazzino', icon: Boxes, roles: ORDERS },
+  { href: '/admin/impostazioni', label: 'Altro', icon: Settings, roles: ADMIN },
 ];
+
+function isActive(pathname: string, href: string) {
+  return pathname === href || (href !== '/admin' && pathname.startsWith(href + '/'));
+}
 
 export function AdminSidebar({ role, userName }: { role: string; userName: string }) {
   const pathname = usePathname();
-  const items = NAV.filter((i) => i.roles.includes(role));
   const mobileItems = MOBILE_NAV.filter((i) => i.roles.includes(role));
 
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-64 border-r border-pearl-grey bg-white p-6">
-        <Link href="/admin" className="font-display text-2xl mb-8">
+      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-64 border-r border-pearl-grey bg-white">
+        <Link href="/admin" className="font-display text-2xl px-6 pt-6 pb-5 block">
           SILKinCOM <span className="text-gold-primary text-xs uppercase tracking-[0.3em] block mt-1">Admin</span>
         </Link>
 
-        <nav className="flex-1 space-y-1">
-          {items.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
+        <nav className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
+          {SECTIONS.map((section) => {
+            const items = section.items.filter((i) => i.roles.includes(role));
+            if (items.length === 0) return null;
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
-                  active
-                    ? 'bg-soft-black text-warm-white'
-                    : 'text-soft-black/70 hover:bg-pearl-grey/40 hover:text-soft-black'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {item.label}
-              </Link>
+              <div key={section.label}>
+                <p className="px-2 mb-1.5 text-[9px] uppercase tracking-[0.25em] text-soft-grey/70">
+                  {section.label}
+                </p>
+                <div className="space-y-0.5">
+                  {items.map((item) => {
+                    const Icon = item.icon;
+                    const active = isActive(pathname, item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
+                          active
+                            ? 'bg-soft-black text-warm-white'
+                            : 'text-soft-black/70 hover:bg-pearl-grey/40 hover:text-soft-black'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 flex-shrink-0" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </nav>
 
-        <div className="mt-8 pt-6 border-t border-pearl-grey">
-          <p className="text-xs text-soft-grey mb-1">{userName}</p>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-gold-primary mb-4">{role}</p>
+        <div className="px-6 py-4 border-t border-pearl-grey">
+          <p className="text-xs text-soft-grey mb-1 truncate">{userName}</p>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-gold-primary mb-3">{role}</p>
           <Link
             href="/api/auth/logout"
             className="inline-flex items-center gap-2 text-xs text-soft-grey hover:text-soft-black transition-colors"
@@ -94,7 +172,7 @@ export function AdminSidebar({ role, userName }: { role: string; userName: strin
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-pearl-grey flex">
         {mobileItems.map((item) => {
           const Icon = item.icon;
-          const active = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
+          const active = isActive(pathname, item.href);
           return (
             <Link
               key={item.href}
