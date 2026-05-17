@@ -156,8 +156,8 @@ async function createShipment(
   const carrierName = svc.carrier_name || svc.name;
   const price = svc.base_price != null ? Number(svc.base_price) : null;
 
-  // 3. Persist
-  await supabase.from('shipments').insert({
+  // 3. Persist — surface DB errors instead of returning a false success.
+  const { error: insertErr } = await supabase.from('shipments').insert({
     order_id: orderId,
     carrier: carrierName,
     service_name: svc.name,
@@ -165,6 +165,14 @@ async function createShipment(
     price,
     status: 'created',
   });
+  if (insertErr) {
+    return NextResponse.json(
+      {
+        error: `Spedizione creata su Packlink (rif. ${reference}) ma non salvata a DB: ${insertErr.message}`,
+      },
+      { status: 500 },
+    );
+  }
   await supabase.from('orders').update({ shipping_method: carrierName }).eq('id', orderId);
 
   await logAdminAction(userId, 'create_shipment', 'order', orderId, {
