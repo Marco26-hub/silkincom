@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { Plus } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -9,7 +9,7 @@ function formatPrice(n: number) {
 }
 
 export default async function AdminProductsPage() {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const { data: products } = await supabase
     .from('products')

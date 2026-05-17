@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { OrderStatusForm } from '@/components/admin/OrderStatusForm';
 import { ArrowLeft } from 'lucide-react';
 
@@ -12,7 +12,7 @@ function formatPrice(n: number) {
 
 export default async function AdminOrderDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const { data: order } = await supabase
     .from('orders')

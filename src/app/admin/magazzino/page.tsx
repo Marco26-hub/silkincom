@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { InventoryAdjustForm } from '@/components/admin/InventoryAdjustForm';
 
 export const dynamic = 'force-dynamic';
@@ -12,7 +12,7 @@ export default async function AdminInventoryPage({
   const params = await searchParams;
   const filter = params.filter ?? 'all';
 
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   let query = supabase
     .from('inventory')
     .select('id, product_id, quantity_total, quantity_available, quantity_reserved, last_restocked_at, products(name, slug, sku, status)')

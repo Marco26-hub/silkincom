@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { AdminOrdersTable } from '@/components/admin/AdminOrdersTable';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +15,7 @@ export default async function AdminOrdersPage({
   const filter = params.status && STATUS_FILTERS.includes(params.status as any) ? params.status : 'all';
   const q = params.q ?? '';
 
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   let query = supabase
     .from('orders')
     .select('id, order_number, customer_email, total_amount, status, payment_status, created_at')

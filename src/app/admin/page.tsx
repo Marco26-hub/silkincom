@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { ShoppingBag, Euro, Package, AlertTriangle } from 'lucide-react';
 
@@ -9,7 +9,7 @@ function formatPrice(n: number) {
 }
 
 export default async function AdminOverview() {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const today = new Date();
   const startToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
   const start7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();

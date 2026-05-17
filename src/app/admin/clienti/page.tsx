@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +8,7 @@ function formatPrice(n: number) {
 }
 
 export default async function AdminCustomersPage() {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data: customers } = await supabase
     .from('profiles')
     .select('id, email, full_name, phone, created_at, customers(lifetime_value, total_orders, last_order_at)')

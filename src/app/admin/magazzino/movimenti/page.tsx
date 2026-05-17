@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { ArrowLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default async function InventoryMovementsPage() {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const { data: movements } = await supabase
     .from('inventory_movements')

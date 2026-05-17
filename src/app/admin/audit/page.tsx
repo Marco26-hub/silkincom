@@ -1,9 +1,9 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminAuditPage() {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data: logs } = await supabase
     .from('audit_logs')
     .select('id, action, entity_type, entity_id, changes, created_at, profiles(email, full_name)')

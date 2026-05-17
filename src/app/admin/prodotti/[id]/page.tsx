@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { ProductEditForm } from '@/components/admin/ProductEditForm';
 import { ProductImageGallery } from '@/components/admin/ProductImageGallery';
 
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminProductEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const { data: product } = await supabase.from('products').select('*').eq('id', id).single();
   if (!product) notFound();

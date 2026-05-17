@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +15,7 @@ function statusBadge(status: string) {
 }
 
 export default async function AdminPagamentiPage() {
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
   const { data: payments } = await supabase
     .from('payments')
     .select('*, orders(order_number, customer_email)')
