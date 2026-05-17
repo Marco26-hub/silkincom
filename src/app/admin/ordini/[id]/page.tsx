@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createServiceClient } from '@/lib/supabase/server';
 import { OrderStatusForm } from '@/components/admin/OrderStatusForm';
+import { PacklinkShipPanel } from '@/components/admin/PacklinkShipPanel';
 import { ArrowLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -98,6 +99,8 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
             currentStatus={order.status}
             currentTracking={order.tracking_number}
           />
+
+          <PacklinkShipPanel orderId={order.id} />
 
           <section className="border border-pearl-grey bg-white p-6">
             <h2 className="font-medium mb-3 text-sm">Pagamento</h2>
