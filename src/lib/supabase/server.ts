@@ -1,7 +1,14 @@
-import { createServerClient as createSSRClient } from '@supabase/ssr';
+import { createServerClient as createSSRClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 
+type CookieToSet = { name: string; value: string; options: CookieOptions };
+
+/**
+ * SSR Supabase client for Server Components, Route Handlers and Server Actions.
+ * Uses the modern getAll/setAll cookie interface — required for correct
+ * handling of chunked auth cookies and atomic refresh-token rotation.
+ */
 export async function createServerClient() {
   const cookieStore = await cookies();
 
@@ -10,21 +17,17 @@ export async function createServerClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        getAll() {
+          return cookieStore.getAll();
         },
-        set(name: string, value: string, options: any) {
+        setAll(cookiesToSet: CookieToSet[]) {
           try {
-            cookieStore.set({ name, value, ...options });
-          } catch (error) {
-            // Server Component cookie set fails — handled in middleware
-          }
-        },
-        remove(name: string, options: any) {
-          try {
-            cookieStore.set({ name, value: '', ...options });
-          } catch (error) {
-            // ignore
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Called from a Server Component — cookies are read-only here.
+            // The session is refreshed by the middleware instead.
           }
         },
       },
