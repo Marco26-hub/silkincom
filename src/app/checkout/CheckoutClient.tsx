@@ -34,9 +34,10 @@ type InitData = {
   orderId: string;
   orderNumber: string;
   totalAmount: number;
+  customerEmail: string;
 };
 
-function PaymentForm({ orderId, orderNumber }: { orderId: string; orderNumber: string }) {
+function PaymentForm({ orderId, orderNumber, customerEmail }: { orderId: string; orderNumber: string; customerEmail: string }) {
   const t = useTranslations('checkout');
   const stripe = useStripe();
   const elements = useElements();
@@ -56,6 +57,9 @@ function PaymentForm({ orderId, orderNumber }: { orderId: string; orderNumber: s
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/checkout/success?order_id=${orderId}&order_number=${orderNumber}`,
+        payment_method_data: {
+          billing_details: { email: customerEmail },
+        },
       },
     });
 
@@ -177,6 +181,7 @@ export function CheckoutClient() {
         orderId: data.order_id,
         orderNumber: data.order_number,
         totalAmount: data.total_amount,
+        customerEmail: form.customer_email,
       });
       setStep('payment');
     } catch {
@@ -347,7 +352,7 @@ export function CheckoutClient() {
                   },
                 }}
               >
-                <PaymentForm orderId={initData.orderId} orderNumber={initData.orderNumber} />
+                <PaymentForm orderId={initData.orderId} orderNumber={initData.orderNumber} customerEmail={initData.customerEmail} />
               </Elements>
             )}
           </div>
