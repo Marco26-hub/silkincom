@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 
-export async function GET() {
-  const supabase = await createServerClient();
-  await supabase.auth.signOut();
-  return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_APP_URL ?? 'https://silkincom.vercel.app'));
-}
-
+/**
+ * Logout is POST-only on purpose.
+ *
+ * A GET handler here would be invoked by browser / Next.js <Link> prefetching
+ * (links are prefetched when they enter the viewport), silently signing the
+ * user out every time a page containing the logout link rendered.
+ */
 export async function POST() {
   const supabase = await createServerClient();
   await supabase.auth.signOut();

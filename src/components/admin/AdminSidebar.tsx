@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { createBrowserClient } from '@/lib/supabase/client';
 import {
   LayoutDashboard,
   Package,
@@ -113,6 +114,12 @@ export function AdminSidebar({ role, userName }: { role: string; userName: strin
   const pathname = usePathname();
   const mobileItems = MOBILE_NAV.filter((i) => i.roles.includes(role));
 
+  async function handleLogout() {
+    const supabase = createBrowserClient();
+    await supabase.auth.signOut();
+    window.location.href = '/';
+  }
+
   return (
     <>
       {/* Desktop sidebar */}
@@ -158,13 +165,14 @@ export function AdminSidebar({ role, userName }: { role: string; userName: strin
         <div className="px-6 py-4 border-t border-pearl-grey">
           <p className="text-xs text-soft-grey mb-1 truncate">{userName}</p>
           <p className="text-[10px] uppercase tracking-[0.2em] text-gold-primary mb-3">{role}</p>
-          <Link
-            href="/api/auth/logout"
+          <button
+            type="button"
+            onClick={handleLogout}
             className="inline-flex items-center gap-2 text-xs text-soft-grey hover:text-soft-black transition-colors"
           >
             <LogOut className="w-3 h-3" />
             Logout
-          </Link>
+          </button>
         </div>
       </aside>
 
