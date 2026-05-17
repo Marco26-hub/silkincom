@@ -12,7 +12,8 @@ function LoginForm() {
   const tc = useTranslations('common');
   const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get('redirect') || '/account';
+  const redirectParam = params.get('redirect');
+  const redirect = redirectParam || '/account';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,12 +30,28 @@ function LoginForm() {
     setLoading(true);
     try {
       const supabase = createBrowserClient();
-      const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
       if (authError) {
         setError(authError.message === 'Invalid login credentials' ? t('invalidCredentials') : authError.message);
         return;
       }
-      router.push(redirect);
+
+      // Route to the admin dashboard automatically for staff accounts
+      // (unless the user was explicitly redirected to login from somewhere).
+      let dest = redirect;
+      if (!redirectParam && data.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+        const ADMIN_ROLES = ['admin', 'super_admin', 'editor', 'order_manager'];
+        if (profile && ADMIN_ROLES.includes(profile.role)) {
+          dest = '/admin';
+        }
+      }
+
+      router.push(dest);
       router.refresh();
     } catch (err: any) {
       setError(err?.message || tc('error'));
