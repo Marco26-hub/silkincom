@@ -3,20 +3,8 @@
   "framework": "nextjs",
   "crons": [
     {
-      "path": "/api/automation/run",
-      "schedule": "0 6 * * *"
-    },
-    {
       "path": "/api/cron/lifecycle",
       "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/etsy/sync-orders",
-      "schedule": "*/30 * * * *"
-    },
-    {
-      "path": "/api/etsy/sync-inventory",
-      "schedule": "*/30 * * * *"
     }
   ],
   "headers": [
