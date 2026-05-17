@@ -1,5 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/server';
 import { AdminOrdersTable } from '@/components/admin/AdminOrdersTable';
+import { OrderFilters } from '@/components/admin/OrderFilters';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,27 +35,7 @@ export default async function AdminOrdersPage({
         <p className="text-soft-grey text-sm">{orders?.length ?? 0} ordini</p>
       </div>
 
-      <form method="GET" className="flex flex-wrap items-center gap-3">
-        <input
-          type="text"
-          name="q"
-          defaultValue={q}
-          placeholder="Cerca per numero o email..."
-          className="border border-pearl-grey px-4 py-2 text-sm font-light w-72 focus:outline-none focus:border-soft-black"
-        />
-        <select
-          name="status"
-          defaultValue={filter}
-          className="border border-pearl-grey px-4 py-2 text-sm font-light bg-white focus:outline-none focus:border-soft-black"
-        >
-          {STATUS_FILTERS.map((s) => (
-            <option key={s} value={s}>{s === 'all' ? 'Tutti gli stati' : s}</option>
-          ))}
-        </select>
-        <button type="submit" className="px-5 py-2 bg-soft-black text-warm-white text-xs uppercase tracking-[0.2em]">
-          Filtra
-        </button>
-      </form>
+      <OrderFilters />
 
       <AdminOrdersTable orders={orders ?? []} />
     </div>
