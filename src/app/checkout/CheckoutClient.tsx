@@ -77,6 +77,7 @@ function PaymentForm({ orderId, orderNumber, customerEmail }: { orderId: string;
         options={{
           layout: 'tabs',
           fields: { billingDetails: { email: 'never' } },
+          defaultValues: { billingDetails: { email: customerEmail } },
         }}
       />
       {error && (
@@ -342,9 +343,6 @@ export function CheckoutClient() {
                 stripe={stripePromise}
                 options={{
                   clientSecret: initData.clientSecret,
-                  defaultValues: {
-                    billingDetails: { email: initData.customerEmail },
-                  },
                   appearance: {
                     theme: 'flat',
                     variables: {
