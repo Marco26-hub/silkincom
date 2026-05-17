@@ -48,17 +48,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login?error=auth_failed`);
   }
 
-  // Route staff accounts to the admin dashboard unless a destination was given.
+  // Route staff accounts to the admin dashboard. The role is always checked,
+  // even when a `next` param is present, so a staff member never lands on the
+  // customer area after OAuth login.
   let dest = explicitNext ?? '/account';
-  if (!explicitNext) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
-    if (profile && ADMIN_ROLES.includes(profile.role)) {
-      dest = '/admin';
-    }
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', data.user.id)
+    .maybeSingle();
+  if (profile && ADMIN_ROLES.includes(profile.role)) {
+    dest = explicitNext && explicitNext.startsWith('/admin') ? explicitNext : '/admin';
   }
 
   // Carry the session cookies onto the final redirect.

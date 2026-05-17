@@ -36,18 +36,20 @@ function LoginForm() {
         return;
       }
 
-      // Route to the admin dashboard automatically for staff accounts
-      // (unless the user was explicitly redirected to login from somewhere).
+      // Route staff accounts straight to the admin dashboard. The role is
+      // always checked — even when a ?redirect= param is present (e.g. an
+      // admin bounced off /account lands here with redirect=/account).
       let dest = redirect;
-      if (!redirectParam && data.user) {
+      if (data.user) {
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', data.user.id)
-          .single();
+          .maybeSingle();
         const ADMIN_ROLES = ['admin', 'super_admin', 'editor', 'order_manager'];
         if (profile && ADMIN_ROLES.includes(profile.role)) {
-          dest = '/admin';
+          // Staff → /admin, unless deep-linked to a specific admin page.
+          dest = redirectParam && redirectParam.startsWith('/admin') ? redirectParam : '/admin';
         }
       }
 
