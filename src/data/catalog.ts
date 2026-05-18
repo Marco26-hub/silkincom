@@ -70,16 +70,16 @@ const WIX = (id: string, w = 800, h = 1000) =>
   `https://static.wixstatic.com/media/${id}/v1/fill/w_${w},h_${h},al_c,q_90,usm_0.66_1.00_0.01/file.jpg`;
 
 export const CATEGORIES = [
-  { slug: 'bellagio',   name: 'Bellagio',    material: 'Cashmere', description: 'Pashmine in puro cashmere, ispirate alla raffinatezza del Lago di Como.', image: WIX('b58e91_6653f43860d34a5eb0143cae9523a134~mv2.jpg') },
-  { slug: 'cernobbio',  name: 'Cernobbio',   material: 'Cashmere', description: 'Sciarpe in cashmere, eleganza discreta.',                                  image: WIX('a34b56_3ccd9aefbaca4c5d9363c8711f5b3338~mv2.jpg') },
-  { slug: 'tremezzo',   name: 'Tremezzo',    material: 'Lana',     description: 'Sciarpe in lana, calore avvolgente.',                                       image: WIX('a34b56_1af2743a614c4ac1b255dd1e53c8f436~mv2.jpg') },
-  { slug: 'varenna',    name: 'Varenna',     material: 'Lana',     description: 'Sciarpe luxury, leggerezza che dura.',                                       image: WIX('a34b56_e76f0bb5106c49df8f2ef2b5d8602b0e~mv2.jpg') },
-  { slug: 'twilly-como',name: 'Twilly Como', material: 'Seta',     description: 'Il foulard a nastro in seta, reinterpretato.',                              image: WIX('b58e91_6e113b7ba95f4d81854d2300b10860e8~mv2.jpg') },
-  { slug: 'darsena',    name: 'Darsena',     material: 'Cotone',   description: 'T-shirt e cappellini in cotone, eleganza casual.',                           image: WIX('a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg') },
-  { slug: 'lario',      name: 'Lario',       material: 'Cotone',   description: 'T-shirt in cotone pregiato, Made in Como.',                                  image: WIX('a34b56_1c703913173a458d848ef300b9e954ba~mv2.jpg') },
-  { slug: 'melzi',      name: 'Melzi',       material: 'Lino',     description: 'Camicie in lino, freschezza estiva sul Lago.',                               image: WIX('a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg') },
-  { slug: 'riva',       name: 'Riva',        material: 'Lino',     description: 'Foulard e camicie in misto lino e cotone.',                                  image: WIX('a34b56_c17c8b8c3ed9469baee1b992666ad11b~mv2.jpg') },
-  { slug: 'tivan',      name: 'Tivan',       material: 'Seta',     description: 'Edizione limitata in seta pregiata.',                                        image: WIX('a34b56_7f5a6eb5f5ec474098fb2a72445ec974~mv2.jpg') },
+  { slug: 'bellagio',    name: 'Bellagio',    material: 'Cashmere', description: 'Pashmine in puro cashmere, ispirate alla raffinatezza del Lago di Como.', image: WIX('b58e91_6653f43860d34a5eb0143cae9523a134~mv2.jpg') },
+  { slug: 'cernobbio',   name: 'Cernobbio',   material: 'Cashmere', description: 'Sciarpe in cashmere, eleganza discreta.',                                 image: WIX('a34b56_3ccd9aefbaca4c5d9363c8711f5b3338~mv2.jpg') },
+  { slug: 'tremezzo',    name: 'Tremezzo',    material: 'Lana',     description: 'Sciarpe in lana, calore avvolgente.',                                     image: WIX('a34b56_1af2743a614c4ac1b255dd1e53c8f436~mv2.jpg') },
+  { slug: 'varenna',     name: 'Varenna',     material: 'Cashmere', description: 'Sciarpe in puro cashmere, leggerezza che dura.',                          image: WIX('a34b56_e76f0bb5106c49df8f2ef2b5d8602b0e~mv2.jpg') },
+  { slug: 'twilly-como', name: 'Twilly Como', material: 'Seta',     description: 'Il foulard a nastro in seta, reinterpretato.',                            image: WIX('b58e91_6e113b7ba95f4d81854d2300b10860e8~mv2.jpg') },
+  { slug: 'darsena',     name: 'Darsena',     material: 'Cotone',   description: 'Cappellini in cotone, eleganza casual.',                                  image: WIX('a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg') },
+  { slug: 'lario',       name: 'Lario',       material: 'Cotone',   description: 'T-shirt in cotone pregiato, Made in Como.',                               image: WIX('a34b56_e9e62902bbed4ae4963738ab0861a880~mv2.jpg') },
+  { slug: 'melzi',       name: 'Melzi',       material: 'Lino',     description: 'Pantaloncini in lino, freschezza estiva sul Lago.',                       image: WIX('a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg') },
+  { slug: 'riva',        name: 'Riva',        material: 'Lino',     description: 'Camicie in misto lino e cotone.',                                         image: WIX('a34b56_f44d83eee24c4e9d986b9c183bcfcccc~mv2.jpg') },
+  { slug: 'tivan',       name: 'Tivan',       material: 'Cotone',   description: 'Teli mare in cotone, qualità e praticità.',                               image: WIX('a34b56_7f5a6eb5f5ec474098fb2a72445ec974~mv2.jpg') },
 ];
 
 // Main collections shown as featured
