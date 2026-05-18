@@ -18,23 +18,25 @@ export type Product = {
 
 const products = productsJson as Product[];
 
-// Detect material from composition string
-function detectMaterial(composition: string): Material {
-  const c = composition.toLowerCase();
-  if (c.includes('cashmere') || c.includes('ws')) return 'cashmere';
-  if (c.includes('lana') || c.includes('wo')) return 'lana';
-  if (c.includes('seta') || c.includes('silk') || c.includes('se')) return 'seta';
-  if (c.includes('lino') || c.includes('linen') || c.includes('li')) return 'lino';
-  if (c.includes('cotone') || c.includes('cotton') || c.includes('co')) return 'cotone';
-  return 'misto';
-}
+// Material per category — single source of truth, matches the live silkincom.com taxonomy
+const CATEGORY_MATERIAL: Record<string, Material> = {
+  bellagio: 'cashmere',
+  cernobbio: 'cashmere',
+  tremezzo: 'lana',
+  varenna: 'cashmere',
+  'twilly-como': 'seta',
+  darsena: 'cotone',
+  lario: 'cotone',
+  melzi: 'lino',
+  riva: 'lino',
+  tivan: 'cotone',
+};
 
 // Map product → category/collections/material by slug pattern
 export const PRODUCTS: Product[] = products.map((p) => {
   const s = p.slug.toLowerCase();
   let category = '';
   let collections: string[] = [];
-  const material = detectMaterial(p.composition);
 
   // Category mapping
   if (s.startsWith('bellagio')) category = 'bellagio';
@@ -47,6 +49,8 @@ export const PRODUCTS: Product[] = products.map((p) => {
   else if (s.startsWith('melzi')) category = 'melzi';
   else if (s.startsWith('riva')) category = 'riva';
   else if (s.startsWith('tivan')) category = 'tivan';
+
+  const material: Material = CATEGORY_MATERIAL[category] || 'misto';
 
   // Collection mapping (products can belong to multiple)
   // Iconica: timeless pieces
