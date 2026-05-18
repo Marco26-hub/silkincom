@@ -14,7 +14,10 @@ export type Product = {
   category?: string;
   collections?: string[];
   material?: Material;
+  group?: ProductGroup;
 };
+
+export type ProductGroup = 'abbigliamento' | 'accessori';
 
 const products = productsJson as Product[];
 
@@ -30,6 +33,20 @@ const CATEGORY_MATERIAL: Record<string, Material> = {
   melzi: 'lino',
   riva: 'lino',
   tivan: 'cotone',
+};
+
+// Macro-group per category: clothing vs accessories
+const CATEGORY_GROUP: Record<string, ProductGroup> = {
+  darsena: 'abbigliamento',
+  lario: 'abbigliamento',
+  melzi: 'abbigliamento',
+  riva: 'abbigliamento',
+  bellagio: 'accessori',
+  cernobbio: 'accessori',
+  tremezzo: 'accessori',
+  varenna: 'accessori',
+  'twilly-como': 'accessori',
+  tivan: 'accessori',
 };
 
 // Map product → category/collections/material by slug pattern
@@ -51,6 +68,7 @@ export const PRODUCTS: Product[] = products.map((p) => {
   else if (s.startsWith('tivan')) category = 'tivan';
 
   const material: Material = CATEGORY_MATERIAL[category] || 'misto';
+  const group = CATEGORY_GROUP[category];
 
   // Collection mapping (products can belong to multiple)
   // Iconica: timeless pieces
@@ -66,7 +84,7 @@ export const PRODUCTS: Product[] = products.map((p) => {
     collections.push('primavera');
   }
 
-  return { ...p, category, collections, material };
+  return { ...p, category, collections, material, group };
 });
 
 // Categories with material/style information
@@ -120,6 +138,12 @@ export const MATERIALS = [
   { slug: 'cotone', name: 'Cotone', code: 'CO', description: 'Cotone naturale di qualità superiore, morbidezza setosa.' },
 ];
 
+// Macro-groups for top-level navigation
+export const GROUPS: { slug: ProductGroup; name: string; categories: string[] }[] = [
+  { slug: 'abbigliamento', name: 'Abbigliamento', categories: ['lario', 'riva', 'melzi', 'darsena'] },
+  { slug: 'accessori',     name: 'Accessori',     categories: ['bellagio', 'cernobbio', 'tremezzo', 'varenna', 'twilly-como', 'tivan'] },
+];
+
 export function getProduct(slug: string): Product | undefined {
   return PRODUCTS.find((p) => p.slug === slug);
 }
@@ -134,6 +158,10 @@ export function getProductsByCollection(collection: string): Product[] {
 
 export function getProductsByMaterial(material: Material): Product[] {
   return PRODUCTS.filter((p) => p.material === material);
+}
+
+export function getProductsByGroup(group: ProductGroup): Product[] {
+  return PRODUCTS.filter((p) => p.group === group);
 }
 
 export function getFeaturedProducts(limit = 8): Product[] {
