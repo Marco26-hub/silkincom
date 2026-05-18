@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     'description_short', 'description_long', 'composition', 'dimensions', 'care_instructions',
     'status', 'is_featured', 'is_bestseller', 'is_limited_edition',
     'seo_title', 'seo_description',
-    'category_id', 'collection_id', 'composition_id', 'size_id',
+    'category_id', 'collection_id', 'composition_id', 'size_id', 'color_id',
   ];
 
   const insert: Record<string, unknown> = {};

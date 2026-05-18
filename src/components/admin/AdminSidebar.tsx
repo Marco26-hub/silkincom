@@ -54,8 +54,6 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: 'Catalogo',
     items: [
       { href: '/admin/prodotti', label: 'Prodotti', icon: Package, roles: EDITOR },
-      { href: '/admin/categorie', label: 'Categorie', icon: FolderTree, roles: EDITOR },
-      { href: '/admin/media', label: 'Media', icon: ImageIcon, roles: EDITOR },
     ],
   },
   {

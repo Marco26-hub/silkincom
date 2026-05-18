@@ -63,6 +63,7 @@ export function ProductEditForm({
     collection_id: product.collection_id ?? '',
     composition_id: product.composition_id ?? '',
     size_id: product.size_id ?? '',
+    color_id: product.color_id ?? '',
   });
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
@@ -75,7 +76,7 @@ export function ProductEditForm({
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [variants, setVariants] = useState<Variant[]>(initialVariants);
 
-  const [creating, setCreating] = useState<'category' | 'collection' | 'composition' | 'size' | null>(null);
+  const [creating, setCreating] = useState<'category' | 'collection' | 'composition' | 'size' | 'color' | null>(null);
 
   function setField<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -96,6 +97,7 @@ export function ProductEditForm({
         collection_id: form.collection_id || null,
         composition_id: form.composition_id || null,
         size_id: form.size_id || null,
+        color_id: form.color_id || null,
       }),
     });
     const data = await res.json();
@@ -145,6 +147,20 @@ export function ProductEditForm({
     if (data.data) {
       setCompositions((prev) => [...prev, { id: data.data.id, name: data.data.name }]);
       setField('composition_id', data.data.id);
+    }
+    setCreating(null);
+  }
+
+  async function createColorTop(name: string, hex: string) {
+    const res = await fetch('/api/admin/colors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, hex_code: hex || '#000000' }),
+    });
+    const data = await res.json();
+    if (data.data) {
+      setColors((prev) => [...prev, data.data]);
+      setField('color_id', data.data.id);
     }
     setCreating(null);
   }
@@ -281,6 +297,27 @@ export function ProductEditForm({
             )}
           </Field>
         </div>
+
+        <Field label="Colore">
+          <div className="flex items-center gap-2">
+            {form.color_id && (() => { const c = colors.find((x) => x.id === form.color_id); return c ? <span className="w-5 h-5 rounded-full border border-pearl-grey flex-shrink-0" style={{ backgroundColor: c.hex_code }} /> : null; })()}
+            <select
+              value={form.color_id}
+              onChange={(e) => {
+                if (e.target.value === '__new__') { setCreating('color'); setField('color_id', ''); }
+                else setField('color_id', e.target.value);
+              }}
+              className={inputCls + ' bg-white flex-1'}
+            >
+              <option value="">— nessuno —</option>
+              {colors.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <option value="__new__">+ Aggiungi colore</option>
+            </select>
+          </div>
+          {creating === 'color' && (
+            <InlineColorCreate onSave={createColorTop} onCancel={() => setCreating(null)} />
+          )}
+        </Field>
 
         <Field label="Cura prodotto">
           <textarea value={form.care_instructions} onChange={(e) => setField('care_instructions', e.target.value)} className={inputCls} rows={2} />

@@ -21,14 +21,13 @@ export function NuovoProdottoForm({
   initialCompositions,
   initialSizes,
   initialColors,
-  initialMaterials,
 }: {
   initialCategories: Category[];
   initialCollections: Collection[];
   initialCompositions: Composition[];
   initialSizes: ProductSize[];
   initialColors: Color[];
-  initialMaterials: Material[];
+  initialMaterials?: Material[];
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -52,14 +51,16 @@ export function NuovoProdottoForm({
     collection_id: '',
     composition_id: '',
     size_id: '',
+    color_id: '',
   });
 
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [collections, setCollections] = useState<Collection[]>(initialCollections);
   const [compositions, setCompositions] = useState<Composition[]>(initialCompositions);
   const [sizes, setSizes] = useState<ProductSize[]>(initialSizes);
+  const [colors, setColors] = useState<Color[]>(initialColors);
 
-  const [creating, setCreating] = useState<'category' | 'collection' | 'composition' | 'size' | null>(null);
+  const [creating, setCreating] = useState<'category' | 'collection' | 'composition' | 'size' | 'color' | null>(null);
 
   function setField<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     if (k === 'name' && typeof v === 'string') {
@@ -90,6 +91,7 @@ export function NuovoProdottoForm({
         collection_id: form.collection_id || null,
         composition_id: form.composition_id || null,
         size_id: form.size_id || null,
+        color_id: form.color_id || null,
       }),
     });
 
@@ -141,6 +143,20 @@ export function NuovoProdottoForm({
     if (data.data) {
       setCompositions((prev) => [...prev, { id: data.data.id, name: data.data.name }]);
       setField('composition_id', data.data.id);
+    }
+    setCreating(null);
+  }
+
+  async function createColor(name: string, hex: string) {
+    const res = await fetch('/api/admin/colors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, hex_code: hex || '#000000' }),
+    });
+    const data = await res.json();
+    if (data.data) {
+      setColors((prev) => [...prev, data.data]);
+      setField('color_id', data.data.id);
     }
     setCreating(null);
   }
@@ -275,6 +291,27 @@ export function NuovoProdottoForm({
           </Field>
         </div>
 
+        <Field label="Colore">
+          <div className="flex items-center gap-2">
+            {form.color_id && (() => { const c = colors.find((x) => x.id === form.color_id); return c ? <span className="w-5 h-5 rounded-full border border-pearl-grey flex-shrink-0" style={{ backgroundColor: c.hex_code }} /> : null; })()}
+            <select
+              value={form.color_id}
+              onChange={(e) => {
+                if (e.target.value === '__new__') { setCreating('color'); setField('color_id', ''); }
+                else setField('color_id', e.target.value);
+              }}
+              className={inputCls + ' bg-white flex-1'}
+            >
+              <option value="">— nessuno —</option>
+              {colors.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <option value="__new__">+ Aggiungi colore</option>
+            </select>
+          </div>
+          {creating === 'color' && (
+            <InlineColorCreate onSave={createColor} onCancel={() => setCreating(null)} />
+          )}
+        </Field>
+
         <Field label="Cura prodotto">
           <textarea rows={2} value={form.care_instructions} onChange={(e) => setField('care_instructions', e.target.value)} className={inputCls + ' resize-none'} />
         </Field>
@@ -314,6 +351,19 @@ export function NuovoProdottoForm({
         </Link>
       </div>
     </form>
+  );
+}
+
+function InlineColorCreate({ onSave, onCancel }: { onSave: (name: string, hex: string) => void; onCancel: () => void }) {
+  const [name, setName] = useState('');
+  const [hex, setHex] = useState('#000000');
+  return (
+    <div className="mt-1.5 flex gap-2 items-center">
+      <input autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome colore" className="flex-1 border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black" />
+      <input type="color" value={hex} onChange={(e) => setHex(e.target.value)} className="w-9 h-9 border border-pearl-grey cursor-pointer p-0.5 bg-white" />
+      <button type="button" onClick={() => { if (name.trim()) onSave(name.trim(), hex); }} className="px-3 py-2 bg-soft-black text-warm-white text-xs hover:bg-gold-primary hover:text-soft-black transition-colors">Crea</button>
+      <button type="button" onClick={onCancel} className="px-3 py-2 text-xs text-soft-grey hover:text-soft-black">✕</button>
+    </div>
   );
 }
 

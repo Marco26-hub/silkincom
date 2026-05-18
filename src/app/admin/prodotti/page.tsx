@@ -1,21 +1,38 @@
 import Link from 'next/link';
 import { createServiceClient } from '@/lib/supabase/server';
 import { Plus } from 'lucide-react';
+import { ProductFilters } from '@/components/admin/ProductFilters';
+import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
+
+const VALID_STATUSES = ['published', 'draft', 'archived'] as const;
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(n);
 }
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string }>;
+}) {
+  const params = await searchParams;
+  const q = params.q ?? '';
+  const status = VALID_STATUSES.includes(params.status as any) ? params.status : '';
+
   const supabase = createServiceClient();
 
-  const { data: products } = await supabase
+  let query = supabase
     .from('products')
     .select('id, name, slug, sku, price, status, is_featured, inventory(quantity_available)')
     .order('created_at', { ascending: false })
     .limit(200);
+
+  if (status) query = query.eq('status', status);
+  if (q) query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%`);
+
+  const { data: products } = await query;
 
   return (
     <div className="space-y-6 max-w-[1400px]">
@@ -32,6 +49,10 @@ export default async function AdminProductsPage() {
           Nuovo prodotto
         </Link>
       </div>
+
+      <Suspense>
+        <ProductFilters />
+      </Suspense>
 
       <div className="border border-pearl-grey bg-white overflow-x-auto">
         <table className="w-full text-sm">
@@ -71,7 +92,7 @@ export default async function AdminProductsPage() {
               );
             })}
             {!products?.length && (
-              <tr><td colSpan={6} className="px-5 py-12 text-center text-soft-grey">Nessun prodotto. Esegui <code>npm run seed:products</code></td></tr>
+              <tr><td colSpan={6} className="px-5 py-12 text-center text-soft-grey">Nessun prodotto trovato.</td></tr>
             )}
           </tbody>
         </table>
