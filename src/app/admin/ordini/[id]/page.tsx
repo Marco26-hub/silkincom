@@ -67,6 +67,12 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
                 <span>Spedizione</span>
                 <span>{Number(order.shipping_cost) === 0 ? 'Gratuita' : formatPrice(Number(order.shipping_cost))}</span>
               </div>
+              {Number(order.discount_amount) > 0 && (
+                <div className="flex justify-between text-gold-dark">
+                  <span>Sconto coupon</span>
+                  <span>−{formatPrice(Number(order.discount_amount))}</span>
+                </div>
+              )}
               <div className="flex justify-between font-medium pt-2 border-t border-pearl-grey">
                 <span>Totale</span>
                 <span>{formatPrice(Number(order.total_amount))}</span>

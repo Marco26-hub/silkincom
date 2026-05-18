@@ -18,6 +18,7 @@ type OrderDetail = {
   total_amount: number;
   subtotal: number | null;
   shipping_cost: number | null;
+  discount_amount: number | null;
   currency: string;
   created_at: string;
   paid_at: string | null;
@@ -280,6 +281,12 @@ export default function OrderDetailPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-soft-black/60">{tcart('shipping')}</span>
                 <span>{order.shipping_cost === 0 ? tcart('shippingFree') : formatPrice(order.shipping_cost)}</span>
+              </div>
+            )}
+            {order.discount_amount != null && order.discount_amount > 0 && (
+              <div className="flex justify-between text-sm text-gold-dark">
+                <span>Sconto coupon</span>
+                <span>−{formatPrice(order.discount_amount)}</span>
               </div>
             )}
             <div className="flex justify-between font-medium border-t border-pearl-grey/40 pt-3">
