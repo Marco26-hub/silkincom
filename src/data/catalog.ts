@@ -71,8 +71,8 @@ export const PRODUCTS: Product[] = products.map((p) => {
   const group = CATEGORY_GROUP[category];
 
   // Collection mapping (products can belong to multiple)
-  // Iconica: timeless pieces
-  if (['bellagio', 'cernobbio', 'tremezzo', 'varenna', 'twilly-como'].includes(category)) {
+  // Iconica: twilly e cappellini
+  if (['twilly-como', 'darsena'].includes(category)) {
     collections.push('iconica');
   }
   // Inverno: winter materials (cashmere, wool scarves/pashminas)
@@ -117,7 +117,7 @@ export const COLLECTIONS = [
     slug: 'iconica',
     name: 'Collezione Iconica',
     tagline: 'L\'essenza del tuo stile, firmata Como',
-    description: 'I pezzi che rappresentano l\'anima di SILKinCOM. Sciarpe e foulard in seta, cashmere e lana, lavorati interamente nel distretto serico comasco.',
+    description: 'I pezzi che rappresentano l\'anima di SILKinCOM. Twilly in seta e cappellini in cotone, lavorati interamente nel distretto comasco.',
     image: '/instagram/ig-02.jpg',
   },
   {
