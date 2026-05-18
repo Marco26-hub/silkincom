@@ -8,17 +8,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
+import { logAdminAction } from '@/lib/audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function DELETE(req: NextRequest) {
-  const limited = rateLimit(req, 2, 60_000);
+  const limited = await rateLimit(req, 2, 60_000);
   if (limited) return limited;
 
   const auth = await createServerClient();
   const { data: { user } } = await auth.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Auth required' }, { status: 401 });
+
+  const body = await req.json();
+  const password = body?.password?.trim();
+  if (!password) {
+    return NextResponse.json({ error: 'Password richiesta' }, { status: 400 });
+  }
+
+  try {
+    await auth.auth.signInWithPassword({ email: user.email || '', password });
+  } catch (err: any) {
+    return NextResponse.json({ error: 'Password non valida' }, { status: 401 });
+  }
 
   const supabase = createServiceClient();
   const uid = user.id;
@@ -34,6 +47,16 @@ export async function DELETE(req: NextRequest) {
   await supabase.from('wishlist').delete().eq('customer_id', uid);
   await supabase.from('reviews').delete().eq('customer_id', uid);
   await supabase.from('customer_addresses').delete().eq('customer_id', uid);
+
+  // Delete returns (linked via order_id, not customer_id)
+  const { data: customerOrders } = await supabase
+    .from('orders')
+    .select('id')
+    .eq('customer_id', uid);
+  for (const order of customerOrders || []) {
+    await supabase.from('returns').delete().eq('order_id', order.id);
+  }
+
   await supabase.from('newsletter_subscribers').delete().eq('email', user.email || '');
   await supabase.from('email_lifecycle_jobs').delete().eq('recipient_email', user.email || '');
   await supabase.from('customers').delete().eq('id', uid);
@@ -45,6 +68,9 @@ export async function DELETE(req: NextRequest) {
     console.error('Auth user delete failed:', authDeleteError);
     return NextResponse.json({ error: 'Errore eliminazione account' }, { status: 500 });
   }
+
+  // Log deletion action for audit trail
+  await logAdminAction(uid, 'delete_account', 'account', uid, { anonymized: true });
 
   return NextResponse.json({ ok: true, message: 'Account eliminato' });
 }
