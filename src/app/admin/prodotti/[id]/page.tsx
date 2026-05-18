@@ -11,7 +11,22 @@ export default async function AdminProductEditPage({ params }: { params: Promise
   const { id } = await params;
   const supabase = createServiceClient();
 
-  const { data: product } = await supabase.from('products').select('*').eq('id', id).single();
+  const [
+    { data: product },
+    { data: categories },
+    { data: collections },
+    { data: colors },
+    { data: materials },
+    { data: variants },
+  ] = await Promise.all([
+    supabase.from('products').select('*').eq('id', id).single(),
+    supabase.from('categories').select('id, name').eq('is_active', true).order('name'),
+    supabase.from('collections').select('id, name').eq('is_active', true).order('name'),
+    supabase.from('colors').select('id, name, hex_code').order('name'),
+    supabase.from('materials').select('id, name').order('name'),
+    supabase.from('product_variants').select('id, variant_sku, variant_name, price_override, color_id, material_id').eq('product_id', id).order('created_at'),
+  ]);
+
   if (!product) notFound();
 
   return (
@@ -25,7 +40,14 @@ export default async function AdminProductEditPage({ params }: { params: Promise
 
       <ProductImageGallery productId={product.id} />
 
-      <ProductEditForm product={product} />
+      <ProductEditForm
+        product={product}
+        initialCategories={categories ?? []}
+        initialCollections={collections ?? []}
+        initialColors={colors ?? []}
+        initialMaterials={materials ?? []}
+        initialVariants={variants ?? []}
+      />
     </div>
   );
 }

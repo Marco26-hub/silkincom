@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { createServerClient } from '@/lib/supabase/server';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminNotificationBell } from '@/components/admin/AdminNotificationBell';
+import { AdminSearch } from '@/components/admin/AdminSearch';
 
 export const metadata = { title: 'Admin — SILKinCOM', robots: { index: false } };
 
@@ -27,7 +28,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-warm-white text-soft-black flex">
       <AdminSidebar role={profile.role} userName={profile.full_name ?? profile.email} />
       <div className="flex-1 lg:ml-64 flex flex-col">
-        <div className="flex justify-end items-center px-6 lg:px-10 py-3 border-b border-pearl-grey/40 bg-white lg:bg-transparent">
+        <div className="flex justify-between items-center px-6 lg:px-10 py-3 border-b border-pearl-grey/40 bg-white lg:bg-transparent gap-4">
+          <AdminSearch />
           <AdminNotificationBell />
         </div>
         <main className="flex-1 px-6 py-6 lg:px-10 pb-20 lg:pb-8">

@@ -25,6 +25,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     'description_short', 'description_long', 'composition', 'dimensions', 'care_instructions',
     'status', 'is_featured', 'is_bestseller', 'is_limited_edition',
     'seo_title', 'seo_description',
+    'category_id', 'collection_id',
   ];
   const update: Record<string, unknown> = {};
   for (const k of allowed) if (k in body) update[k] = body[k];
