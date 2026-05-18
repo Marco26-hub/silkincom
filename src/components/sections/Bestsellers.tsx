@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { ProductCard } from '@/components/product/ProductCard';
-import { PRODUCTS } from '@/data/catalog';
+import { getProducts } from '@/data/catalog';
 
 const containerVariants = {
   hidden: {},
@@ -19,13 +19,15 @@ const itemVariants = {
 
 export function Bestsellers() {
   const t = useTranslations('home.bestsellers');
+  const locale = useLocale();
+  const products = getProducts(locale);
   // pick 4 representative products
   const featured = ['bellagio-2', 'cernobbio-azzurra', 'tremezzo-beige', 'varenna-grigia']
-    .map((s) => PRODUCTS.find((p) => p.slug === s))
+    .map((s) => products.find((p) => p.slug === s))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   // fallback: first 4 products if slugs not found
-  const display = featured.length >= 2 ? featured : PRODUCTS.slice(0, 4);
+  const display = featured.length >= 2 ? featured : products.slice(0, 4);
 
   return (
     <section className="py-24 md:py-section bg-warm-white overflow-hidden">

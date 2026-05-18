@@ -366,7 +366,12 @@
       "allDetails": "Full details"
     },
     "wishlistAdd": "Add to wishlist",
-    "wishlistRemove": "Remove from wishlist"
+    "wishlistRemove": "Remove from wishlist",
+    "quickView": "View product",
+    "reviews": {
+      "eyebrow": "Reviews",
+      "title": "What people say about <em>{name}</em>"
+    }
   },
   "cart": {
     "title": "Your cart",
@@ -1095,5 +1100,10 @@
     "subtitle": "An unexpected error occurred. Please try again or return home.",
     "retry": "Try again",
     "home": "Back to home"
+  },
+  "search": {
+    "placeholder": "Search products...",
+    "noResults": "No products found for “{query}”",
+    "minChars": "Type at least 2 characters"
   }
 }

@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Truck, RotateCcw, MapPin, Sparkles } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
-import { PRODUCTS, CATEGORIES, getProduct } from '@/data/catalog';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { PRODUCT_SLUGS, getCategories, getProduct, getProducts, getMaterials } from '@/data/catalog';
 import { ProductCard } from '@/components/product/ProductCard';
 import { AddToCartButton } from '@/components/product/AddToCartButton';
 import { WishlistButton } from '@/components/product/WishlistButton';
@@ -14,14 +14,10 @@ import { InventoryBadge } from '@/components/product/InventoryBadge';
 import { SizeGuideModal } from '@/components/product/SizeGuideModal';
 import { createServerClient } from '@/lib/supabase/server';
 
-const MATERIAL_LABEL: Record<string, string> = {
-  cashmere: 'Cashmere',
-  lana: 'Lana',
-  seta: 'Seta',
-  lino: 'Lino',
-  cotone: 'Cotone',
-  misto: 'Misto',
-};
+function materialName(slug: string | undefined, locale: string): string {
+  if (!slug) return '';
+  return getMaterials(locale).find((m) => m.slug === slug)?.name ?? '';
+}
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', {
@@ -40,29 +36,32 @@ function shortComposition(c: string): string {
 }
 
 export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
+  return PRODUCT_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = getProduct(slug);
+  const locale = await getLocale();
+  const p = getProduct(slug, locale);
   if (!p) return {};
+  const mat = materialName(p.material, locale);
   return {
-    title: `${p.name} — ${MATERIAL_LABEL[p.material || 'misto'] || ''} | SILKinCOM`,
+    title: `${p.name}${mat ? ` — ${mat}` : ''} | SILKinCOM`,
     description: p.description.slice(0, 160),
   };
 }
 
 export default async function ProdottoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = getProduct(slug);
+  const locale = await getLocale();
+  const p = getProduct(slug, locale);
   if (!p) notFound();
 
   const t = await getTranslations('product');
   const tn = await getTranslations('nav');
-  const cat = CATEGORIES.find((c) => c.slug === p.category);
-  const materialLabel = p.material ? MATERIAL_LABEL[p.material] : '';
-  const related = PRODUCTS.filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
+  const cat = getCategories(locale).find((c) => c.slug === p.category);
+  const materialLabel = materialName(p.material, locale);
+  const related = getProducts(locale).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
   const productUrl = `${baseUrl}/prodotto/${p.slug}`;
@@ -293,11 +292,14 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
         <div className="max-w-[1100px] mx-auto px-6 lg:px-10">
           <div className="text-center mb-12">
             <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-4">
-              Recensioni
+              {t('reviews.eyebrow')}
             </span>
             <span className="block w-px h-8 bg-gold-primary mx-auto mb-6" />
             <h2 className="font-display font-light text-3xl md:text-4xl">
-              Cosa dicono di <em className="italic text-gold-primary">{p.name}</em>
+              {t.rich('reviews.title', {
+                name: p.name,
+                em: (chunks) => <em className="italic text-gold-primary">{chunks}</em>,
+              })}
             </h2>
           </div>
           <ProductReviews productSlug={p.slug} isAuthenticated={isAuthenticated} />

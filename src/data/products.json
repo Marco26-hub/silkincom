@@ -1,11 +1,20 @@
 [
   {
     "slug": "bellagio-1",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 120,
-    "description": "Composizione: 100% Cashmere Dimensioni: 180 x 45 cm Finitura: orlo rifinito a mano Logo ricamato in filo bordeaux Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata alla raffinatezza del Lago di Como,, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% Cashmere",
+    "description": {
+      "it": "Composizione: 100% Cashmere Dimensioni: 180 x 45 cm Finitura: orlo rifinito a mano Logo ricamato in filo bordeaux Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata alla raffinatezza del Lago di Como, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% Cashmere Dimensions: 180 x 45 cm Finish: hand-finished hem Logo embroidered in burgundy thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by the refinement of Lake Como,, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% Cashmere",
+      "en": "100% Cashmere"
+    },
     "dimensions": "180 x 45 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_6653f43860d34a5eb0143cae9523a134~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -16,11 +25,20 @@
   },
   {
     "slug": "bellagio-2",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 120,
-    "description": "Composizione: 100% cashmere Dimensioni: 180 x 45 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata alla raffinatezza del Lago di Como, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 180 x 45 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata alla raffinatezza del Lago di Como, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% cashmere Dimensions: 180 x 45 cm Finish: hand-finished hem Logo embroidered in white thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by the refinement of Lake Como, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "180 x 45 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_928bc5bd142f4b83b9add5ce3ef8ce12~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -31,11 +49,20 @@
   },
   {
     "slug": "bellagio-3",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 120,
-    "description": "Composizione: 100% cashmere Dimensioni: 180 x 45 cm Finitura: orlo rifinito a mano Logo ricamato in filo marrone Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 180 x 45 cm Finitura: orlo rifinito a mano Logo ricamato in filo marrone Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% cashmere Dimensions: 180 x 45 cm Finish: hand-finished hem Logo embroidered in brown thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by Mediterranean elegance, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "180 x 45 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_b7161595e0374515ab41e7e87fca0ee0~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -46,11 +73,20 @@
   },
   {
     "slug": "bellagio-4",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 180,
-    "description": "Composizione: 100% cashmere Dimensioni: 180 x 70 cm Finitura: orlo rifinito a mano Logo ricamato in filo rosso Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 180 x 70 cm Finitura: orlo rifinito a mano Logo ricamato in filo rosso Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% cashmere Dimensions: 180 x 70 cm Finish: hand-finished hem Logo embroidered in red thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by Mediterranean elegance, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "180 x 70 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_64aea6941447451496163f0df39b70eb~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -61,11 +97,20 @@
   },
   {
     "slug": "bellagio-5",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 270,
-    "description": "Composizione: 100% cashmere Dimensioni: 140 x 140 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 140 x 140 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% cashmere Dimensions: 140 x 140 cm Finish: hand-finished hem Logo embroidered in white thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by Mediterranean elegance, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "140 x 140 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_f148546deda948f198fd23fcec94eae9~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -76,11 +121,20 @@
   },
   {
     "slug": "bellagio-6",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 270,
-    "description": "Composizione: 100% cashmere Dimensioni: 140 x 140 cm Finitura: orlo rifinito a mano Logo ricamato in filo bordeaux Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 140 x 140 cm Finitura: orlo rifinito a mano Logo ricamato in filo bordeaux Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% cashmere Dimensions: 140 x 140 cm Finish: hand-finished hem Logo embroidered in burgundy thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by Mediterranean elegance, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "140 x 140 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_1e36b5e0abcf450eb59050f7b54164b3~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -91,11 +145,20 @@
   },
   {
     "slug": "bellagio",
-    "name": "Bellagio",
+    "name": {
+      "it": "Bellagio",
+      "en": "Bellagio"
+    },
     "sku": "G6341",
     "price": 180,
-    "description": "Composizione: 100% cashmere Dimensioni: 180 x 70 cm Finitura: orlo rifinito a mano Logo ricamato in filo marrone Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 180 x 70 cm Finitura: orlo rifinito a mano Logo ricamato in filo marrone Leggera, calda e traspirante Prodotta interamente in Italia La pashmina Bellagio, in puro cashmere, combina leggerezza e morbidezza in un accessorio dal fascino naturale. Ispirata all’eleganza mediterranea, avvolge con calore discreto e aggiunge un tocco di raffinatezza a ogni look.",
+      "en": "Composition: 100% cashmere Dimensions: 180 x 70 cm Finish: hand-finished hem Logo embroidered in brown thread Light, warm and breathable Made entirely in Italy The Bellagio pashmina, in pure cashmere, combines lightness and softness in an accessory of naturally captivating charm. Inspired by Mediterranean elegance, it wraps you in discreet warmth and adds a touch of refinement to any look."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "180 x 70 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_dad899cd51f3465c824c5e51b98b9126~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -106,11 +169,20 @@
   },
   {
     "slug": "cernobbio-azzurra",
-    "name": "Cernobbio",
+    "name": {
+      "it": "Cernobbio",
+      "en": "Cernobbio"
+    },
     "sku": "G6070",
     "price": 150,
-    "description": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Cernobbio, in puro cashmere, racchiude tutta la morbidezza e il calore delle fibre più pregiate. Il suo design essenziale e la texture soffice la rendono l’alleata ideale per un’eleganza quotidiana e senza tempo.",
-    "composition": "100% Cashmere",
+    "description": {
+      "it": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Cernobbio, in puro cashmere, racchiude tutta la morbidezza e il calore delle fibre più pregiate. Il suo design essenziale e la texture soffice la rendono l’alleata ideale per un’eleganza quotidiana e senza tempo.",
+      "en": "Composition: 100% Cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in gold thread Light, warm and breathable Made entirely in Italy The Cernobbio scarf, in pure cashmere, captures all the softness and warmth of the finest fibres. Its essential design and soft texture make it the ideal companion for timeless, everyday elegance."
+    },
+    "composition": {
+      "it": "100% Cashmere",
+      "en": "100% Cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_3ccd9aefbaca4c5d9363c8711f5b3338~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -121,11 +193,20 @@
   },
   {
     "slug": "cernobbio-beige",
-    "name": "Cernobbio",
+    "name": {
+      "it": "Cernobbio",
+      "en": "Cernobbio"
+    },
     "sku": "G6070",
     "price": 150,
-    "description": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Cernobbio, in puro cashmere, racchiude tutta la morbidezza e il calore delle fibre più pregiate. Il suo design essenziale e la texture soffice la rendono l’alleata ideale per un’eleganza quotidiana e senza tempo.",
-    "composition": "100% Cashmere",
+    "description": {
+      "it": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Cernobbio, in puro cashmere, racchiude tutta la morbidezza e il calore delle fibre più pregiate. Il suo design essenziale e la texture soffice la rendono l’alleata ideale per un’eleganza quotidiana e senza tempo.",
+      "en": "Composition: 100% Cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in gold thread Light, warm and breathable Made entirely in Italy The Cernobbio scarf, in pure cashmere, captures all the softness and warmth of the finest fibres. Its essential design and soft texture make it the ideal companion for timeless, everyday elegance."
+    },
+    "composition": {
+      "it": "100% Cashmere",
+      "en": "100% Cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_0db62e090d464f1aa1065765bf6deb39~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -136,11 +217,20 @@
   },
   {
     "slug": "cernobbio-grigia",
-    "name": "Cernobbio",
+    "name": {
+      "it": "Cernobbio",
+      "en": "Cernobbio"
+    },
     "sku": "G6070",
     "price": 150,
-    "description": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Cernobbio, in puro cashmere, racchiude tutta la morbidezza e il calore delle fibre più pregiate. Il suo design essenziale e la texture soffice la rendono l’alleata ideale per un’eleganza quotidiana e senza tempo.",
-    "composition": "100% Cashmere",
+    "description": {
+      "it": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Cernobbio, in puro cashmere, racchiude tutta la morbidezza e il calore delle fibre più pregiate. Il suo design essenziale e la texture soffice la rendono l’alleata ideale per un’eleganza quotidiana e senza tempo.",
+      "en": "Composition: 100% Cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in gold thread Light, warm and breathable Made entirely in Italy The Cernobbio scarf, in pure cashmere, captures all the softness and warmth of the finest fibres. Its essential design and soft texture make it the ideal companion for timeless, everyday elegance."
+    },
+    "composition": {
+      "it": "100% Cashmere",
+      "en": "100% Cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_e97ed96c800d485ebbbccdeb3642aa81~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -151,11 +241,20 @@
   },
   {
     "slug": "como-elegante",
-    "name": "Como Elegante",
+    "name": {
+      "it": "Como Elegante",
+      "en": "Como Elegante"
+    },
     "sku": "GL02",
     "price": 75,
-    "description": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard piccolo orizzontale Firma brand posteriore Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como elegante è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
-    "composition": "100% seta",
+    "description": {
+      "it": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard piccolo orizzontale Firma brand posteriore Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como elegante è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
+      "en": "Composition: 100% silk Dimensions: 120 x 7.5 cm Finish: hand-finished hem Small horizontal jacquard logo Brand signature on the back Light, warm and breathable Made entirely in Italy The Como Elegante twilly is a 100% silk accessory, Made in Italy, inspired by the waves of Lake Como and distinguished by an exclusive jacquard pattern. Light, soft and luminous, it is the perfect silk twilly to enrich both formal and casual looks. Versatile and refined, it can be worn around the neck, in the hair, as a slim foulard or as an elegant detail on bags and outfits. A must-have for those who love the quality of Como silk and timeless style."
+    },
+    "composition": {
+      "it": "100% seta",
+      "en": "100% silk"
+    },
     "dimensions": "120 x 7,5 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_6e113b7ba95f4d81854d2300b10860e8~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -166,11 +265,20 @@
   },
   {
     "slug": "como-fluido",
-    "name": "Como Fluido",
+    "name": {
+      "it": "Como Fluido",
+      "en": "Como Fluido"
+    },
     "sku": "GL04",
     "price": 75,
-    "description": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard piccolo orizzontale Firma brand in basso Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como fluido è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
-    "composition": "100% seta",
+    "description": {
+      "it": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard piccolo orizzontale Firma brand in basso Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como fluido è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
+      "en": "Composition: 100% silk Dimensions: 120 x 7.5 cm Finish: hand-finished hem Small horizontal jacquard logo Brand signature at the bottom Light, warm and breathable Made entirely in Italy The Como Fluido twilly is a 100% silk accessory, Made in Italy, inspired by the waves of Lake Como and distinguished by an exclusive jacquard pattern. Light, soft and luminous, it is the perfect silk twilly to enrich both formal and casual looks. Versatile and refined, it can be worn around the neck, in the hair, as a slim foulard or as an elegant detail on bags and outfits. A must-have for those who love the quality of Como silk and timeless style."
+    },
+    "composition": {
+      "it": "100% seta",
+      "en": "100% silk"
+    },
     "dimensions": "120 x 7,5 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_9aaa42a940b94e2bb485ba65f9ee08ed~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -181,11 +289,20 @@
   },
   {
     "slug": "como-leggero",
-    "name": "Como Leggero",
+    "name": {
+      "it": "Como Leggero",
+      "en": "Como Leggero"
+    },
     "sku": "GL03",
     "price": 75,
-    "description": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard piccolo verticale Firma brand posteriore Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como leggero è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
-    "composition": "100% seta",
+    "description": {
+      "it": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard piccolo verticale Firma brand posteriore Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como leggero è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
+      "en": "Composition: 100% silk Dimensions: 120 x 7.5 cm Finish: hand-finished hem Small vertical jacquard logo Brand signature on the back Light, warm and breathable Made entirely in Italy The Como Leggero twilly is a 100% silk accessory, Made in Italy, inspired by the waves of Lake Como and distinguished by an exclusive jacquard pattern. Light, soft and luminous, it is the perfect silk twilly to enrich both formal and casual looks. Versatile and refined, it can be worn around the neck, in the hair, as a slim foulard or as an elegant detail on bags and outfits. A must-have for those who love the quality of Como silk and timeless style."
+    },
+    "composition": {
+      "it": "100% seta",
+      "en": "100% silk"
+    },
     "dimensions": "120 x 7,5 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_f121857550104fc08b32468ff37ea184~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -196,11 +313,20 @@
   },
   {
     "slug": "como-puro",
-    "name": "Como Puro",
+    "name": {
+      "it": "Como Puro",
+      "en": "Como Puro"
+    },
     "sku": "GL01",
     "price": 75,
-    "description": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard grande verticale Firma brand posteriore Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como puro è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
-    "composition": "100% seta",
+    "description": {
+      "it": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard grande verticale Firma brand posteriore Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como puro è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
+      "en": "Composition: 100% silk Dimensions: 120 x 7.5 cm Finish: hand-finished hem Large vertical jacquard logo Brand signature on the back Light, warm and breathable Made entirely in Italy The Como Puro twilly is a 100% silk accessory, Made in Italy, inspired by the waves of Lake Como and distinguished by an exclusive jacquard pattern. Light, soft and luminous, it is the perfect silk twilly to enrich both formal and casual looks. Versatile and refined, it can be worn around the neck, in the hair, as a slim foulard or as an elegant detail on bags and outfits. A must-have for those who love the quality of Como silk and timeless style."
+    },
+    "composition": {
+      "it": "100% seta",
+      "en": "100% silk"
+    },
     "dimensions": "120 x 7,5 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_7a44b8b49e5f4d34a23630e75cb6ecb5~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -211,11 +337,20 @@
   },
   {
     "slug": "como",
-    "name": "Como Essenziale",
+    "name": {
+      "it": "Como Essenziale",
+      "en": "Como Essenziale"
+    },
     "sku": "GC00",
     "price": 75,
-    "description": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard grande orizzontale Firma brand in basso Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como essenziale è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
-    "composition": "100% seta",
+    "description": {
+      "it": "Composizione: 100% seta Dimensioni: 120 x 7,5 cm Finitura: orlo rifinito a mano Logo a Jacquard grande orizzontale Firma brand in basso Leggero, caldo e traspirante Prodotto interamente in Italia Il Twilly Como essenziale è un accessorio in seta 100% Made in Italy, ispirato alle onde del Lago di Como e caratterizzato da un esclusivo pattern jacquard. Leggero, morbido e luminoso, è il twilly in seta perfetto per arricchire look formali e casual.Versatile e raffinato, può essere indossato al collo, tra i capelli, come foulard stretto o come elegante dettaglio su borse e outfit. Un must-have per chi ama la qualità della seta comasca e lo stile senza tempo.",
+      "en": "Composition: 100% silk Dimensions: 120 x 7.5 cm Finish: hand-finished hem Large horizontal jacquard logo Brand signature at the bottom Light, warm and breathable Made entirely in Italy The Como Essenziale twilly is a 100% silk accessory, Made in Italy, inspired by the waves of Lake Como and distinguished by an exclusive jacquard pattern. Light, soft and luminous, it is the perfect silk twilly to enrich both formal and casual looks. Versatile and refined, it can be worn around the neck, in the hair, as a slim foulard or as an elegant detail on bags and outfits. A must-have for those who love the quality of Como silk and timeless style."
+    },
+    "composition": {
+      "it": "100% seta",
+      "en": "100% silk"
+    },
     "dimensions": "120 x 7,5 cm",
     "images": [
       "https://static.wixstatic.com/media/b58e91_8229bdfa76db43309b20e568a18fdba0~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -226,11 +361,20 @@
   },
   {
     "slug": "darsena-bianco",
-    "name": "Darsena Bianco",
+    "name": {
+      "it": "Darsena Bianco",
+      "en": "Darsena White"
+    },
     "sku": "D3",
     "price": 40,
-    "description": "Il cappellino Darsena bianco è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato blu navy a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato blu navy a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità bianco unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
-    "composition": "Il cappellino Darsena bianco è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato blu navy a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato blu navy a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità bianco unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+    "description": {
+      "it": "Il cappellino Darsena bianco è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato blu navy a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato blu navy a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità bianco unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+      "en": "The Darsena white cap is a unisex baseball cap in 100% cotton, with a classic six-panel structure, a pre-formed curved peak and a contrast Lake Como logo embroidered in navy blue. A Made in Italy accessory designed for everyday use, with an essential, versatile design.\n\nComposition: 100% cotton\nStructure: Classic six-panel model with pre-formed curved peak\nClosure: Adjustable strap at the back, one size fits all\nLogo: Contrast Lake Como logo embroidered in navy blue on the front panel\nFeatures: Defined structure, breathable fabric, everyday comfort\nOrigin: Italian design and production care, in the textile tradition of Como\n\nCrafted entirely from high-quality natural cotton, the Darsena cap in the white shade combines a clean line with a stable, natural fit. The six-panel structure keeps its defined shape over time, while the adjustable strap ensures a tailored fit for every head. The natural cotton ensures breathability and a constant feeling of freshness, making it suitable both for sunny days and for everyday urban wear. The contrast-embroidered Lake Como logo, inspired by the silhouette of the lake, finishes the front with a distinctive brand detail. Care: hand wash in cold water, air dry while keeping its shape."
+    },
+    "composition": {
+      "it": "Il cappellino Darsena bianco è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato blu navy a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato blu navy a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità bianco unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+      "en": "The Darsena white cap is a unisex baseball cap in 100% cotton, with a classic six-panel structure, a pre-formed curved peak and a contrast Lake Como logo embroidered in navy blue. A Made in Italy accessory designed for everyday use, with an essential, versatile design.\n\nComposition: 100% cotton\nStructure: Classic six-panel model with pre-formed curved peak\nClosure: Adjustable strap at the back, one size fits all\nLogo: Contrast Lake Como logo embroidered in navy blue on the front panel\nFeatures: Defined structure, breathable fabric, everyday comfort\nOrigin: Italian design and production care, in the textile tradition of Como\n\nCrafted entirely from high-quality natural cotton, the Darsena cap in the white shade combines a clean line with a stable, natural fit. The six-panel structure keeps its defined shape over time, while the adjustable strap ensures a tailored fit for every head. The natural cotton ensures breathability and a constant feeling of freshness, making it suitable both for sunny days and for everyday urban wear. The contrast-embroidered Lake Como logo, inspired by the silhouette of the lake, finishes the front with a distinctive brand detail. Care: hand wash in cold water, air dry while keeping its shape."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -240,11 +384,20 @@
   },
   {
     "slug": "darsena-blu",
-    "name": "Darsena Blu",
+    "name": {
+      "it": "Darsena Blu",
+      "en": "Darsena Blue"
+    },
     "sku": "D5",
     "price": 40,
-    "description": "Composizione: Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato bianco a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
-    "composition": "Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato bianco a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
+    "description": {
+      "it": "Composizione: Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato bianco a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
+      "en": "Composition: 100% cotton front, 100% polyester back (mesh) Structure: Trucker model with breathable back panel Closure: Adjustable at the back Logo: Contrast Lake Como logo embroidered in white Features: High ventilation, lightweight, structured front Origin: Italian design and production care The Darsena trucker-style variant is designed for those seeking maximum airflow. The front is made of durable cotton, while the back is composed of a polyester mesh that ensures continuous air flow, ideal for the hottest days or for outdoor activities. A model that combines a sturdy front with the technical lightness of the mesh."
+    },
+    "composition": {
+      "it": "Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato bianco a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
+      "en": "100% cotton front, 100% polyester back (mesh) Structure: Trucker model with breathable back panel Closure: Adjustable at the back Logo: Contrast Lake Como logo embroidered in white Features: High ventilation, lightweight, structured front Origin: Italian design and production care The Darsena trucker-style variant is designed for those seeking maximum airflow. The front is made of durable cotton, while the back is composed of a polyester mesh that ensures continuous air flow, ideal for the hottest days or for outdoor activities. A model that combines a sturdy front with the technical lightness of the mesh."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_e6f29e34a78940fb9c5a45e2d0e1833c~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -254,11 +407,20 @@
   },
   {
     "slug": "darsena-navy",
-    "name": "Darsena Navy",
+    "name": {
+      "it": "Darsena Navy",
+      "en": "Darsena Navy"
+    },
     "sku": "D2",
     "price": 40,
-    "description": "Il cappellino Darsena blu navy è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità blu navy unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
-    "composition": "Il cappellino Darsena blu navy è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità blu navy unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+    "description": {
+      "it": "Il cappellino Darsena blu navy è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità blu navy unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+      "en": "The Darsena navy blue cap is a unisex baseball cap in 100% cotton, with a classic six-panel structure, a pre-formed curved peak and a contrast Lake Como logo embroidered in white. A Made in Italy accessory designed for everyday use, with an essential, versatile design.\n\nComposition: 100% cotton\nStructure: Classic six-panel model with pre-formed curved peak\nClosure: Adjustable strap at the back, one size fits all\nLogo: Contrast Lake Como logo embroidered in white on the front panel\nFeatures: Defined structure, breathable fabric, everyday comfort\nOrigin: Italian design and production care, in the textile tradition of Como\n\nCrafted entirely from high-quality natural cotton, the Darsena cap in the navy blue shade combines a clean line with a stable, natural fit. The six-panel structure keeps its defined shape over time, while the adjustable strap ensures a tailored fit for every head. The natural cotton ensures breathability and a constant feeling of freshness, making it suitable both for sunny days and for everyday urban wear. The contrast-embroidered Lake Como logo, inspired by the silhouette of the lake, finishes the front with a distinctive brand detail. Care: hand wash in cold water, air dry while keeping its shape."
+    },
+    "composition": {
+      "it": "Il cappellino Darsena blu navy è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità blu navy unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+      "en": "The Darsena navy blue cap is a unisex baseball cap in 100% cotton, with a classic six-panel structure, a pre-formed curved peak and a contrast Lake Como logo embroidered in white. A Made in Italy accessory designed for everyday use, with an essential, versatile design.\n\nComposition: 100% cotton\nStructure: Classic six-panel model with pre-formed curved peak\nClosure: Adjustable strap at the back, one size fits all\nLogo: Contrast Lake Como logo embroidered in white on the front panel\nFeatures: Defined structure, breathable fabric, everyday comfort\nOrigin: Italian design and production care, in the textile tradition of Como\n\nCrafted entirely from high-quality natural cotton, the Darsena cap in the navy blue shade combines a clean line with a stable, natural fit. The six-panel structure keeps its defined shape over time, while the adjustable strap ensures a tailored fit for every head. The natural cotton ensures breathability and a constant feeling of freshness, making it suitable both for sunny days and for everyday urban wear. The contrast-embroidered Lake Como logo, inspired by the silhouette of the lake, finishes the front with a distinctive brand detail. Care: hand wash in cold water, air dry while keeping its shape."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_b921b778e24c442a9a59be2c5e50ca27~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -268,11 +430,20 @@
   },
   {
     "slug": "darsena-nero",
-    "name": "Darsena Nero",
+    "name": {
+      "it": "Darsena Nero",
+      "en": "Darsena Black"
+    },
     "sku": "D1",
     "price": 40,
-    "description": "Il cappellino Darsena nero è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità nero unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
-    "composition": "Il cappellino Darsena nero è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità nero unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+    "description": {
+      "it": "Il cappellino Darsena nero è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità nero unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+      "en": "The Darsena black cap is a unisex baseball cap in 100% cotton, with a classic six-panel structure, a pre-formed curved peak and a contrast Lake Como logo embroidered in white. A Made in Italy accessory designed for everyday use, with an essential, versatile design.\n\nComposition: 100% cotton\nStructure: Classic six-panel model with pre-formed curved peak\nClosure: Adjustable strap at the back, one size fits all\nLogo: Contrast Lake Como logo embroidered in white on the front panel\nFeatures: Defined structure, breathable fabric, everyday comfort\nOrigin: Italian design and production care, in the textile tradition of Como\n\nCrafted entirely from high-quality natural cotton, the Darsena cap in the black shade combines a clean line with a stable, natural fit. The six-panel structure keeps its defined shape over time, while the adjustable strap ensures a tailored fit for every head. The natural cotton ensures breathability and a constant feeling of freshness, making it suitable both for sunny days and for everyday urban wear. The contrast-embroidered Lake Como logo, inspired by the silhouette of the lake, finishes the front with a distinctive brand detail. Care: hand wash in cold water, air dry while keeping its shape."
+    },
+    "composition": {
+      "it": "Il cappellino Darsena nero è un berretto baseball unisex in 100% cotone, con struttura classica a sei pannelli, visiera curva preformata e logo Lago di Como ricamato bianco a contrasto. Un accessorio Made in Italy pensato per l'uso quotidiano, dal design essenziale e versatile.\n\nComposizione: 100% cotone\nStruttura: Modello classico a sei pannelli con visiera curva preformata\nChiusura: Fascetta regolabile sul retro, taglia unica\nLogo: Logo Lago di Como ricamato bianco a contrasto sul pannello frontale\nCaratteristiche: Struttura definita, tessuto traspirante, comfort quotidiano\nOrigine: Design e cura produttiva italiana, nella tradizione tessile di Como\n\nRealizzato interamente in cotone naturale di alta qualità, il cappellino Darsena nella tonalità nero unisce una linea pulita a una vestibilità stabile e naturale. La struttura a sei pannelli mantiene la forma definita nel tempo, mentre la fascetta regolabile garantisce una calzata su misura per ogni testa. Il cotone naturale assicura traspirabilità e una sensazione di freschezza costante, rendendolo adatto sia alle giornate di sole sia all'uso urbano di tutti i giorni. Il logo Lago di Como ricamato a contrasto, ispirato alla silhouette del lario, rifinisce il fronte con un dettaglio distintivo del marchio. Cura: lavaggio a mano in acqua fredda, asciugatura all'aria mantenendo la forma.",
+      "en": "The Darsena black cap is a unisex baseball cap in 100% cotton, with a classic six-panel structure, a pre-formed curved peak and a contrast Lake Como logo embroidered in white. A Made in Italy accessory designed for everyday use, with an essential, versatile design.\n\nComposition: 100% cotton\nStructure: Classic six-panel model with pre-formed curved peak\nClosure: Adjustable strap at the back, one size fits all\nLogo: Contrast Lake Como logo embroidered in white on the front panel\nFeatures: Defined structure, breathable fabric, everyday comfort\nOrigin: Italian design and production care, in the textile tradition of Como\n\nCrafted entirely from high-quality natural cotton, the Darsena cap in the black shade combines a clean line with a stable, natural fit. The six-panel structure keeps its defined shape over time, while the adjustable strap ensures a tailored fit for every head. The natural cotton ensures breathability and a constant feeling of freshness, making it suitable both for sunny days and for everyday urban wear. The contrast-embroidered Lake Como logo, inspired by the silhouette of the lake, finishes the front with a distinctive brand detail. Care: hand wash in cold water, air dry while keeping its shape."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_4c95bebbb8a141b4a44c0340182bbe97~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -282,11 +453,20 @@
   },
   {
     "slug": "darsena-verde",
-    "name": "Darsena Verde",
+    "name": {
+      "it": "Darsena Verde",
+      "en": "Darsena Green"
+    },
     "sku": "D4",
     "price": 40,
-    "description": "Composizione: Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato blu navy a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
-    "composition": "Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato blu navy a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
+    "description": {
+      "it": "Composizione: Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato blu navy a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
+      "en": "Composition: 100% cotton front, 100% polyester back (mesh) Structure: Trucker model with breathable back panel Closure: Adjustable at the back Logo: Contrast Lake Como logo embroidered in navy blue Features: High ventilation, lightweight, structured front Origin: Italian design and production care The Darsena trucker-style variant is designed for those seeking maximum airflow. The front is made of durable cotton, while the back is composed of a polyester mesh that ensures continuous air flow, ideal for the hottest days or for outdoor activities. A model that combines a sturdy front with the technical lightness of the mesh."
+    },
+    "composition": {
+      "it": "Frontale 100% cotone, retro 100% poliestere (rete) Struttura: Modello trucker con pannello posteriore traspirante Chiusura: Regolabile sul retro Logo: Logo Lago di Como ricamato blu navy a contrasto Caratteristiche: Alta ventilazione, leggero, frontale strutturato Origine: Design e cura produttiva italiana La variante Darsena in stile trucker è progettata per chi cerca la massima aerazione. Il frontale è realizzato in cotone resistente, mentre la parte posteriore è composta da una rete in poliestere che garantisce un flusso d'aria continuo, ideale per le giornate più calde o per le attività all'aperto. Un modello che coniuga la robustezza frontale con la leggerezza tecnica della rete.",
+      "en": "100% cotton front, 100% polyester back (mesh) Structure: Trucker model with breathable back panel Closure: Adjustable at the back Logo: Contrast Lake Como logo embroidered in navy blue Features: High ventilation, lightweight, structured front Origin: Italian design and production care The Darsena trucker-style variant is designed for those seeking maximum airflow. The front is made of durable cotton, while the back is composed of a polyester mesh that ensures continuous air flow, ideal for the hottest days or for outdoor activities. A model that combines a sturdy front with the technical lightness of the mesh."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_a8a624e8836841a78756d38d5067c2ff~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -295,11 +475,20 @@
   },
   {
     "slug": "lario-1",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L2",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto composto da 95% cotone e 5% elastan, unisce la naturale morbidezza del cotone alla capacità di adattarsi alle forme offerta dall'elastan, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto composto da 95% cotone e 5% elastan, unisce la naturale morbidezza del cotone alla capacità di adattarsi alle forme offerta dall'elastan, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a fabric composed of 95% cotton and 5% elastane, it combines the natural softness of cotton with the body-adapting stretch of elastane, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 95% cotton, 5% elastane Model: Short-sleeve crew neck Features: Stretch fabric, breathable, shape-retaining Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "95% cotton, 5% elastane Model: Short-sleeve crew neck Features: Stretch fabric, breathable, shape-retaining Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_e9e62902bbed4ae4963738ab0861a880~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -309,11 +498,20 @@
   },
   {
     "slug": "lario-2",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L3",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a 100% cotton fabric, it combines the natural softness of cotton with a comfortable fit, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_a8b75a42e66d4998b7413ef6cc4ef931~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -323,11 +521,20 @@
   },
   {
     "slug": "lario-3",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L4",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a 100% cotton fabric, it combines the natural softness of cotton with a comfortable fit, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_0267e501d0464f4f8289dc129da6e95f~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -337,11 +544,20 @@
   },
   {
     "slug": "lario-4",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L5",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a 100% cotton fabric, it combines the natural softness of cotton with a comfortable fit, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_a4ae8a2d4c074c97991b40d66b2abe9e~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -351,11 +567,20 @@
   },
   {
     "slug": "lario-5",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L6",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a 100% cotton fabric, it combines the natural softness of cotton with a comfortable fit, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_22dc709a25d847fdb9c5dd5422f03c83~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -365,11 +590,20 @@
   },
   {
     "slug": "lario-6",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L7",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto 100% Cotone, unisce la naturale morbidezza del cotone a una vestibilità confortevole, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a 100% cotton fabric, it combines the natural softness of cotton with a comfortable fit, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "100% Cotone Modello: Girocollo a manica corta Caratteristiche: Tessuto traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "100% cotton Model: Short-sleeve crew neck Features: Breathable, shape-retaining fabric Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_9dc879fafef045659635f1a7f3399120~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -379,11 +613,20 @@
   },
   {
     "slug": "lario",
-    "name": "Lario",
+    "name": {
+      "it": "Lario",
+      "en": "Lario"
+    },
     "sku": "L1",
     "price": 45,
-    "description": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto composto da 95% cotone e 5% elastan, unisce la naturale morbidezza del cotone alla capacità di adattarsi alle forme offerta dall'elastan, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
-    "composition": "95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+    "description": {
+      "it": "La T-shirt Lario offre una vestibilità fluida e curata. Realizzata in un tessuto composto da 95% cotone e 5% elastan, unisce la naturale morbidezza del cotone alla capacità di adattarsi alle forme offerta dall'elastan, garantendo libertà di movimento e una forma che permane inalterata nel tempo. Un capo essenziale, costruito con attenzione ai dettagli per rispondere a un’esigenza di comfort quotidiano e pulizia estetica. Composizione: 95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "The Lario t-shirt offers a fluid, carefully crafted fit. Made from a fabric composed of 95% cotton and 5% elastane, it combines the natural softness of cotton with the body-adapting stretch of elastane, ensuring freedom of movement and a shape that remains unaltered over time. An essential piece, constructed with attention to detail to answer a need for everyday comfort and aesthetic clarity. Composition: 95% cotton, 5% elastane Model: Short-sleeve crew neck Features: Stretch fabric, breathable, shape-retaining Origin: Made entirely in Italy in the Como textile district"
+    },
+    "composition": {
+      "it": "95% cotone, 5% elastan Modello: Girocollo a manica corta Caratteristiche: Tessuto elasticizzato, traspirante, indeformabile Origine: Prodotto interamente in Italia nel distretto tessile di Como",
+      "en": "95% cotton, 5% elastane Model: Short-sleeve crew neck Features: Stretch fabric, breathable, shape-retaining Origin: Made entirely in Italy in the Como textile district"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_80f1bd290d274e72bbd62ca413581939~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -393,11 +636,20 @@
   },
   {
     "slug": "melzi-1",
-    "name": "Melzi",
+    "name": {
+      "it": "Melzi",
+      "en": "Melzi"
+    },
     "sku": "",
     "price": 65,
-    "description": "Il pantaloncino Melzi interpreta il comfort estivo attraverso la purezza del 100% lino. La fibra, scelta per la sua naturale traspirabilità e freschezza, offre una vestibilità che si adatta con disinvoltura ai momenti di relax. La lavorazione cura ogni aspetto, dalla scelta dei materiali alla costruzione, garantendo un capo leggero e definito che mantiene il suo carattere nel tempo. Composizione: 100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
-    "composition": "100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
+    "description": {
+      "it": "Il pantaloncino Melzi interpreta il comfort estivo attraverso la purezza del 100% lino. La fibra, scelta per la sua naturale traspirabilità e freschezza, offre una vestibilità che si adatta con disinvoltura ai momenti di relax. La lavorazione cura ogni aspetto, dalla scelta dei materiali alla costruzione, garantendo un capo leggero e definito che mantiene il suo carattere nel tempo. Composizione: 100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
+      "en": "The Melzi shorts interpret summer comfort through the purity of 100% linen. The fibre, chosen for its natural breathability and freshness, offers a fit that adapts effortlessly to moments of relaxation. The craftsmanship cares for every aspect, from the choice of materials to the construction, ensuring a light, well-defined garment that keeps its character over time. Composition: 100% high-quality linen Construction: Elastic waistband with adjustable drawstring in coordinating fabric Logo: Contrast embroidered logo Features: Cool, breathable, with a natural, well-defined texture Origin: Made entirely in Italy"
+    },
+    "composition": {
+      "it": "100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
+      "en": "100% high-quality linen Construction: Elastic waistband with adjustable drawstring in coordinating fabric Logo: Contrast embroidered logo Features: Cool, breathable, with a natural, well-defined texture Origin: Made entirely in Italy"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -408,11 +660,20 @@
   },
   {
     "slug": "melzi",
-    "name": "Melzi",
+    "name": {
+      "it": "Melzi",
+      "en": "Melzi"
+    },
     "sku": "",
     "price": 65,
-    "description": "Il pantaloncino Melzi interpreta il comfort estivo attraverso la purezza del 100% lino. La fibra, scelta per la sua naturale traspirabilità e freschezza, offre una vestibilità che si adatta con disinvoltura ai momenti di relax. La lavorazione cura ogni aspetto, dalla scelta dei materiali alla costruzione, garantendo un capo leggero e definito che mantiene il suo carattere nel tempo. Composizione: 100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
-    "composition": "100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
+    "description": {
+      "it": "Il pantaloncino Melzi interpreta il comfort estivo attraverso la purezza del 100% lino. La fibra, scelta per la sua naturale traspirabilità e freschezza, offre una vestibilità che si adatta con disinvoltura ai momenti di relax. La lavorazione cura ogni aspetto, dalla scelta dei materiali alla costruzione, garantendo un capo leggero e definito che mantiene il suo carattere nel tempo. Composizione: 100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
+      "en": "The Melzi shorts interpret summer comfort through the purity of 100% linen. The fibre, chosen for its natural breathability and freshness, offers a fit that adapts effortlessly to moments of relaxation. The craftsmanship cares for every aspect, from the choice of materials to the construction, ensuring a light, well-defined garment that keeps its character over time. Composition: 100% high-quality linen Construction: Elastic waistband with adjustable drawstring in coordinating fabric Logo: Contrast embroidered logo Features: Cool, breathable, with a natural, well-defined texture Origin: Made entirely in Italy"
+    },
+    "composition": {
+      "it": "100% lino di alta qualità Costruzione: Cinturino elastico con coulisse regolabile in tessuto coordinato Logo: Logo ricamato in contrasto Caratteristiche: Fresco, traspirante, texture naturale e definita Origine: Prodotto interamente in Italia",
+      "en": "100% high-quality linen Construction: Elastic waistband with adjustable drawstring in coordinating fabric Logo: Contrast embroidered logo Features: Cool, breathable, with a natural, well-defined texture Origin: Made entirely in Italy"
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_a341e8d4e66442e4bc33fcd2476368af~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -422,11 +683,20 @@
   },
   {
     "slug": "riva-1",
-    "name": "Riva",
+    "name": {
+      "it": "Riva",
+      "en": "Riva"
+    },
     "sku": "R2",
     "price": 75,
-    "description": "Composizione: 53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia nel distretto tessile di Como La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
-    "composition": "53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia nel distretto tessile di Como La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
+    "description": {
+      "it": "Composizione: 53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia nel distretto tessile di Como La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
+      "en": "Composition: 53% linen, 47% cotton Model: Mandarin (Korean) collar Closure: Front buttons Logo: Contrast embroidered logo Features: Breathable, balanced structure, soft against the skin Origin: Made entirely in Italy in the Como textile district The Riva shirt offers a refined balance between natural fibre and structure. The blend of 53% linen and 47% cotton combines the characteristic freshness of linen with the soft hand and durability of cotton, offering a comfortable fit and a surface that naturally holds its shape. A garment designed for everyday use, with carefully crafted construction details to ensure elegance and breathability."
+    },
+    "composition": {
+      "it": "53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia nel distretto tessile di Como La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
+      "en": "53% linen, 47% cotton Model: Mandarin (Korean) collar Closure: Front buttons Logo: Contrast embroidered logo Features: Breathable, balanced structure, soft against the skin Origin: Made entirely in Italy in the Como textile district The Riva shirt offers a refined balance between natural fibre and structure. The blend of 53% linen and 47% cotton combines the characteristic freshness of linen with the soft hand and durability of cotton, offering a comfortable fit and a surface that naturally holds its shape. A garment designed for everyday use, with carefully crafted construction details to ensure elegance and breathability."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_f44d83eee24c4e9d986b9c183bcfcccc~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -437,11 +707,20 @@
   },
   {
     "slug": "riva",
-    "name": "Riva",
+    "name": {
+      "it": "Riva",
+      "en": "Riva"
+    },
     "sku": "R1",
     "price": 75,
-    "description": "Composizione: 53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
-    "composition": "53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
+    "description": {
+      "it": "Composizione: 53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
+      "en": "Composition: 53% linen, 47% cotton Model: Mandarin (Korean) collar Closure: Front buttons Logo: Contrast embroidered logo Features: Breathable, balanced structure, soft against the skin Origin: Made entirely in Italy The Riva shirt offers a refined balance between natural fibre and structure. The blend of 53% linen and 47% cotton combines the characteristic freshness of linen with the soft hand and durability of cotton, offering a comfortable fit and a surface that naturally holds its shape. A garment designed for everyday use, with carefully crafted construction details to ensure elegance and breathability."
+    },
+    "composition": {
+      "it": "53% lino, 47% cotone Modello: Collo alla coreana (mandarino) Chiusura: Bottoni frontali Logo: Logo ricamato in contrasto Caratteristiche: Traspirante, struttura bilanciata, morbida sulla pelle Origine: Prodotto interamente in Italia La camicia Riva propone un equilibrio ricercato tra fibra naturale e struttura. Il mix di 53% lino e 47% cotone unisce la freschezza caratteristica del lino alla mano morbida e alla resistenza del cotone, offrendo una vestibilità confortevole e una superficie che mantiene la forma con naturalezza. Un capo pensato per un uso quotidiano, curato nei dettagli costruttivi per garantire eleganza e traspirabilità.",
+      "en": "53% linen, 47% cotton Model: Mandarin (Korean) collar Closure: Front buttons Logo: Contrast embroidered logo Features: Breathable, balanced structure, soft against the skin Origin: Made entirely in Italy The Riva shirt offers a refined balance between natural fibre and structure. The blend of 53% linen and 47% cotton combines the characteristic freshness of linen with the soft hand and durability of cotton, offering a comfortable fit and a surface that naturally holds its shape. A garment designed for everyday use, with carefully crafted construction details to ensure elegance and breathability."
+    },
     "dimensions": "",
     "images": [
       "https://static.wixstatic.com/media/a34b56_c6824eec98ab4f7cbe4ff88b8c4594bf~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -452,11 +731,20 @@
   },
   {
     "slug": "tivan",
-    "name": "Tivan",
+    "name": {
+      "it": "Tivan",
+      "en": "Tivan"
+    },
     "sku": "T1",
     "price": 45,
-    "description": "Composizione: 100% cotone di alta qualità Dimensioni: 154x100 cm Finitura: Orlo rifinito a mano con cura artigianale Logo: Logo ricamato in filo blu Caratteristiche: Alta capacità assorbente, tessitura consistente, traspirante Origine: Prodotto interamente in Italia nel distretto tessile di Como Il telo mare Tivan è realizzato per offrire una risposta naturale alla ricerca di qualità e praticità. La scelta del 100% cotone assicura una gestione ottimale dell'umidità, garantendo un'asciugatura efficace e una sensazione di freschezza costante sulla pelle, ideale per il relax all'aria aperta.",
-    "composition": "100% cotone di alta qualità",
+    "description": {
+      "it": "Composizione: 100% cotone di alta qualità Dimensioni: 154x100 cm Finitura: Orlo rifinito a mano con cura artigianale Logo: Logo ricamato in filo blu Caratteristiche: Alta capacità assorbente, tessitura consistente, traspirante Origine: Prodotto interamente in Italia nel distretto tessile di Como Il telo mare Tivan è realizzato per offrire una risposta naturale alla ricerca di qualità e praticità. La scelta del 100% cotone assicura una gestione ottimale dell'umidità, garantendo un'asciugatura efficace e una sensazione di freschezza costante sulla pelle, ideale per il relax all'aria aperta.",
+      "en": "Composition: 100% high-quality cotton Dimensions: 154x100 cm Finish: Hand-finished hem with artisanal care Logo: Logo embroidered in blue thread Features: High absorbency, consistent weave, breathable Origin: Made entirely in Italy in the Como textile district The Tivan beach towel is crafted to offer a natural answer to the search for quality and practicality. The choice of 100% cotton ensures optimal moisture management, guaranteeing effective drying and a constant feeling of freshness on the skin, ideal for relaxing in the open air."
+    },
+    "composition": {
+      "it": "100% cotone di alta qualità",
+      "en": "100% high-quality cotton"
+    },
     "dimensions": "154x100 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_7f5a6eb5f5ec474098fb2a72445ec974~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -466,11 +754,20 @@
   },
   {
     "slug": "tremezzo-azzurra",
-    "name": "Tremezzo",
+    "name": {
+      "it": "Tremezzo",
+      "en": "Tremezzo"
+    },
     "sku": "G1964",
     "price": 70,
-    "description": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo blu Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
-    "composition": "100% Lana",
+    "description": {
+      "it": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo blu Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
+      "en": "Composition: 100% Wool Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in blue thread Light, warm and breathable Made entirely in Italy Inspired by Alpine elegance, the Tremezzo scarf in pure wool wraps you in natural warmth and softness. Its light weave and soft hand make it an essential accessory for refined style in every season"
+    },
+    "composition": {
+      "it": "100% Lana",
+      "en": "100% Wool"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_1af2743a614c4ac1b255dd1e53c8f436~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -481,11 +778,20 @@
   },
   {
     "slug": "tremezzo-beige",
-    "name": "Tremezzo",
+    "name": {
+      "it": "Tremezzo",
+      "en": "Tremezzo"
+    },
     "sku": "G1964",
     "price": 70,
-    "description": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
-    "composition": "100% Lana",
+    "description": {
+      "it": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
+      "en": "Composition: 100% Wool Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in gold thread Light, warm and breathable Made entirely in Italy Inspired by Alpine elegance, the Tremezzo scarf in pure wool wraps you in natural warmth and softness. Its light weave and soft hand make it an essential accessory for refined style in every season"
+    },
+    "composition": {
+      "it": "100% Lana",
+      "en": "100% Wool"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_9022b39ae7b347869e4dd45892fa018d~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -496,11 +802,20 @@
   },
   {
     "slug": "tremezzo-bianca",
-    "name": "Tremezzo",
+    "name": {
+      "it": "Tremezzo",
+      "en": "Tremezzo"
+    },
     "sku": "G1964",
     "price": 70,
-    "description": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
-    "composition": "100% Lana",
+    "description": {
+      "it": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
+      "en": "Composition: 100% Wool Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in gold thread Light, warm and breathable Made entirely in Italy Inspired by Alpine elegance, the Tremezzo scarf in pure wool wraps you in natural warmth and softness. Its light weave and soft hand make it an essential accessory for refined style in every season"
+    },
+    "composition": {
+      "it": "100% Lana",
+      "en": "100% Wool"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_5cce86dc18864bee9519ea64ae991c8b~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -511,11 +826,20 @@
   },
   {
     "slug": "tremezzo-nera",
-    "name": "Tremezzo",
+    "name": {
+      "it": "Tremezzo",
+      "en": "Tremezzo"
+    },
     "sku": "G1964",
     "price": 70,
-    "description": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
-    "composition": "100% Lana",
+    "description": {
+      "it": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
+      "en": "Composition: 100% Wool Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in white thread Light, warm and breathable Made entirely in Italy Inspired by Alpine elegance, the Tremezzo scarf in pure wool wraps you in natural warmth and softness. Its light weave and soft hand make it an essential accessory for refined style in every season"
+    },
+    "composition": {
+      "it": "100% Lana",
+      "en": "100% Wool"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_1f7fc2378844448a9283c6bfdb26ae39~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -526,11 +850,20 @@
   },
   {
     "slug": "tremezzo-rosa",
-    "name": "Tremezzo",
+    "name": {
+      "it": "Tremezzo",
+      "en": "Tremezzo"
+    },
     "sku": "G1964",
     "price": 70,
-    "description": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo rosa Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
-    "composition": "100% Lana",
+    "description": {
+      "it": "Composizione: 100% Lana Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo rosa Leggera, calda e traspirante Prodotta interamente in Italia Ispirata all’eleganza alpina, la sciarpa Tremezzo in pura lana avvolge con calore e morbidezza naturali. La trama leggera e la mano soffice la rendono un accessorio essenziale per uno stile raffinato in ogni stagione",
+      "en": "Composition: 100% Wool Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in pink thread Light, warm and breathable Made entirely in Italy Inspired by Alpine elegance, the Tremezzo scarf in pure wool wraps you in natural warmth and softness. Its light weave and soft hand make it an essential accessory for refined style in every season"
+    },
+    "composition": {
+      "it": "100% Lana",
+      "en": "100% Wool"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_0218bc1eb1df48ef9acd0aecc91b068e~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -541,11 +874,20 @@
   },
   {
     "slug": "varenna-azzurra",
-    "name": "Varenna",
+    "name": {
+      "it": "Varenna",
+      "en": "Varenna"
+    },
     "sku": "D000",
     "price": 120,
-    "description": "Composizione: 100% cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo blu Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo blu Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
+      "en": "Composition: 100% cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in blue thread Light, warm and breathable Made entirely in Italy The Varenna scarf, crafted in pure cashmere, unites weightless softness and natural warmth in perfect balance. A refined, timeless accessory designed to accompany every season with essential elegance."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_e76f0bb5106c49df8f2ef2b5d8602b0e~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -556,11 +898,20 @@
   },
   {
     "slug": "varenna-beige",
-    "name": "Varenna",
+    "name": {
+      "it": "Varenna",
+      "en": "Varenna"
+    },
     "sku": "D001",
     "price": 120,
-    "description": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
-    "composition": "100% Cashmere",
+    "description": {
+      "it": "Composizione: 100% Cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo oro Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
+      "en": "Composition: 100% Cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in gold thread Light, warm and breathable Made entirely in Italy The Varenna scarf, crafted in pure cashmere, unites weightless softness and natural warmth in perfect balance. A refined, timeless accessory designed to accompany every season with essential elegance."
+    },
+    "composition": {
+      "it": "100% Cashmere",
+      "en": "100% Cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_aeb0f1560658422586c12f4bcaba4409~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -571,11 +922,20 @@
   },
   {
     "slug": "varenna-grigia",
-    "name": "Varenna",
+    "name": {
+      "it": "Varenna",
+      "en": "Varenna"
+    },
     "sku": "D003",
     "price": 120,
-    "description": "Composizione: 100% cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo bianco Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
+      "en": "Composition: 100% cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in white thread Light, warm and breathable Made entirely in Italy The Varenna scarf, crafted in pure cashmere, unites weightless softness and natural warmth in perfect balance. A refined, timeless accessory designed to accompany every season with essential elegance."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_6742414370ca400dab51b43a1d2e2f73~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
@@ -586,11 +946,20 @@
   },
   {
     "slug": "varenna-viola",
-    "name": "Varenna",
+    "name": {
+      "it": "Varenna",
+      "en": "Varenna"
+    },
     "sku": "D002",
     "price": 120,
-    "description": "Composizione: 100% cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo viola Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
-    "composition": "100% cashmere",
+    "description": {
+      "it": "Composizione: 100% cashmere Dimensioni: 190 x 35 cm Finitura: orlo rifinito a mano Logo ricamato in filo viola Leggera, calda e traspirante Prodotta interamente in Italia La sciarpa Varenna, realizzata in puro cashmere, unisce morbidezza impalpabile e calore naturale in un equilibrio perfetto. Un accessorio raffinato e senza tempo, pensato per accompagnare ogni stagione con eleganza essenziale.",
+      "en": "Composition: 100% cashmere Dimensions: 190 x 35 cm Finish: hand-finished hem Logo embroidered in purple thread Light, warm and breathable Made entirely in Italy The Varenna scarf, crafted in pure cashmere, unites weightless softness and natural warmth in perfect balance. A refined, timeless accessory designed to accompany every season with essential elegance."
+    },
+    "composition": {
+      "it": "100% cashmere",
+      "en": "100% cashmere"
+    },
     "dimensions": "190 x 35 cm",
     "images": [
       "https://static.wixstatic.com/media/a34b56_9f32bcd4e4c842bf9bf898d3fb1ff939~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",

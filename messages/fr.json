@@ -366,7 +366,12 @@
       "allDetails": "Tous les détails"
     },
     "wishlistAdd": "Ajouter aux favoris",
-    "wishlistRemove": "Retirer des favoris"
+    "wishlistRemove": "Retirer des favoris",
+    "quickView": "Voir le produit",
+    "reviews": {
+      "eyebrow": "Avis",
+      "title": "Ce que l'on dit de <em>{name}</em>"
+    }
   },
   "cart": {
     "title": "Votre panier",
@@ -1095,5 +1100,10 @@
     "subtitle": "Une erreur inattendue s'est produite. Réessayez ou retournez à l'accueil.",
     "retry": "Réessayer",
     "home": "Retour à l'accueil"
+  },
+  "search": {
+    "placeholder": "Rechercher des produits...",
+    "noResults": "Aucun produit trouvé pour « {query} »",
+    "minChars": "Saisissez au moins 2 caractères"
   }
 }

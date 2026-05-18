@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Search } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PRODUCTS } from '@/data/catalog';
+import { useTranslations, useLocale } from 'next-intl';
+import { getProducts } from '@/data/catalog';
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(n);
@@ -13,6 +14,9 @@ function formatPrice(n: number) {
 export function SearchOverlay({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations('search');
+  const locale = useLocale();
+  const products = getProducts(locale);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -22,7 +26,7 @@ export function SearchOverlay({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   const results = query.trim().length >= 2
-    ? PRODUCTS.filter((p) => {
+    ? products.filter((p) => {
         const q = query.toLowerCase();
         return (
           p.name.toLowerCase().includes(q) ||
@@ -46,7 +50,7 @@ export function SearchOverlay({ onClose }: { onClose: () => void }) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Cerca prodotti..."
+            placeholder={t('placeholder')}
             className="flex-1 bg-transparent text-base outline-none placeholder:text-soft-black/30 text-soft-black"
           />
           <button onClick={onClose} className="text-soft-black/40 hover:text-soft-black transition-colors">
@@ -83,13 +87,13 @@ export function SearchOverlay({ onClose }: { onClose: () => void }) {
 
         {query.trim().length >= 2 && results.length === 0 && (
           <div className="px-6 py-10 text-center">
-            <p className="text-sm font-light text-soft-black/50">Nessun prodotto trovato per &ldquo;{query}&rdquo;</p>
+            <p className="text-sm font-light text-soft-black/50">{t('noResults', { query })}</p>
           </div>
         )}
 
         {query.trim().length < 2 && (
           <div className="px-6 py-8 text-center">
-            <p className="text-xs uppercase tracking-[0.2em] text-soft-black/30">Digita almeno 2 caratteri</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-soft-black/30">{t('minChars')}</p>
           </div>
         )}
       </div>

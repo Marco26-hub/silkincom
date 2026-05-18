@@ -4,17 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import type { Product } from '@/data/catalog';
-
-const MATERIAL_LABEL: Record<string, string> = {
-  cashmere: 'Cashmere',
-  lana: 'Lana',
-  seta: 'Seta',
-  lino: 'Lino',
-  cotone: 'Cotone',
-  misto: 'Mixed',
-};
+import { useTranslations, useLocale } from 'next-intl';
+import { getMaterials, type Product } from '@/data/catalog';
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', {
@@ -30,7 +21,10 @@ export function ProductCard({ product }: { product: Product }) {
   const img2 = product.images[1] || '';
   const [wished, setWished] = useState(false);
   const t = useTranslations('product');
-  const materialLabel = product.material ? MATERIAL_LABEL[product.material] : '';
+  const locale = useLocale();
+  const materialLabel = product.material
+    ? getMaterials(locale).find((m) => m.slug === product.material)?.name ?? ''
+    : '';
   const shortComp = product.composition?.split(/[\.\n]/)[0]?.trim() || '';
 
   return (
@@ -106,7 +100,7 @@ export function ProductCard({ product }: { product: Product }) {
           {/* Quick view label — bottom hover */}
           <div className="absolute left-0 right-0 bottom-0 py-3 bg-gradient-to-t from-soft-black/90 via-soft-black/60 to-transparent text-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-out">
             <span className="text-[10px] uppercase tracking-[0.35em] text-warm-white font-medium">
-              Vedi prodotto
+              {t('quickView')}
             </span>
           </div>
         </div>

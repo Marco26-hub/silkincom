@@ -1,15 +1,16 @@
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
-import { CATEGORIES, COLLECTIONS, MATERIALS, PRODUCTS, getProductsByCategory, getProductsByCollection, getProductsByMaterial, type Material } from '@/data/catalog';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { TAXONOMY_SLUGS, getCategories, getCollections, getMaterials, getProducts } from '@/data/catalog';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 
 export function generateStaticParams() {
-  return [...CATEGORIES, ...COLLECTIONS, ...MATERIALS].map((c) => ({ slug: c.slug }));
+  return TAXONOMY_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const cat = [...CATEGORIES, ...COLLECTIONS, ...MATERIALS].find((c) => c.slug === slug);
+  const locale = await getLocale();
+  const cat = [...getCategories(locale), ...getCollections(locale), ...getMaterials(locale)].find((c) => c.slug === slug);
   if (!cat) return {};
   return {
     title: `${cat.name} — SILKinCOM`,
@@ -19,9 +20,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CollezioneSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const collection = COLLECTIONS.find((c) => c.slug === slug);
-  const category = CATEGORIES.find((c) => c.slug === slug);
-  const material = MATERIALS.find((m) => m.slug === slug);
+  const locale = await getLocale();
+  const collection = getCollections(locale).find((c) => c.slug === slug);
+  const category = getCategories(locale).find((c) => c.slug === slug);
+  const material = getMaterials(locale).find((m) => m.slug === slug);
   const meta = collection || category || material;
   if (!meta) notFound();
 
@@ -47,10 +49,10 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
       <section className="py-16 bg-warm-white">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <ProductFilters
-            products={PRODUCTS}
-            categories={CATEGORIES}
-            materials={MATERIALS}
-            collections={COLLECTIONS}
+            products={getProducts(locale)}
+            categories={getCategories(locale)}
+            materials={getMaterials(locale)}
+            collections={getCollections(locale)}
           />
         </div>
       </section>

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
-import { COLLECTIONS, CATEGORIES, MATERIALS, PRODUCTS } from '@/data/catalog';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { getCollections, getCategories, getMaterials, getProducts } from '@/data/catalog';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 
 export const metadata = {
@@ -12,6 +12,10 @@ export const metadata = {
 
 export default async function CollezioniPage() {
   const t = await getTranslations('collezioni');
+  const locale = await getLocale();
+  const collections = getCollections(locale);
+  const categories = getCategories(locale);
+  const materials = getMaterials(locale);
   return (
     <>
       <section className="pt-40 pb-16 bg-ivory">
@@ -32,7 +36,7 @@ export default async function CollezioniPage() {
       <section className="py-20 bg-warm-white">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-            {COLLECTIONS.map((c) => (
+            {collections.map((c) => (
               <Link
                 key={c.slug}
                 href={`/collezioni/${c.slug}`}
@@ -78,7 +82,7 @@ export default async function CollezioniPage() {
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            {MATERIALS.map((m) => (
+            {materials.map((m) => (
               <Link
                 key={m.slug}
                 href={`/collezioni/${m.slug}`}
@@ -112,7 +116,7 @@ export default async function CollezioniPage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-pearl-grey/30">
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <Link
                 key={c.slug}
                 href={`/collezioni/${c.slug}`}
@@ -176,7 +180,7 @@ export default async function CollezioniPage() {
               <em className="italic">{t('allTitle')}</em>
             </h2>
           </div>
-          <ProductFilters products={PRODUCTS} categories={CATEGORIES} materials={MATERIALS} collections={COLLECTIONS} />
+          <ProductFilters products={getProducts(locale)} categories={categories} materials={materials} collections={collections} />
         </div>
       </section>
     </>

@@ -366,7 +366,12 @@
       "allDetails": "Alle details"
     },
     "wishlistAdd": "Toevoegen aan favorieten",
-    "wishlistRemove": "Verwijderen uit favorieten"
+    "wishlistRemove": "Verwijderen uit favorieten",
+    "quickView": "Bekijk product",
+    "reviews": {
+      "eyebrow": "Recensies",
+      "title": "Wat men zegt over <em>{name}</em>"
+    }
   },
   "cart": {
     "title": "Uw winkelmand",
@@ -1095,5 +1100,10 @@
     "subtitle": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of ga terug naar de startpagina.",
     "retry": "Opnieuw proberen",
     "home": "Terug naar home"
+  },
+  "search": {
+    "placeholder": "Producten zoeken...",
+    "noResults": "Geen producten gevonden voor “{query}”",
+    "minChars": "Typ minstens 2 tekens"
   }
 }

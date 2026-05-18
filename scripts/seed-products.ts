@@ -20,13 +20,15 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
+type L10n = { it: string; en?: string };
+
 type RawProduct = {
   slug: string;
-  name: string;
+  name: L10n;
   sku: string;
   price: number;
-  description: string;
-  composition: string;
+  description: L10n;
+  composition: L10n;
   dimensions: string;
   images: string[];
 };
@@ -41,11 +43,11 @@ async function main() {
       .upsert(
         {
           slug: p.slug,
-          name: p.name,
+          name: p.name.it,
           sku: p.sku,
           price: p.price,
-          description_long: p.description,
-          composition: p.composition,
+          description_long: p.description.it,
+          composition: p.composition.it,
           dimensions: p.dimensions,
           status: 'published',
           currency: 'EUR',
@@ -66,7 +68,7 @@ async function main() {
       const images = p.images.map((url, idx) => ({
         product_id: product.id,
         image_url: url,
-        alt_text: p.name,
+        alt_text: p.name.it,
         display_order: idx,
         is_primary: idx === 0,
       }));

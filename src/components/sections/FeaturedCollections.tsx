@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { COLLECTIONS } from '@/data/catalog';
 
 const FEATURED_SLUGS = ['inverno', 'iconica', 'primavera'] as const;
 const FEATURED_IMAGES: Record<string, string> = {
