@@ -75,7 +75,8 @@ async function main() {
       await supabase.from('product_images').insert(images);
     }
 
-    // Seed inventory (default 50 units)
+    // Seed inventory (default 50 units) — only on first insert.
+    // ignoreDuplicates keeps existing stock intact when re-running to sync product text.
     await supabase.from('inventory').upsert(
       {
         product_id: product.id,
@@ -83,7 +84,7 @@ async function main() {
         quantity_available: 50,
         quantity_reserved: 0,
       },
-      { onConflict: 'product_id' }
+      { onConflict: 'product_id', ignoreDuplicates: true }
     );
 
     console.log(`✓ ${p.slug}`);
