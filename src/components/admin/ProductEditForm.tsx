@@ -6,6 +6,8 @@ import { Plus, Trash2 } from 'lucide-react';
 
 type Category = { id: string; name: string };
 type Collection = { id: string; name: string };
+type Composition = { id: string; name: string };
+type ProductSize = { id: string; name: string };
 type Color = { id: string; name: string; hex_code: string };
 type Material = { id: string; name: string };
 type Variant = {
@@ -25,6 +27,8 @@ export function ProductEditForm({
   product,
   initialCategories = [],
   initialCollections = [],
+  initialCompositions = [],
+  initialSizes = [],
   initialColors = [],
   initialMaterials = [],
   initialVariants = [],
@@ -32,6 +36,8 @@ export function ProductEditForm({
   product: any;
   initialCategories?: Category[];
   initialCollections?: Collection[];
+  initialCompositions?: Composition[];
+  initialSizes?: ProductSize[];
   initialColors?: Color[];
   initialMaterials?: Material[];
   initialVariants?: Variant[];
@@ -55,17 +61,21 @@ export function ProductEditForm({
     seo_description: product.seo_description ?? '',
     category_id: product.category_id ?? '',
     collection_id: product.collection_id ?? '',
+    composition_id: product.composition_id ?? '',
+    size_id: product.size_id ?? '',
   });
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
 
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [collections, setCollections] = useState<Collection[]>(initialCollections);
+  const [compositions, setCompositions] = useState<Composition[]>(initialCompositions);
+  const [sizes, setSizes] = useState<ProductSize[]>(initialSizes);
   const [colors, setColors] = useState<Color[]>(initialColors);
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [variants, setVariants] = useState<Variant[]>(initialVariants);
 
-  const [creating, setCreating] = useState<'category' | 'collection' | null>(null);
+  const [creating, setCreating] = useState<'category' | 'collection' | 'composition' | 'size' | null>(null);
 
   function setField<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -84,6 +94,8 @@ export function ProductEditForm({
         compare_at_price: form.compare_at_price ? Number(form.compare_at_price) : null,
         category_id: form.category_id || null,
         collection_id: form.collection_id || null,
+        composition_id: form.composition_id || null,
+        size_id: form.size_id || null,
       }),
     });
     const data = await res.json();
@@ -119,6 +131,34 @@ export function ProductEditForm({
     if (data.data) {
       setCollections((prev) => [...prev, { id: data.data.id, name: data.data.name }]);
       setField('collection_id', data.data.id);
+    }
+    setCreating(null);
+  }
+
+  async function createComposition(name: string) {
+    const res = await fetch('/api/admin/compositions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    if (data.data) {
+      setCompositions((prev) => [...prev, { id: data.data.id, name: data.data.name }]);
+      setField('composition_id', data.data.id);
+    }
+    setCreating(null);
+  }
+
+  async function createSize(name: string) {
+    const res = await fetch('/api/admin/sizes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    if (data.data) {
+      setSizes((prev) => [...prev, { id: data.data.id, name: data.data.name }]);
+      setField('size_id', data.data.id);
     }
     setCreating(null);
   }
@@ -207,10 +247,38 @@ export function ProductEditForm({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Composizione">
-            <input value={form.composition} onChange={(e) => setField('composition', e.target.value)} className={inputCls} />
+            <select
+              value={form.composition_id}
+              onChange={(e) => {
+                if (e.target.value === '__new__') { setCreating('composition'); setField('composition_id', ''); }
+                else setField('composition_id', e.target.value);
+              }}
+              className={inputCls + ' bg-white'}
+            >
+              <option value="">— nessuna —</option>
+              {compositions.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              <option value="__new__">+ Aggiungi composizione</option>
+            </select>
+            {creating === 'composition' && (
+              <InlineCreate placeholder="es. 100% cashmere" onSave={createComposition} onCancel={() => setCreating(null)} />
+            )}
           </Field>
           <Field label="Dimensioni">
-            <input value={form.dimensions} onChange={(e) => setField('dimensions', e.target.value)} className={inputCls} />
+            <select
+              value={form.size_id}
+              onChange={(e) => {
+                if (e.target.value === '__new__') { setCreating('size'); setField('size_id', ''); }
+                else setField('size_id', e.target.value);
+              }}
+              className={inputCls + ' bg-white'}
+            >
+              <option value="">— nessuna —</option>
+              {sizes.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              <option value="__new__">+ Aggiungi dimensione</option>
+            </select>
+            {creating === 'size' && (
+              <InlineCreate placeholder="es. 180 × 45 cm" onSave={createSize} onCancel={() => setCreating(null)} />
+            )}
           </Field>
         </div>
 
