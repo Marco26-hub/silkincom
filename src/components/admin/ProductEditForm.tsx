@@ -87,6 +87,11 @@ export function ProductEditForm({
     e.preventDefault();
     setSaving(true);
     setMsg(null);
+    // Translatable fields changed? -> auto-translate after the save.
+    const textChanged =
+      form.name !== (product.name ?? '') ||
+      form.description_long !== (product.description_long ?? '') ||
+      form.composition !== (product.composition ?? '');
     const res = await fetch(`/api/admin/products/${product.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -103,9 +108,15 @@ export function ProductEditForm({
     });
     const data = await res.json();
     setSaving(false);
-    if (!res.ok) setMsg({ type: 'err', text: data.error ?? 'Errore' });
-    else {
-      setMsg({ type: 'ok', text: 'Salvato' });
+    if (!res.ok) {
+      setMsg({ type: 'err', text: data.error ?? 'Errore' });
+      return;
+    }
+    setMsg({ type: 'ok', text: 'Salvato' });
+    if (textChanged) {
+      // Name/description/composition changed -> refresh the 6 translations.
+      await translate();
+    } else {
       router.refresh();
     }
   }
@@ -373,10 +384,10 @@ export function ProductEditForm({
             disabled={saving || translating}
             className="px-8 py-3 border border-soft-black text-soft-black text-xs uppercase tracking-[0.2em] hover:bg-soft-black hover:text-warm-white transition-colors disabled:opacity-50"
           >
-            {translating ? 'Traduzione in corso…' : 'Traduci nelle altre lingue'}
+            {translating ? 'Traduzione in corso…' : 'Ritraduci ora'}
           </button>
           <span className="text-[11px] text-soft-grey">
-            Traduce nome, descrizione e composizione salvati in en · es · fr · de · pt · nl
+            La traduzione in en · es · fr · de · pt · nl parte da sola quando salvi modifiche a nome, descrizione o composizione.
           </span>
         </div>
       </form>
