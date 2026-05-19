@@ -5,7 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { ProductCard } from '@/components/product/ProductCard';
-import type { Product } from '@/data/catalog';
+import type { Product } from '@/data/catalog-meta';
 
 const containerVariants = {
   hidden: {},

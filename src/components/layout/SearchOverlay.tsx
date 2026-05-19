@@ -5,7 +5,7 @@ import { X, Search } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
-import type { Product } from '@/data/catalog';
+import type { Product } from '@/data/catalog-meta';
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(n);
@@ -28,7 +28,7 @@ export function SearchOverlay({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/products?locale=${locale}`)
+    fetch(`/api/catalog?locale=${locale}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);

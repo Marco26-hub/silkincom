@@ -36,6 +36,24 @@ export async function createServerClient() {
 }
 
 /**
+ * Public read-only client — no cookies, no session. Safe to use inside
+ * `unstable_cache` (cookies() is forbidden there). Reads go through the
+ * anon key and RLS public-select policies, so it only sees published data.
+ */
+export function createPublicClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+}
+
+/**
  * Service Role client — SOLO server-side per operations che bypassano RLS.
  * Mai esporre al client. Mai usare in API public.
  */

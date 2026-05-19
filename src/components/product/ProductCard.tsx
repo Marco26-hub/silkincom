@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { getMaterials, type Product } from '@/data/catalog';
+import { getMaterials, type Product } from '@/data/catalog-meta';
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', {
