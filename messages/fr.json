@@ -373,23 +373,23 @@
     "reviews": {
       "eyebrow": "Avis",
       "title": "Ce que l'on dit de <em>{name}</em>",
-      "summary": "{average} / 5 — based on {count, plural, =1 {# review} other {# reviews}}",
-      "empty": "Be the first to review this product.",
-      "verified": "Verified purchase",
-      "leaveReview": "Leave a review",
+      "summary": "{average} / 5 — {count, plural, =1 {sur la base de # avis} other {sur la base de # avis}}",
+      "empty": "Soyez le premier à donner votre avis sur ce produit.",
+      "verified": "Achat vérifié",
+      "leaveReview": "Laisser un avis",
       "form": {
-        "loginRequired": "You must be signed in to leave a review.",
-        "login": "Sign in",
-        "thankYou": "Thank you. Your review will be visible after moderation.",
-        "ratingRequired": "Please select a rating.",
-        "submitError": "Error submitting review",
-        "networkError": "Network error",
-        "ratingLabel": "Rating",
-        "titleLabel": "Title (optional)",
-        "bodyLabel": "Your review",
-        "submitting": "Submitting…",
-        "submit": "Submit review",
-        "starsAria": "{count} stars"
+        "loginRequired": "Vous devez être connecté pour laisser un avis.",
+        "login": "Se connecter",
+        "thankYou": "Merci. Votre avis sera visible après modération.",
+        "ratingRequired": "Veuillez sélectionner une note.",
+        "submitError": "Erreur lors de l'envoi de l'avis",
+        "networkError": "Erreur réseau",
+        "ratingLabel": "Note",
+        "titleLabel": "Titre (facultatif)",
+        "bodyLabel": "Votre avis",
+        "submitting": "Envoi en cours…",
+        "submit": "Envoyer l'avis",
+        "starsAria": "{count} étoiles"
       }
     }
   },
@@ -1131,130 +1131,130 @@
     "home": "Retour à l'accueil"
   },
   "search": {
-    "placeholder": "Rechercher des produits...",
-    "noResults": "Aucun produit trouvé pour « {query} »",
+    "placeholder": "Rechercher des produits…",
+    "noResults": "Aucun produit trouvé pour « {query} »",
     "minChars": "Saisissez au moins 2 caractères"
   },
   "journal": {
     "eyebrow": "Journal",
-    "title": "Threads of <em>Como</em>",
-    "intro": "Materials, silk and stories of style from the heart of the Como silk district. Explore our heritage and our vision.",
+    "title": "Fils de <em>Como</em>",
+    "intro": "Matières, soie et histoires de style au cœur du district de la soie de Côme. Explorez notre patrimoine et notre vision.",
     "atelier": {
       "eyebrow": "Atelier",
-      "title": "The weave in <em>our hands</em>",
-      "quote": "Every thread tells of centuries of Como tradition.",
-      "quoteAuthor": "Master Weaver",
-      "loomEyebrow": "The loom",
+      "title": "La trame entre <em>nos mains</em>",
+      "quote": "Chaque fil raconte des siècles de tradition de Côme.",
+      "quoteAuthor": "Maître Tisserand",
+      "loomEyebrow": "Le métier à tisser",
       "techniqueLabel": "Technique",
-      "techniqueValue": "Silk twill handcrafted on a Jacquard loom.",
-      "originLabel": "Origin",
-      "originValue": "Como silk district — a heritage since the 15th century.",
-      "timeLabel": "Time",
-      "timeValue": "Every metre demands hours of artisanal weaving.",
-      "mobileCaption": "Twill — 100% Silk — Como"
+      "techniqueValue": "Twill de soie façonné à la main sur métier Jacquard.",
+      "originLabel": "Origine",
+      "originValue": "District de la soie de Côme — un héritage depuis le XVe siècle.",
+      "timeLabel": "Temps",
+      "timeValue": "Chaque mètre exige des heures de tissage artisanal.",
+      "mobileCaption": "Twill — 100 % Soie — Como"
     },
-    "readMore": "Continue reading",
-    "viewAll": "View all articles"
+    "readMore": "Poursuivre la lecture",
+    "viewAll": "Voir tous les articles"
   },
   "artigianiPage": {
     "metadata": {
-      "title": "Our Artisans — SILKinCOM",
-      "description": "The Como weavers, printers and artisans who bring SILKinCOM creations to life. Crafts handed down through generations in the silk district of Lake Como."
+      "title": "Nos Artisans — SILKinCOM",
+      "description": "Les tisserands, imprimeurs et artisans de Côme qui donnent vie aux créations SILKinCOM. Des savoir-faire transmis de génération en génération dans le district de la soie du lac de Côme."
     },
     "hero": {
-      "eyebrow": "The Hands That Weave",
-      "title": "Our <em>artisans</em>",
-      "subtitle": "Weavers, printers and tailors of the Como district. Every SILKinCOM piece bears the signature of hands that have passed down their craft for generations."
+      "eyebrow": "Les Mains qui Tissent",
+      "title": "Nos <em>artisans</em>",
+      "subtitle": "Tisserands, imprimeurs et tailleurs du district de Côme. Chaque pièce SILKinCOM porte la signature de mains qui transmettent leur savoir-faire depuis des générations."
     },
     "weaving": {
-      "eyebrow": "Inside the Weaving",
-      "title": "From the Como loom to the foulard",
-      "description": "Looms, threads and silk become scarves and foulards in the Como district: every step gives the piece its hand, drape and luminosity."
+      "eyebrow": "Au Cœur du Tissage",
+      "title": "Du métier à tisser de Côme au foulard",
+      "description": "Métiers à tisser, fils et soie deviennent écharpes et foulards dans le district de Côme : chaque étape confère à la pièce son tombé, sa main et sa luminosité."
     },
     "artisans": {
       "lorenzo": {
         "name": "Lorenzo M.",
-        "role": "Master Weaver",
+        "role": "Maître Tisserand",
         "city": "Cermenate (CO)",
-        "alt": "Artisan at work before a wooden textile loom",
-        "caption": "Hand loom in progress",
-        "story": "He follows the rhythm of the loom, controlling the weave, tension and passage of the threads destined for silk scarves and foulards."
+        "alt": "Artisan au travail devant un métier à tisser en bois",
+        "caption": "Métier à tisser manuel en cours de façonnage",
+        "story": "Il suit le rythme du métier à tisser, maîtrisant l'entrelacement, la tension et le passage des fils destinés aux écharpes et foulards de soie."
       },
       "telaio": {
-        "name": "SILKinCOM Loom",
-        "role": "Jacquard Weaving",
-        "city": "Como District",
-        "alt": "Jacquard loom at work on a SILKinCOM scarf in blue and white silk",
-        "caption": "SILKinCOM weaving in progress",
-        "story": "The Jacquard loom interlaces warp and weft in real time: each pass composes the SILKinCOM logo and the collection's geometric design."
+        "name": "Métier à tisser SILKinCOM",
+        "role": "Tissage Jacquard",
+        "city": "District de Côme",
+        "alt": "Métier Jacquard au travail sur une écharpe SILKinCOM en soie bleue et blanche",
+        "caption": "Tissage SILKinCOM en cours",
+        "story": "Le métier Jacquard entrelace chaîne et trame en temps réel : chaque passage compose le logo SILKinCOM et le motif géométrique de la collection."
       },
       "twill": {
-        "name": "Como Twill",
-        "role": "Jacquard Detail",
+        "name": "Twill de Côme",
+        "role": "Détail Jacquard",
         "city": "Como",
-        "alt": "Macro detail of blue silk twill with the SILKinCOM jacquard motif",
-        "caption": "Thread-counted weave",
-        "story": "A macro view of the twill fresh off the loom: the design is woven thread by thread, not printed — the signature of Como silk."
+        "alt": "Détail macro du twill de soie bleue orné du motif jacquard SILKinCOM",
+        "caption": "Tissage fil compté",
+        "story": "Une vue macro du twill à peine sorti du métier : le motif est tissé fil par fil, non imprimé — la signature de la soie de Côme."
       }
     },
     "cta": {
-      "label": "Discover our story"
+      "label": "Découvrir notre histoire"
     }
   },
   "b2bPage": {
     "meta": {
-      "title": "B2B — Hospitality & Corporate Gifting",
-      "description": "The SILKinCOM programme for luxury hotels, corporate gifting and business clients. Customisable silk foulards, scarves and accessories with dedicated terms."
+      "title": "B2B — Hôtellerie & Cadeaux d'Entreprise",
+      "description": "Le programme SILKinCOM destiné aux hôtels de luxe, aux cadeaux d'entreprise et à la clientèle professionnelle. Foulards, écharpes et accessoires de soie personnalisables, assortis de conditions dédiées."
     },
     "hero": {
-      "eyebrow": "B2B Programme",
-      "titleLine1": "Hospitality &",
-      "titleLine2": "Corporate Gifting",
-      "description": "The Como maison dedicated to luxury hotels, high-end brands and corporate gifting. Heir to the textile heritage of Europe's oldest silk district, with reserved terms for orders above 20 pieces."
+      "eyebrow": "Programme B2B",
+      "titleLine1": "Hôtellerie &",
+      "titleLine2": "Cadeaux d'Entreprise",
+      "description": "La maison de Côme dédiée aux hôtels de luxe, aux marques haut de gamme et aux cadeaux d'entreprise. Héritière du patrimoine textile du plus ancien district de la soie d'Europe, avec des conditions réservées pour les commandes supérieures à 20 pièces."
     },
     "pillars": {
       "hotel": {
-        "title": "Luxury hotels",
-        "body": "Welcome amenities, welcome foulards and accessories personalised with the property's monogram. Ideal for 5★ hotels on Lake Como, in Milan and across leading Italian destinations."
+        "title": "Hôtels de luxe",
+        "body": "Welcome amenities, foulards de bienvenue et accessoires personnalisés au monogramme de l'établissement. Idéals pour les hôtels 5★ du lac de Côme, de Milan et des plus belles destinations italiennes."
       },
       "gifting": {
-        "title": "Corporate gifting",
-        "body": "Corporate gifts for clients and collaborators. Maison gift box included, customisable packaging and the option of a dedicated card. From 20 pieces."
+        "title": "Cadeaux d'entreprise",
+        "body": "Présents d'entreprise pour vos clients et collaborateurs. Coffret cadeau Maison inclus, packaging personnalisable et possibilité d'une carte dédiée. À partir de 20 pièces."
       },
       "whiteLabel": {
-        "title": "White label & private label",
-        "body": "Exclusive capsules crafted under your own brand. Lead times of 4-8 weeks depending on complexity. Minimum 50 pieces for full customisation."
+        "title": "Marque blanche & marque de distributeur",
+        "body": "Des capsules exclusives façonnées sous votre propre marque. Délais de 4 à 8 semaines selon la complexité. Minimum de 50 pièces pour une personnalisation complète."
       }
     },
     "cta": {
-      "eyebrow": "Request a price list",
-      "title": "Let's talk about your project.",
-      "description": "Send us a detailed request: product type, quantities, timelines and any customisation. We will get back to you within 24h with a dedicated price list.",
-      "button": "Write to the B2B programme"
+      "eyebrow": "Demander le tarif",
+      "title": "Parlons de votre projet.",
+      "description": "Adressez-nous une demande détaillée : type de produits, quantités, délais et personnalisation éventuelle. Nous reviendrons vers vous sous 24 h avec un tarif dédié.",
+      "button": "Écrire au programme B2B"
     }
   },
   "recensioniPage": {
     "meta": {
-      "title": "Reviews — What Our Clients Say",
-      "description": "Verified reviews from SILKinCOM clients. Discover what they think of the quality of our scarves, foulards and accessories, 100% Made in Como."
+      "title": "Avis — Ce que disent nos clients",
+      "description": "Avis vérifiés des clients SILKinCOM. Découvrez ce qu'ils pensent de la qualité de nos écharpes, foulards et accessoires, 100 % Made in Como."
     },
     "hero": {
-      "eyebrow": "What They Say About Us",
-      "title": "<em>Verified</em> Reviews",
-      "ratingSummary": "{average} / 5 — based on {count, plural, one {# review} other {# reviews}}",
-      "emptyState": "The first reviews from our clients will arrive soon. You could be among the first to share yours after your purchase."
+      "eyebrow": "Ce qu'ils disent de nous",
+      "title": "Avis <em>vérifiés</em>",
+      "ratingSummary": "{average} / 5 — sur la base de {count, plural, one {# avis} other {# avis}}",
+      "emptyState": "Les premiers avis de nos clients arriveront bientôt. Vous pourriez être parmi les premiers à partager le vôtre après votre achat."
     },
     "cta": {
-      "text": "Have you purchased from SILKinCOM? Share your experience from your order page.",
-      "button": "Go to Your Orders"
+      "text": "Vous avez effectué un achat chez SILKinCOM ? Partagez votre expérience depuis la page de votre commande.",
+      "button": "Accéder à Vos Commandes"
     }
   },
   "instagram": {
-    "titleStart": "Threads of Como on",
+    "titleStart": "Fils de Côme sur",
     "titleEmphasis": "Instagram",
-    "description": "Our world, told one detail at a time. Follow us for previews, limited editions and behind the scenes.",
+    "description": "Notre univers, raconté un détail à la fois. Suivez-nous pour des avant-premières, des éditions limitées et les coulisses de la maison.",
     "photoAriaLabel": "SILKinCOM Instagram — photo {number}",
     "photoAlt": "SILKinCOM Instagram {number}",
-    "followEyebrow": "Follow us on social"
+    "followEyebrow": "Suivez-nous sur les réseaux"
   }
 }
