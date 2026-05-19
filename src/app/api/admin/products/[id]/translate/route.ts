@@ -17,7 +17,8 @@ const TARGET_LANGS: Record<string, string> = {
   nl: 'Dutch',
 };
 
-const MODEL = process.env.TRANSLATE_MODEL || 'claude-3-5-haiku-latest';
+// OpenRouter model — override with TRANSLATE_MODEL.
+const MODEL = process.env.TRANSLATE_MODEL || 'anthropic/claude-3.5-haiku';
 
 type Fields = { name: string; description: string; composition: string };
 
@@ -31,23 +32,26 @@ async function translateFields(targetLang: string, fields: Fields): Promise<Fiel
     `Translate these Italian product fields to ${targetLang}. Return JSON {name, description, composition}.\n\n` +
     JSON.stringify(fields);
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'x-api-key': process.env.ANTHROPIC_API_KEY!,
-      'anthropic-version': '2023-06-01',
+      authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      'HTTP-Referer': 'https://silkincom.com',
+      'X-Title': 'SILKinCOM',
     },
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 4096,
-      system,
-      messages: [{ role: 'user', content: user }],
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user },
+      ],
     }),
   });
-  if (!res.ok) throw new Error(`Anthropic API ${res.status}: ${await res.text()}`);
+  if (!res.ok) throw new Error(`OpenRouter API ${res.status}: ${await res.text()}`);
   const json = await res.json();
-  let text = (json.content?.[0]?.text || '').trim();
+  let text = (json.choices?.[0]?.message?.content || '').trim();
   if (text.startsWith('```')) text = text.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
   return JSON.parse(text) as Fields;
 }
@@ -56,8 +60,8 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdminApi(['admin', 'super_admin', 'editor']);
   if (!auth.ok) return forbidden(auth.status);
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: 'ANTHROPIC_API_KEY non configurata sul server' }, { status: 500 });
+  if (!process.env.OPENROUTER_API_KEY) {
+    return NextResponse.json({ error: 'OPENROUTER_API_KEY non configurata sul server' }, { status: 500 });
   }
 
   const { id } = await params;
