@@ -18,7 +18,7 @@ const TARGET_LANGS: Record<string, string> = {
 };
 
 // OpenRouter model — override with TRANSLATE_MODEL.
-const MODEL = process.env.TRANSLATE_MODEL || 'anthropic/claude-3.5-haiku';
+const MODEL = process.env.TRANSLATE_MODEL || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
 
 type Fields = { name: string; description: string; composition: string };
 
@@ -52,7 +52,13 @@ async function translateFields(targetLang: string, fields: Fields): Promise<Fiel
   if (!res.ok) throw new Error(`OpenRouter API ${res.status}: ${await res.text()}`);
   const json = await res.json();
   let text = (json.choices?.[0]?.message?.content || '').trim();
+  // Reasoning models may wrap output in <think> tags or code fences and add
+  // surrounding prose — strip those, then extract the JSON object.
+  text = text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
   if (text.startsWith('```')) text = text.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start >= 0 && end > start) text = text.slice(start, end + 1);
   return JSON.parse(text) as Fields;
 }
 
