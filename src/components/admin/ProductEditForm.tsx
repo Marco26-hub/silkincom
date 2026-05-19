@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 type Category = { id: string; name: string };
 type Collection = { id: string; name: string };
@@ -384,6 +384,7 @@ function VariantsSection({
   onMaterialsChange: (m: Material[]) => void;
 }) {
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [newVariant, setNewVariant] = useState({ variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '' });
   const [creatingColor, setCreatingColor] = useState(false);
   const [creatingMaterial, setCreatingMaterial] = useState(false);
@@ -394,33 +395,69 @@ function VariantsSection({
     setNewVariant((p) => ({ ...p, [k]: v }));
   }
 
-  async function addVariant() {
+  const emptyVariant = { variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '' };
+
+  function closeForm() {
+    setNewVariant(emptyVariant);
+    setEditingId(null);
+    setShowForm(false);
+    setErr(null);
+  }
+
+  function startCreate() {
+    setNewVariant(emptyVariant);
+    setEditingId(null);
+    setErr(null);
+    setShowForm(true);
+  }
+
+  function startEdit(v: Variant) {
+    setNewVariant({
+      variant_sku: v.variant_sku,
+      variant_name: v.variant_name ?? '',
+      color_id: v.color_id ?? '',
+      material_id: v.material_id ?? '',
+      price_override: v.price_override != null ? String(v.price_override) : '',
+    });
+    setEditingId(v.id);
+    setErr(null);
+    setShowForm(true);
+  }
+
+  async function saveVariant() {
     if (!newVariant.variant_sku.trim()) { setErr('SKU richiesto'); return; }
     setSaving(true);
     setErr(null);
-    const res = await fetch('/api/admin/variants', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        product_id: productId,
-        variant_sku: newVariant.variant_sku.trim(),
-        variant_name: newVariant.variant_name.trim() || null,
-        color_id: newVariant.color_id || null,
-        material_id: newVariant.material_id || null,
-        price_override: newVariant.price_override ? Number(newVariant.price_override) : null,
-      }),
-    });
+    const payload = {
+      variant_sku: newVariant.variant_sku.trim(),
+      variant_name: newVariant.variant_name.trim() || null,
+      color_id: newVariant.color_id || null,
+      material_id: newVariant.material_id || null,
+      price_override: newVariant.price_override ? Number(newVariant.price_override) : null,
+    };
+    const res = await fetch(
+      editingId ? `/api/admin/variants/${editingId}` : '/api/admin/variants',
+      {
+        method: editingId ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingId ? payload : { product_id: productId, ...payload }),
+      }
+    );
     const data = await res.json();
     setSaving(false);
     if (!res.ok) { setErr(data.error ?? 'Errore'); return; }
-    onVariantsChange([...variants, data.variant]);
-    setNewVariant({ variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '' });
-    setShowForm(false);
+    if (editingId) {
+      onVariantsChange(variants.map((v) => (v.id === editingId ? { ...v, ...payload } : v)));
+    } else {
+      onVariantsChange([...variants, data.variant]);
+    }
+    closeForm();
   }
 
   async function deleteVariant(id: string) {
     await fetch(`/api/admin/variants/${id}`, { method: 'DELETE' });
     onVariantsChange(variants.filter((v) => v.id !== id));
+    if (editingId === id) closeForm();
   }
 
   async function createColor(name: string, hex: string) {
@@ -458,7 +495,7 @@ function VariantsSection({
         {!showForm && (
           <button
             type="button"
-            onClick={() => setShowForm(true)}
+            onClick={startCreate}
             className="inline-flex items-center gap-1.5 text-xs text-gold-primary hover:underline"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -490,7 +527,16 @@ function VariantsSection({
                 </div>
                 <button
                   type="button"
+                  onClick={() => startEdit(v)}
+                  aria-label="Modifica variante"
+                  className="text-soft-grey hover:text-gold-primary transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
                   onClick={() => deleteVariant(v.id)}
+                  aria-label="Elimina variante"
                   className="text-soft-grey hover:text-red-500 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -507,6 +553,9 @@ function VariantsSection({
 
       {showForm && (
         <div className="border border-pearl-grey/60 p-4 space-y-3 bg-warm-white/40">
+          <p className="text-xs uppercase tracking-[0.15em] text-soft-grey">
+            {editingId ? 'Modifica variante' : 'Nuova variante'}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="SKU variante *">
               <input
@@ -586,15 +635,15 @@ function VariantsSection({
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={addVariant}
+              onClick={saveVariant}
               disabled={saving}
               className="px-5 py-2 bg-soft-black text-warm-white text-xs uppercase tracking-[0.15em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50"
             >
-              {saving ? 'Salvataggio...' : 'Salva variante'}
+              {saving ? 'Salvataggio...' : editingId ? 'Aggiorna variante' : 'Salva variante'}
             </button>
             <button
               type="button"
-              onClick={() => { setShowForm(false); setErr(null); }}
+              onClick={closeForm}
               className="px-5 py-2 text-xs text-soft-grey hover:text-soft-black"
             >
               Annulla
