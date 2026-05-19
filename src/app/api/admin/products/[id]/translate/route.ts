@@ -18,7 +18,7 @@ const TARGET_LANGS: Record<string, string> = {
 };
 
 // OpenRouter model — override with TRANSLATE_MODEL.
-const MODEL = process.env.TRANSLATE_MODEL || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+const MODEL = process.env.TRANSLATE_MODEL || 'google/gemma-4-31b-it:free';
 
 type Fields = { name: string; description: string; composition: string };
 
@@ -92,13 +92,9 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const compI18n: Record<string, string> = { it: source.composition };
 
   try {
-    const results = await Promise.all(
-      Object.entries(TARGET_LANGS).map(async ([loc, langName]) => ({
-        loc,
-        t: await translateFields(langName, source),
-      })),
-    );
-    for (const { loc, t } of results) {
+    // Sequential, not parallel: free-tier OpenRouter models rate-limit bursts.
+    for (const [loc, langName] of Object.entries(TARGET_LANGS)) {
+      const t = await translateFields(langName, source);
       nameI18n[loc] = t.name;
       descI18n[loc] = t.description;
       compI18n[loc] = t.composition;
