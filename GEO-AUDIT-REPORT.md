@@ -1,347 +1,186 @@
-# GEO Audit Report: SILK in COM
+# GEO + SEO Audit Report: SILKinCOM (re-audit)
 
 **Audit Date:** 19 maggio 2026
-**URL:** https://www.silkincom.com
-**Business Type:** E-commerce — Accessori luxury in seta e cashmere, Made in Como (Wix)
-**Pages Analyzed:** 15 (homepage, 4 blog post, 5 pagine statiche, 2 product page, 2 category page, robots.txt, llms.txt)
+**URL:** https://silkincom.vercel.app/
+**Business Type:** E-commerce — accessori luxury in seta/cashmere, Made in Como (Next.js 15)
+**Pages Analyzed:** ~22 (homepage, robots, sitemap, llms.txt, prodotti, collezioni, materiali, blog, contatti, faq, la-nostra-storia, artigiani — IT + EN/FR/DE campioni)
+
+> Re-audit del sito Next.js dopo gli interventi i18n/SEO. Audit precedente: **57/100 Poor**.
 
 ---
 
 ## Executive Summary
 
-**Overall GEO Score: 28/100 — Critical**
+**Overall GEO Score: 62/100 — Fair** (da 57 Poor)
 
-SILK in COM ha fondamenta tecniche parziali (llms.txt presente, crawler AI non bloccati, sitemap strutturato), ma soffre di tre criticità che si sommano: i contenuti del sito sono resi esclusivamente via JavaScript e risultano **invisibili** a tutti i crawler AI; il brand non esiste su nessuna piattaforma di terze parti (Reddit, Wikipedia, Trustpilot, YouTube) e quindi i modelli AI non lo riconoscono come entità citabile; lo schema Product ha bug critici di capitalizzazione che bloccano i rich result su tutti i 41 prodotti. Il punteggio riflette un sito che vuole ottimizzare per l'AI ma è ostacolato prima di tutto dall'architettura Wix CSR.
+Il sito è migliorato: contenuti tradotti e indicizzabili in 7 lingue, URL con prefisso locale, sitemap con hreflang, canonical aggiunto, schema solido. Citabilità AI e qualità contenuti salgono. Ma due regressioni critiche nel codice frenano il punteggio: **il canonical è corretto solo in italiano** — su EN/ES/FR/DE/PT/NL punta all'URL italiano, dicendo a Google che le 6 lingue sono duplicati (vanifica la migrazione multilingua). E la brand authority off-site resta a zero.
 
 ### Score Breakdown
 
-| Categoria | Punteggio | Peso | Punteggio Pesato |
-|---|---|---|---|
-| AI Citability | 22/100 | 25% | 5.5 |
-| Brand Authority | 8/100 | 20% | 1.6 |
-| Content E-E-A-T | 31/100 | 20% | 6.2 |
-| Technical GEO | 54/100 | 15% | 8.1 |
-| Schema & Structured Data | 34/100 | 10% | 3.4 |
-| Platform Optimization | 31/100 | 10% | 3.1 |
-| **Overall GEO Score** | | | **28/100** |
+| Categoria | Punteggio | Peso | Pesato | Δ vs 57 |
+|---|---|---|---|---|
+| AI Citability | 78/100 | 25% | 19.5 | +7 |
+| Brand Authority | 15/100 | 20% | 3.0 | +1 |
+| Content E-E-A-T | 64/100 | 20% | 12.8 | +6 |
+| Technical GEO | 78/100 | 15% | 11.7 | +7 |
+| Schema & Structured Data | 84/100 | 10% | 8.4 | +2 |
+| Platform Optimization | 61/100 | 10% | 6.1 | +3 |
+| **Overall GEO Score** | | | **62/100** | **+5** |
 
 ---
 
 ## Problemi Critici (Risolvere Subito)
 
-### C1 — JavaScript rendering blocca tutto il contenuto ai crawler AI
-**Pagine:** Tutte (homepage, product page, blog, pagine editoriali)
+### C1 — Canonical sbagliato su 6 lingue su 7
+**Pagine:** tutte le pagine non-italiane (`/en/*`, `/es/*`, `/fr/*`, `/de/*`, `/pt/*`, `/nl/*`)
 
-Wix serve le pagine come SPA client-side. I crawler AI (GPTBot, ClaudeBot, PerplexityBot) ricevono un documento HTML quasi vuoto — solo il `<title>`. Descrizioni prodotto, testi blog, brand story, categorie: tutto invisibile senza esecuzione JS.
+`/en/prodotto/bellagio` dichiara `<link rel="canonical" href="https://silkincom.vercel.app/prodotto/bellagio">` — punta all'URL **italiano**, non a sé stesso. Idem `/fr`, `/de` ecc. → la homepage IT è il canonical di tutte le lingue.
 
-**Fix immediato (Wix, senza codice):** creare `/llms-full.txt` con il testo completo dei 4 blog post, le descrizioni delle 10 categorie principali e la brand story. I modelli AI che leggono llms.txt accedono al contenuto direttamente.
+Causa: in `generateMetadata` il canonical è `/prodotto/${slug}` (path relativo senza prefisso locale); risolto contro `metadataBase` perde il segmento `/en`, `/fr`…
 
-**Fix strutturale:** valutare migrazione a Wix Studio (SSR migliorato) o servizio di pre-rendering (Prerender.io) per user-agent bot.
+Effetto: Google tratta le 6 lingue tradotte come duplicati dell'italiano → **de-indicizzazione di 6 lingue su 7**. Annulla quasi del tutto la migrazione multilingua (C2) e tutto il lavoro di traduzione.
 
----
+**Fix:** costruire canonical per-locale. In ogni `generateMetadata` includere il prefisso locale: per locale ≠ it → `/{locale}/prodotto/{slug}`; per it → `/prodotto/{slug}`. Vale per prodotti, collezioni, blog, pagine statiche, homepage.
 
-### C2 — Bug capitalizzazione schema Product: tutti i 41 prodotti bloccati dai rich result
-**Pagine:** Tutte le `/product-page/*`
+### C2 — Schema @id su host sbagliato + LocalBusiness placeholder
+- Organization/WebSite usano `@id: "https://silkincom.com/#organization"` / `#website` mentre tutto il resto (e il sito live) è su `silkincom.vercel.app` → identificatore d'entità incoerente.
+- `/contatti` emette un **secondo** nodo LocalBusiness (`#atelier`) con indirizzo placeholder "Via dell'Atelier", telefono finto **`+39 031 0000000`**, email diversa da quella reale. Due business in conflitto + dati finti = rischio trust per Google/AI.
 
-Wix auto-genera il JSON-LD con `"Offers"` (O maiuscola) e `"Availability"` (A maiuscola). Schema.org richiede `"offers"` e `"availability"` minuscoli. Questo invalida i rich result per ogni prodotto.
-
-**Fix:** Override via Wix Velo (custom code injection) o richiesta supporto Wix. Il fix sblocca i rich result per l'intero catalogo in un solo intervento.
-
-```json
-// Errore attuale (generato da Wix)
-"Offers": { "Availability": "https://schema.org/InStock" }
-
-// Corretto
-"offers": { "availability": "https://schema.org/InStock" }
-```
+**Fix:** uniformare gli `@id` a `silkincom.vercel.app`; rimuovere il nodo `#atelier` (o riempirlo con dati reali). Mai pubblicare il telefono placeholder.
 
 ---
 
-### C3 — Nessuna presenza esterna del brand: entità non riconoscibile dai modelli AI
-**Impatto:** AI Citability, Brand Authority, Platform Optimization
+## Problemi Alta Priorità (entro 1 settimana)
 
-Ricerca su Reddit, Wikipedia, YouTube, Trustpilot: nessun risultato per "silkincom". In Google, l'unico risultato è il dominio proprio. I modelli AI (ChatGPT, Perplexity, Gemini) non possono triangolare il brand come entità reale — non lo citeranno in risposta a query su sciarpe, cashmere, Como.
+### H1 — Nessun tag `<link rel="alternate" hreflang>` nell'`<head>`
+Gli hreflang esistono solo in `sitemap.xml` e nell'header HTTP `Link:`. Mancano dai `<head>` delle pagine. Googlebot li onora via header, ma diversi crawler AI e i generatori di anteprime leggono solo l'HTML renderizzato. **Fix:** `metadata.alternates.languages` in `generateMetadata` → tag hreflang nel head.
 
-**Fix sequenziale:**
-1. Creare profilo Wikidata per SILKinCOM (15 minuti, gratuito)
-2. Creare profilo Trustpilot e raccogliere recensioni clienti esistenti
-3. Creare pagina LinkedIn azienda
+### H2 — `og:locale` sempre `it_IT` + OG tag globali
+Le pagine EN/FR servono `og:locale: it_IT` e `og:title`/`og:description`/`og:url` della homepage italiana. Anteprime social/AI in lingua sbagliata. **Fix:** mappare locale → `en_US`/`fr_FR`/… + `og:locale:alternate`; generare OG per pagina e locale.
 
----
+### H3 — Brand inesistente off-site
+Brand Authority 15/100. Zero Wikipedia/Wikidata/Reddit/LinkedIn/Trustpilot/stampa. Collisione di nome con competitor (INCOMO, Silk of Como, SILKSILKY, Creasilk, Larioseta) — l'AI cita i concorrenti. Tappo strutturale alla visibilità AI reale.
 
-## Problemi Alta Priorità (Risolvere entro 1 settimana)
+### H4 — Fondatore invisibile + nessun byline
+Marco Dibenedetto solo in `llms.txt`, mai in HTML visibile. `/la-nostra-storia` ~280 parole (sotto soglia thin content). 4 blog post attribuiti a "SILKinCOM (Organization)", nessun autore umano. Leva E-E-A-T più forte, inutilizzata.
 
-### H1 — llms.txt incompleto: nessun URL di prodotto o pagina elencato
-Il file esiste (ottimo) ma non elenca nessuna delle 41 pagine prodotto, 27 categorie, 4 blog post. Il campo "Prenotare i servizi" è testo boilerplate Wix non pertinente all'e-commerce. L'endpoint MCP /_api/mcp restituisce 401 senza token sessione — l'integrazione MCP è di fatto inaccessibile ai crawler.
-
-**Fix:** Riscrivere llms.txt secondo spec (H1 brand, H2 sezioni, lista link con descrizione una riga per ogni pagina chiave). Aggiungere versione inglese.
-
-### H2 — Schema LocalBusiness: indirizzo errato e sameAs assente
-`addressLocality: "Cermenate"` (dovrebbe essere "Como"), `addressRegion: "25"` (dovrebbe essere "CO"). Array `sameAs` completamente assente — AI non collegano il brand a Facebook, Instagram, nessuna piattaforma.
-
-**Fix:** Correggere indirizzo + aggiungere `sameAs` con Facebook e Instagram come minimo.
-
-### H3 — Nessun autore nominato su nessun contenuto
-I 4 blog post non hanno byline visibile. "La Nostra Storia" non mostra fondatore o team. Un brand luxury artigianale senza identità umana dietro non può costruire E-E-A-T (Expertise/Experience). Il campo `author.name: "Nicola La Malva"` esiste nel BlogPosting schema ma non è visibile ai crawler come testo e non ha `sameAs` o `jobTitle`.
-
-**Fix:** Aggiungere byline visibile con nome e ruolo su tutti i blog post. Aggiungere foto e bio del fondatore su "La Nostra Storia". Aggiungere `author.jobTitle` e `author.sameAs` (LinkedIn) al BlogPosting schema.
-
-### H4 — Assenza di Google Business Profile
-Nessun profilo GBP verificato trovato per Via Giuseppe Verdi 2/B, Como. GBP è il segnale primario che Gemini usa per il Knowledge Graph locale. È anche richiesto per apparire nelle ricerche locali ("silk scarves como italy").
-
-**Fix:** Creare e verificare GBP. Aggiungere foto prodotti e location, categorie ("Abbigliamento e accessori di lusso"), orari, link sito.
-
-### H5 — Mancanza di Partita IVA e policy resi visibili (compliance UE)
-La Partita IVA è obbligatoria sui siti e-commerce italiani (D.Lgs. 70/2003). La policy resi è richiesta dalla Direttiva UE 2011/83/EU. La pagina `/resi-e-rimborsi` esiste nel sitemap ma non è linkata in modo prominente. L'assenza di P.IVA è una red flag di affidabilità per utenti e search engine.
+### H5 — Nessun ItemList/CollectionPage schema sulle 10 collezioni
+`/collezioni/*` emette solo Organization+WebSite. Prodotti non enumerati per l'AI.
 
 ---
 
-## Problemi Media Priorità (Risolvere entro 1 mese)
+## Problemi Media Priorità (entro 1 mese)
 
-### M1 — Blog: 4 articoli, nessuna data visibile ai crawler, contenuto generico
-4 post totali, ultimo del 13 marzo 2026 (2+ mesi). Le date esistono nel BlogPosting JSON-LD ma non sono visibili nel HTML statico. Il contenuto sembra generato da AI senza dati originali (nessuna statistica, nessun nome di artigiano, nessuna fonte citata).
+- **M1 — `<title>` doppio suffisso:** `Bellagio — Cashmere | SILKinCOM | SILKinCOM` — il template `%s | SILKinCOM` si applica a un titolo che già finisce con "| SILKinCOM". Fix: togliere il suffisso dal titolo di pagina (lo aggiunge il template).
+- **M2 — Article author = Organization** invece di Person (Marco Dibenedetto). Caratteri U+FEFF residui in headline/description di un post.
+- **M3 — Incoerenza prezzo/dimensioni Bellagio:** homepage €120 / 180x45 cm, scheda prodotto €180 / 180x70 cm. Un fatto canonico per prodotto.
+- **M4 — `Cache-Control: private, no-cache, no-store`** sulle pagine prodotto — disabilita la cache CDN, peggiora TTFB/LCP. Usare ISR/`s-maxage` sul catalogo.
+- **M5 — Bing:** nessun `msvalidate.01`, nessun file IndexNow → Bing Copilot non accelerato.
+- **M6 — H1 homepage decorativo/frammentato** ("lago_tessuta__a__Como" con underscore) — non citabile. Servono H1 semantico + H2 a domanda con paragrafi-risposta 40-60 parole.
+- **M7 — Blog senza citazioni esterne** — nessun link ad autorità tessili / distretto serico / standard fibre.
 
-**Fix:** Pubblicare 2 post/mese. Aggiungere dati originali: peso in momme della seta, quota Como nella produzione europea, partner di lavorazione. Verificare che le date siano visibili nel HTML renderizzato da Wix blog.
+## Problemi Bassa Priorità
 
-### M2 — Nessun numero di telefono pubblicato
-Il form contatti ha campo telefono ma nessun numero aziendale è pubblicato. Per un prodotto luxury con prezzi da €80-€200+ i clienti si aspettano un canale diretto. Riduce trust score.
-
-### M3 — publisher.logo mancante nel BlogPosting schema
-Campo obbligatorio per Google Article rich result. Wix potrebbe permettere di configurarlo nelle impostazioni blog SEO.
-
-### M4 — mainEntityOfPage.@type invalido nel BlogPosting schema
-Wix auto-genera `"itemPage"` invece di `"WebPage"`. Bug template Wix.
-
-### M5 — BreadcrumbList assente su tutte le pagine prodotto
-Con 27 categorie e 41 prodotti, la gerarchia di navigazione non è machine-readable. Google e i sistemi AI non conoscono la struttura categoria→prodotto.
-
-### M6 — Nessun contenuto in lingua inglese
-Il sito e llms.txt sono solo in italiano. Modelli AI in inglese (GPT-4, Claude, Gemini) pesano meno i contenuti in lingue non primarie. Per un brand con "Made in Como" come differenziatore internazionale, l'assenza dell'inglese limita la visibilità nelle query internazionali ("cashmere scarf como italy", "italian silk foulard").
-
-### M7 — Nessun canale YouTube
-YouTube è il segnale più forte nell'ecosistema Google per Gemini. 3 video brevi (patrimonio seta di Como, processo produzione, come indossare un twilly) creerebbero presenza crawlabile e citabile.
+- **L1 — `speakable`** assente su Article/FAQ.
+- **L2 — `© 2026`** copyright statico — rendere dinamico.
+- **L3 — sameAs solo 3 social** — aggiungere Wikidata, LinkedIn, Google Business.
+- **L4 — Descrizioni prodotto corte** (~95 parole) — portare a 150+ con cura prodotto inline.
+- **L5 — llms.txt** manca `llms-full.txt`.
 
 ---
 
-## Problemi Bassa Priorità (Ottimizzare quando possibile)
+## Category Deep Dives
 
-- **L1:** speakable property assente su tutti i contenuti (segnale AI per sintesi voce)
-- **L2:** SearchAction / potentialAction assente nel WebSite schema
-- **L3:** inLanguage non dichiarato in nessuno schema
-- **L4:** Il sitemap prodotti ha 50 URL vs 41 prodotti noti (9 URL orfani da verificare)
-- **L5:** AhrefsBot/dotbot hanno crawl-delay: 10 — nessun impatto AI ma rallenta analisi SEO
-- **L6:** Nessuna registrazione su directory italiane (Italianmoda.com, Confartigianato) che AI training crawler indicizzano
-- **L7:** Nessun tag hreflang (rilevante se viene aggiunta versione EN)
+### AI Citability — 78/100 (da 71)
+SSR completo, contenuti estraibili. Passaggi citabili forti: guida materiali (micron seta 10-12μm, cashmere 14-16μm, assorbimento umidità) 88/100; scheda Bellagio (composizione, 180x70 cm, €180, codice) 82/100; checklist comparativa materiali 81/100. Deboli: heading homepage con underscore (~25/100). Multilingua aiuta la citabilità in lingue non-IT.
 
----
+### Brand Authority — 15/100 (da 14)
+Quasi invariato. Zero footprint terze parti. Collisione nome peggiore del previsto — le ricerche restituiscono Silk Maison, SILKSILKY, Creasilk. Senza ancora Wikipedia/Wikidata l'AI non può disambiguare il brand.
 
-## Analisi per Categoria
+### Content E-E-A-T — 64/100 (da 58)
+Experience 14/25, Expertise 16/25, Authoritativeness 15/25, Trust 19/25. Migliorato da: localizzazione 7 lingue, blog datato e approfondito (580-850 parole, dati tecnici), materiali strutturati. Gap: fondatore invisibile, zero byline, /la-nostra-storia thin, nessuna citazione esterna.
 
-### AI Citability — 22/100
+### Technical GEO — 78/100 (da 71)
+Migliorato: SSR, routing locale path-prefix, sitemap 140+ URL con hreflang, security header eccellenti (HSTS, CSP, nosniff). Critico: canonical per-locale rotto (C1). Alto: hreflang non nel head, og:locale errato.
 
-Il problema principale è architetturale. Wix serve tutta la pagina via JavaScript. Quando un crawler AI recupera `/post/seta-di-como-perche-e-uno-standard-di-riferimento` riceve solo il `<title>` — nessun paragrafo del testo è nel HTML iniziale.
+### Schema & Structured Data — 84/100 (da 82)
+Forte e tutto server-rendered: Organization/LocalBusiness/WebSite+SearchAction, Product+Offer+BreadcrumbList, FAQPage (25 Q&A), Article. Difetti: @id host incoerente, LocalBusiness duplicato con placeholder, no ItemList collezioni, author=Organization.
 
-**Blocchi di contenuto testati:**
-
-| Blocco | Fonte | Citability Score |
-|---|---|---|
-| Descrizione MCP in llms.txt | llms.txt (statico) | 65/100 — strutturato, machine-readable |
-| Headline blog seta di Como | title tag | 45/100 — promettente ma corpo inaccessibile |
-| Tagline homepage | search snippet | 36/100 — troppo generico |
-| Corpo blog post x4 | JS-rendered — invisibile | 12/100 — penalizzato per inaccessibilità |
-
-**Cosa funziona:** llms.txt esiste ed è l'unico contenuto veramente accessibile ai crawler. L'integrazione MCP Wix è genuinamente innovativa (pochissimi siti e-commerce la hanno) ma il token di autenticazione richiesto la rende inaccessibile in pratica.
-
-**Raccomandazioni specifiche:**
-- Aggiungere `/llms-full.txt` con testo completo blog post e descrizioni prodotto in markdown
-- Ogni blog post dovrebbe contenere almeno 3 dati citabili (statistiche, date storiche, specifiche tecniche)
-- Il post "Seta di Como" è il candidato prioritario per diventare la risorsa più citata in italiano sull'argomento — ma serve riscrittura con fonti e dati verificabili
+### Platform Optimization — 61/100 (da 58)
+Google AI Overviews 66, ChatGPT 67, Gemini 60, Bing Copilot 52, Perplexity 46. Multilingua + SSR + llms.txt aiutano ChatGPT/Gemini. Perplexity resta basso (zero community validation). Canonical e hreflang frenano AIO/Gemini.
 
 ---
 
-### Brand Authority — 8/100
+## Quick Wins (questa settimana)
 
-| Piattaforma | Presenza | Note |
-|---|---|---|
-| Wikipedia | Assente | Nessun articolo entità |
-| Wikidata | Assente | Nessun record Q-number |
-| Reddit | Assente | Zero menzioni |
-| YouTube | Assente | Nessun canale |
-| Trustpilot | Assente | Nessun profilo |
-| LinkedIn | Non verificabile | Non apparso in nessuna ricerca |
-| Google Reviews | Sconosciuto | GBP non trovato |
-| Pinterest | Presente | silkincomofficial — unica presenza terze parti confermata oltre i social |
-| Instagram | Presente | @silkincom.official |
-| Facebook | Presente | profilo.php?id=61581900780447 |
-
-Il brand non ha ancora footprint AI. Competitor Come Serà Fine Silk, Mantero, Creasilk appaiono in risultati per "seta como" — SILKinCOM no. I modelli AI che rispondono a "migliori sciarpe cashmere made in italy" non citano questo brand semplicemente perché non hanno dati su cui basarsi.
-
----
-
-### Content E-E-A-T — 31/100
-
-| Dimensione | Punteggio | Evidenza |
-|---|---|---|
-| Experience | 6/25 | Provenance Como reale, ma nessun contenuto che dimostra know-how produttivo |
-| Expertise | 7/25 | Zero autori nominati su qualsiasi pagina accessibile |
-| Authoritativeness | 9/25 | Indirizzo fisico Como confermato; zero press coverage |
-| Trustworthiness | 15/25 | HTTPS + policy legali presenti; P.IVA mancante, telefono assente |
-
-**Osservazione AI content:** I pattern del contenuto accessibile (titoli SEO generici, zero attributi autore, zero dati proprietari) sono consistenti con contenuto generato da AI senza editorial attribution. Per un brand luxury artigianale questo è controproducente — l'autorevolezza dipende dall'identità umana del maker.
-
-**Punto di forza:** Il nome del blog "Nicola La Malva" appare nel BlogPosting schema (campo `author.name`) — si tratta verosimilmente del fondatore. È un asset non sfruttato: il fondatore dovrebbe essere visibile come voce editoriale su tutti i contenuti.
-
----
-
-### Technical GEO — 54/100
-
-| Componente | Score | Stato |
-|---|---|---|
-| Server-Side Rendering | 25/100 | CRITICO — Wix CSR, body invisibile ai crawler |
-| Meta Tags & Indexability | 68/100 | MEDIO — title ok, meta description probabilmente JS-injected |
-| Crawlability | 72/100 | MEDIO — sitemap ok, robots.txt ok |
-| Security Headers | 35/100 | ALTO — gestiti da Wix, non verificabili |
-| Core Web Vitals Risk | 50/100 | MEDIO — LCP/INP elevati tipici Wix |
-| Mobile Optimization | 80/100 | BUONO — garantito da piattaforma Wix |
-| URL Structure | 80/100 | BUONO — slug puliti, ma `/product-page/` non keyword-rich |
-| llms.txt | 55/100 | MEDIO — esiste, MCP documentato, ma prose format e nessun URL |
-
-**Punto di forza:** llms.txt è presente — meno del 5% dei siti e-commerce ha questo file. L'integrazione MCP con 7 tool documentati è forward-looking. I sitemaps sono aggiornati e strutturati.
-
-**Bug trovato in LocalBusiness schema:**
-```json
-// Attuale — errato
-"addressLocality": "Cermenate",
-"addressRegion": "25"
-
-// Corretto
-"addressLocality": "Como",
-"addressRegion": "CO"
-```
-
----
-
-### Schema & Structured Data — 34/100
-
-**Schema trovati:** LocalBusiness, WebSite (homepage), Product (pagine prodotto), BlogPosting (blog). Tutti server-rendered — ottimo, i crawler AI li leggono senza JS.
-
-**Bug critici:**
-
-1. Tutti i 41 Product schema hanno `"Offers"` e `"Availability"` con maiuscola — property name invalide, rich result disabilitati per l'intero catalogo
-2. `addressLocality: "Cermenate"` invece di "Como" + `addressRegion: "25"` invece di "CO"
-3. `sameAs: []` — completamente assente su LocalBusiness/Organization
-4. `brand`, `material`, `countryOfOrigin` assenti su tutti i Product schema
-5. `publisher.logo` mancante su BlogPosting — richiesto per Article rich result
-6. `mainEntityOfPage.@type: "itemPage"` — valore invalido, dovrebbe essere `"WebPage"`
-
-**Schema mancanti prioritari:**
-
-| Schema | Impatto GEO |
-|---|---|
-| Organization con sameAs completo | CRITICO — entity resolution AI |
-| BreadcrumbList su product page | ALTO — gerarchia categoria invisibile |
-| FAQPage | ALTO — trigger per AI Overviews |
-| speakable | MEDIO — citabilità AI assistants |
-| ItemList su category page | MEDIO — catalogo strutturato |
-| countryOfOrigin su Product | ALTO — differenziatore "Made in Italy" |
-
----
-
-### Platform Optimization — 31/100
-
-| Piattaforma | Score | Gap Principale |
-|---|---|---|
-| Google AI Overviews | 34/100 | No JSON-LD FAQPage, contenuto JS-only, no answer-format H2 |
-| ChatGPT Web Search | 22/100 | Nessuna entità Wikidata, zero copertura terze parti |
-| Perplexity AI | 26/100 | Nessuna community validation (Reddit, Trustpilot) |
-| Google Gemini | 32/100 | No GBP, no YouTube, no Knowledge Panel |
-| Bing Copilot | 40/100 | No IndexNow, no LinkedIn, no Bing Webmaster Tools |
-
----
-
-## Quick Wins — Da implementare questa settimana
-
-1. **Creare `/llms-full.txt`** con testo completo dei 4 blog post + descrizioni delle 10 categorie principali. Zero costo, bypass immediato del problema JS rendering per i modelli AI che seguono lo spec llms.txt. **Impatto stimato su GEO Score: +4-6 punti**
-
-2. **Correggere `sameAs` in LocalBusiness schema** — aggiungere Facebook e Instagram URLs. Configurabile in Wix SEO settings o custom code head. **Impatto: entity resolution AI, +2-3 punti**
-
-3. **Correggere indirizzo in LocalBusiness schema** — `addressLocality: "Como"`, `addressRegion: "CO"`. **Impatto: Local search, Gemini Knowledge Graph**
-
-4. **Creare profilo Wikidata** per SILKinCOM (15 min, gratuito) — instance: business, located: Como, industry: silk/luxury goods, official website. Poi aggiungere la Wikidata URL nel `sameAs`. **Impatto: entity recognition ChatGPT, Gemini, Perplexity**
-
-5. **Creare e verificare Google Business Profile** a Via Giuseppe Verdi 2/B, Como. **Impatto: Gemini Knowledge Graph, Google AI Overviews local**
-
-6. **Riscrivere llms.txt** — aggiungere H1 brand, lista URL chiave (blog post, categorie, la-nostra-storia), rimuovere testo boilerplate su prenotazioni, aggiungere versione inglese. **Impatto: llms.txt score da 55 a ~80**
-
-7. **Creare profilo Trustpilot** e inviare link raccolta recensioni ai clienti esistenti. **Impatto: Perplexity community validation, Google rich results**
-
----
+1. **Fix canonical per-locale** — includere il prefisso locale nel canonical di ogni `generateMetadata`. Sblocca l'indicizzazione di 6 lingue. Impatto massimo, una modifica di codice.
+2. **hreflang nel `<head>`** — `metadata.alternates.languages` con tutti i locale + `x-default`.
+3. **`og:locale` per locale** + OG title/description/url per pagina.
+4. **Fix `<title>` doppio suffisso** — togliere "| SILKinCOM" dai titoli di pagina.
+5. **Schema:** uniformare `@id` a `silkincom.vercel.app`, rimuovere LocalBusiness placeholder.
+6. **Creare Wikidata entry** SILKinCOM (fondatore, P.IVA, sede Cermenate/Como).
 
 ## Piano 30 Giorni
 
-### Settimana 1 — Entity & Schema Foundation
-- [ ] Creare Wikidata entry SILKinCOM
-- [ ] Creare Google Business Profile + verifica
-- [ ] Creare LinkedIn company page
-- [ ] Correggere LocalBusiness schema: sameAs + addressLocality/Region
-- [ ] Creare `/llms-full.txt` con contenuto blog e categorie
+### Settimana 1 — Fix SEO critici di codice
+- [ ] Canonical per-locale su prodotti/collezioni/blog/pagine/homepage
+- [ ] hreflang `<link>` nel head + `x-default`
+- [ ] og:locale + OG per pagina/locale
+- [ ] Titolo: rimuovere doppio suffisso
 
-### Settimana 2 — Product Schema Fix
-- [ ] Override Product schema via Wix Velo: correggere Offers→offers, Availability→availability
-- [ ] Aggiungere `brand`, `material`, `countryOfOrigin: "IT"` a tutti i Product schema
-- [ ] Aggiungere BreadcrumbList alle pagine prodotto
-- [ ] Aggiungere `publisher.logo` al BlogPosting schema
+### Settimana 2 — Schema & dati
+- [ ] Uniformare `@id` host; rimuovere nodo `#atelier` placeholder
+- [ ] ItemList/CollectionPage sulle 10 collezioni
+- [ ] Article author = Person (Marco Dibenedetto); pulire U+FEFF
+- [ ] Riconciliare prezzo/dimensioni Bellagio
 
-### Settimana 3 — Brand Authority & Content
-- [ ] Creare profilo Trustpilot e avviare raccolta recensioni
-- [ ] Riscrivere llms.txt con link-list spec + versione inglese
-- [ ] Aggiungere byline visibile (Nicola La Malva) + ruolo a tutti i blog post
-- [ ] Aggiungere autore con LinkedIN sameAs al BlogPosting schema
-- [ ] Aggiungere Partita IVA nel footer
+### Settimana 3 — Entity & autorità
+- [ ] Wikidata + Google Business Profile + LinkedIn azienda
+- [ ] Trustpilot + raccolta recensioni reali
+- [ ] 3-5 menzioni terze (directory artigiane comasche, stampa moda IT)
 
-### Settimana 4 — Content Depth & Bing
-- [ ] Pubblicare 1 blog post nuovo con dati originali (es: "La produzione della seta di Como: numeri, tradizione e processo SILKinCOM")
-- [ ] Verificare sito in Bing Webmaster Tools (meta tag msvalidate.01)
-- [ ] Implementare IndexNow
-- [ ] Aggiungere FAQPage JSON-LD su almeno una categoria (es: cashmere — domande frequenti)
-- [ ] Aggiungere `speakable` spec a blog post principali
-- [ ] Verificare blog Wix serve date visibili nel HTML iniziale
+### Settimana 4 — Contenuto
+- [ ] Sezione fondatore visibile su /la-nostra-storia + Person schema (~600-800 parole)
+- [ ] Byline autore sui 4 blog post + 2-4 citazioni esterne per post
+- [ ] H1 homepage semantico + H2 a domanda
+- [ ] Bing Webmaster + IndexNow
+- [ ] ISR/cache sul catalogo
 
 ---
 
 ## Appendice — Pagine Analizzate
 
-| URL | Titolo | Problemi GEO Trovati |
+| URL | Note |
+|---|---|
+| / | SSR ok, H1 decorativo, OG globali |
+| /prodotto/bellagio | canonical ok (IT), title doppio suffisso, Product schema valido |
+| /en/prodotto/bellagio | **canonical → URL IT (critico)** |
+| /collezioni/bellagio | nessun ItemList schema |
+| /la-nostra-storia | ~280 parole, fondatore assente |
+| /artigiani | 1 artigiano nominato, contenuto atmosferico |
+| /materiali | contenuto tecnico forte e citabile |
+| /faq | FAQPage schema valido (25 Q&A) |
+| /contatti | LocalBusiness duplicato + placeholder telefono |
+| /trame-di-como/* | Article schema, author=Organization, no byline, no fonti |
+| robots.txt | crawler AI ammessi |
+| sitemap.xml | 140+ URL, hreflang 7 locale |
+| llms.txt | presente, valido, no llms-full.txt |
+
+---
+
+## Confronto Audit Precedente
+
+| | Audit 1 (57) | Re-audit (62) |
 |---|---|---|
-| https://www.silkincom.com | SILK in COM \| Sciarpe e Accessori... | Body JS-only, LocalBusiness address bug, sameAs assente, 4 |
-| https://www.silkincom.com/la-nostra-storia | La Nostra Storia \| SILK in COM — Eleganza e Artigianato | Body JS-only, nessun founder nominato, 2 |
-| https://www.silkincom.com/trame-di-como | Trame di Como: materiali, seta e storie | Body JS-only, 1 |
-| https://www.silkincom.com/assistenza-contatti | Contatti \| SILKinCOM | No telefono, no schema, P.IVA mancante, 3 |
-| https://www.silkincom.com/product-page/bellagio | Bellagio 180x70 \| Pashmina in Cashmere | Schema Offers bug, no brand/material/countryOfOrigin, 4 |
-| https://www.silkincom.com/product-page/como | Como \| Twilly in Seta | Schema Offers bug identico, 4 |
-| https://www.silkincom.com/post/seta-di-como-... | Seta di Como: storia, caratteristiche tecniche | Body JS-only, no author visibile, no publisher logo, 3 |
-| https://www.silkincom.com/post/guida-completa-... | Guida completa ai materiali SILKinCOM | Body JS-only, no data visibile, 3 |
-| https://www.silkincom.com/post/la-cura-... | Come nasce un accessorio SILKinCOM | Body JS-only, 2 |
-| https://www.silkincom.com/post/foulard-... | Foulard in seta per la primavera 2026 | Body JS-only, 2 |
-| https://www.silkincom.com/robots.txt | — | Nessun blocco AI crawler (positivo), 0 |
-| https://www.silkincom.com/llms.txt | — | Presente! Formato prose, nessun URL, MCP 401, 3 |
-| sitemap.xml / 5 sub-sitemap | — | 50 URL prodotto vs 41 noti (+9 orfani da verificare), 1 |
-| https://www.silkincom.com/category/cashmere | — | Nessun ItemList schema, 1 |
-| https://www.silkincom.com/category/abbigliamento | — | Nessun ItemList schema, 1 |
+| GEO Score | 57 Poor | **62 Fair** |
+| Multilingua | cookie, 1 lingua indicizzabile | 7 lingue path-prefix + sitemap hreflang |
+| Canonical | tutti → homepage | IT ok, 6 lingue ancora rotte |
+| Contenuti | IT/EN | tradotti 7 lingue |
+| Technical | 71 | 78 |
+| Citability | 71 | 78 |
+
+Progresso reale. Il blocco residuo: **fix canonical per-locale** (settimana 1) + **brand authority off-site** (lavoro continuativo).
 
 ---
 
-## Punti di Forza (da preservare)
-
-- **llms.txt esiste** — meno del 5% dei siti e-commerce nella fascia SMB ha questo file
-- **Tutti i crawler AI sono permessi** — nessun bot AI bloccato in robots.txt
-- **Schema server-rendered** — i JSON-LD che esistono sono visibili senza JS (Wix li inietta nel HTML)
-- **Sitemaps freschi e strutturati** — 5 sub-sitemap con lastmod recenti
-- **Provenance geografica forte** — "Made in Como" è un differenziatore riconoscibile a livello internazionale; la connessione al distretto della seta di Como è il seed perfetto per costruire topical authority
-- **Autore BlogPosting** — il nome "Nicola La Malva" è già nel schema; va portato in superficie
-- **Blog topics corretti** — "Seta di Como", "guida materiali", "cura accessori" sono esattamente le query informazionali che alimentano AI Overviews e Perplexity
-
----
-
-*Report generato da GEO Audit — 5 subagent specializzati (AI Visibility, Platform, Technical, Content E-E-A-T, Schema)*
-*Metodologia: Georgia Tech / Princeton / IIT Delhi 2024 GEO framework + Google E-E-A-T guidelines + llms.txt spec*
+*Report generato — GEO+SEO re-audit, 5 subagent specializzati (AI Visibility, Platform, Technical, Content E-E-A-T, Schema).*
