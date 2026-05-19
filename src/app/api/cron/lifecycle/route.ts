@@ -123,7 +123,7 @@ export async function GET(req: NextRequest) {
             price: number;
             quantity: number;
           }>) || [];
-          const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+          const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
           await sendAbandonedCartEmail(
             job.recipient_email,
             items.map((it) => ({

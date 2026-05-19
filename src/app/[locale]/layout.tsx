@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const ogLocale = OG_LOCALE[locale] ?? 'it_IT';
   return {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'),
   title: {
     default: 'SILKinCOM | Sciarpe e Accessori in Seta e Cashmere — Made in Como',
     template: '%s | SILKinCOM',
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     'lino estate Italia',
     'cotone extra lungo',
   ],
-  authors: [{ name: 'SILKinCOM', url: process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app' }],
+  authors: [{ name: 'SILKinCOM', url: process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com' }],
   creator: 'SILKinCOM',
   publisher: 'SILKinCOM',
   category: 'fashion',
@@ -117,12 +117,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'LocalBusiness'],
-  '@id': 'https://silkincom.vercel.app/#organization',
+  '@id': 'https://silkincom.com/#organization',
   name: 'SILKinCOM',
   alternateName: 'SILK in COM',
-  url: 'https://silkincom.vercel.app',
-  logo: 'https://silkincom.vercel.app/logo-official.png',
-  image: 'https://silkincom.vercel.app/og-image.jpg',
+  url: 'https://silkincom.com',
+  logo: 'https://silkincom.com/logo-official.png',
+  image: 'https://silkincom.com/og-image.jpg',
   description:
     'SILKinCOM produce sciarpe, foulard, twilly e pashmine in pura seta e cashmere, interamente disegnate e confezionate a Como, capitale italiana del tessile di lusso.',
   foundingLocation: 'Como, Italia',
@@ -154,14 +154,14 @@ const organizationSchema = {
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': 'https://silkincom.vercel.app/#website',
-  url: 'https://silkincom.vercel.app',
+  '@id': 'https://silkincom.com/#website',
+  url: 'https://silkincom.com',
   name: 'SILKinCOM',
   inLanguage: 'it-IT',
-  publisher: { '@id': 'https://silkincom.vercel.app/#organization' },
+  publisher: { '@id': 'https://silkincom.com/#organization' },
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://silkincom.vercel.app/collezioni?q={search_term_string}',
+    target: 'https://silkincom.com/collezioni?q={search_term_string}',
     'query-input': 'required name=search_term_string',
   },
 };

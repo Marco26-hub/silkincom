@@ -33,7 +33,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const paragraphs = post.body.split('\n\n').filter(Boolean);
   const others = getPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 3);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
   const articleUrl = `${baseUrl}/trame-di-como/${post.slug}`;
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -47,7 +47,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       '@type': 'Person',
       name: 'Marco Dibenedetto',
       jobTitle: 'Fondatore',
-      worksFor: { '@id': 'https://silkincom.vercel.app/#organization' },
+      worksFor: { '@id': 'https://silkincom.com/#organization' },
     },
     publisher: {
       '@type': 'Organization',

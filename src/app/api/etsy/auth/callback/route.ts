@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   const apiKey = process.env.ETSY_API_KEY!;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app'}/api/etsy/auth/callback`;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'}/api/etsy/auth/callback`;
 
   const tokenRes = await fetch('https://api.etsy.com/v3/public/oauth/token', {
     method: 'POST',

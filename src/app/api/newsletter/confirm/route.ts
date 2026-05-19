@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const token = new URL(req.url).searchParams.get('token');
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
   if (!token) {
     return NextResponse.redirect(`${baseUrl}/newsletter/expired?reason=missing-token`);

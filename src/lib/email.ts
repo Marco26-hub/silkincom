@@ -35,7 +35,7 @@ const DOMAIN_VERIFIED = process.env.RESEND_DOMAIN_VERIFIED === 'true';
 const FROM_EMAIL = DOMAIN_VERIFIED
   ? 'SILKinCOM <orders@silkincom.com>'
   : 'SILKinCOM <onboarding@resend.dev>';
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
 export async function sendOrderConfirmationEmail(
   customerEmail: string,

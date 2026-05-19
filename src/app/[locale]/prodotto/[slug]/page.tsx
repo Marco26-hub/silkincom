@@ -65,7 +65,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const materialLabel = materialName(p.material, locale);
   const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
   const productUrl = `${baseUrl}/prodotto/${p.slug}`;
 
   // Auth check for review form (does not affect render of product details)

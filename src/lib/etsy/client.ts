@@ -22,7 +22,7 @@ function getConfig() {
     apiKey: process.env.ETSY_API_KEY || '',
     sharedSecret: process.env.ETSY_SHARED_SECRET || '',
     shopId: process.env.ETSY_SHOP_ID || '',
-    redirectUri: `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app'}/api/etsy/auth/callback`,
+    redirectUri: `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'}/api/etsy/auth/callback`,
   };
 }
 

@@ -19,7 +19,7 @@ export async function GET() {
   const codeVerifier = crypto.randomBytes(32).toString('base64url');
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
 
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app'}/api/etsy/auth/callback`;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'}/api/etsy/auth/callback`;
   const scopes = 'listings_r listings_w listings_d transactions_r transactions_w shops_r shops_w';
 
   const url = `https://www.etsy.com/oauth/connect?response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&client_id=${apiKey}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;

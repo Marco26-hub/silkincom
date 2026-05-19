@@ -33,7 +33,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
   const typeLabel = collection ? t('collection') : material ? t('material') : t('category');
 
   // CollectionPage + ItemList schema — enumerate products for AI/search engines
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
   const prefix = locale === 'it' ? '' : `/${locale}`;
   const inList = (await getProducts(locale)).filter(
     (p) => p.category === slug || p.material === slug || p.collections?.includes(slug),

@@ -3,7 +3,7 @@ import { PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/data/catalog';
 import { getPosts } from '@/data/posts';
 import { routing } from '@/i18n/routing';
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
 // Builds the locale-prefixed URL for a path. The default locale (Italian) is
 // served unprefixed; every other locale gets a `/{locale}` prefix.

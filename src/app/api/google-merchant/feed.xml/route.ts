@@ -5,7 +5,7 @@
  *
  * Setup:
  * 1. Merchant Center → Products → Add data source → Scheduled fetch
- * 2. URL: https://silkincom.vercel.app/api/google-merchant/feed.xml
+ * 2. URL: https://silkincom.com/api/google-merchant/feed.xml
  * 3. Frequency: Daily
  *
  * Includes: id, title, description, link, image_link, price, availability,
@@ -17,7 +17,7 @@ export const runtime = 'nodejs';
 export const revalidate = 3600;
 
 const BRAND = 'SILKinCOM';
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
 function escapeXml(str: string): string {
   return str
