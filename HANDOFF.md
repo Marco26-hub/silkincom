@@ -1,7 +1,7 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 19 maggio 2026 · ultimo commit di riferimento: `4e3e15d`.
+Ultimo aggiornamento: 19 maggio 2026 (parte 2) · ultimo commit di riferimento: `f676d6c`.
 
 ---
 
@@ -48,12 +48,13 @@ Le pagine admin (`src/app/[locale]/admin/...`) leggono/scrivono le tabelle Supab
 - Dati **transazionali** (ordini, recensioni, magazzino, contatti, coupon) → passano tutti da Supabase, admin e frontend **collegati correttamente**.
 - Dati **catalogo/contenuto** (prodotti, categorie, collezioni, materiali, pagine, blog) → frontend statico, admin DB → **scollegati**.
 
-**Decisione architetturale ancora da prendere** (proposta all'utente, non ancora scelta):
-- **A)** DB sorgente di verità → frontend legge dal DB (rewrite di `catalog.ts`/`posts.ts` come query)
-- **B)** File sorgente di verità → admin catalogo sola lettura/rimosso
-- **C)** Ibrido → file = catalogo, DB = solo transazionale
+**Decisione architetturale: A — DB sorgente di verità.** Scelta e implementata. Frontend legge i prodotti dal DB Supabase via `catalog.ts` (client `createPublicClient` cookieless + `unstable_cache` 60s + tag `products`). Admin mutazioni (`POST/PATCH/DELETE /api/admin/products*`) chiamano `revalidateCatalog()` (`revalidateTag('products')` + `revalidatePath('/', 'layout')`) per refresh immediato.
 
-Finché non si decide, le due fonti vanno mantenute allineate a mano.
+Localizzazione prodotti: colonne JSONB `name_i18n` / `description_long_i18n` / `composition_i18n` sulla tabella `products` (migrazione `017_product_i18n_columns`). Italiano = sorgente (campo singolo). Altre 6 lingue: priorità DB *_i18n → `products.json` (legacy fallback) → italiano. Bottone "Traduci" nell'admin (auto al salvataggio se i testi cambiano) traduce IT → en/es/fr/de/pt/nl via OpenRouter (`google/gemma-4-31b-it:free`, override con `TRANSLATE_MODEL`) e popola le colonne `*_i18n`.
+
+`products.json` resta in repo come fallback transitorio: per i prodotti mai tradotti dall'admin, le 6 lingue continuano a venire da lì. Quando tutti i prodotti sono passati per "Traduci", `products.json` può essere dismesso.
+
+Collezioni: fonte unica `src/data/catalog-i18n.json`. `home.featured.items.*` rimosso dai messages; `FeaturedCollections` (homepage) usa `getCollections(locale)` come `/collezioni`. Aggiunte sezioni `collectionShortName` e `collectionAccent`.
 
 ---
 
@@ -116,20 +117,39 @@ Finché non si decide, le due fonti vanno mantenute allineate a mano.
 
 **Audit GEO/SEO:** 2 round. Report nel repo (vedi §9). GEO Score: 57 → **62/100 (Fair)**.
 
+### Sessione 19/05 — parte 2 (Arch A + admin operativo)
+
+- **Architettura A**: rewrite `catalog.ts` legge da Supabase via `createPublicClient` (cookieless, OK dentro `unstable_cache`). Split `catalog-meta.ts` (client-safe: tipi, taxonomy, sync getters) ↔ `catalog.ts` (server-only DB).
+- **Admin → frontend live**: `revalidateCatalog()` (`revalidateTag` + `revalidatePath`) chiamato da tutti gli endpoint admin products mutation (`route.ts`, `[id]/route.ts`, `[id]/images/route.ts`).
+- **`localizeProduct`**: italiano sempre da DB; altre lingue priorità DB *_i18n → products.json → DB source.
+- **Traduzione integrata admin**: migrazione `017` aggiunge colonne JSONB i18n; endpoint `POST /api/admin/products/[id]/translate` traduce via OpenRouter (chiamate sequenziali per il rate limit free). Bottone "Traduci" auto-eseguito da `save()` se name/description/composition cambiano.
+- **Endpoint API**: `/api/catalog` nuovo (catalogo localizzato per il client); `/api/products` originale ripristinato.
+- **Varianti admin**: aggiunta UI di modifica (pulsante matita + form condiviso create/edit + PATCH).
+- **ProductCard**: la card mostra `description` reale dal DB (line-clamp-2) invece di `composition.split('.')[0]`.
+- **DB seed**: tabella `materials` popolata (cashmere, lana, seta, lino, cotone) — dropdown variante materiale ora funziona.
+- **Collezioni unificate**: `messages.home.featured.items.*` rimosso, dati migrati in `catalog-i18n.json` (`collectionShortName`, `collectionAccent`). `getCollections()` esteso. Homepage e `/collezioni` ora condividono i dati.
+
+Commit di riferimento per la parte 2: `f51721b` → `f676d6c`.
+
 ---
 
 ## 7. Problemi noti / aperti
 
 | # | Problema | Stato |
 |---|---|---|
-| Architettura | Decisione A/B/C su frontend statico vs DB (§3) | **Da decidere** |
+| Architettura | Arch A scelta e implementata (§3) | **✓ Fatto** |
+| Vercel env | `OPENROUTER_API_KEY` da aggiungere alle env Vercel + Redeploy. Necessaria per il bottone "Traduci" admin. Senza, il save di un prodotto con testo cambiato dà errore 500. | **Da fare (utente)** |
+| Compositions doppioni | DELETE manuale dei 2 duplicati casing nella tabella `compositions`: `100% cashmere` (id `10968fd8-…`, 0 prodotti) e `100% Cotone` (id `8987a45f-…`, 0 prodotti). Da Supabase Studio. | **Da fare (utente)** |
+| Dati prodotti sporchi | DB `darsena-bianco.description_long` ha refuso "Il **cavallo** Darsena…" (→ "cappellino"). `darsena-blu`/`darsena-verde` `description_long` inizia con "Composizione:…" (scheda tecnica, non descrizione). Correggi dall'admin. | Da fare (contenuto) |
+| ISR cache catalogo | `unstable_cache` 60s + `revalidateCatalog` on-demand | **✓ Fatto** |
+| Bellagio prezzo/dimensioni | Era effetto del bug frontend statico vs DB. Risolto con Arch A: home e pagina prodotto leggono entrambe dal DB. | **✓ Fatto** |
 | Dominio | Migrare il Next.js da `silkincom.vercel.app` a `silkincom.com` | Da fare (§8) |
 | Brand Authority | GEO score basso (15/100) — serve presenza off-site | In corso (utente) |
 | Wikidata | Entità SILKinCOM da creare. Account `SILKinCOM` registrato ma **troppo nuovo**: `Special:NewItem` non renderizza il CAPTCHA. Serve **autoconfirmed** = 4 giorni + 50 modifiche. Valori pronti nel guide dato all'utente. | Bloccato 4gg |
 | Founder/E-E-A-T | Sezione fondatore visibile su `/la-nostra-storia` + byline blog | Da fare (contenuto) |
-| GEO medi | Bing Webmaster/IndexNow; H1 homepage semantico; ISR cache catalogo; incoerenza prezzo/dimensioni Bellagio (home €120/180x45 vs scheda €180/180x70) | Da fare |
-| T-shirt bianca | L'utente ha segnalato "manca una t-shirt bianca" Lario — da chiarire/aggiungere | In sospeso |
-| Categorie orfane DB | Rimuovere da admin: categorie Abbigliamento/Cappellini/Magliette, collezione Estate | Da fare |
+| GEO medi | Bing Webmaster/IndexNow; H1 homepage semantico (è poetico — decisione branding) | Da fare |
+| T-shirt bianca | Confermata OK dall'utente | **✓ Chiuso** |
+| Categorie orfane DB | Confermate aggiornate dall'utente | **✓ Chiuso** |
 
 GEO audit completo con piano 30 giorni: vedi `GEO-AUDIT-REPORT.md`.
 
