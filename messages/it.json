@@ -1105,5 +1105,127 @@
     "placeholder": "Cerca prodotti...",
     "noResults": "Nessun prodotto trovato per “{query}”",
     "minChars": "Digita almeno 2 caratteri"
+  },
+  "journal": {
+    "eyebrow": "Journal",
+    "title": "Trame di <em>Como</em>",
+    "intro": "Materiali, seta e storie di stile dal cuore del distretto serico comasco. Esplora il nostro patrimonio e la nostra visione.",
+    "atelier": {
+      "eyebrow": "Atelier",
+      "title": "La trama nelle <em>nostre mani</em>",
+      "quote": "Ogni filo racconta secoli di tradizione comasca.",
+      "quoteAuthor": "Maestro Tessitore",
+      "loomEyebrow": "Il telaio",
+      "techniqueLabel": "Tecnica",
+      "techniqueValue": "Twill di seta lavorato a mano su telaio Jacquard.",
+      "originLabel": "Origine",
+      "originValue": "Distretto serico di Como — eredità dal XV secolo.",
+      "timeLabel": "Tempo",
+      "timeValue": "Ogni metro richiede ore di tessitura artigianale.",
+      "mobileCaption": "Twill — 100% Seta — Como"
+    },
+    "readMore": "Continua a leggere",
+    "viewAll": "Vedi tutti gli articoli"
+  },
+  "artigianiPage": {
+    "metadata": {
+      "title": "I Nostri Artigiani — SILKinCOM",
+      "description": "I tessitori, gli stampatori e gli artigiani comaschi che danno vita ai prodotti SILKinCOM. Mestieri tramandati da generazioni nel distretto serico del Lago di Como."
+    },
+    "hero": {
+      "eyebrow": "Le Mani che Tessono",
+      "title": "I nostri <em>artigiani</em>",
+      "subtitle": "Tessitori, stampatori, sarti del distretto comasco. Ogni capo SILKinCOM porta la firma di mani che tramandano il mestiere da generazioni."
+    },
+    "weaving": {
+      "eyebrow": "Dentro la tessitura",
+      "title": "Dal telaio comasco al foulard",
+      "description": "Telai, fili e seta diventano sciarpe e foulard nel distretto comasco: ogni passaggio serve a dare mano, caduta e luce al capo."
+    },
+    "artisans": {
+      "lorenzo": {
+        "name": "Lorenzo M.",
+        "role": "Maestro Tessitore",
+        "city": "Cermenate (CO)",
+        "alt": "Artigiano al lavoro davanti a un telaio tessile in legno",
+        "caption": "Telaio manuale in lavorazione",
+        "story": "Segue il ritmo del telaio, controllando intreccio, tensione e passaggio dei fili destinati a sciarpe e foulard in seta."
+      },
+      "telaio": {
+        "name": "Telaio SILKinCOM",
+        "role": "Tessitura Jacquard",
+        "city": "Distretto Comasco",
+        "alt": "Telaio Jacquard al lavoro su sciarpa SILKinCOM in seta blu e bianca",
+        "caption": "Tessitura SILKinCOM in corso",
+        "story": "Il telaio Jacquard intreccia ordito e trama in tempo reale: ogni passaggio compone il logo SILKinCOM e il disegno geometrico della collezione."
+      },
+      "twill": {
+        "name": "Twill Comasco",
+        "role": "Dettaglio Jacquard",
+        "city": "Como",
+        "alt": "Dettaglio macro del twill di seta blu con motivo jacquard SILKinCOM",
+        "caption": "Trama a fili contati",
+        "story": "Macro del twill appena uscito dal telaio: il disegno è ottenuto a fili contati, non stampato — è la firma della seta comasca."
+      }
+    },
+    "cta": {
+      "label": "Scopri la nostra storia"
+    }
+  },
+  "b2bPage": {
+    "meta": {
+      "title": "B2B — Hospitality & Corporate Gifting",
+      "description": "Programma SILKinCOM per hotel di lusso, corporate gifting e clientela aziendale. Foulard, sciarpe e accessori in seta personalizzabili con condizioni dedicate."
+    },
+    "hero": {
+      "eyebrow": "Programma B2B",
+      "titleLine1": "Hospitality &",
+      "titleLine2": "Corporate Gifting",
+      "description": "La maison comasca dedicata ad hotel di lusso, brand di alta gamma e corporate gifting. Eredità tessile del distretto serico più antico d'Europa, condizioni riservate per ordini superiori a 20 pezzi."
+    },
+    "pillars": {
+      "hotel": {
+        "title": "Hotel di lusso",
+        "body": "Welcome amenities, foulard di benvenuto, accessori personalizzati con il monogramma della struttura. Ideali per hotel 5★ del Lago di Como, Milano e principali destinazioni italiane."
+      },
+      "gifting": {
+        "title": "Corporate gifting",
+        "body": "Regali aziendali per clienti e collaboratori. Confezione regalo Maison inclusa, packaging personalizzabile, possibilità di card dedicata. Da 20 pezzi."
+      },
+      "whiteLabel": {
+        "title": "White label & private label",
+        "body": "Capsule esclusive realizzate sul vostro brand. Tempi 4-8 settimane in base alla complessità. Minimo 50 pezzi per personalizzazione completa."
+      }
+    },
+    "cta": {
+      "eyebrow": "Richiedi listino",
+      "title": "Parliamo del vostro progetto.",
+      "description": "Inviateci una richiesta dettagliata: tipo di prodotti, quantità, tempistiche, eventuale personalizzazione. Vi ricontatteremo entro 24h con listino dedicato.",
+      "button": "Scrivi al programma B2B"
+    }
+  },
+  "recensioniPage": {
+    "meta": {
+      "title": "Recensioni — Cosa dicono i nostri clienti",
+      "description": "Recensioni verificate dei clienti SILKinCOM. Scopri cosa pensano della qualità dei nostri foulard, sciarpe e accessori 100% Made in Como."
+    },
+    "hero": {
+      "eyebrow": "Cosa dicono di noi",
+      "title": "Recensioni <em>verificate</em>",
+      "ratingSummary": "{average} / 5 — basate su {count, plural, one {# recensione} other {# recensioni}}",
+      "emptyState": "Le prime recensioni dei nostri clienti arriveranno presto. Sarai tra i primi a lasciare la tua dopo l'acquisto."
+    },
+    "cta": {
+      "text": "Hai acquistato da SILKinCOM? Condividi la tua esperienza dalla pagina del tuo ordine.",
+      "button": "Vai ai tuoi ordini"
+    }
+  },
+  "instagram": {
+    "titleStart": "Trame di Como su",
+    "titleEmphasis": "Instagram",
+    "description": "Il nostro mondo, raccontato un dettaglio alla volta. Seguici per anteprime, edizioni limitate e dietro le quinte.",
+    "photoAriaLabel": "SILKinCOM Instagram — foto {number}",
+    "photoAlt": "SILKinCOM Instagram {number}",
+    "followEyebrow": "Seguici sui social"
   }
 }

@@ -1,46 +1,48 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { LocalBusinessSchema } from '@/components/schemas/LocalBusinessSchema';
 
-export const metadata = {
-  title: 'I Nostri Artigiani — SILKinCOM',
-  description:
-    'I tessitori, gli stampatori e gli artigiani comaschi che danno vita ai prodotti SILKinCOM. Mestieri tramandati da generazioni nel distretto serico del Lago di Como.',
-  alternates: { canonical: '/artigiani' },
-};
+export async function generateMetadata() {
+  const t = await getTranslations('artigianiPage');
+  return {
+    title: t('metadata.title'),
+    description: t('metadata.description'),
+    alternates: { canonical: '/artigiani' },
+  };
+}
 
-export default function ArtigianiPage() {
+export default async function ArtigianiPage() {
+  const t = await getTranslations('artigianiPage');
+
   const artisans = [
     {
-      name: 'Lorenzo M.',
-      role: 'Maestro Tessitore',
-      city: 'Cermenate (CO)',
+      name: t('artisans.lorenzo.name'),
+      role: t('artisans.lorenzo.role'),
+      city: t('artisans.lorenzo.city'),
       image: '/artisans/telaio-artigiano-principale.png',
-      alt: 'Artigiano al lavoro davanti a un telaio tessile in legno',
-      caption: 'Telaio manuale in lavorazione',
-      story:
-        'Segue il ritmo del telaio, controllando intreccio, tensione e passaggio dei fili destinati a sciarpe e foulard in seta.',
+      alt: t('artisans.lorenzo.alt'),
+      caption: t('artisans.lorenzo.caption'),
+      story: t('artisans.lorenzo.story'),
     },
     {
-      name: 'Telaio SILKinCOM',
-      role: 'Tessitura Jacquard',
-      city: 'Distretto Comasco',
+      name: t('artisans.telaio.name'),
+      role: t('artisans.telaio.role'),
+      city: t('artisans.telaio.city'),
       image: '/artisans/telaio-silkincom-blu.png',
-      alt: 'Telaio Jacquard al lavoro su sciarpa SILKinCOM in seta blu e bianca',
-      caption: 'Tessitura SILKinCOM in corso',
-      story:
-        'Il telaio Jacquard intreccia ordito e trama in tempo reale: ogni passaggio compone il logo SILKinCOM e il disegno geometrico della collezione.',
+      alt: t('artisans.telaio.alt'),
+      caption: t('artisans.telaio.caption'),
+      story: t('artisans.telaio.story'),
     },
     {
-      name: 'Twill Comasco',
-      role: 'Dettaglio Jacquard',
-      city: 'Como',
+      name: t('artisans.twill.name'),
+      role: t('artisans.twill.role'),
+      city: t('artisans.twill.city'),
       image: '/artisans/twill-dettaglio-jacquard.png',
-      alt: 'Dettaglio macro del twill di seta blu con motivo jacquard SILKinCOM',
-      caption: 'Trama a fili contati',
-      story:
-        'Macro del twill appena uscito dal telaio: il disegno è ottenuto a fili contati, non stampato — è la firma della seta comasca.',
+      alt: t('artisans.twill.alt'),
+      caption: t('artisans.twill.caption'),
+      story: t('artisans.twill.story'),
     },
   ];
 
@@ -52,16 +54,18 @@ export default function ArtigianiPage() {
       <section className="pt-44 pb-20 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
-            Le Mani che Tessono
+            {t('hero.eyebrow')}
           </span>
           <span className="block w-px h-10 bg-gold-primary mx-auto mb-8" />
           <h1 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">
-            I nostri <em className="italic text-gold-primary">artigiani</em>
+            {t.rich('hero.title', {
+              em: (chunks) => (
+                <em className="italic text-gold-primary">{chunks}</em>
+              ),
+            })}
           </h1>
           <p className="max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed text-soft-black/70">
-            Tessitori, stampatori, sarti del distretto comasco. Ogni capo
-            SILKinCOM porta la firma di mani che tramandano il mestiere da
-            generazioni.
+            {t('hero.subtitle')}
           </p>
         </div>
       </section>
@@ -72,15 +76,14 @@ export default function ArtigianiPage() {
           <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-8 md:gap-12 items-end mb-14 md:mb-20">
             <div>
               <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-dark mb-4">
-                Dentro la tessitura
+                {t('weaving.eyebrow')}
               </span>
               <h2 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
-                Dal telaio comasco al foulard
+                {t('weaving.title')}
               </h2>
             </div>
             <p className="font-display italic text-xl md:text-2xl text-soft-black/70 leading-relaxed max-w-3xl lg:justify-self-end">
-              Telai, fili e seta diventano sciarpe e foulard nel distretto
-              comasco: ogni passaggio serve a dare mano, caduta e luce al capo.
+              {t('weaving.description')}
             </p>
           </div>
 
@@ -132,7 +135,7 @@ export default function ArtigianiPage() {
               href="/la-nostra-storia"
               className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-soft-black border-b border-soft-black hover:border-gold-primary hover:text-gold-primary pb-1 transition-colors group"
             >
-              Scopri la nostra storia
+              {t('cta.label')}
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>

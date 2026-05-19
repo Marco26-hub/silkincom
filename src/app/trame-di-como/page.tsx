@@ -3,10 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { POSTS } from '@/data/posts';
+import { useTranslations, useLocale } from 'next-intl';
+import { getPosts } from '@/data/posts';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function TramePage() {
+  const t = useTranslations('journal');
+  const locale = useLocale();
+  const posts = getPosts(locale);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -37,13 +41,13 @@ export default function TramePage() {
           className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center relative z-10"
         >
           <motion.span variants={itemVariants} className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-6">
-            Journal
+            {t('eyebrow')}
           </motion.span>
           <motion.h1 variants={itemVariants} className="font-display font-light text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] mb-6">
-            Trame di <em className="italic text-gold-primary">Como</em>
+            {t.rich('title', { em: (c) => <em className="italic text-gold-primary">{c}</em> })}
           </motion.h1>
           <motion.p variants={itemVariants} className="max-w-2xl mx-auto text-base md:text-lg font-light text-soft-black/70 leading-relaxed">
-            Materiali, seta e storie di stile dal cuore del distretto serico comasco. Esplora il nostro patrimonio e la nostra visione.
+            {t('intro')}
           </motion.p>
         </motion.div>
       </section>
@@ -70,11 +74,11 @@ export default function TramePage() {
             className="text-center mb-10 md:mb-14"
           >
             <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-4">
-              Atelier
+              {t('atelier.eyebrow')}
             </span>
             <span className="block w-px h-8 bg-gold-primary mx-auto mb-5" />
             <h2 className="font-display font-light text-3xl md:text-4xl lg:text-5xl leading-[1.15]">
-              La trama nelle <em className="italic text-gold-primary">nostre mani</em>
+              {t.rich('atelier.title', { em: (c) => <em className="italic text-gold-primary">{c}</em> })}
             </h2>
           </motion.div>
 
@@ -89,14 +93,14 @@ export default function TramePage() {
               className="hidden md:block md:col-span-3 lg:col-span-3 text-right pr-4"
             >
               <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-4">
-                Il telaio
+                {t('atelier.loomEyebrow')}
               </span>
               <span className="block w-12 h-px bg-gold-primary ml-auto mb-5" />
               <p className="font-display italic text-2xl lg:text-3xl text-soft-black/80 leading-snug mb-6">
-                "Ogni filo racconta secoli di tradizione comasca."
+                &ldquo;{t('atelier.quote')}&rdquo;
               </p>
               <p className="text-xs uppercase tracking-[0.3em] text-soft-black/50">
-                — Maestro Tessitore
+                — {t('atelier.quoteAuthor')}
               </p>
             </motion.div>
 
@@ -157,16 +161,16 @@ export default function TramePage() {
               className="hidden md:block md:col-span-3 lg:col-span-3 pl-4 space-y-8"
             >
               <div>
-                <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-2">Tecnica</span>
-                <p className="text-sm text-soft-black/75 font-light leading-relaxed">Twill di seta lavorato a mano su telaio Jacquard.</p>
+                <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-2">{t('atelier.techniqueLabel')}</span>
+                <p className="text-sm text-soft-black/75 font-light leading-relaxed">{t('atelier.techniqueValue')}</p>
               </div>
               <div>
-                <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-2">Origine</span>
-                <p className="text-sm text-soft-black/75 font-light leading-relaxed">Distretto serico di Como — eredità dal XV secolo.</p>
+                <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-2">{t('atelier.originLabel')}</span>
+                <p className="text-sm text-soft-black/75 font-light leading-relaxed">{t('atelier.originValue')}</p>
               </div>
               <div>
-                <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-2">Tempo</span>
-                <p className="text-sm text-soft-black/75 font-light leading-relaxed">Ogni metro richiede ore di tessitura artigianale.</p>
+                <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-2">{t('atelier.timeLabel')}</span>
+                <p className="text-sm text-soft-black/75 font-light leading-relaxed">{t('atelier.timeValue')}</p>
               </div>
             </motion.div>
 
@@ -179,10 +183,10 @@ export default function TramePage() {
               className="md:hidden text-center px-4"
             >
               <p className="font-display italic text-xl text-soft-black/80 leading-snug mb-3">
-                "Ogni filo racconta secoli di tradizione comasca."
+                &ldquo;{t('atelier.quote')}&rdquo;
               </p>
               <p className="text-[10px] uppercase tracking-[0.4em] text-gold-dark">
-                Twill — 100% Seta — Como
+                {t('atelier.mobileCaption')}
               </p>
             </motion.div>
           </div>
@@ -197,7 +201,7 @@ export default function TramePage() {
           variants={containerVariants}
           className="max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
         >
-          {POSTS.map((a) => (
+          {posts.map((a) => (
             <motion.div key={a.slug} variants={itemVariants} className="h-full">
               <Link href={`/trame-di-como/${a.slug}`} className="group block h-full flex flex-col">
                 <div className="relative aspect-[4/3] overflow-hidden bg-beige-light mb-6">
@@ -211,7 +215,7 @@ export default function TramePage() {
                 </div>
                 <div className="flex flex-col flex-grow">
                   <span className="text-[10px] uppercase tracking-[0.25em] text-gold-primary mb-3 block">
-                    {a.date && new Date(a.date).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}
+                    {a.date && new Date(a.date).toLocaleDateString(locale, { month: 'long', year: 'numeric' })}
                   </span>
                   <h2 className="font-display text-2xl md:text-3xl font-light mb-4 group-hover:text-gold-primary transition-colors duration-300 leading-tight">
                     {a.title}

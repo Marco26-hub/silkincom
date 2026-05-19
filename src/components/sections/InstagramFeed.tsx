@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Instagram, Facebook } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 // Foto reali scrappate dal sito ufficiale silkincom.com (Wix CDN)
 const WIX = (id: string) => `https://static.wixstatic.com/media/${id}~mv2.jpg/v1/fill/w_700,h_700,al_c,q_85/file.jpg`;
@@ -29,6 +30,8 @@ const PHOTOS = [
 ];
 
 export function InstagramFeed() {
+  const t = useTranslations('instagram');
+
   return (
     <section className="py-24 md:py-section bg-warm-white">
       <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
@@ -44,10 +47,10 @@ export function InstagramFeed() {
             @silkincom.official
           </span>
           <h2 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-5">
-            Trame di Como su <em className="italic text-gold-primary">Instagram</em>
+            {t('titleStart')} <em className="italic text-gold-primary">{t('titleEmphasis')}</em>
           </h2>
           <p className="text-sm md:text-base font-light text-soft-black/70 leading-relaxed">
-            Il nostro mondo, raccontato un dettaglio alla volta. Seguici per anteprime, edizioni limitate e dietro le quinte.
+            {t('description')}
           </p>
         </motion.div>
 
@@ -64,11 +67,11 @@ export function InstagramFeed() {
               viewport={{ once: true, margin: '-30px' }}
               transition={{ duration: 0.5, delay: i * 0.04, ease: 'easeOut' }}
               className="group relative block aspect-square overflow-hidden bg-ivory"
-              aria-label={`SILKinCOM Instagram — foto ${i + 1}`}
+              aria-label={t('photoAriaLabel', { number: i + 1 })}
             >
               <Image
                 src={src}
-                alt={`SILKinCOM Instagram ${i + 1}`}
+                alt={t('photoAlt', { number: i + 1 })}
                 fill
                 sizes="(max-width: 768px) 33vw, 16vw"
                 className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
@@ -93,7 +96,7 @@ export function InstagramFeed() {
           className="text-center mt-14"
         >
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-6">
-            Seguici sui social
+            {t('followEyebrow')}
           </span>
           <div className="flex items-center justify-center gap-7">
             <a

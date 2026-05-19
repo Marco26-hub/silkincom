@@ -1,16 +1,18 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { POSTS, getPost } from '@/data/posts';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { POST_SLUGS, getPosts, getPost } from '@/data/posts';
 import { ArrowUpRight } from 'lucide-react';
 
 export function generateStaticParams() {
-  return POSTS.map((p) => ({ slug: p.slug }));
+  return POST_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = getPost(slug);
+  const locale = await getLocale();
+  const p = getPost(slug, locale);
   if (!p) return {};
   return {
     title: p.title,
@@ -21,11 +23,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const locale = await getLocale();
+  const post = getPost(slug, locale);
   if (!post) notFound();
 
+  const t = await getTranslations('journal');
   const paragraphs = post.body.split('\n\n').filter(Boolean);
-  const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const others = getPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 3);
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
   const articleUrl = `${baseUrl}/trame-di-como/${post.slug}`;
@@ -44,7 +48,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       logo: { '@type': 'ImageObject', url: `${baseUrl}/logo-official.png` },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
-    inLanguage: 'it-IT',
+    inLanguage: locale,
   };
 
   return (
@@ -58,8 +62,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <div className="relative z-10 h-full flex items-end pb-20">
           <div className="max-w-[1100px] w-full mx-auto px-6 lg:px-10 text-warm-white animate-[fadeUp_1s_ease-out_forwards]">
             <span className="inline-block px-3 py-1 bg-warm-white/10 backdrop-blur-md text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-6 border border-warm-white/20">
-              Journal
-              {post.date && ' • ' + new Date(post.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {t('eyebrow')}
+              {post.date && ' • ' + new Date(post.date).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
             <h1 className="font-display font-light text-5xl md:text-6xl lg:text-8xl leading-[1.05] max-w-4xl drop-shadow-md">
               {post.title}
@@ -88,9 +92,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <section className="py-24 bg-ivory border-t border-pearl-grey/30">
           <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
-              <h2 className="font-display font-light text-4xl md:text-5xl">Continua a leggere</h2>
+              <h2 className="font-display font-light text-4xl md:text-5xl">{t('readMore')}</h2>
               <Link href="/trame-di-como" className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-soft-black hover:text-gold-primary transition-colors group">
-                Vedi tutti gli articoli
+                {t('viewAll')}
                 <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </Link>
             </div>
@@ -104,7 +108,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                   </div>
                   <div className="flex flex-col flex-grow">
                     <span className="text-[10px] uppercase tracking-[0.25em] text-gold-primary mb-3 block">
-                      {a.date && new Date(a.date).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}
+                      {a.date && new Date(a.date).toLocaleDateString(locale, { month: 'long', year: 'numeric' })}
                     </span>
                     <h3 className="font-display text-2xl font-light mb-3 group-hover:text-gold-primary transition-colors duration-300">{a.title}</h3>
                     <p className="text-sm text-soft-black/70 font-light line-clamp-2 mt-auto">{a.description}</p>

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/data/catalog';
-import { POSTS } from '@/data/posts';
+import { getPosts } from '@/data/posts';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
 
@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const journalRoutes: MetadataRoute.Sitemap = POSTS.map((post) => ({
+  const journalRoutes: MetadataRoute.Sitemap = getPosts('it').map((post) => ({
     url: `${BASE_URL}/trame-di-como/${post.slug}`,
     lastModified: post.date ? new Date(post.date) : now,
     changeFrequency: 'monthly',

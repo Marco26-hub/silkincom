@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import { ArrowRight, Star } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { createServiceClient } from '@/lib/supabase/server';
 
-export const metadata = {
-  title: 'Recensioni — Cosa dicono i nostri clienti',
-  description:
-    'Recensioni verificate dei clienti SILKinCOM. Scopri cosa pensano della qualità dei nostri foulard, sciarpe e accessori 100% Made in Como.',
-  alternates: { canonical: '/recensioni' },
-};
+export async function generateMetadata() {
+  const t = await getTranslations('recensioniPage');
+  return {
+    title: t('meta.title'),
+    description: t('meta.description'),
+    alternates: { canonical: '/recensioni' },
+  };
+}
 
 type Review = {
   id: string;
@@ -20,6 +23,7 @@ type Review = {
 };
 
 export default async function RecensioniPage() {
+  const t = await getTranslations('recensioniPage');
   let reviews: Review[] = [];
   let stats = { count: 0, average: 0 };
 
@@ -45,11 +49,15 @@ export default async function RecensioniPage() {
       <section className="pt-44 pb-20 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
-            Cosa dicono di noi
+            {t('hero.eyebrow')}
           </span>
           <span className="block w-px h-10 bg-gold-primary mx-auto mb-8" />
           <h1 className="font-display font-light text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">
-            Recensioni <em className="italic text-gold-primary">verificate</em>
+            {t.rich('hero.title', {
+              em: (chunks) => (
+                <em className="italic text-gold-primary">{chunks}</em>
+              ),
+            })}
           </h1>
           {stats.count > 0 ? (
             <div className="flex items-center justify-center gap-3 mb-2">
@@ -66,12 +74,15 @@ export default async function RecensioniPage() {
                 ))}
               </div>
               <span className="text-sm text-soft-black/70 font-light">
-                {stats.average} / 5 — basate su {stats.count} recensioni
+                {t('hero.ratingSummary', {
+                  average: stats.average,
+                  count: stats.count,
+                })}
               </span>
             </div>
           ) : (
             <p className="text-base font-light text-soft-black/70 max-w-xl mx-auto">
-              Le prime recensioni dei nostri clienti arriveranno presto. Sarai tra i primi a lasciare la tua dopo l&apos;acquisto.
+              {t('hero.emptyState')}
             </p>
           )}
         </div>
@@ -129,14 +140,13 @@ export default async function RecensioniPage() {
       <section className="py-20 bg-ivory text-center">
         <div className="max-w-2xl mx-auto px-6">
           <p className="text-base font-light text-soft-black/70 mb-8 leading-relaxed">
-            Hai acquistato da SILKinCOM? Condividi la tua esperienza dalla pagina
-            del tuo ordine.
+            {t('cta.text')}
           </p>
           <Link
             href="/account/ordini"
             className="inline-flex items-center gap-3 px-12 py-5 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.4em] hover:bg-gold-primary hover:text-soft-black transition-all duration-500 group"
           >
-            Vai ai tuoi ordini
+            {t('cta.button')}
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
