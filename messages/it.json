@@ -94,27 +94,7 @@
       "titleAccent": "una sola eleganza.",
       "viewAll": "Tutte le collezioni",
       "explore": "Esplora",
-      "collectionLabel": "Collezione",
-      "items": {
-        "inverno": {
-          "name": "Collezione Inverno",
-          "tagline": "Pashmine in cashmere, calore senza peso",
-          "accent": "Stagionale",
-          "shortName": "Inverno"
-        },
-        "iconica": {
-          "name": "Collezione Iconica",
-          "tagline": "Twilly e foulard in seta — eredità comasca",
-          "accent": "Heritage",
-          "shortName": "Iconica"
-        },
-        "primavera": {
-          "name": "Collezione Primavera & Estate",
-          "tagline": "Lino europeo e cotone extra-lungo per l'estate",
-          "accent": "Nuova",
-          "shortName": "Primavera & Estate"
-        }
-      }
+      "collectionLabel": "Collezione"
     },
     "values": {
       "heritage": {

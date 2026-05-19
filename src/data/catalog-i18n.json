@@ -291,5 +291,63 @@
       "pt": "Acessórios",
       "nl": "Accessoires"
     }
+  },
+  "collectionShortName": {
+    "inverno": {
+      "it": "Inverno",
+      "en": "Winter",
+      "es": "Invierno",
+      "fr": "Hiver",
+      "de": "Winter",
+      "pt": "Inverno",
+      "nl": "Winter"
+    },
+    "iconica": {
+      "it": "Iconica",
+      "en": "Iconic",
+      "es": "Icónica",
+      "fr": "Iconique",
+      "de": "Ikonisch",
+      "pt": "Icónica",
+      "nl": "Iconisch"
+    },
+    "primavera": {
+      "it": "Primavera & Estate",
+      "en": "Spring & Summer",
+      "es": "Primavera y Verano",
+      "fr": "Printemps & Été",
+      "de": "Frühling & Sommer",
+      "pt": "Primavera e Verão",
+      "nl": "Lente & Zomer"
+    }
+  },
+  "collectionAccent": {
+    "inverno": {
+      "it": "Stagionale",
+      "en": "Seasonal",
+      "es": "Temporada",
+      "fr": "Saisonnier",
+      "de": "Saison",
+      "pt": "Sazonal",
+      "nl": "Seizoen"
+    },
+    "iconica": {
+      "it": "Heritage",
+      "en": "Heritage",
+      "es": "Heritage",
+      "fr": "Heritage",
+      "de": "Heritage",
+      "pt": "Heritage",
+      "nl": "Heritage"
+    },
+    "primavera": {
+      "it": "Nuova",
+      "en": "New",
+      "es": "Nuevo",
+      "fr": "Nouveau",
+      "de": "Neu",
+      "pt": "Novo",
+      "nl": "Nieuw"
+    }
   }
 }

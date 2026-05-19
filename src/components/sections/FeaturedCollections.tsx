@@ -4,9 +4,10 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { getCollections } from '@/data/catalog-meta';
 
-const FEATURED_SLUGS = ['inverno', 'iconica', 'primavera'] as const;
+// Layout images for the homepage cards (presentation, not catalog content).
 const FEATURED_IMAGES: Record<string, string> = {
   inverno: '/instagram/ig-09.jpg',
   iconica: '/instagram/ig-10.jpg',
@@ -15,6 +16,8 @@ const FEATURED_IMAGES: Record<string, string> = {
 
 export function FeaturedCollections() {
   const t = useTranslations('home.featured');
+  const locale = useLocale();
+  const collections = getCollections(locale);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -71,16 +74,16 @@ export function FeaturedCollections() {
           variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
         >
-          {FEATURED_SLUGS.map((slug, i) => (
-            <motion.div key={slug} variants={itemVariants} className="h-full">
+          {collections.map((c, i) => (
+            <motion.div key={c.slug} variants={itemVariants} className="h-full">
               <Link
-                href={`/collezioni/${slug}`}
+                href={`/collezioni/${c.slug}`}
                 className="group relative block overflow-hidden bg-beige-light h-full"
               >
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
-                    src={FEATURED_IMAGES[slug]}
-                    alt={t(`items.${slug}.name`)}
+                    src={FEATURED_IMAGES[c.slug]}
+                    alt={c.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -89,7 +92,7 @@ export function FeaturedCollections() {
                   <div className="absolute inset-0 bg-gradient-to-t from-soft-black/85 via-soft-black/30 to-soft-black/20 opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
 
                   <span className="absolute top-6 left-6 px-3 py-1 bg-warm-white/95 text-[10px] uppercase tracking-[0.3em] text-soft-black backdrop-blur-sm shadow-sm">
-                    {t(`items.${slug}.accent`)}
+                    {c.accent}
                   </span>
 
                   <div className="absolute bottom-0 left-0 right-0 p-8 text-warm-white">
@@ -97,10 +100,10 @@ export function FeaturedCollections() {
                       {t('collectionLabel')}
                     </span>
                     <h3 className="font-display font-light text-3xl md:text-4xl leading-tight mb-3">
-                      {t(`items.${slug}.shortName`)}
+                      {c.shortName}
                     </h3>
                     <p className="text-xs font-light text-warm-white/85 mb-4 max-w-xs leading-relaxed">
-                      {t(`items.${slug}.tagline`)}
+                      {c.tagline}
                     </p>
                     <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold-primary border-b border-gold-primary/40 pb-1 group-hover:border-gold-primary transition-colors">
                       {t('explore')}

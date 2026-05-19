@@ -18,6 +18,8 @@ type CatI18n = {
   collectionName: Record<string, L10n>;
   collectionTagline: Record<string, L10n>;
   collectionDescription: Record<string, L10n>;
+  collectionShortName: Record<string, L10n>;
+  collectionAccent: Record<string, L10n>;
   groupName: Record<string, L10n>;
 };
 const i18n = catalogI18n as unknown as CatI18n;
@@ -174,8 +176,24 @@ export function getCategories(locale: string): Category[] {
 
 // ========== COLLECTIONS ==========
 
-type RawCollection = { slug: string; name: L10n; tagline: L10n; description: L10n; image: string };
-export type Collection = { slug: string; name: string; tagline: string; description: string; image: string };
+type RawCollection = {
+  slug: string;
+  name: L10n;
+  shortName: L10n;
+  accent: L10n;
+  tagline: L10n;
+  description: L10n;
+  image: string;
+};
+export type Collection = {
+  slug: string;
+  name: string;
+  shortName: string;
+  accent: string;
+  tagline: string;
+  description: string;
+  image: string;
+};
 
 const COLLECTION_META: { slug: string; image: string }[] = [
   { slug: 'inverno',   image: '/instagram/ig-06.jpg' },
@@ -186,6 +204,8 @@ const COLLECTION_META: { slug: string; image: string }[] = [
 const COLLECTIONS_RAW: RawCollection[] = COLLECTION_META.map((c) => ({
   slug: c.slug,
   name: i18n.collectionName[c.slug],
+  shortName: i18n.collectionShortName[c.slug],
+  accent: i18n.collectionAccent[c.slug],
   tagline: i18n.collectionTagline[c.slug],
   description: i18n.collectionDescription[c.slug],
   image: c.image,
@@ -198,6 +218,8 @@ export function getCollections(locale: string): Collection[] {
   return COLLECTIONS_RAW.map((c) => ({
     slug: c.slug,
     name: pick(c.name, l),
+    shortName: pick(c.shortName, l),
+    accent: pick(c.accent, l),
     tagline: pick(c.tagline, l),
     description: pick(c.description, l),
     image: c.image,

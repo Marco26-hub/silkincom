@@ -94,27 +94,7 @@
       "titleAccent": "one elegance.",
       "viewAll": "All collections",
       "explore": "Explore",
-      "collectionLabel": "Collection",
-      "items": {
-        "inverno": {
-          "name": "Winter Collection",
-          "tagline": "Cashmere pashminas, warmth without weight",
-          "accent": "Seasonal",
-          "shortName": "Winter"
-        },
-        "iconica": {
-          "name": "Iconic Collection",
-          "tagline": "Silk twillies and foulards — Como heritage",
-          "accent": "Heritage",
-          "shortName": "Iconic"
-        },
-        "primavera": {
-          "name": "Spring & Summer Collection",
-          "tagline": "European linen and extra-long cotton for summer",
-          "accent": "New",
-          "shortName": "Spring & Summer"
-        }
-      }
+      "collectionLabel": "Collection"
     },
     "values": {
       "heritage": {

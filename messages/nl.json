@@ -94,27 +94,7 @@
       "titleAccent": "één elegantie.",
       "viewAll": "Alle collecties",
       "explore": "Ontdekken",
-      "collectionLabel": "Collectie",
-      "items": {
-        "inverno": {
-          "name": "Wintercollectie",
-          "tagline": "Kasjmieren pashminas, warmte zonder gewicht",
-          "accent": "Seizoen",
-          "shortName": "Winter"
-        },
-        "iconica": {
-          "name": "Iconische Collectie",
-          "tagline": "Zijden twillies en foulards — Como-erfgoed",
-          "accent": "Heritage",
-          "shortName": "Iconisch"
-        },
-        "primavera": {
-          "name": "Lente- & Zomercollectie",
-          "tagline": "Europees linnen en extra-lang katoen voor de zomer",
-          "accent": "Nieuw",
-          "shortName": "Lente & Zomer"
-        }
-      }
+      "collectionLabel": "Collectie"
     },
     "values": {
       "heritage": {

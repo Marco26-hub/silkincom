@@ -94,27 +94,7 @@
       "titleAccent": "une seule élégance.",
       "viewAll": "Toutes les collections",
       "explore": "Explorer",
-      "collectionLabel": "Collection",
-      "items": {
-        "inverno": {
-          "name": "Collection Hiver",
-          "tagline": "Pashminas en cachemire, chaleur sans poids",
-          "accent": "Saisonnier",
-          "shortName": "Hiver"
-        },
-        "iconica": {
-          "name": "Collection Iconique",
-          "tagline": "Twillies et foulards en soie — héritage de Côme",
-          "accent": "Heritage",
-          "shortName": "Iconique"
-        },
-        "primavera": {
-          "name": "Collection Printemps & Été",
-          "tagline": "Lin européen et coton extra-long pour l'été",
-          "accent": "Nouveau",
-          "shortName": "Printemps & Été"
-        }
-      }
+      "collectionLabel": "Collection"
     },
     "values": {
       "heritage": {

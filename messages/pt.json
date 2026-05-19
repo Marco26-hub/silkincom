@@ -94,27 +94,7 @@
       "titleAccent": "uma só elegância.",
       "viewAll": "Todas as coleções",
       "explore": "Explorar",
-      "collectionLabel": "Coleção",
-      "items": {
-        "inverno": {
-          "name": "Coleção Inverno",
-          "tagline": "Pashminas em caxemira, calor sem peso",
-          "accent": "Sazonal",
-          "shortName": "Inverno"
-        },
-        "iconica": {
-          "name": "Coleção Icónica",
-          "tagline": "Twillies e foulards em seda — herança de Como",
-          "accent": "Heritage",
-          "shortName": "Icónica"
-        },
-        "primavera": {
-          "name": "Coleção Primavera e Verão",
-          "tagline": "Linho europeu e algodão extra-longo para o verão",
-          "accent": "Novo",
-          "shortName": "Primavera e Verão"
-        }
-      }
+      "collectionLabel": "Coleção"
     },
     "values": {
       "heritage": {

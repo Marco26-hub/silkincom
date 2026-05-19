@@ -94,27 +94,7 @@
       "titleAccent": "eine einzige Eleganz.",
       "viewAll": "Alle Kollektionen",
       "explore": "Entdecken",
-      "collectionLabel": "Kollektion",
-      "items": {
-        "inverno": {
-          "name": "Winterkollektion",
-          "tagline": "Pashminas aus Kaschmir, Wärme ohne Gewicht",
-          "accent": "Saison",
-          "shortName": "Winter"
-        },
-        "iconica": {
-          "name": "Ikonische Kollektion",
-          "tagline": "Twillies und Foulards aus Seide — Como-Erbe",
-          "accent": "Heritage",
-          "shortName": "Ikonisch"
-        },
-        "primavera": {
-          "name": "Frühling- & Sommerkollektion",
-          "tagline": "Europäisches Leinen und extralange Baumwolle für den Sommer",
-          "accent": "Neu",
-          "shortName": "Frühling & Sommer"
-        }
-      }
+      "collectionLabel": "Kollektion"
     },
     "values": {
       "heritage": {
