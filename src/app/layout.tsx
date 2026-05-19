@@ -55,9 +55,6 @@ export const metadata: Metadata = {
   creator: 'SILKinCOM',
   publisher: 'SILKinCOM',
   category: 'fashion',
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     locale: 'it_IT',

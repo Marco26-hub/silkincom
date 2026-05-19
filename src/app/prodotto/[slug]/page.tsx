@@ -48,6 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${p.name}${mat ? ` — ${mat}` : ''} | SILKinCOM`,
     description: p.description.slice(0, 160),
+    alternates: { canonical: `/prodotto/${slug}` },
   };
 }
 

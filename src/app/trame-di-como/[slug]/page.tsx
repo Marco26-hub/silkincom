@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: p.title,
     description: p.description.slice(0, 160),
+    alternates: { canonical: `/trame-di-como/${slug}` },
     openGraph: { images: p.image ? [p.image] : [] },
   };
 }

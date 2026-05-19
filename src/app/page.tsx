@@ -8,6 +8,10 @@ import { EditorialBanner } from '@/components/sections/EditorialBanner';
 import { InstagramFeed } from '@/components/sections/InstagramFeed';
 import { Newsletter } from '@/components/sections/Newsletter';
 
+export const metadata = {
+  alternates: { canonical: '/' },
+};
+
 export default function HomePage() {
   return (
     <>
