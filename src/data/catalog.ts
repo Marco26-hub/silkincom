@@ -61,23 +61,37 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
   return (products as unknown as DBProduct[]) || [];
 }
 
+// Cached at the data layer. Admin mutations call revalidateTag('products')
+// for an immediate refresh; the 60s revalidate is a safety net.
 const getCachedProducts = unstable_cache(
   fetchProductsFromDB,
   ['catalog-products'],
-  { revalidate: 3600, tags: ['products'] }
+  { revalidate: 60, tags: ['products'] }
 );
 
+// Italian is the source language and lives in the DB — so `it` always reads
+// from the DB and reflects admin edits immediately. The other 6 locales come
+// from products.json (filled by the translation pipeline); if a translation
+// is missing, fall back to the DB (Italian) value.
 function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
   const translations = translationMap.get(dbProduct.slug);
   const meta = buildProductMeta(dbProduct.slug);
 
+  const translated = locale !== 'it' && translations
+    ? {
+        name: pick(translations.name, locale),
+        description: pick(translations.description, locale),
+        composition: pick(translations.composition, locale),
+      }
+    : null;
+
   return {
     slug: dbProduct.slug,
-    name: translations ? pick(translations.name, locale) : dbProduct.name,
+    name: translated?.name || dbProduct.name,
     sku: dbProduct.sku,
     price: dbProduct.price,
-    description: translations ? pick(translations.description, locale) : dbProduct.description_long,
-    composition: translations ? pick(translations.composition, locale) : dbProduct.composition,
+    description: translated?.description || dbProduct.description_long,
+    composition: translated?.composition || dbProduct.composition,
     dimensions: dbProduct.dimensions,
     images: dbProduct.product_images.map((img) => img.image_url),
     category: meta.category,

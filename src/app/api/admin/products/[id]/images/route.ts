@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
+import { revalidateCatalog } from '@/lib/revalidate';
 
 async function checkAdmin() {
   const supabase = await createServerClient();
@@ -71,6 +72,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 });
 
+  revalidateCatalog();
+
   return NextResponse.json({ ok: true, image: img });
 }
 
@@ -93,6 +96,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
 
   await supabase.from('product_images').delete().eq('id', imageId).eq('product_id', id);
+
+  revalidateCatalog();
 
   return NextResponse.json({ ok: true });
 }

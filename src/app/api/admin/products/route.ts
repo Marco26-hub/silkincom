@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { logAdminAction } from '@/lib/audit';
+import { revalidateCatalog } from '@/lib/revalidate';
 
 const EDITOR_ROLES = ['admin', 'super_admin', 'editor'];
 
@@ -56,6 +57,8 @@ export async function POST(req: NextRequest) {
   });
 
   await logAdminAction(auth.userId, 'create_product', 'product', data.id, insert);
+
+  revalidateCatalog();
 
   return NextResponse.json({ id: data.id }, { status: 201 });
 }
