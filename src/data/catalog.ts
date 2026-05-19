@@ -1,15 +1,16 @@
-import productsJson from './products.json';
+'use server';
+
+import { unstable_cache } from 'next/cache';
+import { createServerClient } from '@/lib/supabase/server';
 import catalogI18n from './catalog-i18n.json';
+import productsJson from './products.json';
 import { LOCALES, type Locale } from '@/i18n/routing';
 
 export type Material = 'seta' | 'cashmere' | 'lana' | 'lino' | 'cotone' | 'misto';
 export type ProductGroup = 'abbigliamento' | 'accessori';
 
-// Localized string. `it` is the source of truth; other locales are optional.
-// Resolution falls back: requested locale -> en -> it.
 export type L10n = { it: string } & Partial<Record<Exclude<Locale, 'it'>, string>>;
 
-// Catalog metadata translations (categories, collections, materials, groups) — all 7 locales.
 type CatI18n = {
   materialName: Record<string, L10n>;
   materialDescription: Record<string, L10n>;
@@ -33,19 +34,8 @@ function normLocale(locale: string): Locale {
   return isLocale(locale) ? locale : 'it';
 }
 
-// Raw product as stored in products.json (translatable fields are localized)
-type RawProduct = {
-  slug: string;
-  name: L10n;
-  sku: string;
-  price: number;
-  description: L10n;
-  composition: L10n;
-  dimensions: string;
-  images: string[];
-};
+// ========== PRODUCTS ==========
 
-// Localized product as consumed by the UI
 export type Product = {
   slug: string;
   name: string;
@@ -61,9 +51,23 @@ export type Product = {
   group?: ProductGroup;
 };
 
-const rawProducts = productsJson as RawProduct[];
+// Translations from products.json
+type RawProduct = {
+  slug: string;
+  name: L10n;
+  sku: string;
+  price: number;
+  description: L10n;
+  composition: L10n;
+  dimensions: string;
+  images: string[];
+};
+const productsJsonData = productsJson as RawProduct[];
+const translationMap = new Map(productsJsonData.map((p) => [p.slug, p]));
 
-// Material per category — single source of truth, matches the live silkincom.com taxonomy
+export const PRODUCT_SLUGS: string[] = productsJsonData.map((p) => p.slug);
+
+// Taxonomy
 const CATEGORY_MATERIAL: Record<string, Material> = {
   bellagio: 'cashmere',
   cernobbio: 'cashmere',
@@ -77,7 +81,6 @@ const CATEGORY_MATERIAL: Record<string, Material> = {
   tivan: 'cotone',
 };
 
-// Macro-group per category: clothing vs accessories
 const CATEGORY_GROUP: Record<string, ProductGroup> = {
   darsena: 'abbigliamento',
   lario: 'abbigliamento',
@@ -108,21 +111,16 @@ function categoryOf(slug: string): string {
 
 function collectionsOf(category: string): string[] {
   const collections: string[] = [];
-  // Iconica: twilly e cappellini
   if (['twilly-como', 'darsena'].includes(category)) collections.push('iconica');
-  // Inverno: winter materials (cashmere, wool scarves/pashminas)
   if (['bellagio', 'cernobbio', 'tremezzo', 'varenna'].includes(category)) collections.push('inverno');
-  // Primavera: spring/summer materials (cotton, linen)
   if (['darsena', 'lario', 'melzi', 'riva', 'tivan'].includes(category)) collections.push('primavera');
   return collections;
 }
 
-// Catalog metadata for every product, derived once at module load (locale-agnostic)
 type ProductMeta = { category: string; collections: string[]; material: Material; group?: ProductGroup };
-const PRODUCT_META: Record<string, ProductMeta> = {};
-for (const p of rawProducts) {
-  const category = categoryOf(p.slug);
-  PRODUCT_META[p.slug] = {
+function buildProductMeta(slug: string): ProductMeta {
+  const category = categoryOf(slug);
+  return {
     category,
     collections: collectionsOf(category),
     material: CATEGORY_MATERIAL[category] || 'misto',
@@ -130,17 +128,71 @@ for (const p of rawProducts) {
   };
 }
 
-function localizeProduct(p: RawProduct, locale: Locale): Product {
-  const meta = PRODUCT_META[p.slug];
+// DB Fetch
+async function fetchProductsFromDB() {
+  const supabase = await createServerClient();
+  const { data: products, error } = await supabase
+    .from('products')
+    .select(
+      `id, slug, name, sku, price, description_long, composition, dimensions,
+       product_images(image_url),
+       product_categories(
+         category_id,
+         categories(slug)
+       ),
+       product_collections(
+         collection_id,
+         collections(slug)
+       )`
+    )
+    .eq('status', 'published')
+    .order('created_at');
+
+  if (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+
+  return (products as any[]) || [];
+}
+
+const getCachedProducts = unstable_cache(
+  fetchProductsFromDB,
+  ['catalog-products'],
+  { revalidate: 3600, tags: ['products'] }
+);
+
+type DBProduct = {
+  id: string;
+  slug: string;
+  name: string;
+  sku: string;
+  price: number;
+  description_long: string;
+  composition: string;
+  dimensions: string;
+  product_images: Array<{ image_url: string }>;
+  product_categories: Array<{ category_id: string; categories: { slug: string } | null }>;
+  product_collections: Array<{ collection_id: string; collections: { slug: string } | null }>;
+};
+
+async function getProductsFromDB(): Promise<DBProduct[]> {
+  return await getCachedProducts();
+}
+
+function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
+  const translations = translationMap.get(dbProduct.slug);
+  const meta = buildProductMeta(dbProduct.slug);
+
   return {
-    slug: p.slug,
-    name: pick(p.name, locale),
-    sku: p.sku,
-    price: p.price,
-    description: pick(p.description, locale),
-    composition: pick(p.composition, locale),
-    dimensions: p.dimensions,
-    images: p.images,
+    slug: dbProduct.slug,
+    name: translations ? pick(translations.name, locale) : dbProduct.name,
+    sku: dbProduct.sku,
+    price: dbProduct.price,
+    description: translations ? pick(translations.description, locale) : dbProduct.description_long,
+    composition: translations ? pick(translations.composition, locale) : dbProduct.composition,
+    dimensions: dbProduct.dimensions,
+    images: dbProduct.product_images.map((img) => img.image_url),
     category: meta.category,
     collections: meta.collections,
     material: meta.material,
@@ -148,40 +200,45 @@ function localizeProduct(p: RawProduct, locale: Locale): Product {
   };
 }
 
-// Product slugs — locale-agnostic, for generateStaticParams / sitemap
-export const PRODUCT_SLUGS: string[] = rawProducts.map((p) => p.slug);
-
-export function getProducts(locale: string): Product[] {
+export async function getProducts(locale: string): Promise<Product[]> {
   const l = normLocale(locale);
-  return rawProducts.map((p) => localizeProduct(p, l));
+  const dbProducts = await getProductsFromDB();
+  return dbProducts.map((p) => localizeProduct(p, l));
 }
 
-export function getProduct(slug: string, locale: string): Product | undefined {
-  const p = rawProducts.find((x) => x.slug === slug);
+export async function getProduct(slug: string, locale: string): Promise<Product | undefined> {
+  const dbProducts = await getProductsFromDB();
+  const p = dbProducts.find((x) => x.slug === slug);
   return p ? localizeProduct(p, normLocale(locale)) : undefined;
 }
 
-export function getProductsByCategory(category: string, locale: string): Product[] {
-  return getProducts(locale).filter((p) => p.category === category);
+export async function getProductsByCategory(category: string, locale: string): Promise<Product[]> {
+  const products = await getProducts(locale);
+  return products.filter((p) => p.category === category);
 }
 
-export function getProductsByCollection(collection: string, locale: string): Product[] {
-  return getProducts(locale).filter((p) => p.collections.includes(collection));
+export async function getProductsByCollection(collection: string, locale: string): Promise<Product[]> {
+  const products = await getProducts(locale);
+  return products.filter((p) => p.collections.includes(collection));
 }
 
-export function getProductsByMaterial(material: Material, locale: string): Product[] {
-  return getProducts(locale).filter((p) => p.material === material);
+export async function getProductsByMaterial(material: Material, locale: string): Promise<Product[]> {
+  const products = await getProducts(locale);
+  return products.filter((p) => p.material === material);
 }
 
-export function getProductsByGroup(group: ProductGroup, locale: string): Product[] {
-  return getProducts(locale).filter((p) => p.group === group);
+export async function getProductsByGroup(group: ProductGroup, locale: string): Promise<Product[]> {
+  const products = await getProducts(locale);
+  return products.filter((p) => p.group === group);
 }
 
-export function getFeaturedProducts(locale: string, limit = 8): Product[] {
-  return getProducts(locale).slice(0, limit);
+export async function getFeaturedProducts(locale: string, limit = 8): Promise<Product[]> {
+  const products = await getProducts(locale);
+  return products.slice(0, limit);
 }
 
-// Categories with material/style information
+// ========== CATEGORIES ==========
+
 const WIX = (id: string, w = 800, h = 1000) =>
   `https://static.wixstatic.com/media/${id}/v1/fill/w_${w},h_${h},al_c,q_90,usm_0.66_1.00_0.01/file.jpg`;
 
@@ -209,7 +266,21 @@ const CATEGORIES_RAW: RawCategory[] = CATEGORY_META.map((c) => ({
   image: c.image,
 }));
 
-// Main collections shown as featured
+export const CATEGORY_SLUGS: string[] = CATEGORIES_RAW.map((c) => c.slug);
+
+export function getCategories(locale: string): Category[] {
+  const l = normLocale(locale);
+  return CATEGORIES_RAW.map((c) => ({
+    slug: c.slug,
+    name: c.name,
+    material: pick(c.material, l),
+    description: pick(c.description, l),
+    image: c.image,
+  }));
+}
+
+// ========== COLLECTIONS ==========
+
 type RawCollection = { slug: string; name: L10n; tagline: L10n; description: L10n; image: string };
 export type Collection = { slug: string; name: string; tagline: string; description: string; image: string };
 
@@ -227,7 +298,21 @@ const COLLECTIONS_RAW: RawCollection[] = COLLECTION_META.map((c) => ({
   image: c.image,
 }));
 
-// Material info for filtering UI
+export const COLLECTION_SLUGS: string[] = COLLECTIONS_RAW.map((c) => c.slug);
+
+export function getCollections(locale: string): Collection[] {
+  const l = normLocale(locale);
+  return COLLECTIONS_RAW.map((c) => ({
+    slug: c.slug,
+    name: pick(c.name, l),
+    tagline: pick(c.tagline, l),
+    description: pick(c.description, l),
+    image: c.image,
+  }));
+}
+
+// ========== MATERIALS ==========
+
 type RawMaterialInfo = { slug: string; name: L10n; code: string; description: L10n };
 export type MaterialInfo = { slug: string; name: string; code: string; description: string };
 
@@ -246,42 +331,7 @@ const MATERIALS_RAW: RawMaterialInfo[] = MATERIAL_META.map((m) => ({
   description: i18n.materialDescription[m.slug],
 }));
 
-// Macro-groups for top-level navigation
-type RawGroup = { slug: ProductGroup; name: L10n; categories: string[] };
-export type Group = { slug: ProductGroup; name: string; categories: string[] };
-
-const GROUPS_RAW: RawGroup[] = [
-  { slug: 'abbigliamento', name: i18n.groupName.abbigliamento, categories: ['lario', 'riva', 'melzi', 'darsena'] },
-  { slug: 'accessori',     name: i18n.groupName.accessori,     categories: ['bellagio', 'cernobbio', 'tremezzo', 'varenna', 'twilly-como', 'tivan'] },
-];
-
-// Taxonomy slugs — locale-agnostic, for generateStaticParams / sitemap
-export const CATEGORY_SLUGS: string[] = CATEGORIES_RAW.map((c) => c.slug);
-export const COLLECTION_SLUGS: string[] = COLLECTIONS_RAW.map((c) => c.slug);
 export const MATERIAL_SLUGS: string[] = MATERIALS_RAW.map((m) => m.slug);
-export const TAXONOMY_SLUGS: string[] = [...CATEGORY_SLUGS, ...COLLECTION_SLUGS, ...MATERIAL_SLUGS];
-
-export function getCategories(locale: string): Category[] {
-  const l = normLocale(locale);
-  return CATEGORIES_RAW.map((c) => ({
-    slug: c.slug,
-    name: c.name,
-    material: pick(c.material, l),
-    description: pick(c.description, l),
-    image: c.image,
-  }));
-}
-
-export function getCollections(locale: string): Collection[] {
-  const l = normLocale(locale);
-  return COLLECTIONS_RAW.map((c) => ({
-    slug: c.slug,
-    name: pick(c.name, l),
-    tagline: pick(c.tagline, l),
-    description: pick(c.description, l),
-    image: c.image,
-  }));
-}
 
 export function getMaterials(locale: string): MaterialInfo[] {
   const l = normLocale(locale);
@@ -293,7 +343,21 @@ export function getMaterials(locale: string): MaterialInfo[] {
   }));
 }
 
+// ========== GROUPS ==========
+
+type RawGroup = { slug: ProductGroup; name: L10n; categories: string[] };
+export type Group = { slug: ProductGroup; name: string; categories: string[] };
+
+const GROUPS_RAW: RawGroup[] = [
+  { slug: 'abbigliamento', name: i18n.groupName.abbigliamento, categories: ['lario', 'riva', 'melzi', 'darsena'] },
+  { slug: 'accessori',     name: i18n.groupName.accessori,     categories: ['bellagio', 'cernobbio', 'tremezzo', 'varenna', 'twilly-como', 'tivan'] },
+];
+
 export function getGroups(locale: string): Group[] {
   const l = normLocale(locale);
   return GROUPS_RAW.map((g) => ({ slug: g.slug, name: pick(g.name, l), categories: g.categories }));
 }
+
+// ========== TAXONOMY SLUGS ==========
+
+export const TAXONOMY_SLUGS: string[] = [...CATEGORY_SLUGS, ...COLLECTION_SLUGS, ...MATERIAL_SLUGS];

@@ -3,9 +3,9 @@
 import { Link } from '@/i18n/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ProductCard } from '@/components/product/ProductCard';
-import { getProducts } from '@/data/catalog';
+import type { Product } from '@/data/catalog';
 
 const containerVariants = {
   hidden: {},
@@ -17,17 +17,8 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
 };
 
-export function Bestsellers() {
+export function BestsellerContent({ products }: { products: Product[] }) {
   const t = useTranslations('home.bestsellers');
-  const locale = useLocale();
-  const products = getProducts(locale);
-  // pick 4 representative products
-  const featured = ['bellagio-2', 'cernobbio-azzurra', 'tremezzo-beige', 'varenna-grigia']
-    .map((s) => products.find((p) => p.slug === s))
-    .filter((p): p is NonNullable<typeof p> => Boolean(p));
-
-  // fallback: first 4 products if slugs not found
-  const display = featured.length >= 2 ? featured : products.slice(0, 4);
 
   return (
     <section className="py-24 md:py-section bg-warm-white overflow-hidden">
@@ -63,7 +54,7 @@ export function Bestsellers() {
           viewport={{ once: true, margin: '-50px' }}
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-8"
         >
-          {display.map((p) => (
+          {products.map((p) => (
             <motion.div key={p.slug} variants={itemVariants}>
               <ProductCard product={p} />
             </motion.div>

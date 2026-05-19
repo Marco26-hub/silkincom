@@ -43,7 +43,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
-  const p = getProduct(slug, locale);
+  const p = await getProduct(slug, locale);
   if (!p) return {};
   const mat = materialName(p.material, locale);
   return {
@@ -56,14 +56,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ProdottoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
-  const p = getProduct(slug, locale);
+  const p = await getProduct(slug, locale);
   if (!p) notFound();
 
   const t = await getTranslations('product');
   const tn = await getTranslations('nav');
   const cat = getCategories(locale).find((c) => c.slug === p.category);
   const materialLabel = materialName(p.material, locale);
-  const related = getProducts(locale).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
+  const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
   const productUrl = `${baseUrl}/prodotto/${p.slug}`;

@@ -185,7 +185,7 @@ export default async function CollezioniPage() {
               <em className="italic">{t('allTitle')}</em>
             </h2>
           </div>
-          <ProductFilters products={getProducts(locale)} categories={categories} materials={materials} collections={collections} />
+          <ProductFilters products={await getProducts(locale)} categories={categories} materials={materials} collections={collections} />
         </div>
       </section>
     </>

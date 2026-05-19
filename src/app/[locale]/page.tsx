@@ -2,7 +2,7 @@ import { Hero } from '@/components/sections/Hero';
 import { ValueProps } from '@/components/sections/ValueProps';
 import { FeaturedCollections } from '@/components/sections/FeaturedCollections';
 import { BrandStory } from '@/components/sections/BrandStory';
-import { Bestsellers } from '@/components/sections/Bestsellers';
+import { BestsellerSection } from '@/components/sections/BestsellersSectionLoader';
 import { Materials } from '@/components/sections/Materials';
 import { EditorialBanner } from '@/components/sections/EditorialBanner';
 import { InstagramFeed } from '@/components/sections/InstagramFeed';
@@ -15,14 +15,14 @@ export async function generateMetadata() {
   return { alternates: localizedAlternates(locale, '') };
 }
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <Hero />
       <ValueProps />
       <FeaturedCollections />
       <BrandStory />
-      <Bestsellers />
+      <BestsellerSection />
       <Materials />
       <EditorialBanner />
       <InstagramFeed />

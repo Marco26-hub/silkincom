@@ -5,7 +5,7 @@ import { X, Search } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
-import { getProducts } from '@/data/catalog';
+import type { Product } from '@/data/catalog';
 
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(n);
@@ -13,10 +13,11 @@ function formatPrice(n: number) {
 
 export function SearchOverlay({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations('search');
   const locale = useLocale();
-  const products = getProducts(locale);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -24,6 +25,20 @@ export function SearchOverlay({ onClose }: { onClose: () => void }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/products?locale=${locale}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch products:', error);
+        setLoading(false);
+      });
+  }, [locale]);
 
   const results = query.trim().length >= 2
     ? products.filter((p) => {

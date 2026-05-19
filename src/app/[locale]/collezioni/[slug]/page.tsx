@@ -35,7 +35,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
   // CollectionPage + ItemList schema — enumerate products for AI/search engines
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
   const prefix = locale === 'it' ? '' : `/${locale}`;
-  const inList = getProducts(locale).filter(
+  const inList = (await getProducts(locale)).filter(
     (p) => p.category === slug || p.material === slug || p.collections?.includes(slug),
   );
   const collectionSchema = {
@@ -82,7 +82,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
       <section className="py-16 bg-warm-white">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
           <ProductFilters
-            products={getProducts(locale)}
+            products={await getProducts(locale)}
             categories={getCategories(locale)}
             materials={getMaterials(locale)}
             collections={getCollections(locale)}
