@@ -1,6 +1,7 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limit';
+import { sendContactNotification } from '@/lib/email';
 
 type ContactData = {
   nome?: string;
@@ -63,6 +64,17 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Notify the customer-care inbox. Don't fail the request if the email
+    // sending breaks — the message is already saved in the DB.
+    await sendContactNotification({
+      nome,
+      cognome,
+      email: email.trim().toLowerCase(),
+      telefono,
+      numero_ordine,
+      messaggio: messaggio.trim(),
+    });
 
     return NextResponse.json(
       { success: true, message: 'Messaggio inviato con successo' },

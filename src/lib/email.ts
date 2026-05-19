@@ -364,3 +364,40 @@ export async function sendAbandonedCartEmail(
     html: luxuryShell(inner, 'I suoi articoli sono ancora a disposizione.'),
   });
 }
+
+// Sends the contact-form payload to the customer-care inbox. Soft-fails if
+// RESEND_API_KEY is missing so a misconfigured env doesn't break the form
+// submission (the message is already persisted in the contacts table).
+export async function sendContactNotification(data: {
+  nome?: string | null;
+  cognome?: string | null;
+  email: string;
+  telefono?: string | null;
+  numero_ordine?: string | null;
+  messaggio: string;
+}) {
+  if (!process.env.RESEND_API_KEY) return;
+  const to = process.env.CONTACT_EMAIL_TO || 'info@silkincom.com';
+  const name = [data.nome, data.cognome].filter(Boolean).join(' ').trim() || '(non fornito)';
+  const html = `
+    <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;color:#1A1A1A;">Nuovo messaggio dal modulo contatti</h2>
+    <p><strong>Nome:</strong> ${e(name)}</p>
+    <p><strong>Email:</strong> <a href="mailto:${e(data.email)}">${e(data.email)}</a></p>
+    ${data.telefono ? `<p><strong>Telefono:</strong> ${e(data.telefono)}</p>` : ''}
+    ${data.numero_ordine ? `<p><strong>Numero ordine:</strong> ${e(data.numero_ordine)}</p>` : ''}
+    <p><strong>Messaggio:</strong></p>
+    <p style="white-space:pre-wrap;background:#FAF7F2;padding:12px;border-left:3px solid #D4AF37;">${e(data.messaggio)}</p>
+    <p style="font-size:11px;color:#6B6B6B;margin-top:24px;">Rispondi direttamente a questa email per replicare al cliente.</p>
+  `;
+  try {
+    await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      replyTo: data.email,
+      subject: `Nuovo messaggio: ${name}`,
+      html,
+    });
+  } catch (err) {
+    console.error('sendContactNotification error:', err);
+  }
+}

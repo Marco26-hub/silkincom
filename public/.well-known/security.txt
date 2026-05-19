@@ -1,0 +1,5 @@
+Contact: mailto:info@silkincom.com
+Expires: 2027-05-19T00:00:00.000Z
+Preferred-Languages: it, en
+Canonical: https://silkincom.com/.well-known/security.txt
+Policy: https://silkincom.com/privacy-policy
