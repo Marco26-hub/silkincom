@@ -25,7 +25,7 @@ export function ProductCard({ product }: { product: Product }) {
   const materialLabel = product.material
     ? getMaterials(locale).find((m) => m.slug === product.material)?.name ?? ''
     : '';
-  const shortComp = product.composition?.split(/[\.\n]/)[0]?.trim() || '';
+  const descPreview = product.description?.replace(/\s+/g, ' ').trim() || '';
 
   return (
     <article className="group relative">
@@ -118,9 +118,9 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="font-display text-lg md:text-[22px] font-normal leading-[1.15] text-soft-black group-hover:text-gold-dark transition-colors duration-500">
             {product.name}
           </h3>
-          {shortComp && (
-            <p className="text-[11.5px] text-soft-black/65 font-light mt-1.5 line-clamp-1 tracking-[0.01em]">
-              {shortComp}
+          {descPreview && (
+            <p className="text-[11.5px] text-soft-black/65 font-light mt-1.5 line-clamp-2 tracking-[0.01em]">
+              {descPreview}
             </p>
           )}
           <div className="flex items-baseline justify-between mt-3 pt-2.5 border-t border-pearl-grey/60">
