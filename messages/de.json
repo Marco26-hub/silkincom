@@ -43,7 +43,8 @@
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",
-    "admin": "Administration"
+    "admin": "Administration",
+    "artigiani": "Handwerker"
   },
   "footer": {
     "newsletter": {
@@ -370,7 +371,25 @@
     "quickView": "Produkt ansehen",
     "reviews": {
       "eyebrow": "Bewertungen",
-      "title": "Was man über <em>{name}</em> sagt"
+      "title": "Was man über <em>{name}</em> sagt",
+      "summary": "{average} / 5 — based on {count, plural, =1 {# review} other {# reviews}}",
+      "empty": "Be the first to review this product.",
+      "verified": "Verified purchase",
+      "leaveReview": "Leave a review",
+      "form": {
+        "loginRequired": "You must be signed in to leave a review.",
+        "login": "Sign in",
+        "thankYou": "Thank you. Your review will be visible after moderation.",
+        "ratingRequired": "Please select a rating.",
+        "submitError": "Error submitting review",
+        "networkError": "Network error",
+        "ratingLabel": "Rating",
+        "titleLabel": "Title (optional)",
+        "bodyLabel": "Your review",
+        "submitting": "Submitting…",
+        "submit": "Submit review",
+        "starsAria": "{count} stars"
+      }
     }
   },
   "cart": {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Star, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   productSlug: string;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export function ReviewForm({ productSlug, isAuthenticated }: Props) {
+  const t = useTranslations('product.reviews.form');
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [title, setTitle] = useState('');
@@ -22,13 +24,13 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
     return (
       <div className="border border-pearl-grey/60 p-8 text-center bg-warm-white">
         <p className="font-display italic text-xl text-soft-black/80 mb-4">
-          Per lasciare una recensione devi essere registrato.
+          {t('loginRequired')}
         </p>
         <Link
           href={`/login?redirect=/prodotto/${productSlug}`}
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-gold-primary/40 hover:border-gold-primary pb-1"
         >
-          Accedi <ArrowRight className="w-3.5 h-3.5" />
+          {t('login')} <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     );
@@ -38,7 +40,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
     return (
       <div className="border border-gold-primary/30 p-8 text-center bg-ivory">
         <p className="font-display italic text-xl text-soft-black/80">
-          Grazie. La sua recensione sarà visibile dopo moderazione.
+          {t('thankYou')}
         </p>
       </div>
     );
@@ -48,7 +50,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
     e.preventDefault();
     setError(null);
     if (rating < 1) {
-      setError('Seleziona un punteggio.');
+      setError(t('ratingRequired'));
       return;
     }
     setLoading(true);
@@ -60,12 +62,12 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || 'Errore invio recensione');
+        setError(data?.error || t('submitError'));
       } else {
         setSuccess(true);
       }
     } catch {
-      setError('Errore di rete');
+      setError(t('networkError'));
     } finally {
       setLoading(false);
     }
@@ -75,7 +77,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
     <form onSubmit={handleSubmit} className="border border-pearl-grey/60 p-8 bg-warm-white space-y-6">
       <div>
         <label className="block text-[10px] uppercase tracking-[0.3em] text-soft-black/60 mb-3">
-          Punteggio
+          {t('ratingLabel')}
         </label>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((s) => (
@@ -85,7 +87,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
               onMouseEnter={() => setHoverRating(s)}
               onMouseLeave={() => setHoverRating(0)}
               onClick={() => setRating(s)}
-              aria-label={`${s} stelle`}
+              aria-label={t('starsAria', { count: s })}
               className="p-1"
             >
               <Star
@@ -103,7 +105,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
 
       <div>
         <label htmlFor="rev-title" className="block text-[10px] uppercase tracking-[0.3em] text-soft-black/60 mb-2">
-          Titolo (facoltativo)
+          {t('titleLabel')}
         </label>
         <input
           id="rev-title"
@@ -117,7 +119,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
 
       <div>
         <label htmlFor="rev-comment" className="block text-[10px] uppercase tracking-[0.3em] text-soft-black/60 mb-2">
-          La sua recensione
+          {t('bodyLabel')}
         </label>
         <textarea
           id="rev-comment"
@@ -140,7 +142,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
         disabled={loading || rating === 0}
         className="group inline-flex items-center justify-center gap-3 px-10 py-4 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.25em] hover:bg-gold-primary hover:text-soft-black transition-all duration-500 disabled:opacity-60"
       >
-        {loading ? 'Invio…' : 'Invia recensione'}
+        {loading ? t('submitting') : t('submit')}
         <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
       </button>
     </form>

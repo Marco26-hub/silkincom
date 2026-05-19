@@ -43,7 +43,8 @@
     "login": "Accedi",
     "register": "Registrati",
     "logout": "Esci",
-    "admin": "Amministrazione"
+    "admin": "Amministrazione",
+    "artigiani": "Artigiani"
   },
   "footer": {
     "newsletter": {
@@ -370,7 +371,25 @@
     "quickView": "Vedi prodotto",
     "reviews": {
       "eyebrow": "Recensioni",
-      "title": "Cosa dicono di <em>{name}</em>"
+      "title": "Cosa dicono di <em>{name}</em>",
+      "summary": "{average} / 5 — {count, plural, =1 {basata su # recensione} other {basate su # recensioni}}",
+      "empty": "Sii il primo a recensire questo prodotto.",
+      "verified": "Acquisto verificato",
+      "leaveReview": "Lascia una recensione",
+      "form": {
+        "loginRequired": "Per lasciare una recensione devi essere registrato.",
+        "login": "Accedi",
+        "thankYou": "Grazie. La sua recensione sarà visibile dopo moderazione.",
+        "ratingRequired": "Seleziona un punteggio.",
+        "submitError": "Errore invio recensione",
+        "networkError": "Errore di rete",
+        "ratingLabel": "Punteggio",
+        "titleLabel": "Titolo (facoltativo)",
+        "bodyLabel": "La sua recensione",
+        "submitting": "Invio…",
+        "submit": "Invia recensione",
+        "starsAria": "{count} stelle"
+      }
     }
   },
   "cart": {

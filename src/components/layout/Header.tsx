@@ -21,7 +21,7 @@ export function Header() {
   const NAV_LINKS = [
     { href: '/collezioni', label: t('collections') },
     { href: '/materiali', label: t('materials') },
-    { href: '/artigiani', label: 'Artigiani' },
+    { href: '/artigiani', label: t('artigiani') },
     { href: '/la-nostra-storia', label: t('story') },
     { href: '/trame-di-como', label: 'Journal' },
     { href: '/b2b', label: 'B2B' },

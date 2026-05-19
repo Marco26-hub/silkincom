@@ -3,6 +3,7 @@
  * Lists approved reviews + renders ReviewForm (client) below.
  */
 import { Star } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { ReviewForm } from './ReviewForm';
 
@@ -22,6 +23,7 @@ type Review = {
 };
 
 export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
+  const t = await getTranslations('product');
   let reviews: Review[] = [];
   let stats = { count: 0, average: 0 };
 
@@ -65,14 +67,12 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
             ))}
           </div>
           <p className="text-sm text-soft-black/70 font-light">
-            <span className="font-medium text-soft-black">{stats.average}</span> / 5 — basate su{' '}
-            <span className="font-medium text-soft-black">{stats.count}</span>{' '}
-            {stats.count === 1 ? 'recensione' : 'recensioni'}
+            {t('reviews.summary', { average: stats.average, count: stats.count })}
           </p>
         </div>
       ) : (
         <p className="text-center font-display italic text-lg text-soft-black/60">
-          Sii il primo a recensire questo prodotto.
+          {t('reviews.empty')}
         </p>
       )}
 
@@ -99,7 +99,7 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
                 </div>
                 {r.verified_purchase && (
                   <span className="text-[9px] uppercase tracking-[0.25em] text-gold-dark">
-                    Acquisto verificato
+                    {t('reviews.verified')}
                   </span>
                 )}
               </div>
@@ -123,7 +123,7 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
 
       <div className="pt-6 border-t border-pearl-grey/40">
         <h3 className="font-display font-light text-2xl mb-6 text-center">
-          Lascia una recensione
+          {t('reviews.leaveReview')}
         </h3>
         <ReviewForm productSlug={productSlug} isAuthenticated={isAuthenticated} />
       </div>

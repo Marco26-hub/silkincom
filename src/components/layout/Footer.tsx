@@ -65,7 +65,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm font-light">
               <li><Link href="/la-nostra-storia" className="hover:text-gold-primary transition-colors">{tn('story')}</Link></li>
               <li><Link href="/materiali" className="hover:text-gold-primary transition-colors">{tn('materials')}</Link></li>
-              <li><Link href="/artigiani" className="hover:text-gold-primary transition-colors">Artigiani</Link></li>
+              <li><Link href="/artigiani" className="hover:text-gold-primary transition-colors">{tn('artigiani')}</Link></li>
               <li><Link href="/trame-di-como" className="hover:text-gold-primary transition-colors">Journal</Link></li>
               <li><Link href="/contatti" className="hover:text-gold-primary transition-colors">{tn('contacts')}</Link></li>
             </ul>
