@@ -13,15 +13,15 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [ ] Verifica tutte le env: `RESEND_API_KEY`, `BREVO_*`, `STRIPE_*`, `NEXT_PUBLIC_SUPABASE_*`
 
 ### DB pulizie (Supabase Studio)
-- [ ] DELETE 2 doppioni `compositions`
+- [ ] DELETE 2 doppioni `compositions` (utente — regola sicurezza permette solo a te)
   ```sql
   DELETE FROM compositions WHERE id IN (
     '10968fd8-d1e5-42c0-9e53-da347158f301', -- "100% cashmere"
     '8987a45f-07ac-4ef6-ad14-95f78c87b51c'  -- "100% Cotone"
   );
   ```
-- [ ] Fix refuso `darsena-bianco.description_long`: "Il cavallo" → "Il cappellino"
-- [ ] Riscrivi descrizioni `darsena-blu` e `darsena-verde` (oggi iniziano con "Composizione:…")
+- [x] Fix refuso `darsena-bianco.description_long`: "Il cavallo" → "Il cappellino" *(UPDATE eseguito)*
+- [x] Riscrivi descrizioni `darsena-blu` e `darsena-verde` con intro narrativa *(UPDATE eseguito)*
 
 ### Test admin → frontend (live Vercel)
 - [ ] Login admin → modifica nome/prezzo/descrizione → Salva
@@ -73,11 +73,11 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 ## Ven AM — Pre cut-over
 
 ### Codice
-- [ ] `NEXT_PUBLIC_APP_URL` su Vercel → `https://silkincom.com`
-- [ ] `src/app/[locale]/layout.tsx` schema `@id`: `silkincom.vercel.app` → `silkincom.com`
-- [ ] `llms.txt`, `robots.ts`, `sitemap.ts` baseUrl
-- [ ] grep URL hardcoded `silkincom.vercel.app` in tutto il repo
-- [ ] commit + push + verifica deploy preview
+- [ ] `NEXT_PUBLIC_APP_URL` su Vercel → `https://silkincom.com` (utente)
+- [x] `src/app/[locale]/layout.tsx` schema `@id`: cambiato → `silkincom.com` *(commit c7920f6)*
+- [x] `llms.txt`, `robots.ts`, `sitemap.ts` baseUrl env-driven (fallback `silkincom.com`) *(commit c7920f6)*
+- [x] grep URL hardcoded `silkincom.vercel.app` — tutti sostituiti in 13 file *(commit c7920f6)*
+- [x] commit + push (`c7920f6`) — verifica deploy preview su Vercel
 
 ### DNS preparato (NON attivo)
 - [ ] Recupera record DNS attuali (backup)
@@ -206,10 +206,10 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 
 ## Polish minore
 
-- [ ] Politica reso visibile su `/resi`
-- [ ] Pagina FAQ pubblicata
-- [ ] Form contatti riceve email (test concreto, non solo "no error")
-- [ ] Pagina 404 brandizzata
-- [ ] favicon + apple-touch-icon + manifest PWA
-- [ ] `/security.txt` (responsible disclosure)
-- [ ] `silkincom.com/.well-known/*` se servono
+- [x] Politica reso visibile su `/resi` *(esistente, 7 sezioni, traduzioni complete)*
+- [x] Pagina FAQ pubblicata *(esistente, 25 FAQs + JSON-LD FAQPage)*
+- [x] Form contatti riceve email *(sendContactNotification via Resend, Reply-To = mittente — commit fc4ddd9)*
+- [x] Pagina 404 brandizzata *(font display, gold accent, link Home/Collezioni)*
+- [x] favicon + apple-touch-icon + manifest PWA *(manifest.ts creato — commit fc4ddd9)*
+- [x] `/security.txt` (responsible disclosure) *(RFC 9116 — commit fc4ddd9)*
+- [x] `silkincom.com/.well-known/*` *(apple-pay esistente + security.txt aggiunto)*
