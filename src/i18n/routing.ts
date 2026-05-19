@@ -26,3 +26,20 @@ export const LOCALE_LABELS: Record<Locale, { name: string; flag: string; nativeN
 export function isValidLocale(value: string | undefined | null): value is Locale {
   return !!value && (LOCALES as readonly string[]).includes(value);
 }
+
+/**
+ * Build locale-aware `alternates` metadata (self-referencing canonical + hreflang).
+ * `path` is the locale-agnostic path, e.g. '' for the homepage or
+ * '/prodotto/bellagio'. The default locale (it) has no prefix; the others
+ * are served under /{locale}. Resolved against `metadataBase`.
+ */
+export function localizedAlternates(locale: string, path: string) {
+  const clean = path.replace(/^\/+/, '').replace(/\/+$/, '');
+  const url = (loc: string) => {
+    const base = loc === DEFAULT_LOCALE ? `/${clean}` : `/${loc}/${clean}`;
+    return base.replace(/\/+$/, '') || '/';
+  };
+  const languages: Record<string, string> = { 'x-default': url(DEFAULT_LOCALE) };
+  for (const loc of LOCALES) languages[loc] = url(loc);
+  return { canonical: url(locale), languages };
+}

@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 import { Truck, RotateCcw, MapPin, Sparkles } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { PRODUCT_SLUGS, getCategories, getProduct, getProducts, getMaterials } from '@/data/catalog';
+import { localizedAlternates } from '@/i18n/routing';
 import { ProductCard } from '@/components/product/ProductCard';
 import { AddToCartButton } from '@/components/product/AddToCartButton';
 import { WishlistButton } from '@/components/product/WishlistButton';
@@ -46,9 +47,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!p) return {};
   const mat = materialName(p.material, locale);
   return {
-    title: `${p.name}${mat ? ` — ${mat}` : ''} | SILKinCOM`,
+    title: `${p.name}${mat ? ` — ${mat}` : ''}`,
     description: p.description.slice(0, 160),
-    alternates: { canonical: `/prodotto/${slug}` },
+    alternates: localizedAlternates(locale, `/prodotto/${slug}`),
   };
 }
 

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { POST_SLUGS, getPosts, getPost } from '@/data/posts';
+import { localizedAlternates } from '@/i18n/routing';
 import { ArrowUpRight } from 'lucide-react';
 
 export function generateStaticParams() {
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: p.title,
     description: p.description.slice(0, 160),
-    alternates: { canonical: `/trame-di-como/${slug}` },
+    alternates: localizedAlternates(locale, `/trame-di-como/${slug}`),
     openGraph: { images: p.image ? [p.image] : [] },
   };
 }

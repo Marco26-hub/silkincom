@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { TAXONOMY_SLUGS, getCategories, getCollections, getMaterials, getProducts } from '@/data/catalog';
+import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 
 export function generateStaticParams() {
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${cat.name} — SILKinCOM`,
     description: cat.description,
-    alternates: { canonical: `/collezioni/${slug}` },
+    alternates: localizedAlternates(locale, `/collezioni/${slug}`),
   };
 }
 

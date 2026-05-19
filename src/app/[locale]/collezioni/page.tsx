@@ -3,13 +3,17 @@ import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { getCollections, getCategories, getMaterials, getProducts } from '@/data/catalog';
+import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 
-export const metadata = {
-  title: 'Collezioni — Sciarpe e Foulard in Seta e Cashmere',
-  description: 'Scopri le collezioni SILKinCOM: Inverno, Iconica, Primavera 2026. Cashmere, lana, seta, lino e cotone. Made in Como.',
-  alternates: { canonical: '/collezioni' },
-};
+export async function generateMetadata() {
+  const locale = await getLocale();
+  return {
+    title: 'Collezioni — Sciarpe e Foulard in Seta e Cashmere',
+    description: 'Scopri le collezioni SILKinCOM: Inverno, Iconica, Primavera 2026. Cashmere, lana, seta, lino e cotone. Made in Como.',
+    alternates: localizedAlternates(locale, '/collezioni'),
+  };
+}
 
 export default async function CollezioniPage() {
   const t = await getTranslations('collezioni');

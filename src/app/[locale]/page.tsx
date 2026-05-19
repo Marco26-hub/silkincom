@@ -7,10 +7,13 @@ import { Materials } from '@/components/sections/Materials';
 import { EditorialBanner } from '@/components/sections/EditorialBanner';
 import { InstagramFeed } from '@/components/sections/InstagramFeed';
 import { Newsletter } from '@/components/sections/Newsletter';
+import { getLocale } from 'next-intl/server';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = {
-  alternates: { canonical: '/' },
-};
+export async function generateMetadata() {
+  const locale = await getLocale();
+  return { alternates: localizedAlternates(locale, '') };
+}
 
 export default function HomePage() {
   return (
