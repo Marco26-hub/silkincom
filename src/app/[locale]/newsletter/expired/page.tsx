@@ -1,12 +1,17 @@
 import { Link } from '@/i18n/navigation';
 import { AlertCircle } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Link scaduto',
-  robots: { index: false },
-};
+export async function generateMetadata() {
+  const t = await getTranslations('newsletterPages');
+  return {
+    title: t('expired.metaTitle'),
+    robots: { index: false },
+  };
+}
 
-export default function ExpiredPage() {
+export default async function ExpiredPage() {
+  const t = await getTranslations('newsletterPages');
   return (
     <section className="pt-44 pb-32 bg-warm-white min-h-[70vh]">
       <div className="max-w-md mx-auto px-6 text-center">
@@ -14,16 +19,16 @@ export default function ExpiredPage() {
           <AlertCircle className="w-6 h-6 text-soft-black/50 stroke-1" />
         </span>
         <h1 className="font-display font-light text-4xl md:text-5xl mb-4">
-          Link non valido
+          {t('expired.title')}
         </h1>
         <p className="text-sm text-soft-black/70 font-light leading-relaxed mb-10">
-          Il link di conferma è scaduto o non è più valido. Si iscriva nuovamente alla newsletter dal footer del sito.
+          {t('expired.body')}
         </p>
         <Link
           href="/"
           className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-soft-black border-b border-soft-black hover:border-gold-primary hover:text-gold-primary pb-1"
         >
-          Torna alla home
+          {t('expired.backHome')}
         </Link>
       </div>
     </section>

@@ -1256,5 +1256,91 @@
     "photoAriaLabel": "SILKinCOM Instagram — Foto {number}",
     "photoAlt": "SILKinCOM Instagram {number}",
     "followEyebrow": "Folgen Sie uns in den sozialen Medien"
+  },
+  "sizeGuide": {
+    "buttonLabel": "Größentabelle",
+    "heading": "Größentabelle",
+    "close": "Schließen",
+    "colFormat": "Format",
+    "colDimensions": "Maße",
+    "colUsage": "Ideale Verwendung",
+    "note": "Die Maße sind Richtwerte ±2 cm. Jedes Stück wird in unseren Ateliers in Como von Hand gefertigt.",
+    "sizes": {
+      "foulardSmall": {
+        "name": "Kleines Foulard",
+        "usage": "Hals, Tasche, Haar"
+      },
+      "foulardMedium": {
+        "name": "Mittleres Foulard",
+        "usage": "Klassisch für Hals oder Schultern"
+      },
+      "scarfLong": {
+        "name": "Langer Schal",
+        "usage": "Umhüllend, winterlich"
+      },
+      "shawlLarge": {
+        "name": "Großer Schal",
+        "usage": "Cape, Schulterüberwurf"
+      },
+      "stole": {
+        "name": "Stola",
+        "usage": "Strand, Feierlichkeiten"
+      }
+    }
+  },
+  "returnForm": {
+    "reasons": {
+      "defective": "Defektes Produkt",
+      "wrong_item": "Falscher Artikel",
+      "not_as_described": "Nicht wie beschrieben",
+      "damaged_shipping": "Beim Versand beschädigt",
+      "too_small": "Größe zu klein",
+      "too_large": "Größe zu groß",
+      "changed_mind": "Ich habe es mir anders überlegt",
+      "other": "Anderer Grund"
+    },
+    "errorGeneric": "Fehler",
+    "errorNetwork": "Netzwerkfehler",
+    "requestSent": "Anfrage gesendet",
+    "openButton": "Rücksendung anfragen",
+    "formTitle": "Rücksendeanfrage",
+    "formIntro": "Sie haben 14 Tage ab Lieferung Zeit, eine Rücksendung anzufragen. Die Rücksendung ist kostenlos.",
+    "reasonLabel": "Grund der Rücksendung *",
+    "reasonPlaceholder": "Grund auswählen",
+    "notesLabel": "Zusätzliche Anmerkungen (optional)",
+    "notesPlaceholder": "Beschreiben Sie den Grund der Rücksendung oder weitere nützliche Angaben...",
+    "submitting": "Senden…",
+    "submit": "Anfrage absenden",
+    "cancel": "Abbrechen"
+  },
+  "salesNotification": {
+    "from": "aus",
+    "justOrdered": "hat soeben bestellt",
+    "minutesAgo": "vor {count} Min.",
+    "hoursAgo": "vor {count} Std.",
+    "daysAgo": "vor {count} T.",
+    "dismiss": "Benachrichtigung schließen"
+  },
+  "inventoryBadge": {
+    "outOfStock": "Ausverkauft",
+    "lowStock": "Nur noch {count, plural, one {# Stück verfügbar} other {# Stück verfügbar}}"
+  },
+  "newsletterPages": {
+    "confirmed": {
+      "metaTitle": "Anmeldung bestätigt",
+      "eyebrow": "Maison SILKinCOM",
+      "title": "Willkommen",
+      "body": "Ihre Anmeldung ist bestätigt. Wir erzählen Ihnen von Materialien, Handwerkern und Kollektionen vom Comer See — stets mit Maß.",
+      "cta": "Die Kollektionen entdecken"
+    },
+    "expired": {
+      "metaTitle": "Link abgelaufen",
+      "title": "Ungültiger Link",
+      "body": "Der Bestätigungslink ist abgelaufen oder nicht mehr gültig. Bitte melden Sie sich erneut über die Fußzeile der Website zum Newsletter an.",
+      "backHome": "Zurück zur Startseite"
+    },
+    "checkoutSuccess": {
+      "metaTitle": "Bestellung bestätigt — SILKinCOM"
+    }
   }
 }

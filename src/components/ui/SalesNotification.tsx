@@ -16,6 +16,7 @@
  * Mounted globally in layout.tsx — visible on every page.
  */
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ShoppingBag, X } from 'lucide-react';
 
@@ -46,17 +47,20 @@ const INTERVAL_MS = 5 * 60 * 1000;   // 5 min between popups (per user spec)
 const VISIBLE_MS = 8_000;            // 8s on screen
 const SESSION_KEY = 'silkincom-sales-popup-dismissed';
 
-function timeAgo(iso: string | null): string {
+type Translator = ReturnType<typeof useTranslations<'salesNotification'>>;
+
+function timeAgo(iso: string | null, t: Translator): string {
   if (!iso) return '';
   const diffMin = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 60_000));
-  if (diffMin < 60) return `${diffMin} min fa`;
+  if (diffMin < 60) return t('minutesAgo', { count: diffMin });
   const diffH = Math.floor(diffMin / 60);
-  if (diffH < 24) return `${diffH} h fa`;
+  if (diffH < 24) return t('hoursAgo', { count: diffH });
   const diffD = Math.floor(diffH / 24);
-  return `${diffD} g fa`;
+  return t('daysAgo', { count: diffD });
 }
 
 export function SalesNotification() {
+  const t = useTranslations('salesNotification');
   const [sales, setSales] = useState<Sale[] | null>(null);
   const [current, setCurrent] = useState<Sale | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -129,10 +133,10 @@ export function SalesNotification() {
         </span>
         <div className="min-w-0 text-[12px] leading-snug text-soft-black/80">
           <p className="font-medium text-soft-black truncate">
-            {current.initials} <span className="text-soft-black/60">da {current.city}</span>
+            {current.initials} <span className="text-soft-black/60">{t('from', { city: current.city })}</span>
           </p>
           <p className="mt-0.5">
-            ha appena ordinato {current.slug ? (
+            {t('justOrdered')} {current.slug ? (
               <Link href={`/prodotto/${current.slug}`} className="hover:text-gold-primary transition-colors">
                 {productInner}
               </Link>
@@ -142,13 +146,13 @@ export function SalesNotification() {
           </p>
           {current.when && (
             <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-gold-dark">
-              {timeAgo(current.when)}
+              {timeAgo(current.when, t)}
             </p>
           )}
         </div>
         <button
           onClick={dismiss}
-          aria-label="Chiudi notifica"
+          aria-label={t('dismiss')}
           className="absolute top-1.5 right-1.5 inline-flex h-6 w-6 items-center justify-center text-soft-black/40 hover:text-soft-black transition-colors"
         >
           <X className="h-3.5 w-3.5" />

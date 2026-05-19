@@ -1256,5 +1256,91 @@
     "photoAriaLabel": "SILKinCOM Instagram — foto {number}",
     "photoAlt": "SILKinCOM Instagram {number}",
     "followEyebrow": "Volg ons op social media"
+  },
+  "sizeGuide": {
+    "buttonLabel": "Maattabel",
+    "heading": "Maattabel",
+    "close": "Sluiten",
+    "colFormat": "Formaat",
+    "colDimensions": "Afmetingen",
+    "colUsage": "Ideaal gebruik",
+    "note": "De maten zijn indicatief ±2 cm. Elk stuk wordt met de hand vervaardigd in onze ateliers in Como.",
+    "sizes": {
+      "foulardSmall": {
+        "name": "Kleine foulard",
+        "usage": "Hals, zak, haar"
+      },
+      "foulardMedium": {
+        "name": "Middelgrote foulard",
+        "usage": "Klassiek voor hals of schouders"
+      },
+      "scarfLong": {
+        "name": "Lange sjaal",
+        "usage": "Omhullend, winters"
+      },
+      "shawlLarge": {
+        "name": "Grote omslagdoek",
+        "usage": "Cape, schouderbedekking"
+      },
+      "stole": {
+        "name": "Stola",
+        "usage": "Strand, ceremonies"
+      }
+    }
+  },
+  "returnForm": {
+    "reasons": {
+      "defective": "Defect product",
+      "wrong_item": "Verkeerd product",
+      "not_as_described": "Niet zoals omschreven",
+      "damaged_shipping": "Beschadigd tijdens verzending",
+      "too_small": "Maat te klein",
+      "too_large": "Maat te groot",
+      "changed_mind": "Ik ben van gedachten veranderd",
+      "other": "Andere reden"
+    },
+    "errorGeneric": "Fout",
+    "errorNetwork": "Netwerkfout",
+    "requestSent": "Verzoek verzonden",
+    "openButton": "Retour aanvragen",
+    "formTitle": "Retouraanvraag",
+    "formIntro": "U heeft 14 dagen na levering om een retour aan te vragen. Het retourneren is gratis.",
+    "reasonLabel": "Reden voor retour *",
+    "reasonPlaceholder": "Selecteer een reden",
+    "notesLabel": "Aanvullende opmerkingen (optioneel)",
+    "notesPlaceholder": "Beschrijf de reden voor uw retour of eventuele nuttige details...",
+    "submitting": "Verzenden…",
+    "submit": "Verzoek indienen",
+    "cancel": "Annuleren"
+  },
+  "salesNotification": {
+    "from": "uit",
+    "justOrdered": "heeft zojuist besteld",
+    "minutesAgo": "{count} min geleden",
+    "hoursAgo": "{count} u geleden",
+    "daysAgo": "{count} d geleden",
+    "dismiss": "Melding sluiten"
+  },
+  "inventoryBadge": {
+    "outOfStock": "Uitverkocht",
+    "lowStock": "Nog maar {count, plural, one {# stuk beschikbaar} other {# stuks beschikbaar}}"
+  },
+  "newsletterPages": {
+    "confirmed": {
+      "metaTitle": "Inschrijving bevestigd",
+      "eyebrow": "Maison SILKinCOM",
+      "title": "Welkom",
+      "body": "Uw inschrijving is bevestigd. We vertellen u over materialen, ambachtslieden en collecties van het Comomeer — altijd met mate.",
+      "cta": "Ontdek de collecties"
+    },
+    "expired": {
+      "metaTitle": "Link verlopen",
+      "title": "Ongeldige link",
+      "body": "De bevestigingslink is verlopen of niet langer geldig. Schrijf u opnieuw in voor de nieuwsbrief via de voettekst van de site.",
+      "backHome": "Terug naar home"
+    },
+    "checkoutSuccess": {
+      "metaTitle": "Bestelling bevestigd — SILKinCOM"
+    }
   }
 }

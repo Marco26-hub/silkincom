@@ -1,12 +1,17 @@
 import { Link } from '@/i18n/navigation';
 import { Check, ArrowRight } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Iscrizione confermata',
-  robots: { index: false },
-};
+export async function generateMetadata() {
+  const t = await getTranslations('newsletterPages');
+  return {
+    title: t('confirmed.metaTitle'),
+    robots: { index: false },
+  };
+}
 
-export default function ConfirmedPage() {
+export default async function ConfirmedPage() {
+  const t = await getTranslations('newsletterPages');
   return (
     <section className="pt-44 pb-32 bg-warm-white min-h-[70vh]">
       <div className="max-w-md mx-auto px-6 text-center">
@@ -14,19 +19,19 @@ export default function ConfirmedPage() {
           <Check className="w-6 h-6 text-gold-primary stroke-1" />
         </span>
         <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-4">
-          Maison SILKinCOM
+          {t('confirmed.eyebrow')}
         </span>
         <h1 className="font-display font-light text-4xl md:text-5xl mb-4">
-          Benvenuta
+          {t('confirmed.title')}
         </h1>
         <p className="text-sm text-soft-black/70 font-light leading-relaxed mb-10">
-          La sua iscrizione è confermata. Le racconteremo materiali, artigiani e collezioni dal Lago di Como — sempre con misura.
+          {t('confirmed.body')}
         </p>
         <Link
           href="/collezioni"
           className="inline-flex items-center gap-3 px-12 py-4 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.4em] hover:bg-gold-primary hover:text-soft-black transition-colors"
         >
-          Esplora le collezioni
+          {t('confirmed.cta')}
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

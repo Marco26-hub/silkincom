@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { createBrowserClient } from '@/lib/supabase/client';
 
 const LOW_STOCK_THRESHOLD = 5;
 
 export function InventoryBadge({ productSlug }: { productSlug: string }) {
+  const t = useTranslations('inventoryBadge');
   const [qty, setQty] = useState<number | null>(null);
 
   useEffect(() => {
@@ -24,14 +26,14 @@ export function InventoryBadge({ productSlug }: { productSlug: string }) {
   if (qty === 0) {
     return (
       <p className="text-[11px] uppercase tracking-[0.25em] text-red-600 font-medium">
-        Esaurito
+        {t('outOfStock')}
       </p>
     );
   }
   if (qty <= LOW_STOCK_THRESHOLD) {
     return (
       <p className="text-[11px] uppercase tracking-[0.25em] text-amber-700 font-medium animate-pulse">
-        Solo {qty} {qty === 1 ? 'pezzo rimasto' : 'pezzi rimasti'}
+        {t('lowStock', { count: qty })}
       </p>
     );
   }

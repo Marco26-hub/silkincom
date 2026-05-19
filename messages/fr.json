@@ -1256,5 +1256,91 @@
     "photoAriaLabel": "SILKinCOM Instagram — photo {number}",
     "photoAlt": "SILKinCOM Instagram {number}",
     "followEyebrow": "Suivez-nous sur les réseaux"
+  },
+  "sizeGuide": {
+    "buttonLabel": "Guide des tailles",
+    "heading": "Guide des tailles",
+    "close": "Fermer",
+    "colFormat": "Format",
+    "colDimensions": "Dimensions",
+    "colUsage": "Usage idéal",
+    "note": "Les mesures sont indicatives ±2 cm. Chaque pièce est façonnée à la main dans nos ateliers de Côme.",
+    "sizes": {
+      "foulardSmall": {
+        "name": "Petit foulard",
+        "usage": "Cou, poche, cheveux"
+      },
+      "foulardMedium": {
+        "name": "Foulard moyen",
+        "usage": "Classique cou ou épaules"
+      },
+      "scarfLong": {
+        "name": "Écharpe longue",
+        "usage": "Enveloppante, hivernale"
+      },
+      "shawlLarge": {
+        "name": "Grand châle",
+        "usage": "Cape, couvre-épaules"
+      },
+      "stole": {
+        "name": "Étole",
+        "usage": "Plage, cérémonies"
+      }
+    }
+  },
+  "returnForm": {
+    "reasons": {
+      "defective": "Produit défectueux",
+      "wrong_item": "Produit erroné",
+      "not_as_described": "Non conforme à la description",
+      "damaged_shipping": "Endommagé pendant le transport",
+      "too_small": "Taille trop petite",
+      "too_large": "Taille trop grande",
+      "changed_mind": "J’ai changé d’avis",
+      "other": "Autre motif"
+    },
+    "errorGeneric": "Erreur",
+    "errorNetwork": "Erreur réseau",
+    "requestSent": "Demande envoyée",
+    "openButton": "Demander un retour",
+    "formTitle": "Demande de retour",
+    "formIntro": "Vous disposez de 14 jours à compter de la livraison pour demander un retour. Le retour est gratuit.",
+    "reasonLabel": "Motif du retour *",
+    "reasonPlaceholder": "Sélectionnez un motif",
+    "notesLabel": "Notes complémentaires (facultatif)",
+    "notesPlaceholder": "Décrivez le motif de votre retour ou tout détail utile...",
+    "submitting": "Envoi…",
+    "submit": "Envoyer la demande",
+    "cancel": "Annuler"
+  },
+  "salesNotification": {
+    "from": "de",
+    "justOrdered": "vient de commander",
+    "minutesAgo": "il y a {count} min",
+    "hoursAgo": "il y a {count} h",
+    "daysAgo": "il y a {count} j",
+    "dismiss": "Fermer la notification"
+  },
+  "inventoryBadge": {
+    "outOfStock": "Épuisé",
+    "lowStock": "Plus que {count, plural, one {# pièce} other {# pièces}}"
+  },
+  "newsletterPages": {
+    "confirmed": {
+      "metaTitle": "Inscription confirmée",
+      "eyebrow": "Maison SILKinCOM",
+      "title": "Bienvenue",
+      "body": "Votre inscription est confirmée. Nous vous raconterons les matières, les artisans et les collections du lac de Côme — toujours avec mesure.",
+      "cta": "Explorer les collections"
+    },
+    "expired": {
+      "metaTitle": "Lien expiré",
+      "title": "Lien non valide",
+      "body": "Le lien de confirmation a expiré ou n’est plus valide. Veuillez vous inscrire à nouveau à la newsletter depuis le pied de page du site.",
+      "backHome": "Retour à l’accueil"
+    },
+    "checkoutSuccess": {
+      "metaTitle": "Commande confirmée — SILKinCOM"
+    }
   }
 }

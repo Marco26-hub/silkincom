@@ -1256,5 +1256,91 @@
     "photoAriaLabel": "SILKinCOM Instagram — fotografia {number}",
     "photoAlt": "SILKinCOM Instagram {number}",
     "followEyebrow": "Siga-nos nas redes sociais"
+  },
+  "sizeGuide": {
+    "buttonLabel": "Guia de tamanhos",
+    "heading": "Guia de tamanhos",
+    "close": "Fechar",
+    "colFormat": "Formato",
+    "colDimensions": "Dimensões",
+    "colUsage": "Uso ideal",
+    "note": "As medidas são aproximadas ±2 cm. Cada peça é feita à mão nos nossos ateliês em Como.",
+    "sizes": {
+      "foulardSmall": {
+        "name": "Lenço pequeno",
+        "usage": "Pescoço, bolso, cabelo"
+      },
+      "foulardMedium": {
+        "name": "Lenço médio",
+        "usage": "Clássico para pescoço ou ombros"
+      },
+      "scarfLong": {
+        "name": "Cachecol longo",
+        "usage": "Envolvente, de inverno"
+      },
+      "shawlLarge": {
+        "name": "Xale grande",
+        "usage": "Capa, cobre-ombros"
+      },
+      "stole": {
+        "name": "Estola",
+        "usage": "Praia, cerimônias"
+      }
+    }
+  },
+  "returnForm": {
+    "reasons": {
+      "defective": "Produto com defeito",
+      "wrong_item": "Produto errado",
+      "not_as_described": "Não corresponde à descrição",
+      "damaged_shipping": "Danificado no transporte",
+      "too_small": "Tamanho demasiado pequeno",
+      "too_large": "Tamanho demasiado grande",
+      "changed_mind": "Mudei de ideias",
+      "other": "Outro motivo"
+    },
+    "errorGeneric": "Erro",
+    "errorNetwork": "Erro de rede",
+    "requestSent": "Pedido enviado",
+    "openButton": "Solicitar devolução",
+    "formTitle": "Pedido de devolução",
+    "formIntro": "Tem 14 dias a contar da entrega para solicitar uma devolução. A devolução é gratuita.",
+    "reasonLabel": "Motivo da devolução *",
+    "reasonPlaceholder": "Selecione um motivo",
+    "notesLabel": "Notas adicionais (opcional)",
+    "notesPlaceholder": "Descreva o motivo da devolução ou quaisquer detalhes úteis...",
+    "submitting": "A enviar…",
+    "submit": "Enviar pedido",
+    "cancel": "Cancelar"
+  },
+  "salesNotification": {
+    "from": "de",
+    "justOrdered": "acabou de encomendar",
+    "minutesAgo": "há {count} min",
+    "hoursAgo": "há {count} h",
+    "daysAgo": "há {count} d",
+    "dismiss": "Fechar notificação"
+  },
+  "inventoryBadge": {
+    "outOfStock": "Esgotado",
+    "lowStock": "Apenas {count, plural, one {# peça disponível} other {# peças disponíveis}}"
+  },
+  "newsletterPages": {
+    "confirmed": {
+      "metaTitle": "Inscrição confirmada",
+      "eyebrow": "Maison SILKinCOM",
+      "title": "Bem-vinda",
+      "body": "A sua inscrição está confirmada. Falar-lhe-emos de materiais, artesãos e coleções do Lago de Como — sempre com medida.",
+      "cta": "Explorar as coleções"
+    },
+    "expired": {
+      "metaTitle": "Ligação expirada",
+      "title": "Ligação inválida",
+      "body": "A ligação de confirmação expirou ou já não é válida. Inscreva-se novamente na newsletter a partir do rodapé do site.",
+      "backHome": "Voltar ao início"
+    },
+    "checkoutSuccess": {
+      "metaTitle": "Encomenda confirmada — SILKinCOM"
+    }
   }
 }

@@ -1256,5 +1256,91 @@
     "photoAriaLabel": "SILKinCOM Instagram — photo {number}",
     "photoAlt": "SILKinCOM Instagram {number}",
     "followEyebrow": "Follow us on social"
+  },
+  "sizeGuide": {
+    "buttonLabel": "Size guide",
+    "heading": "Size guide",
+    "close": "Close",
+    "colFormat": "Format",
+    "colDimensions": "Dimensions",
+    "colUsage": "Ideal use",
+    "note": "Measurements are approximate ±2 cm. Each piece is handcrafted in our ateliers in Como.",
+    "sizes": {
+      "foulardSmall": {
+        "name": "Small foulard",
+        "usage": "Neck, pocket, hair"
+      },
+      "foulardMedium": {
+        "name": "Medium foulard",
+        "usage": "Classic neck or shoulders"
+      },
+      "scarfLong": {
+        "name": "Long scarf",
+        "usage": "Wrap-around, winter"
+      },
+      "shawlLarge": {
+        "name": "Large shawl",
+        "usage": "Cape, shoulder cover"
+      },
+      "stole": {
+        "name": "Stole",
+        "usage": "Beach, ceremonies"
+      }
+    }
+  },
+  "returnForm": {
+    "reasons": {
+      "defective": "Defective product",
+      "wrong_item": "Wrong item",
+      "not_as_described": "Not as described",
+      "damaged_shipping": "Damaged in transit",
+      "too_small": "Size too small",
+      "too_large": "Size too large",
+      "changed_mind": "Changed my mind",
+      "other": "Other reason"
+    },
+    "errorGeneric": "Error",
+    "errorNetwork": "Network error",
+    "requestSent": "Request sent",
+    "openButton": "Request a return",
+    "formTitle": "Return request",
+    "formIntro": "You have 14 days from delivery to request a return. Returns are free of charge.",
+    "reasonLabel": "Reason for return *",
+    "reasonPlaceholder": "Select a reason",
+    "notesLabel": "Additional notes (optional)",
+    "notesPlaceholder": "Describe the reason for your return or any useful details...",
+    "submitting": "Sending…",
+    "submit": "Submit request",
+    "cancel": "Cancel"
+  },
+  "salesNotification": {
+    "from": "from",
+    "justOrdered": "just ordered",
+    "minutesAgo": "{count} min ago",
+    "hoursAgo": "{count} h ago",
+    "daysAgo": "{count} d ago",
+    "dismiss": "Dismiss notification"
+  },
+  "inventoryBadge": {
+    "outOfStock": "Sold out",
+    "lowStock": "Only {count, plural, one {# piece left} other {# pieces left}}"
+  },
+  "newsletterPages": {
+    "confirmed": {
+      "metaTitle": "Subscription confirmed",
+      "eyebrow": "Maison SILKinCOM",
+      "title": "Welcome",
+      "body": "Your subscription is confirmed. We will tell you about materials, artisans and collections from Lake Como — always with measure.",
+      "cta": "Explore the collections"
+    },
+    "expired": {
+      "metaTitle": "Link expired",
+      "title": "Invalid link",
+      "body": "The confirmation link has expired or is no longer valid. Please subscribe to the newsletter again from the footer of the site.",
+      "backHome": "Back to home"
+    },
+    "checkoutSuccess": {
+      "metaTitle": "Order confirmed — SILKinCOM"
+    }
   }
 }
