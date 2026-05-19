@@ -29,7 +29,14 @@ const baskerville = Libre_Baskerville({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
+const OG_LOCALE: Record<string, string> = {
+  it: 'it_IT', en: 'en_US', es: 'es_ES', fr: 'fr_FR', de: 'de_DE', pt: 'pt_PT', nl: 'nl_NL',
+};
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const ogLocale = OG_LOCALE[locale] ?? 'it_IT';
+  return {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app'),
   title: {
     default: 'SILKinCOM | Sciarpe e Accessori in Seta e Cashmere — Made in Como',
@@ -58,7 +65,8 @@ export const metadata: Metadata = {
   category: 'fashion',
   openGraph: {
     type: 'website',
-    locale: 'it_IT',
+    locale: ogLocale,
+    alternateLocale: Object.values(OG_LOCALE).filter((l) => l !== ogLocale),
     siteName: 'SILKinCOM',
     title: 'SILKinCOM | Sciarpe e Accessori in Seta e Cashmere — Made in Como',
     description:
@@ -102,13 +110,14 @@ export const metadata: Metadata = {
       'msvalidate.01': '',
     },
   },
-};
+  };
+}
 
 // JSON-LD: Organization + LocalBusiness — boost AI/GEO discoverability
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'LocalBusiness'],
-  '@id': 'https://silkincom.com/#organization',
+  '@id': 'https://silkincom.vercel.app/#organization',
   name: 'SILKinCOM',
   alternateName: 'SILK in COM',
   url: 'https://silkincom.vercel.app',
@@ -145,11 +154,11 @@ const organizationSchema = {
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': 'https://silkincom.com/#website',
+  '@id': 'https://silkincom.vercel.app/#website',
   url: 'https://silkincom.vercel.app',
   name: 'SILKinCOM',
   inLanguage: 'it-IT',
-  publisher: { '@id': 'https://silkincom.com/#organization' },
+  publisher: { '@id': 'https://silkincom.vercel.app/#organization' },
   potentialAction: {
     '@type': 'SearchAction',
     target: 'https://silkincom.vercel.app/collezioni?q={search_term_string}',

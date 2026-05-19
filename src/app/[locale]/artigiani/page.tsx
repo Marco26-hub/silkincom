@@ -2,7 +2,6 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-import { LocalBusinessSchema } from '@/components/schemas/LocalBusinessSchema';
 
 export async function generateMetadata() {
   const t = await getTranslations('artigianiPage');
@@ -48,7 +47,6 @@ export default async function ArtigianiPage() {
 
   return (
     <>
-      <LocalBusinessSchema />
 
       {/* Hero */}
       <section className="pt-44 pb-20 bg-ivory">

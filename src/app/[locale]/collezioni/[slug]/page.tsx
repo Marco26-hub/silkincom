@@ -32,8 +32,39 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
   const t = await getTranslations('shop.filters');
   const typeLabel = collection ? t('collection') : material ? t('material') : t('category');
 
+  // CollectionPage + ItemList schema — enumerate products for AI/search engines
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.vercel.app';
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const inList = getProducts(locale).filter(
+    (p) => p.category === slug || p.material === slug || p.collections?.includes(slug),
+  );
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: meta.name,
+    description: meta.description,
+    url: `${baseUrl}${prefix}/collezioni/${slug}`,
+    inLanguage: locale,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: inList.length,
+      itemListElement: inList.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Product',
+          name: p.name,
+          url: `${baseUrl}${prefix}/prodotto/${p.slug}`,
+          image: p.images?.[0],
+          offers: { '@type': 'Offer', price: p.price.toFixed(2), priceCurrency: 'EUR' },
+        },
+      })),
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
       <section className="pt-40 pb-16 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">

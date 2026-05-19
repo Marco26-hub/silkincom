@@ -1,7 +1,6 @@
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, Hotel, Gift, Briefcase } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-import { LocalBusinessSchema } from '@/components/schemas/LocalBusinessSchema';
 
 export async function generateMetadata() {
   const t = await getTranslations('b2bPage');
@@ -16,7 +15,6 @@ export default async function B2BPage() {
   const t = await getTranslations('b2bPage');
   return (
     <>
-      <LocalBusinessSchema />
 
       {/* Hero */}
       <section className="pt-44 pb-20 bg-ivory">

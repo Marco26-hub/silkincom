@@ -3,7 +3,6 @@
 import { Mail, MapPin, Instagram } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { LocalBusinessSchema } from '@/components/schemas/LocalBusinessSchema';
 
 export default function ContattiPage() {
   const t = useTranslations('contatti');
@@ -59,7 +58,6 @@ export default function ContattiPage() {
 
   return (
     <>
-      <LocalBusinessSchema />
       <section className="pt-40 pb-16 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">

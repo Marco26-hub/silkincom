@@ -43,13 +43,19 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     image: post.image ? [post.image.startsWith('http') ? post.image : `${baseUrl}${post.image}`] : [],
     datePublished: post.date || undefined,
     dateModified: post.date || undefined,
-    author: { '@type': 'Organization', name: 'SILKinCOM', url: baseUrl },
+    author: {
+      '@type': 'Person',
+      name: 'Marco Dibenedetto',
+      jobTitle: 'Fondatore',
+      worksFor: { '@id': 'https://silkincom.vercel.app/#organization' },
+    },
     publisher: {
       '@type': 'Organization',
       name: 'SILKinCOM',
       logo: { '@type': 'ImageObject', url: `${baseUrl}/logo-official.png` },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'article p'] },
     inLanguage: locale,
   };
 
