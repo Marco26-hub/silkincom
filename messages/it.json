@@ -920,7 +920,8 @@
             "title": "Eleganza che accarezza",
             "body": "Ipoallergenica e traspirante, la seta è delicata sulla pelle e dona una sensazione di lusso e comfort in ogni occasione. Un materiale che eleva ogni dettaglio, con naturale raffinatezza."
           }
-        }
+        },
+        "productName": "Twilly Como Elegante"
       },
       "cashmere": {
         "name": "Cashmere",
@@ -941,7 +942,8 @@
             "title": "Calore senza peso",
             "body": "Indossare cashmere significa provare un comfort avvolgente, naturale e duraturo. È un materiale che protegge, riscalda e accompagna con eleganza in ogni stagione."
           }
-        }
+        },
+        "productName": "Bellagio — Pashmina"
       },
       "merino": {
         "name": "Lana",
@@ -962,7 +964,8 @@
             "title": "Comfort naturale",
             "body": "Un tessuto che avvolge e protegge, resistente al tempo e piacevole da indossare. La lana rappresenta il perfetto equilibrio tra funzionalità ed eleganza."
           }
-        }
+        },
+        "productName": "Tremezzo — Sciarpa Lana"
       },
       "linoCotone": {
         "name": "Lino & Cotone",
@@ -988,6 +991,12 @@
             "title": "Eleganza informale dell'estate",
             "body": "Entrambi antibatterici, ipoallergenici e biodegradabili. Il lino diventa più morbido ad ogni lavaggio, le sue pieghe raccontano autenticità. Il cotone invecchia con grazia, sempre più familiare sulla pelle. Il guardaroba perfetto per l'estate italiana."
           }
+        },
+        "productName": "Melzi — Capo in Lino",
+        "popup": {
+          "riva": "Riva — Camicia",
+          "melzi": "Melzi — Pantaloncino",
+          "darsena": "Darsena — Cappellino"
         }
       }
     }

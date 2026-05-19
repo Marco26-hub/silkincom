@@ -920,7 +920,8 @@
             "title": "Elegantie die streelt",
             "body": "Hypoallergeen en ademend, is zijde delicaat op de huid en geeft een gevoel van luxe en comfort bij elke gelegenheid. Een materiaal dat elk detail verheft, met natuurlijke verfijning."
           }
-        }
+        },
+        "productName": "Twilly Como Elegant"
       },
       "cashmere": {
         "name": "Kasjmier",
@@ -941,7 +942,8 @@
             "title": "Warmte zonder gewicht",
             "body": "Kasjmier dragen betekent een omhullend, natuurlijk en duurzaam comfort ervaren. Een materiaal dat beschermt, verwarmt en met elegantie begeleidt in elk seizoen."
           }
-        }
+        },
+        "productName": "Bellagio — Pashmina"
       },
       "merino": {
         "name": "Wol",
@@ -962,7 +964,8 @@
             "title": "Natuurlijk comfort",
             "body": "Een stof die omhult en beschermt, tijdbestendig en aangenaam om te dragen. Wol vertegenwoordigt de perfecte balans tussen functionaliteit en elegantie."
           }
-        }
+        },
+        "productName": "Tremezzo — Wollen Sjaal"
       },
       "linoCotone": {
         "name": "Linnen & Katoen",
@@ -988,6 +991,12 @@
             "title": "Informele zomerelegantie",
             "body": "Beide antibacterieel, hypoallergeen en biologisch afbreekbaar. Linnen wordt zachter bij elke wasbeurt, zijn vouwen vertellen authenticiteit. Katoen veroudert met gratie, steeds vertrouwder op de huid. De perfecte garderobe voor de Italiaanse zomer."
           }
+        },
+        "productName": "Melzi — Linnen Stuk",
+        "popup": {
+          "riva": "Riva — Overhemd",
+          "melzi": "Melzi — Short",
+          "darsena": "Darsena — Pet"
         }
       }
     }

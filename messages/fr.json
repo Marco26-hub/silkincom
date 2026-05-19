@@ -920,7 +920,8 @@
             "title": "Élégance qui caresse",
             "body": "Hypoallergénique et respirante, la soie est délicate sur la peau et offre une sensation de luxe et de confort en toute occasion. Une matière qui élève chaque détail avec un raffinement naturel."
           }
-        }
+        },
+        "productName": "Twilly Como Élégant"
       },
       "cashmere": {
         "name": "Cachemire",
@@ -941,7 +942,8 @@
             "title": "Chaleur sans poids",
             "body": "Porter du cachemire, c'est éprouver un confort enveloppant, naturel et durable. Une matière qui protège, réchauffe et accompagne avec élégance en toute saison."
           }
-        }
+        },
+        "productName": "Bellagio — Pashmina"
       },
       "merino": {
         "name": "Laine",
@@ -962,7 +964,8 @@
             "title": "Confort naturel",
             "body": "Un tissu qui enveloppe et protège, résistant au temps et agréable à porter. La laine représente l'équilibre parfait entre fonctionnalité et élégance."
           }
-        }
+        },
+        "productName": "Tremezzo — Écharpe en Laine"
       },
       "linoCotone": {
         "name": "Lin & Coton",
@@ -988,6 +991,12 @@
             "title": "Élégance décontractée de l'été",
             "body": "Tous deux antibactériens, hypoallergéniques et biodégradables. Le lin devient plus doux à chaque lavage, ses plis racontent l'authenticité. Le coton vieillit avec grâce, toujours plus familier sur la peau. La garde-robe parfaite pour l'été italien."
           }
+        },
+        "productName": "Melzi — Pièce en Lin",
+        "popup": {
+          "riva": "Riva — Chemise",
+          "melzi": "Melzi — Short",
+          "darsena": "Darsena — Casquette"
         }
       }
     }

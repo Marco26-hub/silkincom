@@ -920,7 +920,8 @@
             "title": "Eleganz, die liebkost",
             "body": "Hypoallergen und atmungsaktiv, ist Seide sanft zur Haut und vermittelt bei jeder Gelegenheit ein Gefühl von Luxus und Komfort. Ein Material, das mit natürlicher Raffinesse jedes Detail veredelt."
           }
-        }
+        },
+        "productName": "Twilly Como Elegant"
       },
       "cashmere": {
         "name": "Kaschmir",
@@ -941,7 +942,8 @@
             "title": "Wärme ohne Gewicht",
             "body": "Kaschmir zu tragen bedeutet, einen umhüllenden, natürlichen und dauerhaften Komfort zu erleben. Ein Material, das schützt, wärmt und in jeder Jahreszeit mit Eleganz begleitet."
           }
-        }
+        },
+        "productName": "Bellagio — Pashmina"
       },
       "merino": {
         "name": "Wolle",
@@ -962,7 +964,8 @@
             "title": "Natürlicher Komfort",
             "body": "Ein Stoff, der umhüllt und schützt, zeitbeständig und angenehm zu tragen. Wolle steht für die perfekte Balance zwischen Funktionalität und Eleganz."
           }
-        }
+        },
+        "productName": "Tremezzo — Wollschal"
       },
       "linoCotone": {
         "name": "Leinen & Baumwolle",
@@ -988,6 +991,12 @@
             "title": "Lässige Eleganz des Sommers",
             "body": "Beide antibakteriell, hypoallergen und biologisch abbaubar. Leinen wird mit jeder Wäsche weicher, seine Falten erzählen von Authentizität. Baumwolle altert mit Anmut, immer vertrauter auf der Haut. Die perfekte Garderobe für den italienischen Sommer."
           }
+        },
+        "productName": "Melzi — Leinenstück",
+        "popup": {
+          "riva": "Riva — Hemd",
+          "melzi": "Melzi — Shorts",
+          "darsena": "Darsena — Cap"
         }
       }
     }

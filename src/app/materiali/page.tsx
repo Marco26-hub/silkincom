@@ -28,33 +28,33 @@ const MATERIAL_CONFIG = [
     id: 'seta', code: 'SE', tKey: 'seta',
     lifestyleImage: 'https://static.wixstatic.com/media/a34b56_d0546fb94b1141e292d6ab721a70f6af~mv2.png/v1/fill/w_2000,h_1400,al_c,q_90/file.png',
     productImage: 'https://static.wixstatic.com/media/b58e91_6e113b7ba95f4d81854d2300b10860e8~mv2.jpg/v1/fit/w_900,h_900,q_90/file.jpg',
-    productName: 'Twilly Como Elegante', productHref: '/prodotto/como-elegante', productPrice: '€ 90', dark: false,
+    productHref: '/prodotto/como-elegante', productPrice: '€ 90', dark: false,
     sectionKeys: ['origine', 'caratteristiche', 'beneficio'] as const,
   },
   {
     id: 'cashmere', code: 'WS', tKey: 'cashmere',
     lifestyleImage: 'https://static.wixstatic.com/media/a34b56_a8f747d43425400e9268c9c5a50583dd~mv2.png/v1/fill/w_2000,h_1400,al_c,q_90/file.png',
     productImage: 'https://static.wixstatic.com/media/b58e91_6653f43860d34a5eb0143cae9523a134~mv2.jpg/v1/fit/w_900,h_900,q_90/file.jpg',
-    productName: 'Bellagio — Pashmina', productHref: '/prodotto/bellagio-1', productPrice: '€ 170', dark: true,
+    productHref: '/prodotto/bellagio-1', productPrice: '€ 170', dark: true,
     sectionKeys: ['origine', 'caratteristiche', 'beneficio'] as const,
   },
   {
     id: 'merino', code: 'WO', tKey: 'merino',
     lifestyleImage: 'https://static.wixstatic.com/media/a34b56_18eec7b7887f47f69567da3fbe1af6ca~mv2.png/v1/fill/w_2000,h_1400,al_c,q_90/file.png',
     productImage: 'https://static.wixstatic.com/media/a34b56_1af2743a614c4ac1b255dd1e53c8f436~mv2.jpg/v1/fit/w_900,h_900,q_90/file.jpg',
-    productName: 'Tremezzo — Sciarpa Lana', productHref: '/prodotto/tremezzo-azzurra', productPrice: '€ 120', dark: false,
+    productHref: '/prodotto/tremezzo-azzurra', productPrice: '€ 120', dark: false,
     sectionKeys: ['origine', 'caratteristiche', 'beneficio'] as const,
   },
   {
     id: 'lino-cotone', code: 'LI · CO', tKey: 'linoCotone',
     lifestyleImage: 'https://static.wixstatic.com/media/a34b56_4c95bebbb8a141b4a44c0340182bbe97~mv2.jpg/v1/fill/w_2000,h_1400,al_c,q_90,usm_0.66_1.00_0.01/file.jpg',
     productImage: 'https://static.wixstatic.com/media/a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg/v1/fit/w_900,h_900,q_90/file.jpg',
-    productName: 'Melzi — Capo in Lino', productHref: '/prodotto/melzi-1', productPrice: '€ 65', dark: false,
+    productHref: '/prodotto/melzi-1', productPrice: '€ 65', dark: false,
     sectionKeys: ['linoOrigine', 'cotoneOrigine', 'caratteristiche', 'beneficio'] as const,
     popupProducts: [
-      { image: 'https://static.wixstatic.com/media/a34b56_88c331613a2942d6bf9ac51c2f3f641c~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', name: 'Riva — Camicia', href: '/prodotto/riva', price: '€ 75', rotate: '-rotate-6', offset: '-translate-y-4 md:-translate-y-10' },
-      { image: 'https://static.wixstatic.com/media/a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', name: 'Melzi — Pantaloncino', href: '/prodotto/melzi-1', price: '€ 65', rotate: 'rotate-0', offset: 'translate-y-4 md:translate-y-8' },
-      { image: 'https://static.wixstatic.com/media/a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', name: 'Darsena — Cappellino', href: '/prodotto/darsena-bianco', price: '€ 40', rotate: 'rotate-6', offset: '-translate-y-2 md:-translate-y-6' },
+      { popupKey: 'riva', image: 'https://static.wixstatic.com/media/a34b56_88c331613a2942d6bf9ac51c2f3f641c~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/riva', price: '€ 75', rotate: '-rotate-6', offset: '-translate-y-4 md:-translate-y-10' },
+      { popupKey: 'melzi', image: 'https://static.wixstatic.com/media/a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/melzi-1', price: '€ 65', rotate: 'rotate-0', offset: 'translate-y-4 md:translate-y-8' },
+      { popupKey: 'darsena', image: 'https://static.wixstatic.com/media/a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/darsena-bianco', price: '€ 40', rotate: 'rotate-6', offset: '-translate-y-2 md:-translate-y-6' },
     ],
   },
 ];
@@ -70,7 +70,7 @@ export default function MaterialiPage() {
     subtitle: tm(`${cfg.tKey}.subtitle` as any),
     lifestyleImage: cfg.lifestyleImage,
     productImage: cfg.productImage,
-    productName: cfg.productName,
+    productName: tm(`${cfg.tKey}.productName` as any),
     productHref: cfg.productHref,
     productPrice: cfg.productPrice,
     dark: cfg.dark,
@@ -79,7 +79,16 @@ export default function MaterialiPage() {
       title: tm(`${cfg.tKey}.sections.${sk}.title` as any),
       body: tm(`${cfg.tKey}.sections.${sk}.body` as any),
     })),
-    popupProducts: 'popupProducts' in cfg ? cfg.popupProducts : undefined,
+    popupProducts: 'popupProducts' in cfg && cfg.popupProducts
+      ? cfg.popupProducts.map((pp) => ({
+          image: pp.image,
+          href: pp.href,
+          price: pp.price,
+          rotate: pp.rotate,
+          offset: pp.offset,
+          name: tm(`${cfg.tKey}.popup.${pp.popupKey}` as any),
+        }))
+      : undefined,
   }));
   return (
     <>

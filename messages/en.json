@@ -920,7 +920,8 @@
             "title": "Elegance that caresses",
             "body": "Hypoallergenic and breathable, silk is delicate on the skin and gives a feeling of luxury and comfort on every occasion. A material that elevates every detail with natural refinement."
           }
-        }
+        },
+        "productName": "Twilly Como Elegant"
       },
       "cashmere": {
         "name": "Cashmere",
@@ -941,7 +942,8 @@
             "title": "Warmth without weight",
             "body": "Wearing cashmere means experiencing enveloping, natural and lasting comfort. A material that protects, warms and accompanies with elegance in every season."
           }
-        }
+        },
+        "productName": "Bellagio — Pashmina"
       },
       "merino": {
         "name": "Wool",
@@ -962,7 +964,8 @@
             "title": "Natural comfort",
             "body": "A fabric that envelops and protects, resistant over time and pleasant to wear. Wool represents the perfect balance between functionality and elegance."
           }
-        }
+        },
+        "productName": "Tremezzo — Wool Scarf"
       },
       "linoCotone": {
         "name": "Linen & Cotton",
@@ -988,6 +991,12 @@
             "title": "Informal summer elegance",
             "body": "Both antibacterial, hypoallergenic and biodegradable. Linen becomes softer with every wash, its creases tell of authenticity. Cotton ages with grace, ever more familiar on the skin. The perfect wardrobe for Italian summer."
           }
+        },
+        "productName": "Melzi — Linen Piece",
+        "popup": {
+          "riva": "Riva — Shirt",
+          "melzi": "Melzi — Shorts",
+          "darsena": "Darsena — Cap"
         }
       }
     }

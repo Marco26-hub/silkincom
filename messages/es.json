@@ -920,7 +920,8 @@
             "title": "Elegancia que acaricia",
             "body": "Hipoalergénica y transpirable, la seda es delicada con la piel y aporta una sensación de lujo y confort en cada ocasión. Un material que eleva cada detalle, con refinamiento natural."
           }
-        }
+        },
+        "productName": "Twilly Como Elegante"
       },
       "cashmere": {
         "name": "Cachemira",
@@ -941,7 +942,8 @@
             "title": "Calor sin peso",
             "body": "Llevar cachemira significa experimentar un confort envolvente, natural y duradero. Un material que protege, calienta y acompaña con elegancia en cada estación."
           }
-        }
+        },
+        "productName": "Bellagio — Pashmina"
       },
       "merino": {
         "name": "Lana",
@@ -962,7 +964,8 @@
             "title": "Confort natural",
             "body": "Un tejido que envuelve y protege, resistente al tiempo y agradable de llevar. La lana representa el equilibrio perfecto entre funcionalidad y elegancia."
           }
-        }
+        },
+        "productName": "Tremezzo — Bufanda de Lana"
       },
       "linoCotone": {
         "name": "Lino y Algodón",
@@ -988,6 +991,12 @@
             "title": "Elegancia informal del verano",
             "body": "Ambos antibacterianos, hipoalergénicos y biodegradables. El lino se vuelve más suave con cada lavado, sus arrugas hablan de autenticidad. El algodón envejece con gracia, cada vez más familiar en la piel. El armario perfecto para el verano italiano."
           }
+        },
+        "productName": "Melzi — Prenda de Lino",
+        "popup": {
+          "riva": "Riva — Camisa",
+          "melzi": "Melzi — Pantalón corto",
+          "darsena": "Darsena — Gorra"
         }
       }
     }
