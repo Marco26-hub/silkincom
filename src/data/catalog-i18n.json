@@ -1,0 +1,295 @@
+{
+  "materialName": {
+    "cashmere": {
+      "it": "Cashmere",
+      "en": "Cashmere",
+      "es": "Cachemir",
+      "fr": "Cachemire",
+      "de": "Cashmere",
+      "pt": "Caxemira",
+      "nl": "Cashmere"
+    },
+    "lana": {
+      "it": "Lana",
+      "en": "Wool",
+      "es": "Lana",
+      "fr": "Laine",
+      "de": "Wolle",
+      "pt": "Lã",
+      "nl": "Wol"
+    },
+    "seta": {
+      "it": "Seta",
+      "en": "Silk",
+      "es": "Seda",
+      "fr": "Soie",
+      "de": "Seide",
+      "pt": "Seda",
+      "nl": "Zijde"
+    },
+    "lino": {
+      "it": "Lino",
+      "en": "Linen",
+      "es": "Lino",
+      "fr": "Lin",
+      "de": "Leinen",
+      "pt": "Linho",
+      "nl": "Linnen"
+    },
+    "cotone": {
+      "it": "Cotone",
+      "en": "Cotton",
+      "es": "Algodón",
+      "fr": "Coton",
+      "de": "Baumwolle",
+      "pt": "Algodão",
+      "nl": "Katoen"
+    }
+  },
+  "materialDescription": {
+    "cashmere": {
+      "it": "Fibra pregiata di origine asiatica, calda e leggera.",
+      "en": "A precious fibre of Asian origin, warm and lightweight.",
+      "es": "Fibra preciada de origen asiático, cálida y ligera.",
+      "fr": "Fibre précieuse d'origine asiatique, chaude et légère.",
+      "de": "Edle Faser asiatischen Ursprungs, warm und leicht.",
+      "pt": "Fibra nobre de origem asiática, quente e leve.",
+      "nl": "Edele vezel van Aziatische oorsprong, warm en licht."
+    },
+    "lana": {
+      "it": "Naturalmente traspirante e termoregolatrice.",
+      "en": "Naturally breathable and temperature-regulating.",
+      "es": "Naturalmente transpirable y termorreguladora.",
+      "fr": "Naturellement respirante et thermorégulatrice.",
+      "de": "Von Natur aus atmungsaktiv und temperaturregulierend.",
+      "pt": "Naturalmente respirável e termorreguladora.",
+      "nl": "Van nature ademend en temperatuurregulerend."
+    },
+    "seta": {
+      "it": "La seta di Como, lucentezza e raffinatezza senza tempo.",
+      "en": "The silk of Como, timeless lustre and refinement.",
+      "es": "La seda de Como, brillo y refinamiento atemporales.",
+      "fr": "La soie de Como, éclat et raffinement intemporels.",
+      "de": "Die Seide aus Como, zeitloser Glanz und Raffinesse.",
+      "pt": "A seda de Como, brilho e requinte intemporais.",
+      "nl": "De zijde van Como, glans en raffinement zonder tijd."
+    },
+    "lino": {
+      "it": "Freschezza naturale per l'estate mediterranea.",
+      "en": "Natural freshness for the Mediterranean summer.",
+      "es": "Frescura natural para el verano mediterráneo.",
+      "fr": "Fraîcheur naturelle pour l'été méditerranéen.",
+      "de": "Natürliche Frische für den mediterranen Sommer.",
+      "pt": "Frescura natural para o verão mediterrânico.",
+      "nl": "Natuurlijke frisheid voor de mediterrane zomer."
+    },
+    "cotone": {
+      "it": "Cotone naturale di qualità superiore, morbidezza setosa.",
+      "en": "Superior-quality natural cotton, silky softness.",
+      "es": "Algodón natural de calidad superior, suavidad sedosa.",
+      "fr": "Coton naturel de qualité supérieure, douceur soyeuse.",
+      "de": "Hochwertige Naturbaumwolle, seidige Weichheit.",
+      "pt": "Algodão natural de qualidade superior, suavidade sedosa.",
+      "nl": "Natuurlijk katoen van superieure kwaliteit, zijdezachte zachtheid."
+    }
+  },
+  "categoryDescription": {
+    "bellagio": {
+      "it": "Pashmine in puro cashmere, ispirate alla raffinatezza del Lago di Como.",
+      "en": "Pure cashmere pashminas, inspired by the refined elegance of Lake Como.",
+      "es": "Pashminas de puro cachemir, inspiradas en el refinamiento del Lago de Como.",
+      "fr": "Pashminas en pur cachemire, inspirées du raffinement du lac de Côme.",
+      "de": "Pashminas aus reinem Cashmere, inspiriert von der Eleganz des Comer Sees.",
+      "pt": "Pashminas em puro caxemira, inspiradas no requinte do Lago de Como.",
+      "nl": "Pashmina's van puur cashmere, geïnspireerd op het raffinement van het Comomeer."
+    },
+    "cernobbio": {
+      "it": "Sciarpe in cashmere, eleganza discreta.",
+      "en": "Cashmere scarves, understated elegance.",
+      "es": "Bufandas de cachemir, elegancia discreta.",
+      "fr": "Écharpes en cachemire, élégance discrète.",
+      "de": "Schals aus Cashmere, dezente Eleganz.",
+      "pt": "Lenços em caxemira, elegância discreta.",
+      "nl": "Sjaals van cashmere, ingetogen elegantie."
+    },
+    "tremezzo": {
+      "it": "Sciarpe in lana, calore avvolgente.",
+      "en": "Wool scarves, enveloping warmth.",
+      "es": "Bufandas de lana, calidez envolvente.",
+      "fr": "Écharpes en laine, chaleur enveloppante.",
+      "de": "Schals aus Wolle, umhüllende Wärme.",
+      "pt": "Cachecóis em lã, calor envolvente.",
+      "nl": "Sjaals van wol, omhullende warmte."
+    },
+    "varenna": {
+      "it": "Sciarpe in puro cashmere, leggerezza che dura.",
+      "en": "Pure cashmere scarves, lightness that lasts.",
+      "es": "Bufandas de puro cachemir, una ligereza que perdura.",
+      "fr": "Écharpes en pur cachemire, une légèreté qui dure.",
+      "de": "Schals aus reinem Cashmere, Leichtigkeit, die bleibt.",
+      "pt": "Cachecóis em puro caxemira, leveza que perdura.",
+      "nl": "Sjaals van puur cashmere, lichtheid die blijft."
+    },
+    "twilly-como": {
+      "it": "Il foulard a nastro in seta, reinterpretato.",
+      "en": "The silk ribbon scarf, reimagined.",
+      "es": "El foulard de cinta en seda, reinterpretado.",
+      "fr": "Le foulard ruban en soie, réinterprété.",
+      "de": "Das schmale Seidentuch, neu interpretiert.",
+      "pt": "O foulard em fita de seda, reinterpretado.",
+      "nl": "De lintsjaal van zijde, heruitgevonden."
+    },
+    "darsena": {
+      "it": "Cappellini in cotone, eleganza casual.",
+      "en": "Cotton caps, casual elegance.",
+      "es": "Gorras de algodón, elegancia casual.",
+      "fr": "Casquettes en coton, élégance décontractée.",
+      "de": "Mützen aus Baumwolle, lässige Eleganz.",
+      "pt": "Chapéus em algodão, elegância descontraída.",
+      "nl": "Petten van katoen, casual elegantie."
+    },
+    "lario": {
+      "it": "T-shirt in cotone pregiato, Made in Como.",
+      "en": "Premium cotton t-shirts, Made in Como.",
+      "es": "Camisetas de algodón de alta calidad, Made in Como.",
+      "fr": "T-shirts en coton précieux, Made in Como.",
+      "de": "T-Shirts aus edler Baumwolle, Made in Como.",
+      "pt": "T-shirts em algodão nobre, Made in Como.",
+      "nl": "T-shirts van fijn katoen, Made in Como."
+    },
+    "melzi": {
+      "it": "Pantaloncini in lino, freschezza estiva sul Lago.",
+      "en": "Linen shorts, summer freshness on the lake.",
+      "es": "Pantalones cortos de lino, frescura estival junto al Lago.",
+      "fr": "Shorts en lin, fraîcheur estivale au bord du lac.",
+      "de": "Shorts aus Leinen, sommerliche Frische am See.",
+      "pt": "Calções em linho, frescura estival junto ao Lago.",
+      "nl": "Korte broeken van linnen, zomerse frisheid aan het meer."
+    },
+    "riva": {
+      "it": "Camicie in misto lino e cotone.",
+      "en": "Linen and cotton blend shirts.",
+      "es": "Camisas de mezcla de lino y algodón.",
+      "fr": "Chemises en mélange de lin et de coton.",
+      "de": "Hemden aus Leinen-Baumwoll-Gemisch.",
+      "pt": "Camisas em mistura de linho e algodão.",
+      "nl": "Overhemden van linnen en katoen."
+    },
+    "tivan": {
+      "it": "Teli mare in cotone, qualità e praticità.",
+      "en": "Cotton beach towels, quality and practicality.",
+      "es": "Toallas de playa de algodón, calidad y practicidad.",
+      "fr": "Draps de plage en coton, qualité et praticité.",
+      "de": "Strandtücher aus Baumwolle, Qualität und Funktionalität.",
+      "pt": "Toalhas de praia em algodão, qualidade e praticidade.",
+      "nl": "Strandlakens van katoen, kwaliteit en gemak."
+    }
+  },
+  "collectionName": {
+    "inverno": {
+      "it": "Collezione Inverno",
+      "en": "Winter Collection",
+      "es": "Colección Invierno",
+      "fr": "Collection Hiver",
+      "de": "Winterkollektion",
+      "pt": "Coleção Inverno",
+      "nl": "Wintercollectie"
+    },
+    "iconica": {
+      "it": "Collezione Iconica",
+      "en": "Iconic Collection",
+      "es": "Colección Icónica",
+      "fr": "Collection Iconique",
+      "de": "Ikonische Kollektion",
+      "pt": "Coleção Icónica",
+      "nl": "Iconische Collectie"
+    },
+    "primavera": {
+      "it": "Collezione Primavera & Estate",
+      "en": "Spring & Summer Collection",
+      "es": "Colección Primavera y Verano",
+      "fr": "Collection Printemps & Été",
+      "de": "Frühjahrs- & Sommerkollektion",
+      "pt": "Coleção Primavera & Verão",
+      "nl": "Lente- & Zomercollectie"
+    }
+  },
+  "collectionTagline": {
+    "inverno": {
+      "it": "Calore avvolgente delle fibre nobili",
+      "en": "The enveloping warmth of noble fibres",
+      "es": "La calidez envolvente de las fibras nobles",
+      "fr": "La chaleur enveloppante des fibres nobles",
+      "de": "Umhüllende Wärme edler Fasern",
+      "pt": "Calor envolvente das fibras nobres",
+      "nl": "Omhullende warmte van edele vezels"
+    },
+    "iconica": {
+      "it": "L'essenza del tuo stile, firmata Como",
+      "en": "The essence of your style, signed by Como",
+      "es": "La esencia de tu estilo, firmada en Como",
+      "fr": "L'essence de votre style, signée Como",
+      "de": "Die Essenz Ihres Stils, signiert von Como",
+      "pt": "A essência do seu estilo, assinada por Como",
+      "nl": "De essentie van jouw stijl, gesigneerd door Como"
+    },
+    "primavera": {
+      "it": "Toni del lago al risveglio",
+      "en": "Lake tones at first light",
+      "es": "Los tonos del lago al despertar",
+      "fr": "Les tons du lac à son réveil",
+      "de": "Die Farben des Sees im Erwachen",
+      "pt": "Os tons do lago ao despertar",
+      "nl": "Tinten van het meer bij het ontwaken"
+    }
+  },
+  "collectionDescription": {
+    "inverno": {
+      "it": "Pashmine in cashmere, sciarpe in lana e accessori pensati per la stagione fredda. La tradizione tessile comasca incontra il comfort delle migliori fibre invernali.",
+      "en": "Cashmere pashminas, wool scarves and accessories designed for the cold season. The textile tradition of Como meets the comfort of the finest winter fibres.",
+      "es": "Pashminas de cachemir, bufandas de lana y accesorios pensados para la estación fría. La tradición textil de Como se encuentra con el confort de las mejores fibras invernales.",
+      "fr": "Pashminas en cachemire, écharpes en laine et accessoires pensés pour la saison froide. La tradition textile de Como rencontre le confort des meilleures fibres hivernales.",
+      "de": "Pashminas aus Cashmere, Schals aus Wolle und Accessoires, die für die kalte Jahreszeit gemacht sind. Die Textiltradition von Como trifft auf den Komfort der besten Winterfasern.",
+      "pt": "Pashminas em caxemira, cachecóis em lã e acessórios pensados para a estação fria. A tradição têxtil de Como encontra o conforto das melhores fibras de inverno.",
+      "nl": "Pashmina's van cashmere, sjaals van wol en accessoires ontworpen voor het koude seizoen. De textieltraditie van Como ontmoet het comfort van de fijnste wintervezels."
+    },
+    "iconica": {
+      "it": "I pezzi che rappresentano l'anima di SILKinCOM. Twilly in seta e cappellini in cotone, lavorati interamente nel distretto comasco.",
+      "en": "The pieces that capture the soul of SILKinCOM. Silk twillies and cotton caps, crafted entirely in the Como district.",
+      "es": "Las piezas que representan el alma de SILKinCOM. Twilly de seda y gorras de algodón, elaborados íntegramente en el distrito de Como.",
+      "fr": "Les pièces qui incarnent l'âme de SILKinCOM. Twilly en soie et casquettes en coton, entièrement façonnés dans le district de Como.",
+      "de": "Die Stücke, die die Seele von SILKinCOM verkörpern. Twilly aus Seide und Mützen aus Baumwolle, vollständig im Textildistrikt von Como gefertigt.",
+      "pt": "As peças que representam a alma da SILKinCOM. Twilly em seda e chapéus em algodão, inteiramente confecionados no distrito de Como.",
+      "nl": "De stukken die de ziel van SILKinCOM verbeelden. Twilly's van zijde en petten van katoen, volledig vervaardigd in het district van Como."
+    },
+    "primavera": {
+      "it": "La nuova stagione si apre con cotoni e lini leggeri, t-shirt e camicie pensate per le mezze stagioni sul Lario.",
+      "en": "The new season opens with lightweight cottons and linens, t-shirts and shirts designed for the mid-seasons on Lake Como.",
+      "es": "La nueva temporada se abre con algodones y linos ligeros, camisetas y camisas pensadas para las medias estaciones junto al Lago de Como.",
+      "fr": "La nouvelle saison s'ouvre avec des cotons et des lins légers, des t-shirts et des chemises pensés pour les demi-saisons au bord du lac de Côme.",
+      "de": "Die neue Saison beginnt mit leichten Baumwoll- und Leinenstoffen, T-Shirts und Hemden, die für die Übergangszeiten am Comer See gedacht sind.",
+      "pt": "A nova estação abre-se com algodões e linhos leves, t-shirts e camisas pensadas para as meias-estações junto ao Lago de Como.",
+      "nl": "Het nieuwe seizoen opent met lichte katoen- en linnensoorten, t-shirts en overhemden ontworpen voor de tussenseizoenen aan het Comomeer."
+    }
+  },
+  "groupName": {
+    "abbigliamento": {
+      "it": "Abbigliamento",
+      "en": "Clothing",
+      "es": "Ropa",
+      "fr": "Vêtements",
+      "de": "Bekleidung",
+      "pt": "Vestuário",
+      "nl": "Kleding"
+    },
+    "accessori": {
+      "it": "Accessori",
+      "en": "Accessories",
+      "es": "Accesorios",
+      "fr": "Accessoires",
+      "de": "Accessoires",
+      "pt": "Acessórios",
+      "nl": "Accessoires"
+    }
+  }
+}
