@@ -79,7 +79,7 @@ export function Footer() {
               <li><Link href="/resi" className="hover:text-gold-primary transition-colors">{t('links.returns')}</Link></li>
               <li><Link href="/cura-prodotto" className="hover:text-gold-primary transition-colors">{t('links.care')}</Link></li>
               <li><Link href="/faq" className="hover:text-gold-primary transition-colors">{t('links.faq')}</Link></li>
-              <li><Link href="/recensioni" className="hover:text-gold-primary transition-colors">Recensioni</Link></li>
+              <li><Link href="/recensioni" className="hover:text-gold-primary transition-colors">{t('links.reviews')}</Link></li>
               <li><Link href="/b2b" className="hover:text-gold-primary transition-colors">B2B</Link></li>
             </ul>
           </div>
