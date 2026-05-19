@@ -66,6 +66,7 @@ export function ProductEditForm({
     color_id: product.color_id ?? '',
   });
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
 
   const [categories, setCategories] = useState<Category[]>(initialCategories);
@@ -105,6 +106,20 @@ export function ProductEditForm({
     if (!res.ok) setMsg({ type: 'err', text: data.error ?? 'Errore' });
     else {
       setMsg({ type: 'ok', text: 'Salvato' });
+      router.refresh();
+    }
+  }
+
+  async function translate() {
+    setTranslating(true);
+    setMsg(null);
+    const res = await fetch(`/api/admin/products/${product.id}/translate`, { method: 'POST' });
+    const data = await res.json();
+    setTranslating(false);
+    if (!res.ok) {
+      setMsg({ type: 'err', text: data.error ?? 'Traduzione fallita' });
+    } else {
+      setMsg({ type: 'ok', text: 'Tradotto in 6 lingue (en, es, fr, de, pt, nl)' });
       router.refresh();
     }
   }
@@ -348,9 +363,22 @@ export function ProductEditForm({
           <p className={`text-xs px-3 py-2 ${msg.type === 'ok' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>{msg.text}</p>
         )}
 
-        <button type="submit" disabled={saving} className="px-8 py-3 bg-soft-black text-warm-white text-xs uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50">
-          {saving ? 'Salvataggio...' : 'Salva'}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button type="submit" disabled={saving} className="px-8 py-3 bg-soft-black text-warm-white text-xs uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50">
+            {saving ? 'Salvataggio...' : 'Salva'}
+          </button>
+          <button
+            type="button"
+            onClick={translate}
+            disabled={saving || translating}
+            className="px-8 py-3 border border-soft-black text-soft-black text-xs uppercase tracking-[0.2em] hover:bg-soft-black hover:text-warm-white transition-colors disabled:opacity-50"
+          >
+            {translating ? 'Traduzione in corso…' : 'Traduci nelle altre lingue'}
+          </button>
+          <span className="text-[11px] text-soft-grey">
+            Traduce nome, descrizione e composizione salvati in en · es · fr · de · pt · nl
+          </span>
+        </div>
       </form>
 
       <VariantsSection

@@ -20,6 +20,8 @@ export * from './catalog-meta';
 
 // ========== DB FETCH ==========
 
+type I18nMap = Partial<Record<string, string>> | null;
+
 type DBProduct = {
   id: string;
   slug: string;
@@ -29,6 +31,9 @@ type DBProduct = {
   description_long: string;
   composition: string;
   dimensions: string;
+  name_i18n: I18nMap;
+  description_long_i18n: I18nMap;
+  composition_i18n: I18nMap;
   product_images: Array<{ image_url: string }>;
   product_categories: Array<{ category_id: string; categories: { slug: string } | null }>;
   product_collections: Array<{ collection_id: string; collections: { slug: string } | null }>;
@@ -40,6 +45,7 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
     .from('products')
     .select(
       `id, slug, name, sku, price, description_long, composition, dimensions,
+       name_i18n, description_long_i18n, composition_i18n,
        product_images(image_url),
        product_categories(
          category_id,
@@ -69,29 +75,29 @@ const getCachedProducts = unstable_cache(
   { revalidate: 60, tags: ['products'] }
 );
 
-// Italian is the source language and lives in the DB — so `it` always reads
-// from the DB and reflects admin edits immediately. The other 6 locales come
-// from products.json (filled by the translation pipeline); if a translation
-// is missing, fall back to the DB (Italian) value.
+// Italian is the source language: it always reads the DB source column and
+// reflects admin edits immediately. For the other 6 locales the resolution
+// order is: DB *_i18n column (filled by the admin "Translate" button) ->
+// products.json (legacy translation pipeline) -> DB source (Italian).
 function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
   const translations = translationMap.get(dbProduct.slug);
   const meta = buildProductMeta(dbProduct.slug);
 
-  const translated = locale !== 'it' && translations
-    ? {
-        name: pick(translations.name, locale),
-        description: pick(translations.description, locale),
-        composition: pick(translations.composition, locale),
-      }
-    : null;
+  function resolve(i18n: I18nMap, fileField: 'name' | 'description' | 'composition', source: string): string {
+    if (locale === 'it') return source;
+    const fromDb = i18n?.[locale];
+    if (fromDb) return fromDb;
+    if (translations) return pick(translations[fileField], locale);
+    return source;
+  }
 
   return {
     slug: dbProduct.slug,
-    name: translated?.name || dbProduct.name,
+    name: resolve(dbProduct.name_i18n, 'name', dbProduct.name),
     sku: dbProduct.sku,
     price: dbProduct.price,
-    description: translated?.description || dbProduct.description_long,
-    composition: translated?.composition || dbProduct.composition,
+    description: resolve(dbProduct.description_long_i18n, 'description', dbProduct.description_long),
+    composition: resolve(dbProduct.composition_i18n, 'composition', dbProduct.composition),
     dimensions: dbProduct.dimensions,
     images: dbProduct.product_images.map((img) => img.image_url),
     category: meta.category,
