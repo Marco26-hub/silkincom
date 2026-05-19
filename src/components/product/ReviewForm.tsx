@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Star, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 type Props = {

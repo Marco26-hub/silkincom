@@ -8,7 +8,7 @@ export const LOCALE_COOKIE = 'NEXT_LOCALE';
 export const routing = defineRouting({
   locales: LOCALES as unknown as string[],
   defaultLocale: DEFAULT_LOCALE,
-  localePrefix: 'never',
+  localePrefix: 'as-needed',
   localeDetection: true,
   localeCookie: { name: LOCALE_COOKIE, maxAge: 60 * 60 * 24 * 365 },
 });

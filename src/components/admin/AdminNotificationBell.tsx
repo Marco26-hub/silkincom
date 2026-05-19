@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Bell, Package, ShoppingBag, Undo2, Star } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 type Counts = {
   newReturns: number;

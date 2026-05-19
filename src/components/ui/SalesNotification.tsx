@@ -16,7 +16,7 @@
  * Mounted globally in layout.tsx — visible on every page.
  */
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { ShoppingBag, X } from 'lucide-react';
 
 type Sale = {

@@ -16,7 +16,7 @@
  * Helper trackEvent() exposed via window.silkincomTrack for ad-hoc events.
  */
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/navigation';
 import Script from 'next/script';
 
 const CONSENT_KEY = 'silkincom-cookie-consent';

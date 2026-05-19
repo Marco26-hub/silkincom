@@ -4,7 +4,7 @@
  * Renders only if product has a mapped artisan in src/data/artisans.ts.
  * Pure no-op when no mapping exists, so safe to mount everywhere.
  */
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { getProductArtisan } from '@/data/artisans';
 

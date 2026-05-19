@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Plus, Trash2 } from 'lucide-react';
 
 type Category = { id: string; name: string };

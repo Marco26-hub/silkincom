@@ -2,15 +2,15 @@
 
 import { useState, useRef, useEffect, useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import { LOCALES, LOCALE_LABELS, type Locale } from '@/i18n/routing';
-import { setLocaleAction } from '@/i18n/actions';
 
 export function LanguageSwitcher({ variant = 'default' }: { variant?: 'default' | 'minimal' }) {
   const currentLocale = useLocale() as Locale;
   const t = useTranslations('languageSwitcher');
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
@@ -35,10 +35,11 @@ export function LanguageSwitcher({ variant = 'default' }: { variant?: 'default' 
       setOpen(false);
       return;
     }
-    startTransition(async () => {
-      await setLocaleAction(locale);
+    startTransition(() => {
+      // Navigate to the same page under the chosen locale. next-intl adds the
+      // locale prefix as needed (default locale stays unprefixed).
+      router.replace(pathname, { locale });
       setOpen(false);
-      router.refresh();
     });
   }
 

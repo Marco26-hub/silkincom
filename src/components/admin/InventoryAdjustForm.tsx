@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 
 export function InventoryAdjustForm({ productId, currentQty }: { productId: string; currentQty: number }) {
   const router = useRouter();
