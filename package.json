@@ -13,7 +13,9 @@
     "db:reset": "supabase db reset",
     "db:push": "supabase db push",
     "db:seed": "supabase db reset --linked && psql $DATABASE_URL -f database/seed.sql",
-    "seed:products": "tsx scripts/seed-products.ts"
+    "seed:products": "tsx scripts/seed-products.ts",
+    "translate": "node scripts/translate-i18n.mjs",
+    "translate:check": "node scripts/translate-i18n.mjs --check"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
