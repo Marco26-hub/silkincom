@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Master Printer",
+        "role": "Master Dyer",
         "city": "Como",
-        "alt": "Adriano, SILKinCOM silk-screen printer, at the print bench",
-        "caption": "Screen print in progress",
-        "story": "Prepares the screens, mixes the inks, controls colour registration. Each colour of the design requires a separate screen: a complex foulard can demand more than ten layers, registered with millimetric precision."
+        "alt": "Adriano, SILKinCOM master dyer, at the silk dye baths",
+        "caption": "Silk dyeing in progress",
+        "story": "Prepares the dye baths, monitors water pH, doses the dyes by fibre and batch weight. Silk dyeing demands exact temperatures, times and immersion speeds: a few degrees of variation can shift the colour. Every batch is matched by eye against the reference swatch before finishing."
       },
       "twill": {
         "name": "Roberta",

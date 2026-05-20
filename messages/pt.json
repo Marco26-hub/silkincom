@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Mestre Estampador",
+        "role": "Mestre Tintureiro",
         "city": "Como",
-        "alt": "Adriano, estampador serígrafico SILKinCOM, diante da mesa de estampagem",
-        "caption": "Estampagem ao quadro em curso",
-        "story": "Prepara os quadros, mistura as tintas, controla o registo das cores. Cada cor do desenho exige um quadro separado: um foulard complexo pode requerer mais de uma dezena de passagens sobrepostas com precisão milimétrica."
+        "alt": "Adriano, mestre tintureiro SILKinCOM, diante dos banhos de tingimento da seda",
+        "caption": "Tingimento da seda em curso",
+        "story": "Prepara os banhos de tingimento, controla o pH da água, doseia os corantes em função da fibra e do peso do lote. O tingimento da seda exige temperaturas, tempos e velocidades de imersão precisos: uma variação de poucos graus pode deslocar a tonalidade. Cada partida é comparada à vista com a amostra de referência antes do acabamento."
       },
       "twill": {
         "name": "Roberta",

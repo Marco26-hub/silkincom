@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Maestro Estampador",
+        "role": "Maestro Tintorero",
         "city": "Como",
-        "alt": "Adriano, estampador serigráfico SILKinCOM, ante la mesa de estampación",
-        "caption": "Estampación a cuadro en curso",
-        "story": "Prepara los cuadros, mezcla las tintas, controla el registro de los colores. Cada color del diseño requiere un cuadro separado: un pañuelo complejo puede exigir más de diez pasadas superpuestas con precisión milimétrica."
+        "alt": "Adriano, maestro tintorero SILKinCOM, ante los baños de tintura de la seda",
+        "caption": "Tintura de la seda en curso",
+        "story": "Prepara los baños de tintura, controla el pH del agua, dosifica los colorantes según la fibra y el peso del lote. La tintura de la seda requiere temperaturas, tiempos y velocidades de inmersión precisos: una variación de pocos grados puede desplazar la tonalidad del color. Cada partida se compara a la vista con la muestra de referencia antes del acabado."
       },
       "twill": {
         "name": "Roberta",

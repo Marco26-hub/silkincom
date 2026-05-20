@@ -162,8 +162,8 @@ export default function MarcoDibenedettoPage() {
             SILKinCOM non è un brand monolitico: è una rete di laboratori indipendenti, coordinata da
             Marco e dalla sua sede operativa di Cermenate. Tre artigiani in particolare collaborano
             stabilmente con la Maison: <strong>Paolo</strong>, maestro tessitore — segue il telaio
-            jacquard; <strong>Adriano</strong>, maestro stampatore — prepara i quadri e mescola gli
-            inchiostri di stampa; <strong>Roberta</strong>, ricamatrice — ricama a mano monogrammi,
+            jacquard; <strong>Adriano</strong>, mastro tintore — prepara i bagni di tintura, dosa i
+            coloranti e controlla la resa dei colori sulla seta; <strong>Roberta</strong>, ricamatrice — ricama a mano monogrammi,
             loghi e motivi decorativi sui foulard di seta. Marco firma personalmente la selezione del progetto, ma il
             prodotto finale è il risultato di un lavoro condiviso che riflette la natura distrettuale
             dell&apos;industria serica comasca. I loro volti e le loro voci sono raccolti nella pagina{' '}

@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Meesterdrukker",
+        "role": "Meesterverver",
         "city": "Como",
-        "alt": "Adriano, zeefdrukker van SILKinCOM, aan de druktafel",
-        "caption": "Kaderdruk in uitvoering",
-        "story": "Bereidt de kaders voor, mengt de inkten, controleert de kleurregistratie. Elke kleur van het ontwerp vereist een eigen kader: een complex foulard kan meer dan tien op elkaar gelegde drukgangen vragen, met millimeter-precieze uitlijning."
+        "alt": "Adriano, meesterverver van SILKinCOM, voor de zijdeverfbaden",
+        "caption": "Zijdeverven in uitvoering",
+        "story": "Bereidt de verfbaden voor, controleert de pH van het water, doseert de kleurstoffen op vezel en partijgewicht. Het verven van zijde vraagt om exacte temperaturen, tijden en onderdompelingssnelheden: enkele graden afwijking kunnen de tint verschuiven. Elke partij wordt vóór de afwerking op het oog vergeleken met het referentiestaal."
       },
       "twill": {
         "name": "Roberta",

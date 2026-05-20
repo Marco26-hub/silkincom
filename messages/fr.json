@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Maître Imprimeur",
+        "role": "Maître Teinturier",
         "city": "Como",
-        "alt": "Adriano, imprimeur sérigraphique SILKinCOM, devant la table d'impression",
-        "caption": "Impression au cadre en cours",
-        "story": "Prépare les cadres, mélange les encres, contrôle le repérage des couleurs. Chaque couleur du dessin demande un cadre séparé : un foulard complexe peut exiger plus d'une dizaine de passages superposés avec une précision millimétrique."
+        "alt": "Adriano, maître teinturier SILKinCOM, devant les bains de teinture de la soie",
+        "caption": "Teinture de la soie en cours",
+        "story": "Prépare les bains de teinture, contrôle le pH de l'eau, dose les colorants selon la fibre et le poids du lot. La teinture de la soie demande des températures, des durées et des vitesses d'immersion précises : quelques degrés d'écart peuvent décaler la tonalité. Chaque lot est comparé à l'œil au témoin de référence avant le finissage."
       },
       "twill": {
         "name": "Roberta",

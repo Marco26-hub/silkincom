@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Maestro Stampatore",
+        "role": "Mastro Tintore",
         "city": "Como",
-        "alt": "Adriano, stampatore serigrafico SILKinCOM, davanti al banco di stampa",
-        "caption": "Stampa a quadro in corso",
-        "story": "Prepara i quadri, mescola gli inchiostri, controlla la registrazione dei colori. Ogni colore del disegno richiede un telaio separato: per un foulard complesso possono servire più di una decina di passaggi, sovrapposti con precisione millimetrica."
+        "alt": "Adriano, mastro tintore SILKinCOM, davanti ai bagni di tintura della seta",
+        "caption": "Tintura della seta in corso",
+        "story": "Prepara i bagni di tintura, controlla il pH dell'acqua, dosa i coloranti in base alla fibra e al peso del lotto. La tintura della seta richiede temperature, tempi e velocità di immersione precisi: una variazione di pochi gradi può spostare la tonalità del colore. Ogni partita viene confrontata a vista con il campione di riferimento prima del finissaggio."
       },
       "twill": {
         "name": "Roberta",

@@ -1168,11 +1168,11 @@
       },
       "telaio": {
         "name": "Adriano",
-        "role": "Meisterdrucker",
+        "role": "Meisterfärber",
         "city": "Como",
-        "alt": "Adriano, Siebdrucker von SILKinCOM, am Drucktisch",
-        "caption": "Rahmendruck in Arbeit",
-        "story": "Bereitet die Rahmen vor, mischt die Tinten, kontrolliert die Farbpassgenauigkeit. Jede Farbe des Dessins erfordert einen eigenen Rahmen: Ein komplexes Foulard kann mehr als zehn übereinander gelegte Durchgänge in millimetergenauer Registrierung benötigen."
+        "alt": "Adriano, Meisterfärber von SILKinCOM, vor den Seidenfärbebädern",
+        "caption": "Seidenfärberei in Arbeit",
+        "story": "Bereitet die Färbebäder vor, kontrolliert den pH-Wert des Wassers, dosiert die Farbstoffe nach Faser und Chargengewicht. Die Seidenfärberei verlangt exakte Temperaturen, Zeiten und Eintauchgeschwindigkeiten: Wenige Grad Abweichung können den Farbton verschieben. Jede Charge wird vor dem Finishing per Auge mit der Referenzprobe abgeglichen."
       },
       "twill": {
         "name": "Roberta",
