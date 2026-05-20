@@ -853,7 +853,7 @@ function SlidePreview({
         </button>
       </div>
       <p className="text-[11px] text-soft-grey">
-        Hero applica parallax fino a <strong>112%</strong> di zoom durante lo scroll. Verifica che il soggetto resti centrato anche a 1.12x.
+        Hero applica un Ken Burns gentile fino a <strong>104%</strong> + parallax scroll <strong>102%</strong>. Verifica che volti e soggetti restino in frame a 1.04x.
       </p>
     </div>
   );

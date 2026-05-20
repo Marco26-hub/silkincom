@@ -50,6 +50,10 @@ const FALLBACK_SLIDES: HeroSlideInput[] = [
 ];
 
 const SLIDE_DURATION = 6500;
+// Ken Burns max scale: kept gentle so portrait subjects (faces, busts) stay
+// inside the frame for the full slide duration instead of being cropped out
+// by the parallax + slideshow zoom stack.
+const KEN_BURNS_MAX_SCALE = 1.04;
 
 export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
   const t = useTranslations('home.hero');
@@ -66,9 +70,11 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
     offset: ['start start', 'end start'],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
   const opacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.4, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
+  // Scroll parallax tightened from 1.05 → 1.02 so the subject does not drift
+  // out of frame during the user's natural scroll-down gesture.
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.02]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -105,7 +111,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 <motion.div
                   className="absolute inset-0 w-full h-full"
                   initial={{ scale: 1.0 }}
-                  animate={{ scale: 1.12 }}
+                  animate={{ scale: KEN_BURNS_MAX_SCALE }}
                   transition={{
                     duration: SLIDE_DURATION / 1000 + 1.6,
                     ease: 'linear',
