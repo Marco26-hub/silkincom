@@ -40,11 +40,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'),
   title: {
-    default: 'SILKinCOM | Sciarpe e Accessori in Seta e Cashmere — Made in Como',
+    default: 'SILKinCOM — Sciarpe in seta e cashmere, Made in Como',
     template: '%s | SILKinCOM',
   },
   description:
-    'SILKinCOM crea sciarpe, foulard, twilly e pashmine in pura seta e cashmere, interamente disegnate e confezionate sul Lago di Como. Tradizione tessile comasca dal 1400, eleganza italiana 100% Made in Italy.',
+    'Sciarpe, foulard e pashmine in seta e cashmere, 100% Made in Como dal distretto serico più importante d\'Europa. Spedizione gratuita oltre €200.',
   keywords: [
     'sciarpe seta Como',
     'foulard seta italiano',
@@ -69,9 +69,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     locale: ogLocale,
     alternateLocale: Object.values(OG_LOCALE).filter((l) => l !== ogLocale),
     siteName: 'SILKinCOM',
-    title: 'SILKinCOM | Sciarpe e Accessori in Seta e Cashmere — Made in Como',
+    title: 'SILKinCOM — Sciarpe in seta e cashmere, Made in Como',
     description:
-      'Accessori premium in seta, cashmere, lana, lino e cotone. 100% Made in Como, sul Lago di Como. Tradizione tessile dal 1400.',
+      'Sciarpe, foulard, pashmine in seta e cashmere. 100% Made in Como dal distretto serico. Spedizione gratuita oltre €200.',
     url: '/',
     images: [
       {

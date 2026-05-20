@@ -83,6 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry('/spedizioni', { changeFrequency: 'yearly', priority: 0.4, lastModified: now }),
     entry('/resi', { changeFrequency: 'yearly', priority: 0.4, lastModified: now }),
     entry('/cura-prodotto', { changeFrequency: 'yearly', priority: 0.4, lastModified: now }),
+    entry('/glossario', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
     entry('/cura-prodotto/seta', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
     entry('/cura-prodotto/cashmere', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
     entry('/cura-prodotto/lana', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
