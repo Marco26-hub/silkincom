@@ -10,11 +10,11 @@ type LogoProps = {
 };
 
 const sizeClasses = {
-  sm: 'h-8 md:h-10',
-  md: 'h-11 md:h-12',
-  lg: 'h-12 sm:h-14 md:h-16',
-  xl: 'h-20 md:h-24',
-  '2xl': 'h-28 md:h-36',
+  sm: 'h-10 md:h-12',
+  md: 'h-14 md:h-16',
+  lg: 'h-16 sm:h-20 md:h-24',
+  xl: 'h-24 md:h-32',
+  '2xl': 'h-32 md:h-44',
 };
 
 // Official logo SVG — extracted from silkincom.com (gold/white variant via filter)
