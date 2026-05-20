@@ -201,19 +201,27 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary/60 to-transparent z-10" />
 
+      {/* Couture-bound inner gold hairline frame — packaging-grade detail */}
+      <div className="pointer-events-none absolute inset-6 md:inset-10 border border-gold-primary/15 z-10" />
+
       <div className="relative z-10 h-full flex items-end pb-24 md:items-center md:pb-0">
         <div className="max-w-[1500px] w-full mx-auto px-6 lg:px-12">
           <div className="max-w-3xl text-warm-white" aria-live="polite">
+            {/* Editorial eyebrow — hairline / monogram-style dot / label /
+                trailing hairline. Echoes the typographic conventions of the
+                Loro Piana & Hermès campaign mastheads. */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="flex items-center gap-4 mb-8"
+              transition={{ duration: 1.4, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
+              className="flex items-center gap-4 mb-10"
             >
-              <span className="block w-12 h-px bg-gold-primary" />
-              <span className="text-[10px] uppercase tracking-[0.3em] sm:tracking-[0.4em] md:tracking-[0.5em] text-gold-primary font-medium">
+              <span className="block w-14 md:w-20 h-px bg-gradient-to-r from-transparent via-gold-primary to-gold-primary/40" />
+              <span className="block w-[5px] h-[5px] rotate-45 bg-gold-primary" aria-hidden />
+              <span className="text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.46em] md:tracking-[0.56em] text-gold-primary font-medium">
                 {t('eyebrow')}
               </span>
+              <span className="hidden md:block w-10 h-px bg-gradient-to-l from-transparent via-gold-primary/40 to-gold-primary/40" />
             </motion.div>
 
             {/* Per-slide title — full word-by-word reveal on first mount only;
@@ -221,7 +229,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 isn't visually slammed every 6.5 s. */}
             <h1
               key={`title-${activeSlide}`}
-              className="font-display font-light text-[2.25rem] xs:text-[2.5rem] sm:text-5xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.12] tracking-[-0.01em] mb-8 md:mb-10"
+              className="font-display font-light text-[2.25rem] xs:text-[2.5rem] sm:text-5xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.08] tracking-[-0.015em] mb-10 md:mb-12 [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
             >
               {activeSlide === 0 ? (
                 <>
@@ -308,55 +316,78 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               transition={{ duration: 1, delay: 1.6, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-5"
             >
+              {/* Primary CTA — ivory chip with a gold hairline frame just
+                  inside the border (visible only on hover via opacity). The
+                  gold sweep still rises on hover but now slides under a
+                  hairline frame for a couture-bound feel. */}
               <Link
                 href="/collezioni"
-                className="group relative inline-flex items-center justify-center sm:justify-start gap-3 px-8 sm:px-10 py-4 sm:py-5 bg-warm-white text-soft-black text-[10.5px] uppercase tracking-[0.25em] sm:tracking-[0.3em] overflow-hidden transition-all duration-700 font-medium min-h-[48px]"
+                className="group relative inline-flex items-center justify-center sm:justify-start gap-3 px-9 sm:px-11 py-4 sm:py-5 bg-warm-white text-soft-black text-[10.5px] uppercase tracking-[0.28em] sm:tracking-[0.32em] overflow-hidden transition-all duration-700 font-medium min-h-[48px] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.45)]"
               >
-                <span className="absolute inset-0 bg-gold-primary translate-y-[105%] group-hover:translate-y-0 transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)]" />
+                <span className="absolute inset-0 bg-gold-primary translate-y-[105%] group-hover:translate-y-0 transition-transform duration-[900ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)]" />
+                <span className="pointer-events-none absolute inset-[5px] border border-gold-primary/0 group-hover:border-gold-primary/55 transition-colors duration-700" />
                 <span className="relative z-10 group-hover:text-warm-white transition-colors duration-700">
                   {t('cta')}
                 </span>
                 <ArrowRight className="w-3.5 h-3.5 relative z-10 group-hover:translate-x-1.5 group-hover:text-warm-white transition-all duration-700" />
               </Link>
+              {/* Secondary CTA — hairline outline, gold flourish on hover.
+                  The trailing underline grows from 0 → 28px (was 16px) so
+                  the hover reads as a deliberate flourish, not a tic. */}
               <Link
                 href="/la-nostra-storia"
-                className="group inline-flex items-center justify-center sm:justify-start gap-3 px-8 sm:px-10 py-4 sm:py-5 border border-warm-white/35 text-warm-white text-[10.5px] uppercase tracking-[0.25em] sm:tracking-[0.3em] hover:border-gold-primary hover:text-gold-primary transition-all duration-700 backdrop-blur-md min-h-[48px]"
+                className="group relative inline-flex items-center justify-center sm:justify-start gap-3 px-9 sm:px-11 py-4 sm:py-5 border border-warm-white/30 text-warm-white text-[10.5px] uppercase tracking-[0.28em] sm:tracking-[0.32em] hover:border-gold-primary/80 hover:text-gold-primary transition-all duration-700 backdrop-blur-md min-h-[48px]"
               >
-                {t('ctaSecondary')}
-                <span className="block w-0 h-px bg-gold-primary group-hover:w-4 transition-all duration-700" />
+                <span className="pointer-events-none absolute inset-[5px] border border-gold-primary/0 group-hover:border-gold-primary/25 transition-colors duration-700" />
+                <span className="relative z-10">{t('ctaSecondary')}</span>
+                <span className="relative z-10 block w-0 h-px bg-gold-primary group-hover:w-7 transition-all duration-700" />
               </Link>
             </motion.div>
           </div>
         </div>
       </div>
 
+      {/* Magazine-style slide counter — "01 — 03" with a row of hairlines.
+          The active hairline fills with gold across the slide duration so
+          progress reads at a glance without competing with the copy. */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-10 right-6 lg:right-12 z-10 flex items-center gap-3"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 1.2 }}
+        className="absolute bottom-10 right-6 lg:right-12 z-10 flex items-end gap-5"
       >
-        {SLIDES.map((_, i) => (
-          <button
-            key={`dot-${i}`}
-            onClick={() => setActiveSlide(i)}
-            aria-label={t('slideAria', { n: i + 1 })}
-            className="group relative h-px w-12 bg-warm-white/20 overflow-hidden"
-          >
-            <motion.span
-              className="absolute inset-0 bg-gold-primary origin-left"
-              initial={{ scaleX: 0 }}
-              animate={{
-                scaleX: i === activeSlide ? 1 : i < activeSlide ? 1 : 0,
-              }}
-              transition={{
-                duration: i === activeSlide ? SLIDE_DURATION / 1000 : 0.4,
-                ease: i === activeSlide ? 'linear' : 'easeOut',
-              }}
-              key={`fill-${i}-${activeSlide}`}
-            />
-          </button>
-        ))}
+        <div className="hidden md:flex items-baseline gap-2 text-warm-white/80 tabular-nums">
+          <span className="font-display text-[26px] leading-none text-gold-primary">
+            {String(activeSlide + 1).padStart(2, '0')}
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-warm-white/40">—</span>
+          <span className="font-display text-[14px] leading-none text-warm-white/55">
+            {String(SLIDES.length).padStart(2, '0')}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          {SLIDES.map((_, i) => (
+            <button
+              key={`dot-${i}`}
+              onClick={() => setActiveSlide(i)}
+              aria-label={t('slideAria', { n: i + 1 })}
+              className="group relative h-px w-10 md:w-14 bg-warm-white/20 overflow-hidden"
+            >
+              <motion.span
+                className="absolute inset-0 bg-gold-primary origin-left"
+                initial={{ scaleX: 0 }}
+                animate={{
+                  scaleX: i === activeSlide ? 1 : i < activeSlide ? 1 : 0,
+                }}
+                transition={{
+                  duration: i === activeSlide ? SLIDE_DURATION / 1000 : 0.4,
+                  ease: i === activeSlide ? 'linear' : 'easeOut',
+                }}
+                key={`fill-${i}-${activeSlide}`}
+              />
+            </button>
+          ))}
+        </div>
       </motion.div>
 
       <motion.div
