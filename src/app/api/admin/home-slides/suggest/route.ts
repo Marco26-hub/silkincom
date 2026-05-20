@@ -5,22 +5,27 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const ADMIN_ROLES = ['admin', 'super_admin', 'editor'];
-const DEFAULT_MODEL = process.env.VISION_MODEL || 'google/gemini-2.0-flash-exp:free';
+const DEFAULT_MODEL = process.env.VISION_MODEL || 'google/gemma-4-31b-it:free';
 const MAX_BYTES = 8 * 1024 * 1024;
 
-// Server-side allowlist. Keeps clients from invoking arbitrary models that
-// could spend tokens unexpectedly. All entries are vision-capable.
+// Server-side allowlist of vision-capable models currently live on
+// OpenRouter (verified May 2026). Keeps clients from invoking arbitrary
+// models that could spend tokens unexpectedly.
 const ALLOWED_MODELS = new Set([
-  'google/gemini-2.0-flash-exp:free',
-  'google/gemini-flash-1.5',
-  'google/gemini-flash-1.5-8b',
-  'meta-llama/llama-3.2-90b-vision-instruct:free',
-  'meta-llama/llama-3.2-11b-vision-instruct:free',
-  'qwen/qwen-2-vl-7b-instruct:free',
-  'anthropic/claude-3.5-sonnet',
-  'anthropic/claude-3-haiku',
-  'openai/gpt-4o',
-  'openai/gpt-4o-mini',
+  // Free
+  'google/gemma-4-31b-it:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+  // Paid — cheap
+  'google/gemini-3.1-flash-lite',
+  'google/gemini-2.5-flash-lite',
+  'google/gemini-2.5-flash',
+  'google/gemini-3-flash-preview',
+  'google/gemini-3.5-flash',
+  // Paid — top quality
+  'anthropic/claude-haiku-4.5',
+  'anthropic/claude-sonnet-4.6',
+  'anthropic/claude-opus-4.7',
 ]);
 
 const SYSTEM_PROMPT = `You are the editorial copywriter for SILKinCOM, a luxury silk, cashmere, wool, linen and cotton accessories maison Made in Como, Italy. Founder: Marco Dibenedetto. Voice: refined, editorial, evocative, never marketing-cliché. Lake Como heritage is the soul.
@@ -164,14 +169,15 @@ export async function GET() {
 }
 
 const MODEL_LABELS: Record<string, string> = {
-  'google/gemini-2.0-flash-exp:free': 'Gemini 2.0 Flash · gratis · consigliato',
-  'google/gemini-flash-1.5': 'Gemini Flash 1.5 · ~$0.0004/img',
-  'google/gemini-flash-1.5-8b': 'Gemini Flash 1.5 8B · ~$0.0002/img',
-  'meta-llama/llama-3.2-90b-vision-instruct:free': 'Llama 3.2 90B Vision · gratis · lento',
-  'meta-llama/llama-3.2-11b-vision-instruct:free': 'Llama 3.2 11B Vision · gratis · veloce',
-  'qwen/qwen-2-vl-7b-instruct:free': 'Qwen 2 VL 7B · gratis · IT debole',
-  'anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet · ~$0.003/img · top brand voice',
-  'anthropic/claude-3-haiku': 'Claude 3 Haiku · ~$0.00025/img',
-  'openai/gpt-4o': 'GPT-4o · ~$0.005/img',
-  'openai/gpt-4o-mini': 'GPT-4o mini · ~$0.001/img',
+  'google/gemma-4-31b-it:free': 'Gemma 4 31B IT · gratis · consigliato',
+  'google/gemma-4-26b-a4b-it:free': 'Gemma 4 26B IT · gratis · piu veloce',
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free': 'Nemotron 3 Nano Omni · gratis · reasoning',
+  'google/gemini-3.1-flash-lite': 'Gemini 3.1 Flash Lite · economico',
+  'google/gemini-2.5-flash-lite': 'Gemini 2.5 Flash Lite · economico',
+  'google/gemini-2.5-flash': 'Gemini 2.5 Flash · stabile economico',
+  'google/gemini-3-flash-preview': 'Gemini 3 Flash · ultimo Google',
+  'google/gemini-3.5-flash': 'Gemini 3.5 Flash · top Google',
+  'anthropic/claude-haiku-4.5': 'Claude Haiku 4.5 · luxury voice economico',
+  'anthropic/claude-sonnet-4.6': 'Claude Sonnet 4.6 · luxury voice premium',
+  'anthropic/claude-opus-4.7': 'Claude Opus 4.7 · top brand voice',
 };
