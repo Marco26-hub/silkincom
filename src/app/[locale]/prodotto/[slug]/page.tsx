@@ -20,6 +20,19 @@ function materialName(slug: string | undefined, locale: string): string {
   return getMaterials(locale).find((m) => m.slug === slug)?.name ?? '';
 }
 
+// Pull the color/variant qualifier out of the slug (e.g. "cernobbio-azzurra"
+// with category "cernobbio" -> "azzurra"). Returns '' for purely numeric
+// variants (e.g. "bellagio-1") or when the slug doesn't start with category.
+function colorFromSlug(slug: string, category: string): string {
+  if (!category || !slug.startsWith(`${category}-`)) return '';
+  const tail = slug.slice(category.length + 1).replace(/-/g, ' ').trim();
+  return /^\d+$/.test(tail) ? '' : tail;
+}
+
+function titleCase(s: string): string {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', {
     style: 'currency',
@@ -46,9 +59,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = await getProduct(slug, locale);
   if (!p) return {};
   const mat = materialName(p.material, locale);
+  const color = colorFromSlug(p.slug, p.category);
+  const colorBit = color ? ` ${color}` : '';
+  const matBit = mat ? ` in ${mat}` : '';
+  const dimBit = p.dimensions ? ` ${p.dimensions}.` : '';
   return {
-    title: `${p.name}${mat ? ` — ${mat}` : ''}`,
-    description: p.description.slice(0, 160),
+    title: `${p.name}${colorBit}${matBit}`,
+    description: `${p.name}${colorBit}${matBit}.${dimBit} Sciarpa luxury Made in Como, spedizione gratuita oltre €200.`,
     alternates: localizedAlternates(locale, `/prodotto/${slug}`),
   };
 }
@@ -63,6 +80,9 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const tn = await getTranslations('nav');
   const cat = getCategories(locale).find((c) => c.slug === p.category);
   const materialLabel = materialName(p.material, locale);
+  const color = colorFromSlug(p.slug, p.category);
+  const colorLabel = color ? titleCase(color) : '';
+  const altDescriptor = [p.name, color, materialLabel].filter(Boolean).join(' ');
   const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
@@ -162,7 +182,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                   />
                   <Image
                     src={img}
-                    alt={`${p.name} — ${i + 1}`}
+                    alt={`${altDescriptor} — vista ${i + 1}`}
                     fill
                     sizes={i === 0 ? '(max-width: 1024px) 100vw, 60vw' : '(max-width: 1024px) 50vw, 30vw'}
                     quality={95}
@@ -184,7 +204,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
               )}
 
               <h1 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05] mb-6 text-soft-black">
-                {p.name}
+                {p.name}{colorLabel ? ` ${colorLabel}` : ''}
               </h1>
 
               <p className="text-2xl md:text-3xl font-light text-soft-black mb-3 tracking-wide">

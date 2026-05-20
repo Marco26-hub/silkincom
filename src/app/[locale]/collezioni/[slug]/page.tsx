@@ -13,8 +13,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const locale = await getLocale();
   const cat = [...getCategories(locale), ...getCollections(locale), ...getMaterials(locale)].find((c) => c.slug === slug);
   if (!cat) return {};
+  // Title template "%s | SILKinCOM" lives in the root layout — keep this
+  // raw to avoid the duplicate "SILKinCOM | SILKinCOM" suffix.
   return {
-    title: `${cat.name} — SILKinCOM`,
+    title: cat.name,
     description: cat.description,
     alternates: localizedAlternates(locale, `/collezioni/${slug}`),
   };
