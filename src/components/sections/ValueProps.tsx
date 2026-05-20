@@ -29,7 +29,7 @@ export function ValueProps() {
             <h3 className="text-[11px] uppercase tracking-[0.2em] text-soft-black mb-1.5 font-medium">
               {t(`${v.key}.title`)}
             </h3>
-            <p className="text-xs text-soft-grey font-light leading-relaxed max-w-[200px]">
+            <p className="text-xs text-soft-black/75 font-normal leading-relaxed max-w-[200px]">
               {t(`${v.key}.desc`)}
             </p>
           </motion.div>
