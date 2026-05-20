@@ -49,11 +49,13 @@ const FALLBACK_SLIDES: HeroSlideInput[] = [
   },
 ];
 
-const SLIDE_DURATION = 6500;
+const SLIDE_DURATION = 7500;
 // Ken Burns max scale: kept gentle so portrait subjects (faces, busts) stay
 // inside the frame for the full slide duration instead of being cropped out
-// by the parallax + slideshow zoom stack.
-const KEN_BURNS_MAX_SCALE = 1.04;
+// by the parallax + slideshow zoom stack. Paired with a sub-percentage X-axis
+// drift so the slide reads as cinema instead of a still photograph.
+const KEN_BURNS_MAX_SCALE = 1.07;
+const KEN_BURNS_X_DRIFT_PX = 28; // ~1-1.5% on a 1440px canvas — readable but elegant.
 
 // Translate the admin Focus dropdown values into CSS objectPosition pairs.
 // Default "center" used to be 50%/50%, which decapitates portrait subjects
@@ -140,13 +142,20 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.6, ease: [0.25, 0.1, 0.25, 1] }}
               >
+                {/* Ken Burns — alternating direction per slide so adjacent
+                    slides don't drift the same way and the carousel reads
+                    as cinema. Even slides drift left, odd slides drift
+                    right; both ease in/out for fluidity, not linear ramps. */}
                 <motion.div
                   className="absolute inset-0 w-full h-full"
-                  initial={{ scale: 1.0 }}
-                  animate={{ scale: KEN_BURNS_MAX_SCALE }}
+                  initial={{ scale: 1.0, x: 0 }}
+                  animate={{
+                    scale: KEN_BURNS_MAX_SCALE,
+                    x: i % 2 === 0 ? -KEN_BURNS_X_DRIFT_PX : KEN_BURNS_X_DRIFT_PX,
+                  }}
                   transition={{
                     duration: SLIDE_DURATION / 1000 + 1.6,
-                    ease: 'linear',
+                    ease: [0.45, 0, 0.55, 1],
                   }}
                 >
                   <Image
@@ -176,18 +185,26 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
             5. film-grain noise (SVG turbulence): luxury editorial finish */}
       <div className="absolute inset-0 bg-gradient-to-b from-soft-black/65 via-soft-black/10 to-soft-black/90 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-r from-soft-black/70 via-soft-black/20 to-transparent pointer-events-none" />
-      <div
+      {/* Vignette — gently breathes (8 s loop) so the edges feel alive,
+          not stamped on. Stays subtle: 0.50 ↔ 0.60. */}
+      <motion.div
         className="absolute inset-0 pointer-events-none"
+        animate={{ opacity: [0.92, 1, 0.92] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         style={{
           background:
             'radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgba(0,0,0,0.55) 100%)',
         }}
       />
-      <div
+      {/* Gold haze breathes opposite direction so the warm tone shifts
+          gently against the vignette — adds depth without distraction. */}
+      <motion.div
         className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none mix-blend-soft-light"
+        animate={{ opacity: [0.85, 1, 0.85] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
         style={{
           background:
-            'linear-gradient(to top, rgba(212,175,55,0.18) 0%, transparent 100%)',
+            'linear-gradient(to top, rgba(212,175,55,0.22) 0%, transparent 100%)',
         }}
       />
       <div
@@ -199,10 +216,19 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
         }}
       />
 
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary/60 to-transparent z-10" />
+      <motion.div
+        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary/60 to-transparent z-10"
+        animate={{ opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-      {/* Couture-bound inner gold hairline frame — packaging-grade detail */}
-      <div className="pointer-events-none absolute inset-6 md:inset-10 border border-gold-primary/15 z-10" />
+      {/* Couture-bound inner gold hairline frame — packaging-grade detail.
+          Breathes subtly so the slide feels printed on warm silk, not flat. */}
+      <motion.div
+        className="pointer-events-none absolute inset-6 md:inset-10 border border-gold-primary/15 z-10"
+        animate={{ opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       <div className="relative z-10 h-full flex items-end pb-24 md:items-center md:pb-0">
         <div className="max-w-[1500px] w-full mx-auto px-6 lg:px-12">
@@ -216,12 +242,33 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               transition={{ duration: 1.4, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="flex items-center gap-4 mb-10"
             >
-              <span className="block w-14 md:w-20 h-px bg-gradient-to-r from-transparent via-gold-primary to-gold-primary/40" />
-              <span className="block w-[5px] h-[5px] rotate-45 bg-gold-primary" aria-hidden />
+              <motion.span
+                className="block h-px bg-gradient-to-r from-transparent via-gold-primary to-gold-primary/40 origin-left"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1, width: ['56px', '88px', '56px'] }}
+                transition={{
+                  scaleX: { duration: 1.6, delay: 0.5, ease: [0.21, 0.47, 0.32, 0.98] },
+                  width: { duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2.1 },
+                }}
+              />
+              <motion.span
+                className="block w-[5px] h-[5px] bg-gold-primary"
+                aria-hidden
+                animate={{ rotate: [45, 405] }}
+                transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+              />
               <span className="text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.46em] md:tracking-[0.56em] text-gold-primary font-medium">
                 {t('eyebrow')}
               </span>
-              <span className="hidden md:block w-10 h-px bg-gradient-to-l from-transparent via-gold-primary/40 to-gold-primary/40" />
+              <motion.span
+                className="hidden md:block h-px bg-gradient-to-l from-transparent via-gold-primary/40 to-gold-primary/40 origin-right"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1, width: ['40px', '64px', '40px'] }}
+                transition={{
+                  scaleX: { duration: 1.6, delay: 0.7, ease: [0.21, 0.47, 0.32, 0.98] },
+                  width: { duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 3 },
+                }}
+              />
             </motion.div>
 
             {/* Per-slide title — full word-by-word reveal on first mount only;
