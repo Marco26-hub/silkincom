@@ -1,7 +1,7 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 20 maggio 2026 · ultimo commit di riferimento: `22c9a17`.
+Ultimo aggiornamento: 20 maggio 2026 · ultimo commit di riferimento: `b7cabfc`.
 
 ---
 
@@ -192,6 +192,10 @@ Commit di riferimento per la parte 2: `f51721b` → `f676d6c`.
 
 Commit di riferimento sessione 20/05: `f9cc325` → `22c9a17`.
 
+**Asset editorial blog (commit `241d4eb`, `b7cabfc`):**
+- `public/journal/telaio.jpg` (245 KB) → hero `storia-della-seta-a-como`
+- `public/journal/foto_sciarpe_1.png` (2.4 MB) → hero `cashmere-mongolo-vs-cinese`
+
 ---
 
 ## 7. Problemi noti / aperti
@@ -275,9 +279,65 @@ npm run seed:products    # sync products.json -> DB (serve SUPABASE_SERVICE_ROLE
 
 ## 10. Come continuare — task comuni
 
-- **Aggiungere/modificare un prodotto:** editare `src/data/products.json` (campi `it`); `npm run translate` per le altre lingue; per allineare l'admin sincronizzare anche il DB (`npm run seed:products` o via Supabase MCP `execute_sql` UPSERT su `products`).
-- **Modificare testo UI:** editare `messages/it.json`; `npm run translate`.
-- **Modificare categorie/collezioni/materiali:** `src/data/catalog.ts` (struttura) + `catalog-i18n.json` (traduzioni).
-- **Sync DB ↔ file:** finché §3 non è deciso, ogni modifica al catalogo va replicata su entrambi.
-- **Verifica pre-deploy:** `npm run type-check` + `npm run translate:check` (atteso 0).
-- **Dopo ogni modifica testo italiano:** lanciare la pipeline di traduzione, altrimenti le altre 6 lingue restano vecchie (fallback silenzioso, vedi §4).
+- **Aggiungere/modificare un prodotto:** dall'admin (`/admin/prodotti/[id]`). DB sorgente. Auto-translate parte al Salva se nome/descrizione/composizione cambiano (richiede `OPENROUTER_API_KEY` su Vercel).
+- **Modificare testo UI:** editare `messages/it.json`; lanciare `npm run translate` (serve `ANTHROPIC_API_KEY`).
+- **Modificare categorie/collezioni/materiali (taxonomy):** `src/data/catalog-meta.ts` (struttura tipi + helper) + `src/data/catalog-i18n.json` (traduzioni). Le collezioni ora hanno fonte unica (no più `messages.home.featured.items`).
+- **Aggiungere blog post:** editare `src/data/blog.json` (campi `it`). Le 6 lingue altre — fallback automatico a IT finché non si ri-traduce.
+- **Verifica pre-deploy:** `npm run type-check` (atteso 0 errori). Build su Vercel fallisce solo se mancano env (es. `SUPABASE_SERVICE_ROLE_KEY` per `/api/google-merchant`).
+- **Dopo ogni modifica testo italiano (prodotti):** auto-translate dall'admin (Salva → 6 lingue via OpenRouter). Per blog: editare manualmente o `npm run translate`.
+
+---
+
+## 11. Quick start per nuova sessione
+
+**Clone + leggi:**
+```
+cd /tmp/silkincom              # repo già clonato qui
+git pull origin main           # allinea
+cat HANDOFF.md                 # leggi questo file (sezione §6 = lavoro recente)
+```
+
+**Identificatori chiave:**
+- Repo: `Marco26-hub/silkincom` branch `main`
+- Deploy: `https://silkincom.vercel.app` (cut-over → `silkincom.com` previsto ven 22/05)
+- Supabase: project ref `fjudulhxsafjizcmrifw`, MCP via `mcp__b1038748-...__execute_sql`
+- Founder + sede: Marco Dibenedetto, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), P.IVA IT03786790133
+
+**Stato sito (al 20/05):**
+- ✅ Arch A completa (DB sorgente, cache invalidation, i18n columns, traduzione OpenRouter integrata)
+- ✅ 7 lingue native, 41 prodotti, 5 blog post, 5 cura/[material] sub-pages, /press, /maison/marco-dibenedetto
+- ✅ Schema premium: Product, Article, HowTo, FAQPage, AboutPage, CollectionPage, ItemList, BreadcrumbList, Speakable, Organization+LocalBusiness, Person, ContactPoint
+- ✅ llms.txt 101 righe, sitemap 83 URL + 567 hreflang alternates, robots.txt con 14 AI bots
+- ✅ GEO score stimato ~95/100
+- ✅ Smoke test Vercel prod: 59/59 endpoint 200
+
+**Cosa DEVE fare l'utente prima del go-live (utente, non delegabile):**
+1. `OPENROUTER_API_KEY` su Vercel env (Production + Preview) + Redeploy
+2. `SUPABASE_SERVICE_ROLE_KEY` su Vercel verificare presenza
+3. `STRIPE_*` keys live + webhook endpoint configurato
+4. `RESEND_API_KEY` live + dominio mittente verificato
+5. DELETE 2 doppioni `compositions` SQL su Supabase Studio:
+   ```sql
+   DELETE FROM compositions WHERE id IN (
+     '10968fd8-d1e5-42c0-9e53-da347158f301',
+     '8987a45f-07ac-4ef6-ad14-95f78c87b51c'
+   );
+   ```
+6. DNS cut-over `silkincom.com` → Vercel (vedi §8 + `LAUNCH-CHECKLIST.md`)
+7. Wikidata entity SILKinCOM (sblocco autoconfirmed 4 gg)
+8. IndexNow setup (bloccato dal classifier per token file: serve permission rule)
+
+**File chiave da non rompere:**
+- `src/data/catalog.ts` (server-only, async DB) ↔ `src/data/catalog-meta.ts` (client-safe, types + sync getters). Separazione importante: client components devono importare SOLO da `catalog-meta`.
+- `src/lib/supabase/server.ts`: `createPublicClient()` (cookieless, OK in unstable_cache) vs `createServerClient()` (cookies, NON usare in cache).
+- `src/lib/revalidate.ts`: `revalidateCatalog()` chiamato da TUTTI gli admin product mutation.
+
+**Test smoke rapido pre-cambio:**
+```bash
+cd /tmp/silkincom && npm run type-check  # 0 errori atteso
+curl -s -o /dev/null -w "%{http_code}\n" https://silkincom.vercel.app/   # 200
+```
+
+**Commit di riferimento finale 20/05:** `b7cabfc` (immagini editorial blog).
+
+**Documento operativo go-live:** `LAUNCH-CHECKLIST.md` (runbook con date e ordine cut-over).
