@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Master Weaver",
         "city": "Cermenate (CO)",
-        "alt": "Artisan at work before a wooden textile loom",
-        "caption": "Hand loom in progress",
-        "story": "He follows the rhythm of the loom, controlling the weave, tension and passage of the threads destined for silk scarves and foulards."
+        "alt": "Paolo, SILKinCOM jacquard weaver, at the loom in the Como silk district",
+        "caption": "Jacquard loom at work",
+        "story": "He follows the rhythm of the jacquard loom, controlling weave, tension and thread alignment for silk scarves and foulards. He learned on the district's mechanical looms and today leads the Maison's weaving floor."
       },
       "telaio": {
-        "name": "SILKinCOM Loom",
-        "role": "Jacquard Weaving",
-        "city": "Como District",
-        "alt": "Jacquard loom at work on a SILKinCOM scarf in blue and white silk",
-        "caption": "SILKinCOM weaving in progress",
-        "story": "The Jacquard loom interlaces warp and weft in real time: each pass composes the SILKinCOM logo and the collection's geometric design."
+        "name": "Adriano",
+        "role": "Master Printer",
+        "city": "Como",
+        "alt": "Adriano, SILKinCOM silk-screen printer, at the print bench",
+        "caption": "Screen print in progress",
+        "story": "Prepares the screens, mixes the inks, controls colour registration. Each colour of the design requires a separate screen: a complex foulard can demand more than ten layers, registered with millimetric precision."
       },
       "twill": {
-        "name": "Como Twill",
-        "role": "Jacquard Detail",
+        "name": "Roberta",
+        "role": "Rouletté Hand-Hemmer",
         "city": "Como",
-        "alt": "Macro detail of blue silk twill with the SILKinCOM jacquard motif",
-        "caption": "Thread-counted weave",
-        "story": "A macro view of the twill fresh off the loom: the design is woven thread by thread, not printed — the signature of Como silk."
+        "alt": "Roberta, SILKinCOM hand-hemmer, sewing the rouletté edge of a foulard",
+        "caption": "Rouletté hand-stitched edge",
+        "story": "Hand-sews the rouletté edge of the foulard: the cut is rolled inward and fixed with an invisible stitch. Each scarf takes between 90 and 180 minutes. It is the detail that separates a high-end foulard from an industrial accessory."
       }
     },
     "cta": {

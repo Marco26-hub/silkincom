@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Maestro Tejedor",
         "city": "Cermenate (CO)",
-        "alt": "Artesano trabajando frente a un telar textil de madera",
-        "caption": "Telar manual en elaboración",
-        "story": "Sigue el ritmo del telar, controlando la trama, la tensión y el paso de los hilos destinados a pañuelos y foulards de seda."
+        "alt": "Paolo, tejedor jacquard SILKinCOM, al telar en el distrito serico de Como",
+        "caption": "Telar jacquard en funcionamiento",
+        "story": "Sigue el ritmo del telar jacquard, controla el entrelazado, la tensión y el paso de los hilos destinados a pañuelos y foulards de seda. Aprendió en los telares mecánicos del distrito y hoy dirige la tejeduría de la Maison."
       },
       "telaio": {
-        "name": "Telar SILKinCOM",
-        "role": "Tejido Jacquard",
-        "city": "Distrito de Como",
-        "alt": "Telar Jacquard trabajando en un pañuelo SILKinCOM de seda azul y blanca",
-        "caption": "Tejido SILKinCOM en curso",
-        "story": "El telar Jacquard entrelaza urdimbre y trama en tiempo real: cada pasada compone el logotipo SILKinCOM y el diseño geométrico de la colección."
+        "name": "Adriano",
+        "role": "Maestro Estampador",
+        "city": "Como",
+        "alt": "Adriano, estampador serigráfico SILKinCOM, ante la mesa de estampación",
+        "caption": "Estampación a cuadro en curso",
+        "story": "Prepara los cuadros, mezcla las tintas, controla el registro de los colores. Cada color del diseño requiere un cuadro separado: un pañuelo complejo puede exigir más de diez pasadas superpuestas con precisión milimétrica."
       },
       "twill": {
-        "name": "Twill de Como",
-        "role": "Detalle Jacquard",
+        "name": "Roberta",
+        "role": "Dobladilladora rouletté",
         "city": "Como",
-        "alt": "Detalle macro del twill de seda azul con el motivo jacquard SILKinCOM",
-        "caption": "Trama de hilos contados",
-        "story": "Una vista macro del twill recién salido del telar: el diseño se teje hilo a hilo, no se estampa — la firma de la seda de Como."
+        "alt": "Roberta, dobladilladora SILKinCOM, mientras cose a mano el borde rouletté de un pañuelo",
+        "caption": "Rouletté cosido a mano",
+        "story": "Cose a mano el rouletté del pañuelo: el borde se enrolla hacia el interior y se fija con un punto invisible. Cada cuadrado requiere entre 90 y 180 minutos de trabajo. Es el detalle que distingue un pañuelo de alta gama de un accesorio industrial."
       }
     },
     "cta": {

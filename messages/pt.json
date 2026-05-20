@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Mestre Tecelão",
         "city": "Cermenate (CO)",
-        "alt": "Artesão a trabalhar diante de um tear têxtil de madeira",
-        "caption": "Tear manual em laboração",
-        "story": "Acompanha o ritmo do tear, controlando a trama, a tensão e a passagem dos fios destinados a lenços e foulards de seda."
+        "alt": "Paolo, tecelão jacquard SILKinCOM, ao tear no distrito sedeiro de Como",
+        "caption": "Tear jacquard em funcionamento",
+        "story": "Segue o ritmo do tear jacquard, controla a trama, a tensão e a passagem dos fios destinados aos lenços e foulards de seda. Aprendeu nos teares mecânicos do distrito e hoje dirige a tecelagem da Maison."
       },
       "telaio": {
-        "name": "Tear SILKinCOM",
-        "role": "Tecelagem Jacquard",
-        "city": "Distrito de Como",
-        "alt": "Tear Jacquard a trabalhar num lenço SILKinCOM em seda azul e branca",
-        "caption": "Tecelagem SILKinCOM em curso",
-        "story": "O tear Jacquard entrelaça a teia e a trama em tempo real: cada passagem compõe o logótipo SILKinCOM e o desenho geométrico da coleção."
+        "name": "Adriano",
+        "role": "Mestre Estampador",
+        "city": "Como",
+        "alt": "Adriano, estampador serígrafico SILKinCOM, diante da mesa de estampagem",
+        "caption": "Estampagem ao quadro em curso",
+        "story": "Prepara os quadros, mistura as tintas, controla o registo das cores. Cada cor do desenho exige um quadro separado: um foulard complexo pode requerer mais de uma dezena de passagens sobrepostas com precisão milimétrica."
       },
       "twill": {
-        "name": "Twill de Como",
-        "role": "Detalhe Jacquard",
+        "name": "Roberta",
+        "role": "Embainhadeira rouletté",
         "city": "Como",
-        "alt": "Detalhe macro de twill de seda azul com o motivo jacquard SILKinCOM",
-        "caption": "Trama de fios contados",
-        "story": "Uma vista macro do twill acabado de sair do tear: o desenho é tecido fio a fio, não estampado — a assinatura da seda de Como."
+        "alt": "Roberta, embainhadeira SILKinCOM, enquanto cose à mão o rouletté de um foulard",
+        "caption": "Rouletté cosido à mão",
+        "story": "Cose à mão o rouletté do foulard: a borda é enrolada para dentro e fixada com um ponto invisível. Cada quadrado requer entre 90 e 180 minutos de trabalho. É o detalhe que distingue um foulard de alta gama de um acessório industrial."
       }
     },
     "cta": {

@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Maestro Tessitore",
         "city": "Cermenate (CO)",
-        "alt": "Artigiano al lavoro davanti a un telaio tessile in legno",
-        "caption": "Telaio manuale in lavorazione",
-        "story": "Segue il ritmo del telaio, controllando intreccio, tensione e passaggio dei fili destinati a sciarpe e foulard in seta."
+        "alt": "Paolo, tessitore jacquard SILKinCOM, al telaio nel distretto comasco",
+        "caption": "Telaio jacquard in lavorazione",
+        "story": "Segue il ritmo del telaio jacquard, controlla intreccio, tensione e passaggio dei fili destinati a sciarpe e foulard in seta. Ha imparato sui telai meccanici del distretto e oggi guida la tessitura della Maison."
       },
       "telaio": {
-        "name": "Telaio SILKinCOM",
-        "role": "Tessitura Jacquard",
-        "city": "Distretto Comasco",
-        "alt": "Telaio Jacquard al lavoro su sciarpa SILKinCOM in seta blu e bianca",
-        "caption": "Tessitura SILKinCOM in corso",
-        "story": "Il telaio Jacquard intreccia ordito e trama in tempo reale: ogni passaggio compone il logo SILKinCOM e il disegno geometrico della collezione."
+        "name": "Adriano",
+        "role": "Maestro Stampatore",
+        "city": "Como",
+        "alt": "Adriano, stampatore serigrafico SILKinCOM, davanti al banco di stampa",
+        "caption": "Stampa a quadro in corso",
+        "story": "Prepara i quadri, mescola gli inchiostri, controlla la registrazione dei colori. Ogni colore del disegno richiede un telaio separato: per un foulard complesso possono servire più di una decina di passaggi, sovrapposti con precisione millimetrica."
       },
       "twill": {
-        "name": "Twill Comasco",
-        "role": "Dettaglio Jacquard",
+        "name": "Roberta",
+        "role": "Orlatrice rouletté",
         "city": "Como",
-        "alt": "Dettaglio macro del twill di seta blu con motivo jacquard SILKinCOM",
-        "caption": "Trama a fili contati",
-        "story": "Macro del twill appena uscito dal telaio: il disegno è ottenuto a fili contati, non stampato — è la firma della seta comasca."
+        "alt": "Roberta, orlatrice SILKinCOM, mentre cuce a mano il bordo rouletté di un foulard",
+        "caption": "Rouletté cucito a mano",
+        "story": "Cuce a mano il rouletté del foulard: il bordo viene arrotolato verso l'interno e fissato con un punto invisibile. Ogni quadrato richiede tra i 90 e i 180 minuti di lavoro. È il dettaglio che separa un foulard di alta gamma da un accessorio industriale."
       }
     },
     "cta": {

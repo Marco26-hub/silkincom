@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Meisterweber",
         "city": "Cermenate (CO)",
-        "alt": "Kunsthandwerker bei der Arbeit an einem hölzernen Textil-Webstuhl",
-        "caption": "Handwebstuhl in Arbeit",
-        "story": "Er folgt dem Rhythmus des Webstuhls und kontrolliert Bindung, Spannung und Lauf der Fäden, die für Seidenschals und Foulards bestimmt sind."
+        "alt": "Paolo, Jacquard-Weber von SILKinCOM, am Webstuhl im Seidendistrikt von Como",
+        "caption": "Jacquard-Webstuhl in Betrieb",
+        "story": "Er folgt dem Rhythmus des Jacquard-Webstuhls, kontrolliert Bindung, Spannung und Fadenführung der Garne für seidene Schals und Foulards. Er hat an den mechanischen Webstühlen des Distrikts gelernt und leitet heute die Weberei der Maison."
       },
       "telaio": {
-        "name": "SILKinCOM-Webstuhl",
-        "role": "Jacquard-Weberei",
-        "city": "Distrikt von Como",
-        "alt": "Jacquard-Webstuhl bei der Arbeit an einem SILKinCOM-Schal aus blau-weißer Seide",
-        "caption": "SILKinCOM-Weberei in Arbeit",
-        "story": "Der Jacquard-Webstuhl verschränkt Kette und Schuss in Echtzeit: Jeder Durchgang formt das SILKinCOM-Logo und das geometrische Dessin der Kollektion."
+        "name": "Adriano",
+        "role": "Meisterdrucker",
+        "city": "Como",
+        "alt": "Adriano, Siebdrucker von SILKinCOM, am Drucktisch",
+        "caption": "Rahmendruck in Arbeit",
+        "story": "Bereitet die Rahmen vor, mischt die Tinten, kontrolliert die Farbpassgenauigkeit. Jede Farbe des Dessins erfordert einen eigenen Rahmen: Ein komplexes Foulard kann mehr als zehn übereinander gelegte Durchgänge in millimetergenauer Registrierung benötigen."
       },
       "twill": {
-        "name": "Como-Twill",
-        "role": "Jacquard-Detail",
+        "name": "Roberta",
+        "role": "Rouletté-Säumerin",
         "city": "Como",
-        "alt": "Makro-Detailaufnahme von blauem Seiden-Twill mit dem Jacquard-Motiv von SILKinCOM",
-        "caption": "Fadengezähltes Gewebe",
-        "story": "Eine Makroaufnahme des Twills direkt vom Webstuhl: Das Dessin wird Faden für Faden gewebt, nicht gedruckt — die Handschrift der Seide aus Como."
+        "alt": "Roberta, Säumerin von SILKinCOM, beim handgenähten Rouletté-Saum eines Foulards",
+        "caption": "Handgenähter Rouletté-Saum",
+        "story": "Näht den Rouletté-Saum des Foulards von Hand: Der Schnitt wird nach innen gerollt und mit einem unsichtbaren Stich fixiert. Jedes Quadrat dauert zwischen 90 und 180 Minuten. Es ist das Detail, das ein hochwertiges Foulard von einem industriellen Accessoire unterscheidet."
       }
     },
     "cta": {

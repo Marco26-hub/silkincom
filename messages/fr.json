@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Maître Tisserand",
         "city": "Cermenate (CO)",
-        "alt": "Artisan au travail devant un métier à tisser en bois",
-        "caption": "Métier à tisser manuel en cours de façonnage",
-        "story": "Il suit le rythme du métier à tisser, maîtrisant l'entrelacement, la tension et le passage des fils destinés aux écharpes et foulards de soie."
+        "alt": "Paolo, tisserand jacquard SILKinCOM, devant le métier dans le district séricicole de Côme",
+        "caption": "Métier jacquard en marche",
+        "story": "Il suit le rythme du métier jacquard, contrôle le tissage, la tension et le passage des fils destinés aux foulards et écharpes de soie. Il a appris sur les métiers mécaniques du district et dirige aujourd'hui le tissage de la Maison."
       },
       "telaio": {
-        "name": "Métier à tisser SILKinCOM",
-        "role": "Tissage Jacquard",
-        "city": "District de Côme",
-        "alt": "Métier Jacquard au travail sur une écharpe SILKinCOM en soie bleue et blanche",
-        "caption": "Tissage SILKinCOM en cours",
-        "story": "Le métier Jacquard entrelace chaîne et trame en temps réel : chaque passage compose le logo SILKinCOM et le motif géométrique de la collection."
+        "name": "Adriano",
+        "role": "Maître Imprimeur",
+        "city": "Como",
+        "alt": "Adriano, imprimeur sérigraphique SILKinCOM, devant la table d'impression",
+        "caption": "Impression au cadre en cours",
+        "story": "Prépare les cadres, mélange les encres, contrôle le repérage des couleurs. Chaque couleur du dessin demande un cadre séparé : un foulard complexe peut exiger plus d'une dizaine de passages superposés avec une précision millimétrique."
       },
       "twill": {
-        "name": "Twill de Côme",
-        "role": "Détail Jacquard",
+        "name": "Roberta",
+        "role": "Ourleuse rouletté",
         "city": "Como",
-        "alt": "Détail macro du twill de soie bleue orné du motif jacquard SILKinCOM",
-        "caption": "Tissage fil compté",
-        "story": "Une vue macro du twill à peine sorti du métier : le motif est tissé fil par fil, non imprimé — la signature de la soie de Côme."
+        "alt": "Roberta, ourleuse SILKinCOM, en train de coudre à la main le rouletté d'un foulard",
+        "caption": "Rouletté cousu main",
+        "story": "Coud à la main le rouletté du foulard : le bord est roulé vers l'intérieur et fixé d'un point invisible. Chaque carré demande entre 90 et 180 minutes. C'est le détail qui distingue un foulard haut de gamme d'un accessoire industriel."
       }
     },
     "cta": {

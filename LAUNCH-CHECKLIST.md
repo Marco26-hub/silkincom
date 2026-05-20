@@ -298,7 +298,8 @@ Codice attuato (commit `cc82386` → `16af519`):
 ### Pending bio founder (non bloccanti, utente quando pronto)
 - [ ] **Foto portrait Marco Dibenedetto** — fornire file (jpg/png ~600×800 min) → applicare `<Image>` nella hero `/maison/marco-dibenedetto` + Person schema `image` field
 - [ ] **LinkedIn URL profilo Marco** — fornire URL → aggiungere a Person.sameAs + sezione Contatti
-- [ ] **Nomi reali 3 artigiani** (jacquard/stampa serigrafica/rouletté) — fornire nomi + foto → aggiornare `/artigiani` + relativa sezione "Le persone" del founder bio
+- [x] **Nomi reali 3 artigiani** — Paolo (Maestro Tessitore, Cermenate), Adriano (Maestro Stampatore, Como), Roberta (Orlatrice rouletté, Como) applicati a `messages/{it,en,es,fr,de,pt,nl}.json` artisans block + sezione "Le persone" del founder bio
+- [ ] **Foto reali dei 3 artigiani** — sostituire `/artisans/telaio-artigiano-principale.png`, `/artisans/telaio-silkincom-blu.png`, `/artisans/twill-dettaglio-jacquard.png` con ritratti veri (jpg/png ~800×1000)
 
 ### Pending GEO Wk 2-4 (non bloccanti)
 - [ ] **Founder bio**: già espanso ad ~880 parole, manca solo portrait + LinkedIn (vedi sopra)

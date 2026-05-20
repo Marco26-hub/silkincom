@@ -1159,28 +1159,28 @@
     },
     "artisans": {
       "lorenzo": {
-        "name": "Lorenzo M.",
+        "name": "Paolo",
         "role": "Meesterwever",
         "city": "Cermenate (CO)",
-        "alt": "Ambachtsman aan het werk voor een houten weefgetouw",
-        "caption": "Handweefgetouw in bewerking",
-        "story": "Hij volgt het ritme van het weefgetouw en controleert het weefsel, de spanning en de doorgang van de draden bestemd voor zijden sjaals en foulards."
+        "alt": "Paolo, jacquardwever van SILKinCOM, aan het weefgetouw in het Comomeer-zijdedistrict",
+        "caption": "Jacquardweefgetouw in werking",
+        "story": "Volgt het ritme van het jacquardweefgetouw, controleert binding, spanning en de gang van de draden bestemd voor zijden sjaals en foulards. Hij leerde aan de mechanische weefgetouwen van het district en leidt vandaag de weverij van het Maison."
       },
       "telaio": {
-        "name": "SILKinCOM-weefgetouw",
-        "role": "Jacquardweven",
-        "city": "District van Como",
-        "alt": "Jacquardweefgetouw aan het werk aan een SILKinCOM-sjaal in blauwe en witte zijde",
-        "caption": "SILKinCOM-weefwerk in uitvoering",
-        "story": "Het jacquardweefgetouw verweeft schering en inslag in realtime: elke doorgang vormt het SILKinCOM-logo en het geometrische dessin van de collectie."
+        "name": "Adriano",
+        "role": "Meesterdrukker",
+        "city": "Como",
+        "alt": "Adriano, zeefdrukker van SILKinCOM, aan de druktafel",
+        "caption": "Kaderdruk in uitvoering",
+        "story": "Bereidt de kaders voor, mengt de inkten, controleert de kleurregistratie. Elke kleur van het ontwerp vereist een eigen kader: een complex foulard kan meer dan tien op elkaar gelegde drukgangen vragen, met millimeter-precieze uitlijning."
       },
       "twill": {
-        "name": "Comasaanse twill",
-        "role": "Jacquarddetail",
+        "name": "Roberta",
+        "role": "Rouletté-handzoomster",
         "city": "Como",
-        "alt": "Macrodetail van blauwe zijden twill met het SILKinCOM-jacquardmotief",
-        "caption": "Weefsel draad voor draad",
-        "story": "Een macro-opname van de twill, vers van het weefgetouw: het dessin wordt draad voor draad geweven, niet bedrukt — de signatuur van Comasaanse zijde."
+        "alt": "Roberta, handzoomster van SILKinCOM, terwijl ze de rouletté-zoom van een foulard met de hand naait",
+        "caption": "Met de hand genaaide rouletté",
+        "story": "Naait de rouletté-zoom van het foulard met de hand: de rand wordt naar binnen gerold en vastgezet met een onzichtbare steek. Elk vierkant kost tussen de 90 en 180 minuten. Het is het detail dat een hoogwaardig foulard onderscheidt van een industrieel accessoire."
       }
     },
     "cta": {
