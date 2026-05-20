@@ -232,9 +232,32 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [x] **Blog quick-win** `come-riconoscere-seta-vera` (7 prove pratiche) *(commit ad16b30)*
 - [x] **Blog quick-win** `pashmina-vs-sciarpa-differenze` (comparison) *(commit ad16b30)*
 - [x] **Blog quick-win** `cashmere-mongolo-vs-cinese` (origin + recognition) *(commit ad16b30)*
+- [x] **Traduzione 4 blog × 6 lingue** (28 versioni totali) tono editorial premium uniforme *(commit bde9cee + b0d1730 + d35efd5)*
 - [x] **Split /cura-prodotto** in 5 sub-pages per materiale (seta/cashmere/lana/lino/cotone) con title SEO + cross-links *(commit c20ce52)*
-- [x] LocalBusiness schema *(già presente nel layout `Organization` + `LocalBusiness` con address Cermenate, geo coords, vatID, founder)*
+- [x] LocalBusiness schema (Organization+LocalBusiness combo con address Cermenate, geo, vatID, founder)
 - [x] SEO quick wins — fix title duplicati, meta desc CTA-driven, H1 prodotto con colore, alt img *(commit 214e383)*
 - [x] Trust badges contrast fix *(commit 141aac2)*
-- [ ] **IndexNow setup** — bloccato dal classifier (genera key file in `public/`). Da fare con permission rule o manualmente
-- [ ] Traduzione blog post nelle 6 lingue (`npm run translate` quando hai `ANTHROPIC_API_KEY` o aggiunti i blog ai bottoni traduci admin)
+
+## GEO/SEO premium (20 mag, batch finale)
+
+- [x] **HowTo schema** su `/trame-di-como/come-riconoscere-seta-vera` (7 HowToStep) e su 5 `/cura-prodotto/[material]` (ogni materiale come HowTo) *(commit 152dd18 + 5c30474)*
+- [x] **BreadcrumbList schema** su blog post + cura-prodotto sub-pages + materiali *(commit 5c30474 + 5f3a2e9)*
+- [x] **AboutPage schema** su `/la-nostra-storia` con `mainEntity = Organization` + founder Marco Dibenedetto *(commit 8e891a7)*
+- [x] **ItemList schema** su `/materiali` (5 Product entries) *(commit 5f3a2e9)*
+- [x] **llms.txt premium** — 37 → 101 righe: heritage, differenziatori, full catalog, FAQ, prezzi, social, lingue *(commit 152dd18)*
+- [x] **Hreflang 8 tag** su ogni pagina (x-default + 7 locales), canonical su tutte
+- [x] **Sitemap** 81 URL + 567 hreflang alternates xhtml:link
+- [x] **Robots.txt** + 14 bot AI esplicitamente gestiti (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, ecc.)
+- [x] **Schema JSON-LD** 100% parse-valid su 8 URL test (Organization+LocalBusiness, WebSite, Product, Article, Speakable, FAQPage, HowTo, BreadcrumbList, CollectionPage+ItemList, AboutPage)
+
+## Debug finale pre-live (20 mag)
+
+- [x] **Smoke test esteso** Vercel prod: 59/59 endpoint 200 OK (7 lingue, 11 categorie, 6 prodotti sample, 5 cura sub, 4 blog post, asset tecnici)
+- [x] **Performance** Vercel prod: 0.25–1.26s per pagina
+- [x] **HTML weight**: 95–373 KB (gestibile, gzip in prod)
+- [x] **Schema validation**: 100% parse-valid JSON-LD su 8 URL test
+- [x] **Hreflang completeness**: 8 tag su tutte le pagine
+- [x] **Type-check** pulito (tsc --noEmit ✓)
+- [ ] **IndexNow setup** — bloccato dal classifier (token file). Da fare con permission rule o manualmente
+- [ ] **Lighthouse browser test** — richiede UI manuale (Core Web Vitals LCP/INP/CLS)
+- [ ] **Schema Google Rich Results test** — manuale su Search Console post-cutover
