@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { TAXONOMY_SLUGS, getCategories, getCollections, getMaterials, getProducts } from '@/data/catalog';
+import { TAXONOMY_SLUGS, getCategories, getMaterials, getProducts } from '@/data/catalog';
+import { getFeaturedCollections, getFeaturedCollection } from '@/data/collections-db';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 
@@ -11,10 +12,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
-  const cat = [...getCategories(locale), ...getCollections(locale), ...getMaterials(locale)].find((c) => c.slug === slug);
+  const collection = await getFeaturedCollection(slug, locale);
+  const cat = collection || [...getCategories(locale), ...getMaterials(locale)].find((c) => c.slug === slug);
   if (!cat) return {};
-  // Title template "%s | SILKinCOM" lives in the root layout — keep this
-  // raw to avoid the duplicate "SILKinCOM | SILKinCOM" suffix.
   return {
     title: cat.name,
     description: cat.description,
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CollezioneSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
-  const collection = getCollections(locale).find((c) => c.slug === slug);
+  const collection = await getFeaturedCollection(slug, locale);
   const category = getCategories(locale).find((c) => c.slug === slug);
   const material = getMaterials(locale).find((m) => m.slug === slug);
   const meta = collection || category || material;
@@ -87,7 +87,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
             products={await getProducts(locale)}
             categories={getCategories(locale)}
             materials={getMaterials(locale)}
-            collections={getCollections(locale)}
+            collections={await getFeaturedCollections(locale)}
           />
         </div>
       </section>

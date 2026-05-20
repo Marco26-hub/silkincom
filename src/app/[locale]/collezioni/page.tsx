@@ -2,7 +2,8 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { getCollections, getCategories, getMaterials, getProducts } from '@/data/catalog';
+import { getCategories, getMaterials, getProducts } from '@/data/catalog';
+import { getFeaturedCollections } from '@/data/collections-db';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 
@@ -18,7 +19,7 @@ export async function generateMetadata() {
 export default async function CollezioniPage() {
   const t = await getTranslations('collezioni');
   const locale = await getLocale();
-  const collections = getCollections(locale);
+  const collections = await getFeaturedCollections(locale);
   const categories = getCategories(locale);
   const materials = getMaterials(locale);
   return (

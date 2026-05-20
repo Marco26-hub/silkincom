@@ -5,7 +5,7 @@ import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
   ArrowUp, ArrowDown, Pencil, Trash2, Eye, EyeOff,
-  Upload, Languages, Save, X, Plus, Loader2,
+  Upload, Languages, Save, X, Plus, Loader2, ImageIcon,
 } from 'lucide-react';
 
 type I18nMap = Record<string, string>;
@@ -142,6 +142,25 @@ export function HomeSlidesManager({ initialSlides }: { initialSlides: Slide[] })
     }
   }
 
+  async function replaceImage(id: string, file: File) {
+    setBusyId(id);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(`/api/admin/home-slides/${id}/image`, { method: 'POST', body: fd });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${res.status}`);
+      }
+      await reload();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="space-y-6">
       {error ? (
@@ -192,6 +211,7 @@ export function HomeSlidesManager({ initialSlides }: { initialSlides: Slide[] })
               onToggleActive={() => toggleActive(slide)}
               onDelete={() => remove(slide.id)}
               onTranslate={() => translate(slide.id)}
+              onReplaceImage={(file) => replaceImage(slide.id, file)}
               onSaved={async () => {
                 setEditingId(null);
                 await reload();
@@ -328,11 +348,13 @@ function SlideRow(props: {
   onToggleActive: () => void;
   onDelete: () => void;
   onTranslate: () => void;
+  onReplaceImage: (file: File) => void;
   onSaved: () => Promise<void>;
 }) {
   const { slide, isFirst, isLast, busy, isEditing } = props;
   const titleIt = slide.title_i18n?.it || '';
   const localesFilled = ['it', 'en', 'es', 'fr', 'de', 'pt', 'nl'].filter((l) => slide.title_i18n?.[l]);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={`border ${slide.is_active ? 'border-pearl-grey' : 'border-pearl-grey/40 bg-pearl-grey/10'} bg-white`}>
@@ -362,13 +384,27 @@ function SlideRow(props: {
         </div>
 
         <div className="flex items-center gap-1 flex-shrink-0">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) props.onReplaceImage(f);
+              if (fileRef.current) fileRef.current.value = '';
+            }}
+          />
           <IconButton title="Su" onClick={props.onMoveUp} disabled={isFirst || busy}><ArrowUp className="w-4 h-4" /></IconButton>
           <IconButton title="Giù" onClick={props.onMoveDown} disabled={isLast || busy}><ArrowDown className="w-4 h-4" /></IconButton>
           <IconButton title={slide.is_active ? 'Disattiva' : 'Attiva'} onClick={props.onToggleActive} disabled={busy}>
             {slide.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
           </IconButton>
+          <IconButton title="Cambia foto" onClick={() => fileRef.current?.click()} disabled={busy}>
+            <ImageIcon className="w-4 h-4" />
+          </IconButton>
           <IconButton title="Traduci" onClick={props.onTranslate} disabled={busy}><Languages className="w-4 h-4" /></IconButton>
-          <IconButton title="Modifica" onClick={props.onEdit} disabled={busy}><Pencil className="w-4 h-4" /></IconButton>
+          <IconButton title="Modifica testi" onClick={props.onEdit} disabled={busy}><Pencil className="w-4 h-4" /></IconButton>
           <IconButton title="Elimina" onClick={props.onDelete} disabled={busy}><Trash2 className="w-4 h-4 text-red-700" /></IconButton>
           {busy ? <Loader2 className="w-4 h-4 animate-spin text-soft-grey" /> : null}
         </div>

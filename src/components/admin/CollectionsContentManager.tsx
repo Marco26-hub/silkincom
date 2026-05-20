@@ -4,7 +4,7 @@ import { useState, useRef, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
-  Pencil, Save, X, Languages, Loader2, Upload, Eye, EyeOff,
+  Pencil, Save, X, Languages, Loader2, Upload, Eye, EyeOff, ImageIcon,
 } from 'lucide-react';
 
 type I18nMap = Record<string, string>;
@@ -80,6 +80,22 @@ export function CollectionsContentManager({ initial }: { initial: Collection[] }
     }
   }
 
+  async function replaceImage(id: string, file: File) {
+    setBusyId(id);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(`/api/admin/collections-content/${id}/image`, { method: 'POST', body: fd });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || `HTTP ${res.status}`);
+      await reload();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="space-y-6">
       {error ? (
@@ -95,7 +111,52 @@ export function CollectionsContentManager({ initial }: { initial: Collection[] }
         {collections.map((c) => {
           const localesFilled = LOCALES.filter((l) => c.name_i18n?.[l]);
           return (
-            <div key={c.id} className={`border ${c.is_active ? 'border-pearl-grey' : 'border-pearl-grey/40 bg-pearl-grey/10'} bg-white`}>
+            <CollectionRow
+              key={c.id}
+              collection={c}
+              localesFilled={localesFilled}
+              busy={busyId === c.id}
+              isEditing={editingId === c.id}
+              onToggleActive={() => toggleActive(c)}
+              onTranslate={() => translate(c.id)}
+              onReplaceImage={(file) => replaceImage(c.id, file)}
+              onEdit={() => setEditingId(editingId === c.id ? null : c.id)}
+              onSaved={async () => {
+                setEditingId(null);
+                await reload();
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CollectionRow({
+  collection: c,
+  localesFilled,
+  busy,
+  isEditing,
+  onToggleActive,
+  onTranslate,
+  onReplaceImage,
+  onEdit,
+  onSaved,
+}: {
+  collection: Collection;
+  localesFilled: string[];
+  busy: boolean;
+  isEditing: boolean;
+  onToggleActive: () => void;
+  onTranslate: () => void;
+  onReplaceImage: (file: File) => void;
+  onEdit: () => void;
+  onSaved: () => Promise<void>;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  return (
+    <div className={`border ${c.is_active ? 'border-pearl-grey' : 'border-pearl-grey/40 bg-pearl-grey/10'} bg-white`}>
               <div className="flex gap-4 p-4">
                 <div className="relative w-32 h-40 flex-shrink-0 bg-soft-black/5">
                   {c.image_url ? (
@@ -124,34 +185,41 @@ export function CollectionsContentManager({ initial }: { initial: Collection[] }
                 </div>
 
                 <div className="flex items-center gap-1 flex-shrink-0">
-                  <IconButton title={c.is_active ? 'Disattiva' : 'Attiva'} onClick={() => toggleActive(c)} disabled={busyId === c.id}>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) onReplaceImage(f);
+                      if (fileRef.current) fileRef.current.value = '';
+                    }}
+                  />
+                  <IconButton title={c.is_active ? 'Disattiva' : 'Attiva'} onClick={onToggleActive} disabled={busy}>
                     {c.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                   </IconButton>
-                  <IconButton title="Traduci" onClick={() => translate(c.id)} disabled={busyId === c.id}>
+                  <IconButton title="Cambia foto" onClick={() => fileRef.current?.click()} disabled={busy}>
+                    <ImageIcon className="w-4 h-4" />
+                  </IconButton>
+                  <IconButton title="Traduci" onClick={onTranslate} disabled={busy}>
                     <Languages className="w-4 h-4" />
                   </IconButton>
-                  <IconButton title="Modifica" onClick={() => setEditingId(editingId === c.id ? null : c.id)} disabled={busyId === c.id}>
+                  <IconButton title="Modifica testi" onClick={onEdit} disabled={busy}>
                     <Pencil className="w-4 h-4" />
                   </IconButton>
-                  {busyId === c.id ? <Loader2 className="w-4 h-4 animate-spin text-soft-grey" /> : null}
+                  {busy ? <Loader2 className="w-4 h-4 animate-spin text-soft-grey" /> : null}
                 </div>
               </div>
 
-              {editingId === c.id ? (
+              {isEditing ? (
                 <EditForm
                   collection={c}
-                  onCancel={() => setEditingId(null)}
-                  onSaved={async () => {
-                    setEditingId(null);
-                    await reload();
-                  }}
+                  onCancel={onEdit}
+                  onSaved={onSaved}
                 />
               ) : null}
             </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
 
