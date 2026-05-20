@@ -261,3 +261,54 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [ ] **IndexNow setup** — bloccato dal classifier (token file). Da fare con permission rule o manualmente
 - [ ] **Lighthouse browser test** — richiede UI manuale (Core Web Vitals LCP/INP/CLS)
 - [ ] **Schema Google Rich Results test** — manuale su Search Console post-cutover
+
+## Sessione 20 mag — sera (post audit GEO finale)
+
+GEO audit composito **66/100** ("Fair") + atteso **74** post-cutover dominio + **78** post questi fix on-page. Vedi `GEO-AUDIT-REPORT.md`.
+
+Codice attuato (commit `cc82386` → `16af519`):
+- [x] **robots.ts** — aggiunti Bingbot, OAI-SearchBot, Meta-ExternalAgent, FacebookBot, DuckAssistBot, YouBot, Diffbot (lift ChatGPT Web 58→~68, Bing Copilot 49→~60)
+- [x] **sitemap.ts** — `x-default` hreflang nelle URL entries (oltre HTTP Link header)
+- [x] **Organization sameAs** esteso con LinkedIn/YouTube/Wikidata stub URLs
+- [x] **Product schema** — name include colorLabel, leaf BreadcrumbList rinominato `(collezione)`, + `gtin`, `url`, `color`, `category` fields
+- [x] **`/llms-full.txt` route handler** — corpus markdown DB-driven (products + materials) + pillar + FAQ
+- [x] **llms.txt** — link a llms-full.txt
+- [x] **Pillar storia-della-seta-a-como** — 9 H2 (Origini medievali, Cinque/Seicento, Settecento, Ottocento, Le dinastie tessili, Novecento maison, Crisi e globalizzazione, Distretto contemporaneo, SILKinCOM nel distretto) + render code parsing `## ###`
+- [x] **Trim home title** 65 → 52 char ("SILKinCOM — Sciarpe in seta e cashmere, Made in Como")
+- [x] **Trim home meta description** 247 → 144 char con CTA spedizione gratuita
+- [x] **OpenGraph title/description** allineati ai nuovi
+- [x] **Glossario tessile `/glossario`** — 20 termini (rouletté, jacquard, twill, satin, mulinello, micron, GSM, denier, filato, ordito/trama, Mongolia, twilly, pashmina, foulard, iridescenza, sericino/fibroina, Seta di Como marchio, stampa quadro/digitale, finissaggio) + FAQPage schema + DefinedTermSet + sitemap entry
+- [x] **Founder bio `/maison/marco-dibenedetto`** espanso ~280 → ~880 parole, 9 sezioni editorial, no name-drops competitor, **ITIS Setificio di Como diploma 1998** come ancora E-E-A-T, Person schema con `alumniOf` + knowsAbout esteso
+- [x] **Date blog** riordinate cadenza editoriale credibile (no più 4 post stessa data 2026-05-20)
+- [x] **Fix hero images `/trame-di-como`** — sposto `public/journal/*` → `public/editorial/*` per evitare redirect 308
+
+### Pending utente (non delegabili — bloccanti go-live)
+- [ ] **DNS cutover silkincom.com** (ven 22/05) — single action lift GEO +8
+- [ ] `NEXT_PUBLIC_APP_URL` → `https://silkincom.com` su Vercel + redeploy
+- [ ] `OPENROUTER_API_KEY` su Vercel env (Production + Preview) + Redeploy
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` verifica presenza Vercel
+- [ ] `STRIPE_SECRET_KEY` + `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` LIVE
+- [ ] `STRIPE_WEBHOOK_SECRET` LIVE + endpoint `silkincom.com/api/stripe/webhook`
+- [ ] `RESEND_API_KEY` LIVE + dominio mittente DNS verificato
+- [ ] **DELETE 2 doppioni `compositions`** SQL su Supabase Studio
+- [ ] **Smoke test admin → frontend live** UI manuale (login + edit prodotto + traduzione)
+- [ ] **Smoke checkout Stripe test** `4242 4242 4242 4242` + webhook + email + magazzino
+- [ ] **Backup Wix** + lista 301 redirect Wix → nuovi
+
+### Pending bio founder (non bloccanti, utente quando pronto)
+- [ ] **Foto portrait Marco Dibenedetto** — fornire file (jpg/png ~600×800 min) → applicare `<Image>` nella hero `/maison/marco-dibenedetto` + Person schema `image` field
+- [ ] **LinkedIn URL profilo Marco** — fornire URL → aggiungere a Person.sameAs + sezione Contatti
+- [ ] **Nomi reali 3 artigiani** (jacquard/stampa serigrafica/rouletté) — fornire nomi + foto → aggiornare `/artigiani` + relativa sezione "Le persone" del founder bio
+
+### Pending GEO Wk 2-4 (non bloccanti)
+- [ ] **Founder bio**: già espanso ad ~880 parole, manca solo portrait + LinkedIn (vedi sopra)
+- [ ] **Speakable schema** su `/la-nostra-storia`, `/maison/marco-dibenedetto`, `/faq` mainEntity answers
+- [ ] **Width/height su tutti `next/image`** (anti-CLS, 37/39 imgs flagged)
+- [ ] **HowTo `/cura-prodotto/{seta,cashmere,lana,lino,cotone}`** — name + image per step
+- [ ] **Wikidata stub SILKinCOM** (autoconfirmed unblock ~24/05)
+- [ ] **LinkedIn company page SILKinCOM** + linkare founder profile
+- [ ] **YouTube channel SILKinCOM** + 4 shorts processo artigianale
+- [ ] **IndexNow key file + endpoint** + Bing Webmaster Tools verification
+- [ ] **Google Search Console** DNS verification + sitemap submit
+- [ ] **Press outreach** lakecomotravel.com, Vogue Italia digital, blog moda IT
+- [ ] **Trustpilot setup** + email post-acquisto Brevo workflow
