@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       // Idempotency check
       const { data: order } = await supabase
         .from('orders')
-        .select('id, status, customer_email, order_number, total_amount, order_items(product_id, quantity)')
+        .select('id, status, customer_email, order_number, total_amount, order_items(product_id, variant_id, quantity)')
         .eq('id', orderId)
         .single();
 
@@ -86,12 +86,22 @@ export async function POST(req: NextRequest) {
         payment_method: paymentIntent.payment_method_types[0],
       });
 
-      // Decrement inventory (with FOR UPDATE lock via RPC function)
+      // Decrement inventory (with FOR UPDATE lock via RPC function).
+      // Variant-aware: call apply_inventory_movement directly so size-bound
+      // inventory rows decrement, not the product-level row.
       for (const item of order.order_items || []) {
-        await supabase.rpc('decrement_inventory', {
+        const { error: invErr } = await supabase.rpc('apply_inventory_movement', {
           p_product_id: item.product_id,
-          p_quantity: item.quantity,
+          p_variant_id: item.variant_id ?? null,
+          p_movement_type: 'sale',
+          p_quantity_change: -item.quantity,
+          p_reason: 'Vendita automatica post-pagamento',
+          p_reference_order_id: orderId,
+          p_performed_by: null,
         });
+        if (invErr) {
+          console.error('Inventory decrement failed:', invErr, { orderId, item });
+        }
       }
 
       // Record coupon redemption if applied at checkout

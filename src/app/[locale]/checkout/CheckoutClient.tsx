@@ -162,6 +162,8 @@ export function CheckoutClient() {
             name: i.name,
             price: i.price,
             quantity: i.quantity,
+            ...(i.variantId ? { variant_id: i.variantId } : {}),
+            ...(i.size ? { size: i.size } : {}),
           })),
           customer_email: form.customer_email,
           customer_name: form.customer_name,

@@ -13,6 +13,8 @@ const paymentIntentSchema = z.object({
     name: z.string().min(1).max(500),
     price: z.number().positive().finite(),
     quantity: z.number().int().positive().max(100),
+    variant_id: z.string().uuid().optional(),
+    size: z.string().min(1).max(10).optional(),
   })).min(1).max(50),
   customer_email: z.string().email().max(254),
   customer_name: z.string().min(1).max(200),
@@ -74,6 +76,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Resolve variants (size + price_override) for the items that carry one.
+    const variantIds = Array.from(
+      new Set(items.map((i) => i.variant_id).filter((v): v is string => !!v))
+    );
+    type VariantRow = { id: string; product_id: string; size: string | null; price_override: number | null; variant_sku: string };
+    let variantMap = new Map<string, VariantRow>();
+    if (variantIds.length > 0) {
+      const { data: variants, error: variantErr } = await supabase
+        .from('product_variants')
+        .select('id, product_id, size, price_override, variant_sku')
+        .in('id', variantIds);
+      if (variantErr) {
+        console.error('Variant lookup error:', variantErr);
+        return NextResponse.json({ error: 'Errore lookup varianti' }, { status: 500 });
+      }
+      variantMap = new Map((variants ?? []).map((v) => [v.id, v as VariantRow]));
+      const missingV = variantIds.filter((id) => !variantMap.has(id));
+      if (missingV.length > 0) {
+        return NextResponse.json(
+          { error: `Varianti non trovate: ${missingV.join(', ')}` },
+          { status: 400 }
+        );
+      }
+    }
+
     // Recalculate prices server-side — never trust client
     let subtotal = 0;
     const validatedItems = items.map((item) => {
@@ -81,14 +108,27 @@ export async function POST(req: NextRequest) {
       if (dbProduct.status !== 'published') {
         throw new Error(`Prodotto non disponibile: ${item.slug}`);
       }
-      const lineTotal = Number(dbProduct.price) * item.quantity;
+      let unitPrice = Number(dbProduct.price);
+      let variantId: string | null = null;
+      let displayName = dbProduct.name;
+      if (item.variant_id) {
+        const v = variantMap.get(item.variant_id);
+        if (!v || v.product_id !== dbProduct.id) {
+          throw new Error(`Variante non valida per ${item.slug}`);
+        }
+        variantId = v.id;
+        if (v.price_override != null) unitPrice = Number(v.price_override);
+        if (v.size) displayName = `${dbProduct.name} (Taglia ${v.size})`;
+      }
+      const lineTotal = unitPrice * item.quantity;
       subtotal += lineTotal;
       return {
         product_id: dbProduct.id,
+        variant_id: variantId,
         product_slug: dbProduct.slug,
-        product_name: dbProduct.name,
+        product_name: displayName,
         quantity: item.quantity,
-        price_per_unit: dbProduct.price,
+        price_per_unit: unitPrice,
         total_price: lineTotal,
       };
     });
@@ -193,6 +233,7 @@ export async function POST(req: NextRequest) {
           slug: it.product_slug,
           price: it.price_per_unit,
           quantity: it.quantity,
+          ...(it.variant_id ? { variant_id: it.variant_id } : {}),
         })),
       },
     });

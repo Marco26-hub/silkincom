@@ -17,7 +17,7 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
 
   const { data: order } = await supabase
     .from('orders')
-    .select('*, order_items(*), order_status_history(previous_status, new_status, changed_at, notes)')
+    .select('*, order_items(*, product_variants(size)), order_status_history(previous_status, new_status, changed_at, notes)')
     .eq('id', id)
     .single();
 
@@ -48,15 +48,30 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
               <h2 className="font-medium">Articoli</h2>
             </header>
             <div className="divide-y divide-pearl-grey/60">
-              {(order.order_items ?? []).map((item: any) => (
-                <div key={item.id} className="px-6 py-4 flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium">{item.product_name}</p>
-                    <p className="text-xs text-soft-grey">×{item.quantity} · {formatPrice(Number(item.price_per_unit))}</p>
+              {(order.order_items ?? []).map((item: any) => {
+                const size: string | null = item.product_variants?.size ?? null;
+                // Strip any "(Taglia X)" suffix already baked into product_name
+                // to avoid duplication when we render the badge.
+                const cleanName = typeof item.product_name === 'string'
+                  ? item.product_name.replace(/\s*\(Taglia\s+[A-Z]+\)\s*$/i, '')
+                  : item.product_name;
+                return (
+                  <div key={item.id} className="px-6 py-4 flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium">
+                        {cleanName}
+                        {size ? (
+                          <span className="ml-2 inline-flex items-center justify-center min-w-[26px] px-1.5 py-0.5 text-[9px] font-medium tracking-wider bg-soft-black text-warm-white uppercase">
+                            {size}
+                          </span>
+                        ) : null}
+                      </p>
+                      <p className="text-xs text-soft-grey">×{item.quantity} · {formatPrice(Number(item.price_per_unit))}</p>
+                    </div>
+                    <p className="text-sm font-medium">{formatPrice(Number(item.total_price))}</p>
                   </div>
-                  <p className="text-sm font-medium">{formatPrice(Number(item.total_price))}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="px-6 py-4 border-t border-pearl-grey space-y-2 text-sm">
               <div className="flex justify-between text-soft-grey">
