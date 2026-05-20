@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, User, ShoppingBag, Menu, X } from 'lucide-react';
@@ -12,11 +13,19 @@ import { SearchOverlay } from './SearchOverlay';
 export function Header() {
   const t = useTranslations('nav');
   const tc = useTranslations('common');
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { openCart, count } = useCart();
   const cartCount = count();
+
+  // Homepage carries a full-bleed dark hero. Until the user scrolls past
+  // it the header is transparent with ivory text + drop-shadow so the
+  // luxury photography breathes. Every other route uses the solid warm-
+  // white treatment for crisp readability.
+  const isHome = /^\/(?:it|en|es|fr|de|pt|nl)?\/?$/.test(pathname || '/');
+  const overHero = isHome && !scrolled;
 
   const NAV_LINKS = [
     { href: '/collezioni', label: t('collections') },
@@ -43,14 +52,25 @@ export function Header() {
     <>
       <header
         className={`fixed top-9 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${
-          scrolled
+          overHero
+            ? 'bg-transparent py-3 md:py-4'
+            : scrolled
             ? 'bg-warm-white/95 backdrop-blur-md border-b border-pearl-grey/40 py-2.5'
-            : 'bg-warm-white/88 backdrop-blur-md py-3 md:py-4 shadow-[0_1px_0_rgba(212,175,55,0.18)]'
+            : 'bg-warm-white/95 backdrop-blur-md py-3 md:py-4 shadow-[0_1px_0_rgba(212,175,55,0.22)]'
         }`}
       >
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center">
+        {/* Hero scrim — only over homepage hero, gives links a contrast
+            cushion without committing to a solid bar. */}
+        {overHero ? (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 -top-9 h-[200%] bg-gradient-to-b from-soft-black/55 via-soft-black/25 to-transparent"
+          />
+        ) : null}
+
+        <div className={`relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center ${overHero ? 'text-warm-white' : 'text-soft-black'}`}>
           {/* Left nav (desktop) */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.2em] text-soft-black">
+          <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             {NAV_LINKS.slice(0, 4).map((l) => (
               <Link
                 key={l.href}
@@ -65,7 +85,7 @@ export function Header() {
 
           {/* Mobile menu button */}
           <button
-            className="lg:hidden text-soft-black"
+            className={overHero ? 'lg:hidden text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : 'lg:hidden text-soft-black'}
             onClick={() => setMobileOpen(true)}
             aria-label={tc('menu')}
           >
@@ -78,7 +98,7 @@ export function Header() {
           </div>
 
           {/* Right nav + icons */}
-          <div className="hidden lg:flex items-center justify-end gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.2em] text-soft-black">
+          <div className={`hidden lg:flex items-center justify-end gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             {NAV_LINKS.slice(4).map((l) => (
               <Link
                 key={l.href}
@@ -89,7 +109,7 @@ export function Header() {
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-primary group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
-            <div className="flex items-center gap-4 pl-4 border-l border-pearl-grey/60">
+            <div className={`flex items-center gap-4 pl-4 border-l ${overHero ? 'border-warm-white/30' : 'border-pearl-grey/60'}`}>
               <button aria-label={t('search')} onClick={() => setSearchOpen(true)} className="hover:text-gold-primary transition-colors">
                 <Search className="w-[18px] h-[18px]" />
               </button>
@@ -113,7 +133,7 @@ export function Header() {
           </div>
 
           {/* Mobile right icons */}
-          <div className="lg:hidden flex justify-end gap-4">
+          <div className={`lg:hidden flex justify-end gap-4 ${overHero ? 'text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             <button
               aria-label={`${t('cart')} (${cartCount})`}
               onClick={openCart}
