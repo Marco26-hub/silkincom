@@ -9,7 +9,12 @@ type InventoryItem = {
   variant_id: string | null;
   name: string;
   sku: string;
+  size: string | null;
   available: number;
+};
+
+const SIZE_ORDER: Record<string, number> = {
+  XS: 0, S: 1, M: 2, L: 3, XL: 4, XXL: 5, XXXL: 6, UNI: 9,
 };
 
 const REASONS_IN = [
@@ -41,6 +46,9 @@ export function QuickStockModal({
   onDone: () => void;
 }) {
   const [query, setQuery] = useState('');
+  // pickedProductId = step 1 done (product chosen). selected = step 2 done
+  // (variant chosen, or only-one-variant product auto-selected).
+  const [pickedProductId, setPickedProductId] = useState<string | null>(null);
   const [selected, setSelected] = useState<InventoryItem | null>(null);
   const [qty, setQty] = useState<string>('1');
   const [reason, setReason] = useState<string>('');
@@ -48,6 +56,41 @@ export function QuickStockModal({
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Group inventory rows by product_id for the picker. One product = one
+  // search hit; size selection happens after picking the product.
+  const groups = useMemo(() => {
+    const map = new Map<string, { product_id: string; name: string; sku: string; rows: InventoryItem[]; totalAvailable: number }>();
+    inventory.forEach((i) => {
+      const g = map.get(i.product_id);
+      if (g) {
+        g.rows.push(i);
+        g.totalAvailable += i.available;
+      } else {
+        map.set(i.product_id, {
+          product_id: i.product_id,
+          name: i.name,
+          sku: i.sku,
+          rows: [i],
+          totalAvailable: i.available,
+        });
+      }
+    });
+    map.forEach((g) => {
+      g.rows.sort((a, b) => {
+        const ao = a.size ? SIZE_ORDER[a.size] ?? 99 : 99;
+        const bo = b.size ? SIZE_ORDER[b.size] ?? 99 : 99;
+        return ao - bo;
+      });
+    });
+    return Array.from(map.values());
+  }, [inventory]);
+
+  const pickedGroup = useMemo(
+    () => (pickedProductId ? groups.find((g) => g.product_id === pickedProductId) ?? null : null),
+    [pickedProductId, groups]
+  );
+  const hasSizes = !!pickedGroup && pickedGroup.rows.some((r) => r.size !== null);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -57,12 +100,22 @@ export function QuickStockModal({
   }, [onClose]);
 
   const results = useMemo(() => {
-    if (!query) return inventory.slice(0, 8);
+    if (!query) return groups.slice(0, 8);
     const q = query.toLowerCase();
-    return inventory
-      .filter((i) => i.name.toLowerCase().includes(q) || i.sku.toLowerCase().includes(q))
+    return groups
+      .filter((g) => g.name.toLowerCase().includes(q) || g.sku.toLowerCase().includes(q))
       .slice(0, 12);
-  }, [query, inventory]);
+  }, [query, groups]);
+
+  function pickProduct(g: { product_id: string; name: string; sku: string; rows: InventoryItem[] }) {
+    setPickedProductId(g.product_id);
+    setErr(null);
+    // If the product has a single variant row (sciarpe / accessori taglia
+    // unica), skip the size step entirely.
+    if (g.rows.length === 1) {
+      setSelected(g.rows[0]);
+    }
+  }
 
   const reasonsList = mode === 'in' ? REASONS_IN : REASONS_OUT;
   const effectiveReason = reason === '__other__' ? reasonOther : reason;
@@ -73,7 +126,11 @@ export function QuickStockModal({
   const accentColor = mode === 'in' ? 'text-green-700' : 'text-amber-700';
 
   async function submit() {
-    if (!selected) { setErr('Seleziona un prodotto'); return; }
+    if (!pickedGroup) { setErr('Seleziona un prodotto'); return; }
+    if (!selected) {
+      setErr(hasSizes ? 'Seleziona una taglia' : 'Seleziona un prodotto');
+      return;
+    }
     const n = Number(qty);
     if (!Number.isFinite(n) || n <= 0) { setErr('Quantità non valida'); return; }
     if (!effectiveReason.trim()) { setErr('Inserisci un motivo'); return; }
@@ -138,8 +195,8 @@ export function QuickStockModal({
             <div className="border border-red-300 bg-red-50 text-red-800 px-3 py-2 text-sm">{err}</div>
           ) : null}
 
-          {/* Product picker */}
-          {!selected ? (
+          {/* STEP 1 — product picker */}
+          {!pickedGroup ? (
             <div>
               <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">Prodotto</label>
               <div className="relative mb-2">
@@ -154,20 +211,26 @@ export function QuickStockModal({
                 />
               </div>
               <div className="border border-pearl-grey divide-y divide-pearl-grey/60 max-h-64 overflow-y-auto bg-white">
-                {results.map((r) => (
-                  <button
-                    key={`${r.product_id}-${r.variant_id ?? ''}`}
-                    type="button"
-                    onClick={() => setSelected(r)}
-                    className="w-full px-3 py-2.5 text-left text-sm hover:bg-pearl-grey/40 flex items-center justify-between gap-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-medium truncate">{r.name}</p>
-                      <p className="text-[10px] font-mono text-soft-grey">{r.sku}</p>
-                    </div>
-                    <span className="text-xs text-soft-grey tabular-nums whitespace-nowrap">disp. {r.available}</span>
-                  </button>
-                ))}
+                {results.map((g) => {
+                  const sizedCount = g.rows.filter((r) => r.size !== null).length;
+                  return (
+                    <button
+                      key={g.product_id}
+                      type="button"
+                      onClick={() => pickProduct(g)}
+                      className="w-full px-3 py-2.5 text-left text-sm hover:bg-pearl-grey/40 flex items-center justify-between gap-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{g.name}</p>
+                        <p className="text-[10px] font-mono text-soft-grey">
+                          {g.sku}
+                          {sizedCount > 0 ? <span className="ml-2 normal-case font-sans text-soft-grey">· {sizedCount} taglie</span> : null}
+                        </p>
+                      </div>
+                      <span className="text-xs text-soft-grey tabular-nums whitespace-nowrap">disp. {g.totalAvailable}</span>
+                    </button>
+                  );
+                })}
                 {!results.length ? (
                   <p className="px-3 py-6 text-center text-xs text-soft-grey">Nessun prodotto trovato</p>
                 ) : null}
@@ -176,16 +239,62 @@ export function QuickStockModal({
           ) : (
             <div className="flex items-center justify-between bg-pearl-grey/30 px-4 py-3">
               <div>
-                <p className="font-medium">{selected.name}</p>
+                <p className="font-medium">
+                  {pickedGroup.name}
+                  {selected?.size ? (
+                    <span className="ml-2 inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 text-[9px] font-medium tracking-wider bg-soft-black text-warm-white uppercase">
+                      {selected.size}
+                    </span>
+                  ) : null}
+                </p>
                 <p className="text-[10px] font-mono text-soft-grey">
-                  {selected.sku} · disp. {selected.available}
+                  {selected ? `${selected.sku} · disp. ${selected.available}` : `${pickedGroup.sku} · disp. ${pickedGroup.totalAvailable}`}
                 </p>
               </div>
-              <button type="button" onClick={() => setSelected(null)} className="text-xs text-soft-grey hover:text-soft-black underline">
+              <button
+                type="button"
+                onClick={() => {
+                  setPickedProductId(null);
+                  setSelected(null);
+                  setErr(null);
+                }}
+                className="text-xs text-soft-grey hover:text-soft-black underline"
+              >
                 cambia
               </button>
             </div>
           )}
+
+          {/* STEP 2 — size selector (only when product has size variants) */}
+          {pickedGroup && hasSizes && !selected ? (
+            <div>
+              <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">Taglia</label>
+              <div className="grid grid-cols-5 gap-2">
+                {pickedGroup.rows.filter((r) => r.size !== null).map((r) => {
+                  const disabled = mode === 'out' && r.available <= 0;
+                  return (
+                    <button
+                      key={r.variant_id ?? r.size!}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => { setSelected(r); setErr(null); }}
+                      className={`flex flex-col items-center justify-center border px-2 py-3 transition-colors ${
+                        disabled
+                          ? 'border-pearl-grey/60 text-soft-grey/50 line-through cursor-not-allowed'
+                          : 'border-pearl-grey hover:border-soft-black hover:bg-pearl-grey/20'
+                      }`}
+                    >
+                      <span className="font-display text-base font-light leading-none">{r.size}</span>
+                      <span className="text-[9px] uppercase tracking-[0.18em] text-soft-grey mt-1 tabular-nums">
+                        {r.available} disp.
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[11px] text-soft-grey mt-2">Seleziona la taglia su cui registrare il movimento.</p>
+            </div>
+          ) : null}
 
           {/* Quantity + reason */}
           {selected ? (
