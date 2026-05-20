@@ -59,6 +59,8 @@ const nextConfig = {
       { source: '/about', destination: '/la-nostra-storia', permanent: true },
       { source: '/blog', destination: '/trame-di-como', permanent: true },
       { source: '/blog/:slug', destination: '/trame-di-como/:slug', permanent: true },
+      { source: '/journal', destination: '/trame-di-como', permanent: true },
+      { source: '/journal/:slug', destination: '/trame-di-como/:slug', permanent: true },
       { source: '/contact', destination: '/contatti', permanent: true },
       { source: '/materials', destination: '/materiali', permanent: true },
     ];
