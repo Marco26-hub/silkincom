@@ -198,7 +198,7 @@ export function QuickStockModal({
                   type="number"
                   min={1}
                   value={qty}
-                  onChange={(e) => setQty(e.target.value)}
+                  onChange={(e) => { setQty(e.target.value); setErr(null); }}
                   className="w-32 px-3 py-2.5 text-sm border border-pearl-grey focus:outline-none focus:border-soft-black tabular-nums"
                 />
                 <p className="text-[11px] text-soft-grey mt-1.5">
@@ -216,7 +216,7 @@ export function QuickStockModal({
                         name="reason"
                         value={r}
                         checked={reason === r}
-                        onChange={(e) => setReason(e.target.value)}
+                        onChange={(e) => { setReason(e.target.value); setErr(null); }}
                         className="mt-0.5"
                       />
                       <span>{r}</span>
@@ -237,7 +237,7 @@ export function QuickStockModal({
                     <input
                       type="text"
                       value={reasonOther}
-                      onChange={(e) => setReasonOther(e.target.value)}
+                      onChange={(e) => { setReasonOther(e.target.value); setErr(null); }}
                       placeholder="Specifica il motivo"
                       className="w-full ml-6 px-3 py-2 text-sm border border-pearl-grey focus:outline-none focus:border-soft-black"
                     />

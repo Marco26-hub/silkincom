@@ -372,7 +372,11 @@ function GiacenzeTab({
                   <td className="px-5 py-3 text-right text-soft-grey tabular-nums">{r.reorder_threshold ?? '–'}</td>
                   <td className="px-5 py-3 text-xs text-soft-grey">{r.supplier_name ?? '—'}</td>
                   <td className="px-5 py-3">
-                    <InventoryAdjustForm productId={r.product_id} currentQty={r.quantity_available} />
+                    <InventoryAdjustForm
+                      productId={r.product_id}
+                      currentAvailable={r.quantity_available}
+                      currentTotal={r.quantity_total}
+                    />
                   </td>
                 </tr>
               );
