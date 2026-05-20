@@ -18,3 +18,11 @@ export function revalidateHomeSlides() {
   revalidateTag('home-slides');
   revalidatePath('/', 'layout');
 }
+
+/**
+ * Invalidates Featured Collections cache after admin mutations on collections content.
+ */
+export function revalidateCollections() {
+  revalidateTag('collections-meta');
+  revalidatePath('/', 'layout');
+}

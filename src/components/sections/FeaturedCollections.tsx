@@ -4,27 +4,33 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTranslations, useLocale } from 'next-intl';
-import { getCollections } from '@/data/catalog-meta';
+import { useTranslations } from 'next-intl';
 
-// Layout images for the homepage cards (presentation, not catalog content).
-const FEATURED_IMAGES: Record<string, string> = {
+export type FeaturedCollectionCard = {
+  slug: string;
+  name: string;
+  shortName: string;
+  accent: string;
+  tagline: string;
+  description: string;
+  image: string;
+};
+
+const FALLBACK_IMAGES: Record<string, string> = {
   inverno: '/instagram/ig-09.jpg',
   iconica: '/instagram/ig-10.jpg',
   primavera: '/instagram/ig-11.jpg',
 };
+const DEFAULT_FALLBACK = '/instagram/ig-09.jpg';
 
-export function FeaturedCollections() {
+export function FeaturedCollections({ collections }: { collections: FeaturedCollectionCard[] }) {
   const t = useTranslations('home.featured');
-  const locale = useLocale();
-  const collections = getCollections(locale);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.2 },
     },
   };
 
@@ -37,10 +43,12 @@ export function FeaturedCollections() {
     },
   };
 
+  if (!collections || collections.length === 0) return null;
+
   return (
     <section className="py-24 md:py-section bg-warm-white">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
@@ -67,53 +75,58 @@ export function FeaturedCollections() {
           </motion.div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
           variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
         >
-          {collections.map((c, i) => (
-            <motion.div key={c.slug} variants={itemVariants} className="h-full">
-              <Link
-                href={`/collezioni/${c.slug}`}
-                className="group relative block overflow-hidden bg-beige-light h-full"
-              >
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  <Image
-                    src={FEATURED_IMAGES[c.slug]}
-                    alt={c.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                    priority={i === 0}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-soft-black/85 via-soft-black/30 to-soft-black/20 opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
+          {collections.map((c, i) => {
+            const img = c.image || FALLBACK_IMAGES[c.slug] || DEFAULT_FALLBACK;
+            return (
+              <motion.div key={c.slug} variants={itemVariants} className="h-full">
+                <Link
+                  href={`/collezioni/${c.slug}`}
+                  className="group relative block overflow-hidden bg-beige-light h-full"
+                >
+                  <div className="relative aspect-[3/4] overflow-hidden">
+                    <Image
+                      src={img}
+                      alt={c.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                      priority={i === 0}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-soft-black/85 via-soft-black/30 to-soft-black/20 opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
 
-                  <span className="absolute top-6 left-6 px-3 py-1 bg-warm-white/95 text-[10px] uppercase tracking-[0.3em] text-soft-black backdrop-blur-sm shadow-sm">
-                    {c.accent}
-                  </span>
+                    {c.accent ? (
+                      <span className="absolute top-6 left-6 px-3 py-1 bg-warm-white/95 text-[10px] uppercase tracking-[0.3em] text-soft-black backdrop-blur-sm shadow-sm">
+                        {c.accent}
+                      </span>
+                    ) : null}
 
-                  <div className="absolute bottom-0 left-0 right-0 p-8 text-warm-white">
-                    <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-3">
-                      {t('collectionLabel')}
-                    </span>
-                    <h3 className="font-display font-light text-3xl md:text-4xl leading-tight mb-3">
-                      {c.shortName}
-                    </h3>
-                    <p className="text-xs font-light text-warm-white/85 mb-4 max-w-xs leading-relaxed">
-                      {c.tagline}
-                    </p>
-                    <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold-primary border-b border-gold-primary/40 pb-1 group-hover:border-gold-primary transition-colors">
-                      {t('explore')}
-                      <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                    </span>
+                    <div className="absolute bottom-0 left-0 right-0 p-8 text-warm-white">
+                      <span className="block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-3">
+                        {t('collectionLabel')}
+                      </span>
+                      <h3 className="font-display font-light text-3xl md:text-4xl leading-tight mb-3">
+                        {c.shortName || c.name}
+                      </h3>
+                      <p className="text-xs font-light text-warm-white/85 mb-4 max-w-xs leading-relaxed">
+                        {c.tagline}
+                      </p>
+                      <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold-primary border-b border-gold-primary/40 pb-1 group-hover:border-gold-primary transition-colors">
+                        {t('explore')}
+                        <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>
