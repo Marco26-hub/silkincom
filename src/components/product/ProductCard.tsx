@@ -16,14 +16,44 @@ function formatPrice(n: number) {
   }).format(n);
 }
 
+// Parse composition text ("95% cotone, 5% elastan", "53% lino, 47% cotone",
+// "100% Cotone") and return an uppercase eyebrow that reflects the blend.
+// Single fiber → "COTONE". Two-fiber blend → "COTONE / EA" or "LINO /
+// COTONE". Elastane is abbreviated to "EA" because it never wants the full
+// word on a chip; everything else stays full so the brand voice stays
+// editorial rather than acronym-spam.
+const ABBREVIATED: Record<string, string> = {
+  elastan: 'EA',
+  elastane: 'EA',
+  elastico: 'EA',
+  elastiek: 'EA',
+};
+function deriveMaterialEyebrow(composition: string, fallback: string): string {
+  if (!composition) return fallback.toUpperCase();
+  const tokens = Array.from(
+    composition.matchAll(/(\d+(?:[.,]\d+)?)\s*%\s*([A-Za-zÀ-ÿ]+)/g)
+  )
+    .map((m) => ({ pct: Number(m[1].replace(',', '.')), name: m[2].toLowerCase() }))
+    .filter((t) => Number.isFinite(t.pct) && t.pct > 0)
+    .sort((a, b) => b.pct - a.pct);
+  if (tokens.length === 0) return fallback.toUpperCase();
+  const norm = (s: string) => (ABBREVIATED[s] ?? s).toUpperCase();
+  if (tokens.length === 1) return norm(tokens[0].name);
+  // Two or more fibers: show the top two so the chip stays readable.
+  return `${norm(tokens[0].name)} / ${norm(tokens[1].name)}`;
+}
+
 export function ProductCard({ product }: { product: Product }) {
   const img1 = product.images[0] || '';
   const img2 = product.images[1] || '';
   const [wished, setWished] = useState(false);
   const t = useTranslations('product');
   const locale = useLocale();
-  const materialLabel = product.material
+  const taxonomyName = product.material
     ? getMaterials(locale).find((m) => m.slug === product.material)?.name ?? ''
+    : '';
+  const materialLabel = taxonomyName
+    ? deriveMaterialEyebrow(product.composition || '', taxonomyName)
     : '';
   const descPreview = product.description?.replace(/\s+/g, ' ').trim() || '';
 
