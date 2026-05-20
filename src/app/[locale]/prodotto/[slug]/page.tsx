@@ -6,8 +6,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { PRODUCT_SLUGS, getCategories, getProduct, getProducts, getMaterials } from '@/data/catalog';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductCard } from '@/components/product/ProductCard';
-import { AddToCartButton } from '@/components/product/AddToCartButton';
-import { WishlistButton } from '@/components/product/WishlistButton';
+import { ProductPurchaseSection } from '@/components/product/ProductPurchaseSection';
 import { ReviewSchema } from '@/components/schemas/ReviewSchema';
 import { ProductReviews } from '@/components/product/ProductReviews';
 import { ArtisanAttribution } from '@/components/product/ArtisanAttribution';
@@ -236,15 +235,15 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                 <InventoryBadge productSlug={p.slug} />
               </div>
 
-              {/* CTA */}
-              <div className="flex flex-col gap-3 mb-10">
-                <AddToCartButton
+              {/* CTA — size selector (apparel) + AddToCart + Wishlist */}
+              <div className="mb-10">
+                <ProductPurchaseSection
                   slug={p.slug}
                   name={p.name}
                   price={p.price}
                   image={p.images[0] || ''}
+                  variants={p.variants}
                 />
-                <WishlistButton productSlug={p.slug} />
               </div>
 
               {/* Heritage strip */}

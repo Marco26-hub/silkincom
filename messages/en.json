@@ -312,6 +312,13 @@
     }
   },
   "product": {
+    "size": {
+      "label": "Size",
+      "guide": "Size guide",
+      "selectFirst": "Please select a size",
+      "outOfStock": "Out of stock",
+      "availableUnits": "{n, plural, =1 {1 available} other {# available}}"
+    },
     "addToCart": "Add to cart",
     "addedToCart": "Added to cart",
     "outOfStock": "Out of stock",

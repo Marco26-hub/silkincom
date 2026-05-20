@@ -86,6 +86,11 @@ export function CartPageClient() {
                       <div>
                         <h2 className="font-display text-2xl leading-tight">{item.name}</h2>
                         <p className="text-soft-grey text-sm">{item.slug}</p>
+                        {item.size ? (
+                          <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-gold-primary">
+                            Taglia {item.size}
+                          </p>
+                        ) : null}
                       </div>
                       <p className="text-lg">{formatPrice(item.price)}</p>
                     </div>
@@ -93,7 +98,7 @@ export function CartPageClient() {
                     <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center border border-pearl-grey">
                         <button
-                          onClick={() => updateQty(item.slug, item.quantity - 1)}
+                          onClick={() => updateQty(item.slug, item.quantity - 1, item.variantId)}
                           className="p-2 hover:text-gold-primary transition-colors"
                           aria-label="−"
                         >
@@ -101,7 +106,7 @@ export function CartPageClient() {
                         </button>
                         <span className="w-10 text-center text-sm">{item.quantity}</span>
                         <button
-                          onClick={() => updateQty(item.slug, item.quantity + 1)}
+                          onClick={() => updateQty(item.slug, item.quantity + 1, item.variantId)}
                           className="p-2 hover:text-gold-primary transition-colors"
                           aria-label="+"
                         >
@@ -110,7 +115,7 @@ export function CartPageClient() {
                       </div>
 
                       <button
-                        onClick={() => removeItem(item.slug)}
+                        onClick={() => removeItem(item.slug, item.variantId)}
                         className="inline-flex items-center gap-2 text-sm text-soft-grey hover:text-soft-black transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />

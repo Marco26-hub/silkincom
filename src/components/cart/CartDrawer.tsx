@@ -105,6 +105,11 @@ export function CartDrawer() {
                         <h3 className="font-display text-lg font-light leading-tight mb-1">
                           {item.name}
                         </h3>
+                        {item.size ? (
+                          <p className="text-[10px] uppercase tracking-[0.25em] text-gold-primary mb-1">
+                            Taglia {item.size}
+                          </p>
+                        ) : null}
                         <p className="text-sm text-soft-black">
                           €{item.price.toFixed(0)}
                         </p>
@@ -113,7 +118,7 @@ export function CartDrawer() {
                         {/* Qty */}
                         <div className="flex items-center gap-3 border border-pearl-grey">
                           <button
-                            onClick={() => updateQty(item.slug, item.quantity - 1)}
+                            onClick={() => updateQty(item.slug, item.quantity - 1, item.variantId)}
                             className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-gold-primary transition-colors"
                             aria-label="−"
                           >
@@ -121,7 +126,7 @@ export function CartDrawer() {
                           </button>
                           <span className="text-sm w-6 text-center font-medium">{item.quantity}</span>
                           <button
-                            onClick={() => updateQty(item.slug, item.quantity + 1)}
+                            onClick={() => updateQty(item.slug, item.quantity + 1, item.variantId)}
                             className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-gold-primary transition-colors"
                             aria-label="+"
                           >
@@ -129,7 +134,7 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <button
-                          onClick={() => removeItem(item.slug)}
+                          onClick={() => removeItem(item.slug, item.variantId)}
                           className="text-[10px] uppercase tracking-[0.15em] text-soft-grey hover:text-soft-black transition-colors"
                         >
                           {t('remove')}

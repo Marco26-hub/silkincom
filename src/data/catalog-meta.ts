@@ -38,6 +38,16 @@ export function normLocale(locale: string): Locale {
 
 // ========== PRODUCT TYPES ==========
 
+export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL' | 'UNI';
+
+export type ProductVariant = {
+  id: string;
+  sku: string;
+  size: Size;
+  priceOverride: number | null;
+  available: number;
+};
+
 export type Product = {
   slug: string;
   name: string;
@@ -51,6 +61,10 @@ export type Product = {
   collections: string[];
   material: Material;
   group?: ProductGroup;
+  // Size variants — populated for apparel categories (lario, melzi, riva,
+  // tivan). Empty array for accessories (scarves, foulards). Sorted in
+  // canonical XS→XXXL order.
+  variants: ProductVariant[];
 };
 
 export type RawProduct = {

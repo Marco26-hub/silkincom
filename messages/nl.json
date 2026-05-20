@@ -312,6 +312,13 @@
     }
   },
   "product": {
+    "size": {
+      "label": "Maat",
+      "guide": "Maattabel",
+      "selectFirst": "Kies eerst een maat",
+      "outOfStock": "Uitverkocht",
+      "availableUnits": "{n, plural, =1 {1 beschikbaar} other {# beschikbaar}}"
+    },
     "addToCart": "In winkelmand",
     "addedToCart": "Toegevoegd aan winkelmand",
     "outOfStock": "Uitverkocht",

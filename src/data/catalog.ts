@@ -7,6 +7,8 @@ import { createPublicClient } from '@/lib/supabase/server';
 import type { Locale } from '@/i18n/routing';
 import {
   type Product,
+  type ProductVariant,
+  type Size,
   type Material,
   type ProductGroup,
   translationMap,
@@ -14,6 +16,10 @@ import {
   normLocale,
   pick,
 } from './catalog-meta';
+
+const SIZE_ORDER: Record<string, number> = {
+  XS: 1, S: 2, M: 3, L: 4, XL: 5, XXL: 6, XXXL: 7, UNI: 8,
+};
 
 // Re-export client-safe API so server-side importers keep one entry point.
 export * from './catalog-meta';
@@ -37,6 +43,13 @@ type DBProduct = {
   product_images: Array<{ image_url: string }>;
   product_categories: Array<{ category_id: string; categories: { slug: string } | null }>;
   product_collections: Array<{ collection_id: string; collections: { slug: string } | null }>;
+  product_variants: Array<{
+    id: string;
+    variant_sku: string;
+    size: string | null;
+    price_override: number | null;
+    inventory: Array<{ quantity_available: number }> | null;
+  }>;
 };
 
 async function fetchProductsFromDB(): Promise<DBProduct[]> {
@@ -54,6 +67,13 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
        product_collections(
          collection_id,
          collections(slug)
+       ),
+       product_variants(
+         id,
+         variant_sku,
+         size,
+         price_override,
+         inventory(quantity_available)
        )`
     )
     .eq('status', 'published')
@@ -91,6 +111,20 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     return source;
   }
 
+  // Only expose variants with an actual size attribute (apparel). Legacy
+  // variants without a size aren't surfaced on the storefront — they exist
+  // for admin/SKU tracking only.
+  const variants: ProductVariant[] = (dbProduct.product_variants ?? [])
+    .filter((v) => v.size !== null && v.size !== undefined)
+    .map((v) => ({
+      id: v.id,
+      sku: v.variant_sku,
+      size: v.size as Size,
+      priceOverride: v.price_override,
+      available: v.inventory?.[0]?.quantity_available ?? 0,
+    }))
+    .sort((a, b) => (SIZE_ORDER[a.size] ?? 99) - (SIZE_ORDER[b.size] ?? 99));
+
   return {
     slug: dbProduct.slug,
     name: resolve(dbProduct.name_i18n, 'name', dbProduct.name),
@@ -104,6 +138,7 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     collections: meta.collections,
     material: meta.material,
     group: meta.group,
+    variants,
   };
 }
 

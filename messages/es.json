@@ -312,6 +312,13 @@
     }
   },
   "product": {
+    "size": {
+      "label": "Talla",
+      "guide": "Guía de tallas",
+      "selectFirst": "Selecciona una talla",
+      "outOfStock": "Agotado",
+      "availableUnits": "{n, plural, =1 {1 disponible} other {# disponibles}}"
+    },
     "addToCart": "Añadir al carrito",
     "addedToCart": "Añadido al carrito",
     "outOfStock": "Agotado",

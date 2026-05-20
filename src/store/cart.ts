@@ -7,7 +7,20 @@ export type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  // Size variant — present only for apparel items. The pair (slug, variantId)
+  // uniquely identifies a line item; the same product in two sizes lives as
+  // two separate rows in the cart.
+  variantId?: string;
+  size?: string;
 };
+
+function keyOf(slug: string, variantId?: string): string {
+  return variantId ? `${slug}::${variantId}` : slug;
+}
+
+function sameLine(a: CartItem, slug: string, variantId?: string): boolean {
+  return a.slug === slug && (a.variantId ?? '') === (variantId ?? '');
+}
 
 export type AppliedCoupon = {
   code: string;
@@ -21,8 +34,8 @@ type CartState = {
   isOpen: boolean;
   coupon: AppliedCoupon | null;
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (slug: string) => void;
-  updateQty: (slug: string, qty: number) => void;
+  removeItem: (slug: string, variantId?: string) => void;
+  updateQty: (slug: string, qty: number, variantId?: string) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -42,11 +55,11 @@ export const useCart = create<CartState>()(
 
       addItem: (item) =>
         set((state) => {
-          const existing = state.items.find((i) => i.slug === item.slug);
+          const existing = state.items.find((i) => sameLine(i, item.slug, item.variantId));
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.slug === item.slug ? { ...i, quantity: i.quantity + 1 } : i
+                sameLine(i, item.slug, item.variantId) ? { ...i, quantity: i.quantity + 1 } : i
               ),
               isOpen: true,
             };
@@ -54,15 +67,19 @@ export const useCart = create<CartState>()(
           return { items: [...state.items, { ...item, quantity: 1 }], isOpen: true };
         }),
 
-      removeItem: (slug) =>
-        set((state) => ({ items: state.items.filter((i) => i.slug !== slug) })),
+      removeItem: (slug, variantId) =>
+        set((state) => ({
+          items: state.items.filter((i) => !sameLine(i, slug, variantId)),
+        })),
 
-      updateQty: (slug, qty) =>
+      updateQty: (slug, qty, variantId) =>
         set((state) => ({
           items:
             qty <= 0
-              ? state.items.filter((i) => i.slug !== slug)
-              : state.items.map((i) => (i.slug === slug ? { ...i, quantity: qty } : i)),
+              ? state.items.filter((i) => !sameLine(i, slug, variantId))
+              : state.items.map((i) =>
+                  sameLine(i, slug, variantId) ? { ...i, quantity: qty } : i
+                ),
         })),
 
       clearCart: () => set({ items: [], coupon: null }),
@@ -82,3 +99,5 @@ export const useCart = create<CartState>()(
     { name: 'silkincom-cart', skipHydration: true }
   )
 );
+
+export { keyOf as cartLineKey };
