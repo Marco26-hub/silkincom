@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { CheckoutClient } from './CheckoutClient';
 
 export const metadata: Metadata = {
-  title: 'Checkout — SILKinCOM',
+  title: 'Checkout',
   robots: { index: false },
 };
 
