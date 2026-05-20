@@ -7,6 +7,7 @@ import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { CookieBanner } from '@/components/ui/CookieBanner';
 import { SalesNotification } from '@/components/ui/SalesNotification';
 import { CartDrawer } from '@/components/cart/CartDrawer';
+import { FloatingNav } from '@/components/ui/FloatingNav';
 
 export function PublicChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,6 +24,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
       <CartDrawer />
       <main>{children}</main>
       <Footer />
+      <FloatingNav />
       <CookieBanner />
       <SalesNotification />
     </>

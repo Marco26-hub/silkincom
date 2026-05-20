@@ -27,7 +27,8 @@
     "or": "o",
     "language": "Idioma",
     "currency": "Moneda",
-    "information": "Información"
+    "information": "Información",
+    "backToTop": "Volver arriba"
   },
   "nav": {
     "home": "Inicio",
