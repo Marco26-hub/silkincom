@@ -244,20 +244,30 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
   const [hasEnvKey, setHasEnvKey] = useState<boolean>(true);
 
   // Load model catalogue on first mount. Endpoint is admin-gated, so the
-  // user already authenticated to reach this form.
+  // user already authenticated to reach this form. If GET fails we still
+  // show a usable shortlist so the operator can pick a model — better
+  // than a permanent "Caricamento..." stuck state.
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      const fallback: AiModel[] = [
+        { id: 'google/gemma-4-31b-it:free', label: 'Gemma 4 31B IT · gratis · consigliato', free: true },
+        { id: 'google/gemma-4-26b-a4b-it:free', label: 'Gemma 4 26B IT · gratis · piu veloce', free: true },
+        { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash · stabile economico', free: false },
+        { id: 'anthropic/claude-haiku-4.5', label: 'Claude Haiku 4.5 · luxury voice economico', free: false },
+      ];
       try {
         const res = await fetch('/api/admin/home-slides/suggest');
-        if (!res.ok) return;
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const j = await res.json();
         if (cancelled) return;
-        setModels(j.models || []);
-        setSelectedModel(j.default_model || '');
+        setModels(j.models && j.models.length > 0 ? j.models : fallback);
+        setSelectedModel(j.default_model || fallback[0].id);
         setHasEnvKey(!!j.has_env_key);
       } catch {
-        // Silent — dropdown stays empty, user can still hit submit with default.
+        if (cancelled) return;
+        setModels(fallback);
+        setSelectedModel(fallback[0].id);
       }
     })();
     return () => { cancelled = true; };
