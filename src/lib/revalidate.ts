@@ -10,3 +10,11 @@ export function revalidateCatalog() {
   revalidateTag('products');
   revalidatePath('/', 'layout');
 }
+
+/**
+ * Invalidates home slides cache after admin mutations on home_slides.
+ */
+export function revalidateHomeSlides() {
+  revalidateTag('home-slides');
+  revalidatePath('/', 'layout');
+}

@@ -75,6 +75,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: '/admin/clienti', label: 'Clienti', icon: Users, roles: ADMIN },
       { href: '/admin/pagine', label: 'Pagine', icon: FileText, roles: EDITOR },
+      { href: '/admin/foto-home', label: 'Foto Home', icon: ImageIcon, roles: EDITOR },
     ],
   },
   {

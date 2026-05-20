@@ -4,62 +4,89 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-// Slides hero — foto reali SILKinCOM (lifestyle Lago di Como)
-const SLIDES = [
+export type HeroSlideInput = {
+  id: string;
+  src: string;
+  alt: string;
+  focus: string;
+  titleMain: string;
+  titleAccent: string;
+  subtitle: string;
+};
+
+// Static fallback used only if DB returns no active slides.
+// Mirrors public/instagram/ assets shipped in the repo.
+const FALLBACK_SLIDES: HeroSlideInput[] = [
   {
+    id: 'fallback-1',
     src: '/instagram/ig-06.jpg',
     alt: 'Sciarpe in cashmere e lana SILKinCOM con logo gabbiano oro — dettaglio tessuto',
     focus: 'center',
+    titleMain: '',
+    titleAccent: '',
+    subtitle: '',
   },
   {
+    id: 'fallback-2',
     src: '/instagram/ig-02.jpg',
     alt: 'Donna con twilly in seta SILKinCOM tra i capelli — aperitivo sul Lago di Como',
     focus: 'center',
+    titleMain: '',
+    titleAccent: '',
+    subtitle: '',
   },
   {
+    id: 'fallback-3',
     src: '/instagram/ig-01.jpg',
     alt: 'Uomo con camicia lino e cappello SILKinCOM sul molo — Lago di Como',
     focus: 'center',
+    titleMain: '',
+    titleAccent: '',
+    subtitle: '',
   },
 ];
 
-const SLIDE_DURATION = 6500; // ms each slide
+const SLIDE_DURATION = 6500;
 
-export function Hero() {
+export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
   const t = useTranslations('home.hero');
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  const SLIDES = useMemo(
+    () => (slides && slides.length > 0 ? slides : FALLBACK_SLIDES),
+    [slides]
+  );
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  // Parallax: subtle vertical shift + opacity fade
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
   const opacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.4, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
 
-  // Auto-rotate slides
   useEffect(() => {
     const id = setInterval(() => {
       setActiveSlide((s) => (s + 1) % SLIDES.length);
     }, SLIDE_DURATION);
     return () => clearInterval(id);
-  }, []);
+  }, [SLIDES.length]);
 
-  const title = t('titleMain');
-  const accent = t('titleAccent');
+  const current = SLIDES[activeSlide];
+  const title = current.titleMain || t('titleMain');
+  const accent = current.titleAccent || t('titleAccent');
+  const subtitle = current.subtitle || t('subtitle');
 
   return (
     <section
       ref={containerRef}
       className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-soft-black"
     >
-      {/* Slideshow with Ken Burns crossfade */}
       <motion.div
         style={{ y, opacity, scale }}
         className="absolute inset-0 w-full h-full"
@@ -68,7 +95,7 @@ export function Hero() {
           {SLIDES.map((slide, i) =>
             i === activeSlide ? (
               <motion.div
-                key={`slide-${i}`}
+                key={`slide-${slide.id}`}
                 className="absolute inset-0 w-full h-full"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -90,7 +117,8 @@ export function Hero() {
                     fill
                     priority={i === 0}
                     sizes="100vw"
-                    className="object-cover object-center"
+                    className="object-cover"
+                    style={{ objectPosition: slide.focus || 'center' }}
                     quality={92}
                   />
                 </motion.div>
@@ -100,11 +128,9 @@ export function Hero() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Multi-layer cinematic gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-soft-black/55 via-soft-black/15 to-soft-black/85 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-r from-soft-black/60 via-transparent to-transparent pointer-events-none" />
 
-      {/* Vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -113,14 +139,11 @@ export function Hero() {
         }}
       />
 
-      {/* Top gold hairline */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary/60 to-transparent z-10" />
 
-      {/* Content */}
       <div className="relative z-10 h-full flex items-end pb-24 md:items-center md:pb-0">
         <div className="max-w-[1500px] w-full mx-auto px-6 lg:px-12">
-          <div className="max-w-3xl text-warm-white">
-            {/* Eyebrow with hairline */}
+          <div className="max-w-3xl text-warm-white" aria-live="polite">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -133,17 +156,20 @@ export function Hero() {
               </span>
             </motion.div>
 
-            {/* Title — word by word reveal */}
-            <h1 className="font-display font-light text-[2.85rem] sm:text-6xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.15] tracking-[-0.01em] mb-10">
+            {/* Per-slide title — remounts on slide change to replay reveal animation */}
+            <h1
+              key={`title-${activeSlide}`}
+              className="font-display font-light text-[2.85rem] sm:text-6xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.15] tracking-[-0.01em] mb-10"
+            >
               <span className="block overflow-hidden pb-[0.12em]">
                 {title.split(' ').map((word, i) => (
                   <motion.span
-                    key={`w1-${i}`}
+                    key={`w1-${activeSlide}-${i}`}
                     initial={{ y: '110%', opacity: 0 }}
                     animate={{ y: '0%', opacity: 1 }}
                     transition={{
                       duration: 1.1,
-                      delay: 0.5 + i * 0.08,
+                      delay: 0.3 + i * 0.08,
                       ease: [0.21, 0.47, 0.32, 0.98],
                     }}
                     className="inline-block mr-[0.25em]"
@@ -152,36 +178,37 @@ export function Hero() {
                   </motion.span>
                 ))}
               </span>
-              <span className="block overflow-hidden mt-1 pb-[0.18em]">
-                {accent.split(' ').map((word, i) => (
-                  <motion.em
-                    key={`w2-${i}`}
-                    initial={{ y: '110%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    transition={{
-                      duration: 1.1,
-                      delay: 0.85 + i * 0.08,
-                      ease: [0.21, 0.47, 0.32, 0.98],
-                    }}
-                    className="inline-block mr-[0.25em] italic font-light text-gold-primary"
-                  >
-                    {word}
-                  </motion.em>
-                ))}
-              </span>
+              {accent ? (
+                <span className="block overflow-hidden mt-1 pb-[0.18em]">
+                  {accent.split(' ').map((word, i) => (
+                    <motion.em
+                      key={`w2-${activeSlide}-${i}`}
+                      initial={{ y: '110%', opacity: 0 }}
+                      animate={{ y: '0%', opacity: 1 }}
+                      transition={{
+                        duration: 1.1,
+                        delay: 0.55 + i * 0.08,
+                        ease: [0.21, 0.47, 0.32, 0.98],
+                      }}
+                      className="inline-block mr-[0.25em] italic font-light text-gold-primary"
+                    >
+                      {word}
+                    </motion.em>
+                  ))}
+                </span>
+              ) : null}
             </h1>
 
-            {/* Subtitle */}
             <motion.p
+              key={`subtitle-${activeSlide}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.4, ease: [0.21, 0.47, 0.32, 0.98] }}
+              transition={{ duration: 1, delay: 1.0, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="text-base md:text-lg lg:text-xl font-light text-warm-white/85 max-w-xl mb-12 leading-[1.75] tracking-wide"
             >
-              {t('subtitle')}
+              {subtitle}
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -210,7 +237,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Slide indicators */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -240,7 +266,6 @@ export function Hero() {
         ))}
       </motion.div>
 
-      {/* Scroll indicator — bottom left */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -263,7 +288,6 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* Bottom gold hairline */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-primary/30 to-transparent z-10" />
     </section>
   );

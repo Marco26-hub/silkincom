@@ -9,6 +9,7 @@ import { InstagramFeed } from '@/components/sections/InstagramFeed';
 import { Newsletter } from '@/components/sections/Newsletter';
 import { getLocale } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
+import { getHomeSlides } from '@/data/home-slides';
 
 export async function generateMetadata() {
   const locale = await getLocale();
@@ -16,9 +17,11 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
+  const locale = await getLocale();
+  const slides = await getHomeSlides(locale);
   return (
     <>
-      <Hero />
+      <Hero slides={slides} />
       <ValueProps />
       <FeaturedCollections />
       <BrandStory />
