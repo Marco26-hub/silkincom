@@ -9,11 +9,14 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { product_id, color_id, material_id, variant_sku, variant_name, price_override } = body;
+    const { product_id, color_id, material_id, variant_sku, variant_name, price_override, size } = body;
 
     if (!product_id || !variant_sku) {
       return NextResponse.json({ error: 'Prodotto e SKU richiesti' }, { status: 400 });
     }
+
+    const allowedSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'UNI'];
+    const normalizedSize = typeof size === 'string' && allowedSizes.includes(size) ? size : null;
 
     const supabase = createServiceClient();
     const { data, error } = await supabase
@@ -25,6 +28,7 @@ export async function POST(req: NextRequest) {
         variant_sku: variant_sku.trim(),
         variant_name: variant_name?.trim() || null,
         price_override: price_override != null && price_override !== '' ? Number(price_override) : null,
+        size: normalizedSize,
       })
       .select()
       .single();

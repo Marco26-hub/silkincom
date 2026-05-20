@@ -52,7 +52,7 @@ export default async function AdminProductEditPage({ params }: { params: Promise
         initialSizes={sizes ?? []}
         initialColors={colors ?? []}
         initialMaterials={materials ?? []}
-        initialVariants={variants ?? []}
+        initialVariants={(variants ?? []) as Array<{ id: string; variant_sku: string; variant_name: string | null; price_override: number | null; color_id: string | null; material_id: string | null; size: string | null }>}
       />
     </div>
   );

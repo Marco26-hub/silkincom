@@ -9,7 +9,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params;
   const body = await req.json();
-  const allowed = ['product_id', 'color_id', 'material_id', 'variant_sku', 'variant_name', 'price_override'];
+  const allowed = ['product_id', 'color_id', 'material_id', 'variant_sku', 'variant_name', 'price_override', 'size'];
   const updates: Record<string, any> = {};
   for (const k of allowed) {
     if (k in body) updates[k] = body[k];
@@ -21,6 +21,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if ('price_override' in updates) {
     updates.price_override =
       updates.price_override != null && updates.price_override !== '' ? Number(updates.price_override) : null;
+  }
+  if ('size' in updates) {
+    const allowedSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'UNI'];
+    updates.size = typeof updates.size === 'string' && allowedSizes.includes(updates.size) ? updates.size : null;
   }
 
   const supabase = createServiceClient();

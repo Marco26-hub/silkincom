@@ -17,7 +17,10 @@ type Variant = {
   price_override: number | null;
   color_id: string | null;
   material_id: string | null;
+  size: string | null;
 };
+
+const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'UNI'] as const;
 
 function toSlug(s: string) {
   return s.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
@@ -424,7 +427,7 @@ function VariantsSection({
 }) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [newVariant, setNewVariant] = useState({ variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '' });
+  const [newVariant, setNewVariant] = useState({ variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '', size: '' });
   const [creatingColor, setCreatingColor] = useState(false);
   const [creatingMaterial, setCreatingMaterial] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -434,7 +437,7 @@ function VariantsSection({
     setNewVariant((p) => ({ ...p, [k]: v }));
   }
 
-  const emptyVariant = { variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '' };
+  const emptyVariant = { variant_sku: '', variant_name: '', color_id: '', material_id: '', price_override: '', size: '' };
 
   function closeForm() {
     setNewVariant(emptyVariant);
@@ -457,6 +460,7 @@ function VariantsSection({
       color_id: v.color_id ?? '',
       material_id: v.material_id ?? '',
       price_override: v.price_override != null ? String(v.price_override) : '',
+      size: v.size ?? '',
     });
     setEditingId(v.id);
     setErr(null);
@@ -473,6 +477,7 @@ function VariantsSection({
       color_id: newVariant.color_id || null,
       material_id: newVariant.material_id || null,
       price_override: newVariant.price_override ? Number(newVariant.price_override) : null,
+      size: newVariant.size || null,
     };
     const res = await fetch(
       editingId ? `/api/admin/variants/${editingId}` : '/api/admin/variants',
@@ -558,7 +563,14 @@ function VariantsSection({
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-mono">{v.variant_sku}</p>
+                  <p className="text-sm font-mono flex items-center gap-2">
+                    {v.variant_sku}
+                    {v.size ? (
+                      <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] uppercase tracking-[0.15em] bg-soft-black text-warm-white rounded-sm">
+                        {v.size}
+                      </span>
+                    ) : null}
+                  </p>
                   <p className="text-[10px] text-soft-grey">
                     {[color?.name, material?.name].filter(Boolean).join(' · ') || 'Nessun colore/materiale'}
                     {v.price_override != null && ` · €${v.price_override}`}
@@ -666,6 +678,19 @@ function VariantsSection({
                 className={inputCls}
                 placeholder="Lascia vuoto = prezzo base"
               />
+            </Field>
+
+            <Field label="Taglia (abbigliamento)">
+              <select
+                value={newVariant.size}
+                onChange={(e) => setNV('size', e.target.value)}
+                className={inputCls + ' bg-white'}
+              >
+                <option value="">— nessuna (accessori) —</option>
+                {SIZE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s === 'UNI' ? 'Taglia unica' : s}</option>
+                ))}
+              </select>
             </Field>
           </div>
 
