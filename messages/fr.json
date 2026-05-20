@@ -272,7 +272,8 @@
       "placeholder": "Votre adresse e-mail",
       "submit": "S'abonner",
       "submitting": "Chargement…",
-      "privacyDisclaimer": "En vous abonnant, vous acceptez notre <link>Politique de confidentialité</link>. Désinscription à tout moment."
+      "privacyDisclaimer": "En vous abonnant, vous acceptez notre <link>Politique de confidentialité</link>. Désinscription à tout moment.",
+      "invalidEmail": "Veuillez saisir une adresse email valide"
     }
   },
   "shop": {

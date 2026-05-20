@@ -1,8 +1,9 @@
 'use client';
 
-import { Mail, MapPin, Instagram } from 'lucide-react';
+import { Mail, MapPin, Instagram, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function ContattiClient() {
   const t = useTranslations('contatti');
@@ -48,7 +49,9 @@ export function ContattiClient() {
         messaggio: '',
       });
 
-      setTimeout(() => setSuccess(false), 5000);
+      // Scroll into view so the user sees the confirmation immediately.
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => setSuccess(false), 7000);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('error'));
     } finally {
@@ -58,6 +61,25 @@ export function ContattiClient() {
 
   return (
     <>
+      {/* Floating success toast — fixed at top so the user sees it after
+          scrollTo + ensures feedback is unmissable on mobile. */}
+      <AnimatePresence>
+        {success && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="fixed top-12 left-1/2 -translate-x-1/2 z-[60] max-w-md w-[calc(100%-2rem)] bg-soft-black text-warm-white border-l-2 border-gold-primary shadow-2xl px-5 py-4 flex items-start gap-3"
+            role="status"
+            aria-live="polite"
+          >
+            <CheckCircle2 className="w-5 h-5 text-gold-primary flex-shrink-0 mt-0.5" />
+            <p className="text-sm font-light leading-relaxed">{t('success')}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <section className="pt-40 pb-16 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">

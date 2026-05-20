@@ -272,7 +272,8 @@
       "placeholder": "Uw e-mailadres",
       "submit": "Aanmelden",
       "submitting": "Laden…",
-      "privacyDisclaimer": "Door u aan te melden accepteert u ons <link>Privacybeleid</link>. Op elk moment opzegbaar."
+      "privacyDisclaimer": "Door u aan te melden accepteert u ons <link>Privacybeleid</link>. Op elk moment opzegbaar.",
+      "invalidEmail": "Vul een geldig e-mailadres in"
     }
   },
   "shop": {

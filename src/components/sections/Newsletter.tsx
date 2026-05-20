@@ -4,17 +4,28 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
+// Basic RFC-5322-ish email validation. Enough for live feedback; final
+// validation still happens server-side at /api/newsletter.
+const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 export function Newsletter() {
   const t = useTranslations('home.newsletter');
   const tc = useTranslations('common');
   const [email, setEmail] = useState('');
+  const [touched, setTouched] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const isInvalid = touched && email.length > 0 && !EMAIL_RX.test(email);
+  const isValid = email.length > 0 && EMAIL_RX.test(email);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !EMAIL_RX.test(email)) {
+      setTouched(true);
+      return;
+    }
 
     setLoading(true);
     setError('');
@@ -72,25 +83,39 @@ export function Newsletter() {
             {t('success')}
           </motion.p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-lg mx-auto">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-lg mx-auto" noValidate>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => setTouched(true)}
                 placeholder={t('placeholder')}
                 disabled={loading}
-                className="flex-1 px-5 py-4 bg-warm-white border border-pearl-grey text-sm focus:outline-none focus:border-gold-primary transition-colors disabled:opacity-50"
+                aria-invalid={isInvalid || undefined}
+                aria-describedby={isInvalid ? 'newsletter-error' : undefined}
+                className={`flex-1 px-5 py-4 bg-warm-white border text-sm focus:outline-none transition-colors disabled:opacity-50 ${
+                  isInvalid
+                    ? 'border-red-500 focus:border-red-500'
+                    : isValid
+                      ? 'border-gold-primary/60 focus:border-gold-primary'
+                      : 'border-pearl-grey focus:border-gold-primary'
+                }`}
               />
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || isInvalid}
                 className="px-8 py-4 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.25em] hover:bg-gold-primary hover:text-soft-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? t('submitting') : t('submit')}
               </button>
             </div>
+            {isInvalid && (
+              <p id="newsletter-error" className="text-xs text-red-600 text-left">
+                {t('invalidEmail')}
+              </p>
+            )}
             {error && (
               <p className="text-sm text-red-600">{error}</p>
             )}

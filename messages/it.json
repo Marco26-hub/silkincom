@@ -272,7 +272,8 @@
       "placeholder": "La tua email",
       "submit": "Iscriviti",
       "submitting": "Caricamento…",
-      "privacyDisclaimer": "Iscrivendoti accetti la nostra <link>Privacy Policy</link>. Disiscriviti in qualunque momento."
+      "privacyDisclaimer": "Iscrivendoti accetti la nostra <link>Privacy Policy</link>. Disiscriviti in qualunque momento.",
+      "invalidEmail": "Inserisci un'email valida"
     }
   },
   "shop": {

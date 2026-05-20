@@ -272,7 +272,8 @@
       "placeholder": "Ihre E-Mail-Adresse",
       "submit": "Abonnieren",
       "submitting": "Wird geladen…",
-      "privacyDisclaimer": "Mit der Anmeldung akzeptieren Sie unsere <link>Datenschutzerklärung</link>. Jederzeit abmeldbar."
+      "privacyDisclaimer": "Mit der Anmeldung akzeptieren Sie unsere <link>Datenschutzerklärung</link>. Jederzeit abmeldbar.",
+      "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein"
     }
   },
   "shop": {

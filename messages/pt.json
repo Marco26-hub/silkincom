@@ -272,7 +272,8 @@
       "placeholder": "O seu e-mail",
       "submit": "Subscrever",
       "submitting": "A carregar…",
-      "privacyDisclaimer": "Ao subscrever aceita a nossa <link>Política de privacidade</link>. Cancele quando quiser."
+      "privacyDisclaimer": "Ao subscrever aceita a nossa <link>Política de privacidade</link>. Cancele quando quiser.",
+      "invalidEmail": "Insira um endereço de email válido"
     }
   },
   "shop": {

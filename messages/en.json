@@ -272,7 +272,8 @@
       "placeholder": "Your email",
       "submit": "Subscribe",
       "submitting": "Loading…",
-      "privacyDisclaimer": "By subscribing you accept our <link>Privacy Policy</link>. Unsubscribe at any time."
+      "privacyDisclaimer": "By subscribing you accept our <link>Privacy Policy</link>. Unsubscribe at any time.",
+      "invalidEmail": "Please enter a valid email address"
     }
   },
   "shop": {

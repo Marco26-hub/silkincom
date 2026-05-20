@@ -272,7 +272,8 @@
       "placeholder": "Tu correo electrónico",
       "submit": "Suscribirse",
       "submitting": "Cargando…",
-      "privacyDisclaimer": "Al suscribirte aceptas nuestra <link>Política de privacidad</link>. Date de baja cuando quieras."
+      "privacyDisclaimer": "Al suscribirte aceptas nuestra <link>Política de privacidad</link>. Date de baja cuando quieras.",
+      "invalidEmail": "Introduce una dirección de email válida"
     }
   },
   "shop": {

@@ -156,54 +156,87 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               </span>
             </motion.div>
 
-            {/* Per-slide title — remounts on slide change to replay reveal animation */}
+            {/* Per-slide title — full word-by-word reveal on first mount only;
+                subsequent slide changes use a softer block fade so the user
+                isn't visually slammed every 6.5 s. */}
             <h1
               key={`title-${activeSlide}`}
               className="font-display font-light text-[2.85rem] sm:text-6xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.15] tracking-[-0.01em] mb-10"
             >
-              <span className="block overflow-hidden pb-[0.12em]">
-                {title.split(' ').map((word, i) => (
+              {activeSlide === 0 ? (
+                <>
+                  <span className="block overflow-hidden pb-[0.12em]">
+                    {title.split(' ').map((word, i) => (
+                      <motion.span
+                        key={`w1-0-${i}`}
+                        initial={{ y: '110%', opacity: 0 }}
+                        animate={{ y: '0%', opacity: 1 }}
+                        transition={{
+                          duration: 1.1,
+                          delay: 0.3 + i * 0.08,
+                          ease: [0.21, 0.47, 0.32, 0.98],
+                        }}
+                        className="inline-block mr-[0.25em]"
+                      >
+                        {word}
+                      </motion.span>
+                    ))}
+                  </span>
+                  {accent ? (
+                    <span className="block overflow-hidden mt-1 pb-[0.18em]">
+                      {accent.split(' ').map((word, i) => (
+                        <motion.em
+                          key={`w2-0-${i}`}
+                          initial={{ y: '110%', opacity: 0 }}
+                          animate={{ y: '0%', opacity: 1 }}
+                          transition={{
+                            duration: 1.1,
+                            delay: 0.55 + i * 0.08,
+                            ease: [0.21, 0.47, 0.32, 0.98],
+                          }}
+                          className="inline-block mr-[0.25em] italic font-light text-gold-primary"
+                        >
+                          {word}
+                        </motion.em>
+                      ))}
+                    </span>
+                  ) : null}
+                </>
+              ) : (
+                <>
                   <motion.span
-                    key={`w1-${activeSlide}-${i}`}
-                    initial={{ y: '110%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    transition={{
-                      duration: 1.1,
-                      delay: 0.3 + i * 0.08,
-                      ease: [0.21, 0.47, 0.32, 0.98],
-                    }}
-                    className="inline-block mr-[0.25em]"
+                    key={`t1-${activeSlide}`}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.9, ease: [0.21, 0.47, 0.32, 0.98] }}
+                    className="block pb-[0.12em]"
                   >
-                    {word}
+                    {title}
                   </motion.span>
-                ))}
-              </span>
-              {accent ? (
-                <span className="block overflow-hidden mt-1 pb-[0.18em]">
-                  {accent.split(' ').map((word, i) => (
+                  {accent ? (
                     <motion.em
-                      key={`w2-${activeSlide}-${i}`}
-                      initial={{ y: '110%', opacity: 0 }}
-                      animate={{ y: '0%', opacity: 1 }}
-                      transition={{
-                        duration: 1.1,
-                        delay: 0.55 + i * 0.08,
-                        ease: [0.21, 0.47, 0.32, 0.98],
-                      }}
-                      className="inline-block mr-[0.25em] italic font-light text-gold-primary"
+                      key={`t2-${activeSlide}`}
+                      initial={{ opacity: 0, y: 14 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.9, delay: 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
+                      className="block mt-1 pb-[0.18em] italic font-light text-gold-primary"
                     >
-                      {word}
+                      {accent}
                     </motion.em>
-                  ))}
-                </span>
-              ) : null}
+                  ) : null}
+                </>
+              )}
             </h1>
 
             <motion.p
               key={`subtitle-${activeSlide}`}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.0, ease: [0.21, 0.47, 0.32, 0.98] }}
+              transition={{
+                duration: activeSlide === 0 ? 1 : 0.9,
+                delay: activeSlide === 0 ? 1.0 : 0.35,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
               className="text-base md:text-lg lg:text-xl font-light text-warm-white/85 max-w-xl mb-12 leading-[1.75] tracking-wide"
             >
               {subtitle}
@@ -216,7 +249,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               className="flex flex-wrap gap-5"
             >
               <Link
-                href="/collezioni/primavera"
+                href="/collezioni"
                 className="group relative inline-flex items-center gap-3 px-10 py-5 bg-warm-white text-soft-black text-[10.5px] uppercase tracking-[0.3em] overflow-hidden transition-all duration-700 font-medium"
               >
                 <span className="absolute inset-0 bg-gold-primary translate-y-[105%] group-hover:translate-y-0 transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)]" />
