@@ -32,7 +32,7 @@ export default function TramePage() {
 
   return (
     <>
-      <section className="pt-40 pb-20 bg-ivory relative overflow-hidden">
+      <section className="pt-28 md:pt-40 pb-20 bg-ivory relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-bl from-gold-primary/5 to-transparent pointer-events-none" />
         <motion.div 
           initial="hidden"
@@ -43,7 +43,7 @@ export default function TramePage() {
           <motion.span variants={itemVariants} className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-6">
             {t('eyebrow')}
           </motion.span>
-          <motion.h1 variants={itemVariants} className="font-display font-light text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] mb-6">
+          <motion.h1 variants={itemVariants} className="font-display font-light text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] mb-6">
             {t.rich('title', { em: (c) => <em className="italic text-gold-primary">{c}</em> })}
           </motion.h1>
           <motion.p variants={itemVariants} className="max-w-2xl mx-auto text-base md:text-lg font-light text-soft-black/70 leading-relaxed">

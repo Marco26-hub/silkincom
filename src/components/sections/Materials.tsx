@@ -71,7 +71,7 @@ function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
               role="tab"
               aria-selected={isActive}
               onClick={() => setActiveTab(key)}
-              className={`relative flex-1 min-w-0 px-0.5 pb-3 pt-1 text-[8px] uppercase tracking-[0.08em] font-medium whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-300 ${
+              className={`relative flex-1 min-w-0 px-1 pb-3 pt-1 text-[10px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.1em] font-medium whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-300 ${
                 isActive ? 'text-gold-dark' : 'text-soft-black/45 hover:text-soft-black/80'
               }`}
             >

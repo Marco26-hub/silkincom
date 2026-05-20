@@ -67,12 +67,12 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
-      <section className="pt-40 pb-16 bg-ivory">
+      <section className="pt-28 md:pt-40 pb-16 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">
             {typeLabel}
           </span>
-          <h1 className="font-display font-light text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
+          <h1 className="font-display font-light text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
             {meta.name}
           </h1>
           <p className="max-w-2xl mx-auto text-base font-light text-soft-black/70">

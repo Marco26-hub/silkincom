@@ -31,12 +31,12 @@ export default async function CollezioniPage() {
           { name: 'Collezioni', path: '/collezioni' },
         ]}
       />
-      <section className="pt-40 pb-16 bg-ivory">
+      <section className="pt-28 md:pt-40 pb-16 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">
             {t('eyebrow')}
           </span>
-          <h1 className="font-display font-light text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
+          <h1 className="font-display font-light text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
             {t('titlePlain')} <em className="italic text-gold-primary">{t('titleAccent')}</em>
           </h1>
           <p className="max-w-2xl mx-auto text-base font-light text-soft-black/70">

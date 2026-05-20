@@ -85,7 +85,7 @@ export default async function ArtigianiPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       {/* Hero */}
-      <section className="pt-44 pb-20 bg-ivory">
+      <section className="pt-28 md:pt-44 pb-20 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
             {t('hero.eyebrow')}

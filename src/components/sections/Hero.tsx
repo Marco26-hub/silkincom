@@ -161,7 +161,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 isn't visually slammed every 6.5 s. */}
             <h1
               key={`title-${activeSlide}`}
-              className="font-display font-light text-[2.85rem] sm:text-6xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.15] tracking-[-0.01em] mb-10"
+              className="font-display font-light text-[2.25rem] xs:text-[2.5rem] sm:text-5xl md:text-7xl lg:text-[88px] xl:text-[100px] leading-[1.12] tracking-[-0.01em] mb-8 md:mb-10"
             >
               {activeSlide === 0 ? (
                 <>
@@ -237,7 +237,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 delay: activeSlide === 0 ? 1.0 : 0.35,
                 ease: [0.21, 0.47, 0.32, 0.98],
               }}
-              className="text-base md:text-lg lg:text-xl font-light text-warm-white/85 max-w-xl mb-12 leading-[1.75] tracking-wide"
+              className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-warm-white/85 max-w-xl mb-10 md:mb-12 leading-[1.7] md:leading-[1.75] tracking-wide"
             >
               {subtitle}
             </motion.p>
@@ -246,11 +246,11 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="flex flex-wrap gap-5"
+              className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-5"
             >
               <Link
                 href="/collezioni"
-                className="group relative inline-flex items-center gap-3 px-10 py-5 bg-warm-white text-soft-black text-[10.5px] uppercase tracking-[0.3em] overflow-hidden transition-all duration-700 font-medium"
+                className="group relative inline-flex items-center justify-center sm:justify-start gap-3 px-8 sm:px-10 py-4 sm:py-5 bg-warm-white text-soft-black text-[10.5px] uppercase tracking-[0.25em] sm:tracking-[0.3em] overflow-hidden transition-all duration-700 font-medium min-h-[48px]"
               >
                 <span className="absolute inset-0 bg-gold-primary translate-y-[105%] group-hover:translate-y-0 transition-transform duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)]" />
                 <span className="relative z-10 group-hover:text-warm-white transition-colors duration-700">
@@ -260,7 +260,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               </Link>
               <Link
                 href="/la-nostra-storia"
-                className="group inline-flex items-center gap-3 px-10 py-5 border border-warm-white/35 text-warm-white text-[10.5px] uppercase tracking-[0.3em] hover:border-gold-primary hover:text-gold-primary transition-all duration-700 backdrop-blur-md"
+                className="group inline-flex items-center justify-center sm:justify-start gap-3 px-8 sm:px-10 py-4 sm:py-5 border border-warm-white/35 text-warm-white text-[10.5px] uppercase tracking-[0.25em] sm:tracking-[0.3em] hover:border-gold-primary hover:text-gold-primary transition-all duration-700 backdrop-blur-md min-h-[48px]"
               >
                 {t('ctaSecondary')}
                 <span className="block w-0 h-px bg-gold-primary group-hover:w-4 transition-all duration-700" />

@@ -45,12 +45,12 @@ export default function PressPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pressSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <section className="pt-44 pb-16 bg-ivory">
+      <section className="pt-28 md:pt-44 pb-16 bg-ivory">
         <div className="max-w-[900px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
             Press Room
           </span>
-          <h1 className="font-display font-light text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-soft-black mb-6">
+          <h1 className="font-display font-light text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-soft-black mb-6">
             Media kit
           </h1>
           <p className="font-display italic text-xl md:text-2xl text-soft-black/80">
