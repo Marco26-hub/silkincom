@@ -62,15 +62,42 @@ export default async function CuraMaterialePage({
 }: {
   params: Promise<{ material: string; locale: string }>;
 }) {
-  const { material } = await params;
+  const { material, locale } = await params;
   if (!(MATERIALS as readonly string[]).includes(material)) notFound();
   const m = material as Material;
   const info = COPY[m];
   const t = await getTranslations('cura');
   const items = t.raw(`${m}Items`) as string[];
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const pageUrl = `${baseUrl}${prefix}/cura-prodotto/${m}`;
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: info.title,
+    description: info.intro,
+    inLanguage: locale,
+    step: items.map((stepText, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      text: stepText,
+    })),
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: 'Cura del prodotto', item: `${baseUrl}${prefix}/cura-prodotto` },
+      { '@type': 'ListItem', position: 3, name: info.title, item: pageUrl },
+    ],
+  };
+
   return (
     <LegalPage title={info.title} subtitle={t('subtitle')}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <p>{info.intro}</p>
 
       <h2>I gesti essenziali</h2>

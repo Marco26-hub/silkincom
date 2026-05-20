@@ -94,10 +94,21 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         })),
       }
     : null;
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: 'Trame di Como', item: `${baseUrl}${prefix}/trame-di-como` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: articleUrl },
+    ],
+  };
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {howToSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
       )}
