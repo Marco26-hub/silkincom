@@ -1,10 +1,21 @@
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = {
-  title: 'FAQ — Domande frequenti',
-  description: 'Risposte alle domande più frequenti sui prodotti, ordini, spedizioni e resi SILKinCOM.',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: 'FAQ — Domande frequenti',
+    description:
+      'Risposte alle domande più frequenti sui prodotti, ordini, spedizioni e resi SILKinCOM.',
+    alternates: localizedAlternates(locale, '/faq'),
+  };
+}
 
 type Faq = { q: string; a: string };
 
