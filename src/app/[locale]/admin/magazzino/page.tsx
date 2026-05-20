@@ -15,20 +15,56 @@ export default async function AdminWarehousePage({
 
   const supabase = createServiceClient();
 
-  // ---------- Giacenze (inventory + product join) ----------
+  // ---------- Giacenze (inventory + product + variant join) ----------
   let invQ = supabase
     .from('inventory')
     .select(
       `id, product_id, variant_id, quantity_total, quantity_available, quantity_reserved,
        warehouse_location, last_restocked_at, reorder_threshold, reorder_quantity,
        supplier_name, supplier_sku,
-       products(name, slug, sku, status, price)`
+       products(name, slug, sku, status, price),
+       product_variants(id, variant_sku, size)`
     )
-    .order('quantity_available', { ascending: true })
     .limit(300);
   if (filter === 'low') invQ = invQ.lt('quantity_available', 5).gt('quantity_available', 0);
   if (filter === 'out') invQ = invQ.eq('quantity_available', 0);
-  const { data: inventory } = await invQ;
+  const { data: rawInventory } = await invQ;
+
+  // Group + canonical size ordering. Variant rows sit under their product
+  // parent so the dashboard reads top-to-bottom per article.
+  const SIZE_ORDER: Record<string, number> = {
+    XS: 0, S: 1, M: 2, L: 3, XL: 4, XXL: 5, XXXL: 6, UNI: 9,
+  };
+  type RawInv = {
+    id: string;
+    product_id: string;
+    variant_id: string | null;
+    quantity_total: number;
+    quantity_available: number;
+    quantity_reserved: number;
+    warehouse_location: string | null;
+    last_restocked_at: string | null;
+    reorder_threshold: number | null;
+    reorder_quantity: number | null;
+    supplier_name: string | null;
+    supplier_sku: string | null;
+    products: { name: string; slug: string; sku: string; status: string; price: number } | null;
+    product_variants: { id: string; variant_sku: string; size: string | null } | null;
+  };
+  const inventory = ((rawInventory ?? []) as unknown as RawInv[]).slice().sort((a, b) => {
+    const an = a.products?.name ?? '';
+    const bn = b.products?.name ?? '';
+    if (an !== bn) return an.localeCompare(bn, 'it');
+    const as = a.product_variants?.size ?? null;
+    const bs = b.product_variants?.size ?? null;
+    // Product-level row (variant_id null) always before its variant siblings.
+    if (a.variant_id === null && b.variant_id !== null) return -1;
+    if (a.variant_id !== null && b.variant_id === null) return 1;
+    const ao = as ? SIZE_ORDER[as] ?? 99 : 99;
+    const bo = bs ? SIZE_ORDER[bs] ?? 99 : 99;
+    if (ao !== bo) return ao - bo;
+    return a.quantity_available - b.quantity_available;
+  });
 
   // ---------- KPI totals (all inventory, ignore filter) ----------
   const { data: kpiRows } = await supabase

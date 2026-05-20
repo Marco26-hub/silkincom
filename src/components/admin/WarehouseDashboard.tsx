@@ -36,6 +36,7 @@ type InventoryRow = {
   supplier_name: string | null;
   supplier_sku: string | null;
   products: { name: string; slug: string; sku: string; status: string; price: number } | null;
+  product_variants: { id: string; variant_sku: string; size: string | null } | null;
 };
 
 type Movement = {
@@ -119,12 +120,16 @@ export function WarehouseDashboard({
   }
 
   const filteredInventory = search
-    ? inventory.filter(
-        (i) =>
-          i.products?.name?.toLowerCase().includes(search.toLowerCase()) ||
-          i.products?.sku?.toLowerCase().includes(search.toLowerCase()) ||
-          i.products?.slug?.toLowerCase().includes(search.toLowerCase())
-      )
+    ? inventory.filter((i) => {
+        const q = search.toLowerCase();
+        return (
+          i.products?.name?.toLowerCase().includes(q) ||
+          i.products?.sku?.toLowerCase().includes(q) ||
+          i.products?.slug?.toLowerCase().includes(q) ||
+          i.product_variants?.variant_sku?.toLowerCase().includes(q) ||
+          i.product_variants?.size?.toLowerCase().includes(q)
+        );
+      })
     : inventory;
 
   return (
@@ -230,7 +235,8 @@ export function WarehouseDashboard({
               product_id: i.product_id,
               variant_id: i.variant_id,
               name: i.products?.name ?? '—',
-              sku: i.products?.sku ?? '',
+              sku: i.product_variants?.variant_sku ?? i.products?.sku ?? '',
+              size: i.product_variants?.size ?? null,
               available: i.quantity_available,
             }))}
             onClose={() => setQuickMode(null)}
@@ -281,12 +287,13 @@ function GiacenzeTab({
   onFilter: (f: string) => void;
 }) {
   function exportCsv() {
-    const header = ['SKU', 'Prodotto', 'Disponibile', 'Riservato', 'Totale', 'Soglia riordino', 'Fornitore', 'Ultima ricarica'];
+    const header = ['SKU', 'Prodotto', 'Taglia', 'Disponibile', 'Riservato', 'Totale', 'Soglia riordino', 'Fornitore', 'Ultima ricarica'];
     const lines = [header.join(',')];
     rows.forEach((r) => {
       lines.push([
-        r.products?.sku ?? '',
+        r.product_variants?.variant_sku ?? r.products?.sku ?? '',
         `"${(r.products?.name ?? '').replace(/"/g, '""')}"`,
+        r.product_variants?.size ?? '',
         r.quantity_available,
         r.quantity_reserved,
         r.quantity_total,
@@ -354,6 +361,7 @@ function GiacenzeTab({
           <thead className="bg-warm-white border-b border-pearl-grey">
             <tr className="text-left text-[10px] uppercase tracking-[0.22em] text-soft-grey">
               <th className="px-5 py-3.5 font-medium">Prodotto</th>
+              <th className="px-5 py-3.5 font-medium">Taglia</th>
               <th className="px-5 py-3.5 font-medium">SKU</th>
               <th className="px-5 py-3.5 font-medium text-right">Disponibile</th>
               <th className="px-5 py-3.5 font-medium text-right">Riservato</th>
@@ -364,15 +372,19 @@ function GiacenzeTab({
             </tr>
           </thead>
           <tbody className="divide-y divide-pearl-grey/50">
-            {rows.map((r) => {
+            {rows.map((r, idx) => {
               const low = r.quantity_available > 0 && r.quantity_available < (r.reorder_threshold ?? 5);
               const out = r.quantity_available === 0;
+              const prev = idx > 0 ? rows[idx - 1] : null;
+              const isFirstOfGroup = !prev || prev.product_id !== r.product_id;
+              const sku = r.product_variants?.variant_sku ?? r.products?.sku ?? '';
+              const isVariant = r.variant_id !== null;
               return (
                 <tr
                   key={r.id}
                   className={`group transition-colors hover:bg-pearl-grey/20 ${
                     out ? 'bg-red-50/30' : low ? 'bg-amber-50/25' : ''
-                  }`}
+                  } ${isFirstOfGroup && idx > 0 ? 'border-t-2 border-pearl-grey' : ''}`}
                 >
                   <td className="px-5 py-3.5 font-medium relative">
                     {out ? (
@@ -382,9 +394,24 @@ function GiacenzeTab({
                     ) : (
                       <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-transparent group-hover:bg-gold-primary transition-colors" />
                     )}
-                    {r.products?.name ?? '—'}
+                    {isFirstOfGroup ? (
+                      r.products?.name ?? '—'
+                    ) : (
+                      <span className="pl-5 text-soft-grey/50 text-xs">↳</span>
+                    )}
                   </td>
-                  <td className="px-5 py-3.5 font-mono text-xs text-soft-grey">{r.products?.sku}</td>
+                  <td className="px-5 py-3.5">
+                    {r.product_variants?.size ? (
+                      <span className="inline-flex items-center justify-center min-w-[32px] px-2 py-0.5 text-[10px] font-medium tracking-wider bg-soft-black text-warm-white uppercase">
+                        {r.product_variants.size}
+                      </span>
+                    ) : isVariant ? (
+                      <span className="text-xs text-soft-grey">—</span>
+                    ) : (
+                      <span className="text-xs text-soft-grey/50">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5 font-mono text-xs text-soft-grey">{sku}</td>
                   <td className={`px-5 py-3.5 text-right font-medium tabular-nums ${out ? 'text-red-700' : low ? 'text-amber-700' : ''}`}>
                     {r.quantity_available}
                   </td>
@@ -395,9 +422,11 @@ function GiacenzeTab({
                   <td className="px-5 py-3.5 text-right">
                     <InventoryAdjustForm
                       productId={r.product_id}
+                      variantId={r.variant_id}
                       currentAvailable={r.quantity_available}
                       currentTotal={r.quantity_total}
                       productName={r.products?.name ?? undefined}
+                      sizeLabel={r.product_variants?.size ?? null}
                     />
                   </td>
                 </tr>
@@ -405,7 +434,7 @@ function GiacenzeTab({
             })}
             {!rows.length ? (
               <tr>
-                <td colSpan={8} className="px-5 py-16">
+                <td colSpan={9} className="px-5 py-16">
                   <EmptyState icon={Package} title="Nessun prodotto in giacenza" hint="Aggiungi prodotti dal catalogo o esegui un carico rapido per popolare le scorte." />
                 </td>
               </tr>

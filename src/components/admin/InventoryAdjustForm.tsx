@@ -19,14 +19,18 @@ const POPOVER_W = 360;
 
 export function InventoryAdjustForm({
   productId,
+  variantId = null,
   currentAvailable,
   currentTotal,
   productName,
+  sizeLabel = null,
 }: {
   productId: string;
+  variantId?: string | null;
   currentAvailable: number;
   currentTotal: number;
   productName?: string;
+  sizeLabel?: string | null;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -123,6 +127,7 @@ export function InventoryAdjustForm({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           product_id: productId,
+          variant_id: variantId,
           quantity_change: n,
           reason: effective,
           movement_type: 'adjustment',
@@ -178,7 +183,14 @@ export function InventoryAdjustForm({
                   <p className="text-[10px] uppercase tracking-[0.28em] text-gold-primary mb-1">Magazzino</p>
                   <h3 className="font-display text-xl font-light leading-none">Rettifica giacenza</h3>
                   {productName ? (
-                    <p className="text-xs text-soft-grey mt-1.5 truncate max-w-[280px]">{productName}</p>
+                    <p className="text-xs text-soft-grey mt-1.5 truncate max-w-[280px]">
+                      {productName}
+                      {sizeLabel ? (
+                        <span className="ml-2 inline-flex items-center justify-center min-w-[26px] px-1.5 py-0.5 text-[9px] font-medium tracking-wider bg-soft-black text-warm-white uppercase">
+                          {sizeLabel}
+                        </span>
+                      ) : null}
+                    </p>
                   ) : null}
                 </div>
                 <button
