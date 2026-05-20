@@ -1,10 +1,33 @@
-import { createHmac } from 'crypto';
+import { createHmac, randomBytes } from 'crypto';
 
-const CSRF_SECRET = process.env.CSRF_SECRET || 'dev-secret-change-in-production';
+// CSRF_SECRET must come from the environment. In production a missing
+// secret used to silently fall back to a hard-coded string, which any
+// attacker reading the source could use to forge tokens. Now: refuse to
+// start without it in production; in dev/test fall back to a random per-
+// process value so local work still functions (tokens become invalid on
+// process restart, which is the desired tradeoff).
+let cachedSecret: string | null = null;
+function getCsrfSecret(): string {
+  if (cachedSecret) return cachedSecret;
+  const env = process.env.CSRF_SECRET?.trim();
+  if (env && env.length >= 16) {
+    cachedSecret = env;
+    return cachedSecret;
+  }
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'CSRF_SECRET non configurato (o troppo corto, min 16 char). Imposta una secret >=32 char in Vercel env e ridepoia.'
+    );
+  }
+  // Dev / test fallback — random per process, never logged.
+  cachedSecret = randomBytes(32).toString('hex');
+  return cachedSecret;
+}
+
 const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24h
 
 function sign(token: string, timestamp: string): string {
-  const hmac = createHmac('sha256', CSRF_SECRET);
+  const hmac = createHmac('sha256', getCsrfSecret());
   hmac.update(`${token}:${timestamp}`);
   return hmac.digest('hex');
 }

@@ -91,17 +91,27 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const descI18n: Record<string, string> = { it: source.description };
   const compI18n: Record<string, string> = { it: source.composition };
 
-  try {
-    // Sequential, not parallel: free-tier OpenRouter models rate-limit bursts.
-    for (const [loc, langName] of Object.entries(TARGET_LANGS)) {
+  // Sequential, not parallel: free-tier OpenRouter models rate-limit bursts.
+  // Per-language try/catch so a single failure (rate limit, malformed JSON,
+  // OpenRouter outage) does not discard the translations that already
+  // succeeded — we persist what we have and surface which locales failed.
+  const failedLocales: { locale: string; error: string }[] = [];
+  for (const [loc, langName] of Object.entries(TARGET_LANGS)) {
+    try {
       const t = await translateFields(langName, source);
       nameI18n[loc] = t.name;
       descI18n[loc] = t.description;
       compI18n[loc] = t.composition;
+    } catch (e) {
+      failedLocales.push({ locale: loc, error: (e as Error).message });
+      console.error(`[translate product ${id}] ${loc} failed:`, e);
     }
-  } catch (e) {
+  }
+  // If every locale failed treat as a hard failure: don't overwrite the DB
+  // with an empty i18n map.
+  if (failedLocales.length === Object.keys(TARGET_LANGS).length) {
     return NextResponse.json(
-      { error: `Traduzione fallita: ${(e as Error).message}` },
+      { error: `Traduzione fallita su tutte le lingue: ${failedLocales[0].error}`, failedLocales },
       { status: 502 },
     );
   }
@@ -116,10 +126,19 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     .eq('id', id);
   if (updErr) return NextResponse.json({ error: updErr.message }, { status: 500 });
 
+  const succeededLocales = Object.keys(TARGET_LANGS).filter(
+    (loc) => !failedLocales.some((f) => f.locale === loc)
+  );
   await logAdminAction(auth.userId, 'translate_product', 'product', id, {
-    languages: Object.keys(TARGET_LANGS),
+    languages: succeededLocales,
+    failed: failedLocales,
   });
   revalidateCatalog();
 
-  return NextResponse.json({ ok: true, languages: Object.keys(TARGET_LANGS) });
+  return NextResponse.json({
+    ok: true,
+    languages: succeededLocales,
+    partial: failedLocales.length > 0,
+    failedLocales,
+  });
 }

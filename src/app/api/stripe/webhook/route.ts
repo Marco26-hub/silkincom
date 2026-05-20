@@ -89,6 +89,9 @@ export async function POST(req: NextRequest) {
       // Decrement inventory (with FOR UPDATE lock via RPC function).
       // Variant-aware: call apply_inventory_movement directly so size-bound
       // inventory rows decrement, not the product-level row.
+      // We never block payment confirmation on inventory drift — capture the
+      // failures so admin can reconcile manually instead of silent loss.
+      const inventoryFailures: { product_id: string; variant_id: string | null; quantity: number; error: string }[] = [];
       for (const item of order.order_items || []) {
         const { error: invErr } = await supabase.rpc('apply_inventory_movement', {
           p_product_id: item.product_id,
@@ -100,8 +103,30 @@ export async function POST(req: NextRequest) {
           p_performed_by: null,
         });
         if (invErr) {
-          console.error('Inventory decrement failed:', invErr, { orderId, item });
+          inventoryFailures.push({
+            product_id: item.product_id,
+            variant_id: item.variant_id ?? null,
+            quantity: item.quantity,
+            error: invErr.message,
+          });
+          console.error('[INVENTORY_DRIFT_ALERT] decrement failed', {
+            orderId,
+            product_id: item.product_id,
+            variant_id: item.variant_id,
+            quantity: item.quantity,
+            error: invErr.message,
+          });
         }
+      }
+      if (inventoryFailures.length > 0) {
+        // Annotate the order so the admin Ordini detail page surfaces this
+        // without grepping Vercel logs.
+        await supabase
+          .from('orders')
+          .update({
+            admin_notes: `[INVENTORY_DRIFT] ${inventoryFailures.length} riga/e non scalata/e: ${JSON.stringify(inventoryFailures)}`,
+          })
+          .eq('id', orderId);
       }
 
       // Record coupon redemption if applied at checkout
