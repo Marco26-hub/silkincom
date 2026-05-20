@@ -45,3 +45,13 @@ export function revalidateHomeMaterials() {
   revalidateTag('home-materials');
   revalidatePath('/', 'layout');
 }
+
+/**
+ * Invalidates the static_pages CMS cache (la-nostra-storia, atelier, b2b, ...)
+ * after an admin mutation.
+ */
+export function revalidateStaticPages(pageKey?: string) {
+  revalidateTag('static-pages');
+  if (pageKey) revalidateTag(`static-page:${pageKey}`);
+  revalidatePath('/', 'layout');
+}

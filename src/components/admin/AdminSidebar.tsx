@@ -79,6 +79,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
       { href: '/admin/collezioni-home', label: 'Collezioni Home', icon: FolderTree, roles: EDITOR },
       { href: '/admin/sezioni-home', label: 'Sezioni Home', icon: FileText, roles: EDITOR },
       { href: '/admin/materiali-home', label: 'Materiali Home', icon: Boxes, roles: EDITOR },
+      { href: '/admin/pagine-statiche', label: 'Pagine Statiche', icon: ScrollText, roles: EDITOR },
     ],
   },
   {
