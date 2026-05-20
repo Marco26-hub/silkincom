@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter, Link } from '@/i18n/navigation';
 import {
   Package, AlertTriangle, XCircle, Activity, RotateCcw, Truck,
-  ArrowDownCircle, ArrowUpCircle, Download, Search, Loader2,
+  ArrowDownCircle, ArrowUpCircle, Download, Search,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InventoryAdjustForm } from '@/components/admin/InventoryAdjustForm';
@@ -256,13 +256,17 @@ function KpiCard({
 }) {
   const toneClass =
     tone === 'red' ? 'text-red-700' : tone === 'amber' ? 'text-amber-700' : accent ? 'text-gold-dark' : 'text-soft-black';
+  const accentBorder =
+    accent ? 'before:bg-gold-primary' : tone === 'red' ? 'before:bg-red-600' : tone === 'amber' ? 'before:bg-amber-500' : 'before:bg-transparent';
   return (
-    <div className="border border-pearl-grey bg-white px-4 py-4 flex flex-col gap-1">
+    <div
+      className={`relative border border-pearl-grey bg-white px-5 py-4 flex flex-col gap-1 transition-all duration-300 hover:border-soft-black/30 hover:shadow-[0_6px_20px_-12px_rgba(20,20,20,0.18)] hover:-translate-y-px before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] ${accentBorder}`}
+    >
       <div className="flex items-center justify-between text-soft-grey">
-        <span className="text-[10px] uppercase tracking-[0.2em]">{label}</span>
-        <Icon className="w-3.5 h-3.5 opacity-60" />
+        <span className="text-[10px] uppercase tracking-[0.22em]">{label}</span>
+        <Icon className="w-3.5 h-3.5 opacity-50" />
       </div>
-      <p className={`font-display text-2xl font-light tabular-nums ${toneClass}`}>{value}</p>
+      <p className={`font-display text-[28px] font-light tabular-nums leading-none ${toneClass}`}>{value}</p>
     </div>
   );
 }
@@ -303,19 +307,22 @@ function GiacenzeTab({
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-        <div className="flex gap-1 text-xs uppercase tracking-[0.2em]">
+        <div className="flex gap-0 text-xs uppercase tracking-[0.22em] border-b border-pearl-grey">
           {[['all', 'Tutti'], ['low', 'Scorta bassa'], ['out', 'Esauriti']].map(([k, label]) => (
             <button
               key={k}
               type="button"
               onClick={() => onFilter(k)}
-              className={`px-3 py-2 border transition-colors ${
+              className={`relative px-4 py-2.5 transition-colors ${
                 activeFilter === k
-                  ? 'bg-soft-black text-warm-white border-soft-black'
-                  : 'border-pearl-grey hover:border-soft-black'
+                  ? 'text-soft-black'
+                  : 'text-soft-grey hover:text-soft-black'
               }`}
             >
               {label}
+              {activeFilter === k ? (
+                <span className="absolute -bottom-px left-0 right-0 h-[2px] bg-gold-primary" />
+              ) : null}
             </button>
           ))}
         </div>
@@ -342,50 +349,91 @@ function GiacenzeTab({
         </div>
       </div>
 
-      <div className="border border-pearl-grey bg-white overflow-x-auto">
+      <div className="border border-pearl-grey bg-white overflow-x-auto overflow-y-visible">
         <table className="w-full text-sm">
           <thead className="bg-warm-white border-b border-pearl-grey">
-            <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-              <th className="px-5 py-3 font-medium">Prodotto</th>
-              <th className="px-5 py-3 font-medium">SKU</th>
-              <th className="px-5 py-3 font-medium text-right">Disponibile</th>
-              <th className="px-5 py-3 font-medium text-right">Riservato</th>
-              <th className="px-5 py-3 font-medium text-right">Totale</th>
-              <th className="px-5 py-3 font-medium text-right">Soglia</th>
-              <th className="px-5 py-3 font-medium">Fornitore</th>
-              <th className="px-5 py-3 font-medium">Rettifica</th>
+            <tr className="text-left text-[10px] uppercase tracking-[0.22em] text-soft-grey">
+              <th className="px-5 py-3.5 font-medium">Prodotto</th>
+              <th className="px-5 py-3.5 font-medium">SKU</th>
+              <th className="px-5 py-3.5 font-medium text-right">Disponibile</th>
+              <th className="px-5 py-3.5 font-medium text-right">Riservato</th>
+              <th className="px-5 py-3.5 font-medium text-right">Totale</th>
+              <th className="px-5 py-3.5 font-medium text-right">Soglia</th>
+              <th className="px-5 py-3.5 font-medium">Fornitore</th>
+              <th className="px-5 py-3.5 font-medium text-right">Azione</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-pearl-grey/60">
+          <tbody className="divide-y divide-pearl-grey/50">
             {rows.map((r) => {
               const low = r.quantity_available > 0 && r.quantity_available < (r.reorder_threshold ?? 5);
               const out = r.quantity_available === 0;
               return (
-                <tr key={r.id} className={out ? 'bg-red-50/40' : low ? 'bg-amber-50/40' : ''}>
-                  <td className="px-5 py-3 font-medium">{r.products?.name ?? '—'}</td>
-                  <td className="px-5 py-3 font-mono text-xs text-soft-grey">{r.products?.sku}</td>
-                  <td className={`px-5 py-3 text-right font-medium tabular-nums ${out ? 'text-red-700' : low ? 'text-amber-700' : ''}`}>
+                <tr
+                  key={r.id}
+                  className={`group transition-colors hover:bg-pearl-grey/20 ${
+                    out ? 'bg-red-50/30' : low ? 'bg-amber-50/25' : ''
+                  }`}
+                >
+                  <td className="px-5 py-3.5 font-medium relative">
+                    {out ? (
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-red-600" />
+                    ) : low ? (
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-amber-500" />
+                    ) : (
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-transparent group-hover:bg-gold-primary transition-colors" />
+                    )}
+                    {r.products?.name ?? '—'}
+                  </td>
+                  <td className="px-5 py-3.5 font-mono text-xs text-soft-grey">{r.products?.sku}</td>
+                  <td className={`px-5 py-3.5 text-right font-medium tabular-nums ${out ? 'text-red-700' : low ? 'text-amber-700' : ''}`}>
                     {r.quantity_available}
                   </td>
-                  <td className="px-5 py-3 text-right text-soft-grey tabular-nums">{r.quantity_reserved}</td>
-                  <td className="px-5 py-3 text-right text-soft-grey tabular-nums">{r.quantity_total}</td>
-                  <td className="px-5 py-3 text-right text-soft-grey tabular-nums">{r.reorder_threshold ?? '–'}</td>
-                  <td className="px-5 py-3 text-xs text-soft-grey">{r.supplier_name ?? '—'}</td>
-                  <td className="px-5 py-3">
+                  <td className="px-5 py-3.5 text-right text-soft-grey tabular-nums">{r.quantity_reserved}</td>
+                  <td className="px-5 py-3.5 text-right text-soft-grey tabular-nums">{r.quantity_total}</td>
+                  <td className="px-5 py-3.5 text-right text-soft-grey tabular-nums">{r.reorder_threshold ?? '–'}</td>
+                  <td className="px-5 py-3.5 text-xs text-soft-grey">{r.supplier_name ?? '—'}</td>
+                  <td className="px-5 py-3.5 text-right">
                     <InventoryAdjustForm
                       productId={r.product_id}
                       currentAvailable={r.quantity_available}
                       currentTotal={r.quantity_total}
+                      productName={r.products?.name ?? undefined}
                     />
                   </td>
                 </tr>
               );
             })}
             {!rows.length ? (
-              <tr><td colSpan={8} className="px-5 py-12 text-center text-soft-grey">Nessun prodotto</td></tr>
+              <tr>
+                <td colSpan={8} className="px-5 py-16">
+                  <EmptyState icon={Package} title="Nessun prodotto in giacenza" hint="Aggiungi prodotti dal catalogo o esegui un carico rapido per popolare le scorte." />
+                </td>
+              </tr>
             ) : null}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({
+  icon: Icon,
+  title,
+  hint,
+}: {
+  icon: typeof Package;
+  title: string;
+  hint?: string;
+}) {
+  return (
+    <div className="flex flex-col items-center text-center gap-3 py-6">
+      <div className="w-12 h-12 rounded-full bg-pearl-grey/30 border border-pearl-grey flex items-center justify-center text-soft-grey">
+        <Icon className="w-5 h-5" />
+      </div>
+      <div>
+        <p className="font-display text-lg text-soft-black font-light">{title}</p>
+        {hint ? <p className="text-xs text-soft-grey mt-1 max-w-sm">{hint}</p> : null}
       </div>
     </div>
   );
@@ -421,20 +469,24 @@ function MovimentiTab({ rows }: { rows: Movement[] }) {
           {rows.map((m) => {
             const meta = MOVEMENT_LABEL[m.movement_type] ?? { label: m.movement_type, color: 'bg-gray-100 text-gray-700' };
             return (
-              <tr key={m.id}>
-                <td className="px-5 py-3 text-xs text-soft-grey whitespace-nowrap">
+              <tr key={m.id} className="transition-colors hover:bg-pearl-grey/20">
+                <td className="px-5 py-3.5 text-xs text-soft-grey whitespace-nowrap tabular-nums">
                   {new Date(m.performed_at).toLocaleString('it-IT', { dateStyle: 'short', timeStyle: 'short' })}
                 </td>
-                <td className="px-5 py-3">{m.products?.name ?? '—'}</td>
-                <td className="px-5 py-3">
-                  <span className={`text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded ${meta.color}`}>{meta.label}</span>
+                <td className="px-5 py-3.5 font-medium">{m.products?.name ?? '—'}</td>
+                <td className="px-5 py-3.5">
+                  <span className={`inline-flex items-center text-[9px] uppercase tracking-[0.2em] px-2 py-1 ${meta.color}`}>
+                    {meta.label}
+                  </span>
                 </td>
-                <td className={`px-5 py-3 text-right font-medium tabular-nums ${m.quantity_change > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                <td className={`px-5 py-3.5 text-right font-display text-base tabular-nums ${m.quantity_change > 0 ? 'text-green-700' : 'text-red-700'}`}>
                   {m.quantity_change > 0 ? '+' : ''}{m.quantity_change}
                 </td>
-                <td className="px-5 py-3 text-right text-soft-grey tabular-nums">{m.quantity_before} → {m.quantity_after}</td>
-                <td className="px-5 py-3 text-xs">{m.reason ?? '—'}</td>
-                <td className="px-5 py-3 text-xs">
+                <td className="px-5 py-3.5 text-right text-soft-grey tabular-nums text-xs">
+                  {m.quantity_before} <span className="text-gold-primary mx-0.5">→</span> {m.quantity_after}
+                </td>
+                <td className="px-5 py-3.5 text-xs">{m.reason ?? '—'}</td>
+                <td className="px-5 py-3.5 text-xs">
                   {m.reference_order_id ? (
                     <Link href={`/admin/ordini/${m.reference_order_id}`} className="text-gold-primary hover:underline">vedi</Link>
                   ) : '—'}
@@ -443,7 +495,11 @@ function MovimentiTab({ rows }: { rows: Movement[] }) {
             );
           })}
           {!rows.length ? (
-            <tr><td colSpan={7} className="px-5 py-12 text-center text-soft-grey">Nessun movimento</td></tr>
+            <tr>
+              <td colSpan={7} className="px-5 py-16">
+                <EmptyState icon={Activity} title="Nessun movimento registrato" hint="Vendite, carichi, scarichi e rettifiche compaiono qui in tempo reale." />
+              </td>
+            </tr>
           ) : null}
         </tbody>
       </table>
@@ -474,19 +530,23 @@ function FornitoriTab({ rows }: { rows: PurchaseOrder[] }) {
               <th className="px-5 py-3 font-medium">Ricevuto</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-pearl-grey/60">
+          <tbody className="divide-y divide-pearl-grey/50">
             {rows.map((p) => (
-              <tr key={p.id}>
-                <td className="px-5 py-3 font-mono text-xs">{p.po_number}</td>
-                <td className="px-5 py-3">{p.supplier_name}</td>
-                <td className="px-5 py-3 text-xs uppercase tracking-[0.15em]">{p.status}</td>
-                <td className="px-5 py-3 text-right tabular-nums">{p.total_cost != null ? eur(p.total_cost) : '–'}</td>
-                <td className="px-5 py-3 text-xs text-soft-grey">{p.expected_delivery ?? '–'}</td>
-                <td className="px-5 py-3 text-xs text-soft-grey">{p.received_at ? new Date(p.received_at).toLocaleDateString('it-IT') : '–'}</td>
+              <tr key={p.id} className="transition-colors hover:bg-pearl-grey/20">
+                <td className="px-5 py-3.5 font-mono text-xs">{p.po_number}</td>
+                <td className="px-5 py-3.5 font-medium">{p.supplier_name}</td>
+                <td className="px-5 py-3.5 text-[10px] uppercase tracking-[0.2em] text-soft-grey">{p.status}</td>
+                <td className="px-5 py-3.5 text-right tabular-nums">{p.total_cost != null ? eur(p.total_cost) : '–'}</td>
+                <td className="px-5 py-3.5 text-xs text-soft-grey">{p.expected_delivery ?? '–'}</td>
+                <td className="px-5 py-3.5 text-xs text-soft-grey">{p.received_at ? new Date(p.received_at).toLocaleDateString('it-IT') : '–'}</td>
               </tr>
             ))}
             {!rows.length ? (
-              <tr><td colSpan={6} className="px-5 py-12 text-center text-soft-grey">Nessun ordine fornitore</td></tr>
+              <tr>
+                <td colSpan={6} className="px-5 py-16">
+                  <EmptyState icon={Truck} title="Nessun ordine fornitore aperto" hint="Crea un PO dalla pagina Gestione completa per riassortire le scorte." />
+                </td>
+              </tr>
             ) : null}
           </tbody>
         </table>
@@ -527,22 +587,28 @@ function ResiTab({ rows }: { rows: ReturnRow[] }) {
               <th className="px-5 py-3 font-medium">Rimborsato il</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-pearl-grey/60">
+          <tbody className="divide-y divide-pearl-grey/50">
             {rows.map((r) => {
               const s = RETURN_STATUS[r.status] ?? { label: r.status, color: 'bg-gray-100 text-gray-700' };
               return (
-                <tr key={r.id}>
-                  <td className="px-5 py-3 font-mono text-xs">{r.return_number}</td>
-                  <td className="px-5 py-3"><span className={`text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded ${s.color}`}>{s.label}</span></td>
-                  <td className="px-5 py-3 text-xs text-soft-grey">{r.reason}</td>
-                  <td className="px-5 py-3 text-right tabular-nums">{r.refund_amount != null ? eur(r.refund_amount) : '–'}</td>
-                  <td className="px-5 py-3 text-xs text-soft-grey">{new Date(r.created_at).toLocaleDateString('it-IT')}</td>
-                  <td className="px-5 py-3 text-xs text-soft-grey">{r.refunded_at ? new Date(r.refunded_at).toLocaleDateString('it-IT') : '–'}</td>
+                <tr key={r.id} className="transition-colors hover:bg-pearl-grey/20">
+                  <td className="px-5 py-3.5 font-mono text-xs">{r.return_number}</td>
+                  <td className="px-5 py-3.5">
+                    <span className={`inline-flex items-center text-[9px] uppercase tracking-[0.2em] px-2 py-1 ${s.color}`}>{s.label}</span>
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-soft-grey">{r.reason}</td>
+                  <td className="px-5 py-3.5 text-right tabular-nums">{r.refund_amount != null ? eur(r.refund_amount) : '–'}</td>
+                  <td className="px-5 py-3.5 text-xs text-soft-grey">{new Date(r.created_at).toLocaleDateString('it-IT')}</td>
+                  <td className="px-5 py-3.5 text-xs text-soft-grey">{r.refunded_at ? new Date(r.refunded_at).toLocaleDateString('it-IT') : '–'}</td>
                 </tr>
               );
             })}
             {!rows.length ? (
-              <tr><td colSpan={6} className="px-5 py-12 text-center text-soft-grey">Nessun reso</td></tr>
+              <tr>
+                <td colSpan={6} className="px-5 py-16">
+                  <EmptyState icon={RotateCcw} title="Nessun reso aperto" hint="I resi avviati dai clienti compaiono qui con stato e importo rimborso." />
+                </td>
+              </tr>
             ) : null}
           </tbody>
         </table>
