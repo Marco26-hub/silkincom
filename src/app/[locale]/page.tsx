@@ -11,6 +11,7 @@ import { getLocale } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
 import { getHomeSlides } from '@/data/home-slides';
 import { getFeaturedCollections } from '@/data/collections-db';
+import { getHomeSection, getHomeMaterials } from '@/data/home-content';
 
 export async function generateMetadata() {
   const locale = await getLocale();
@@ -19,20 +20,24 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   const locale = await getLocale();
-  const [slides, featured] = await Promise.all([
+  const [slides, featured, brandStory, editorial, instagram, materials] = await Promise.all([
     getHomeSlides(locale),
     getFeaturedCollections(locale),
+    getHomeSection('brand_story', locale),
+    getHomeSection('editorial_banner', locale),
+    getHomeSection('instagram_feed', locale),
+    getHomeMaterials(locale),
   ]);
   return (
     <>
       <Hero slides={slides} />
       <ValueProps />
       <FeaturedCollections collections={featured} />
-      <BrandStory />
+      <BrandStory section={brandStory} />
       <BestsellerSection />
-      <Materials />
-      <EditorialBanner />
-      <InstagramFeed />
+      <Materials materials={materials} />
+      <EditorialBanner section={editorial} />
+      <InstagramFeed section={instagram} />
       <Newsletter />
     </>
   );

@@ -6,30 +6,9 @@ import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import type { HomeMaterialCard } from '@/data/home-content';
 
 type TabKey = 'origine' | 'caratteristiche' | 'beneficio';
-
-type MaterialTab = {
-  title: string;
-  body: string;
-};
-
-type MaterialCard = {
-  name: string;
-  code: string;
-  image: string;
-  href: string;
-  tabs: Record<TabKey, MaterialTab>;
-};
-
-const MATERIAL_DEFS = [
-  { tKey: 'seta', code: 'SE', image: 'https://static.wixstatic.com/media/a34b56_d0546fb94b1141e292d6ab721a70f6af~mv2.png/v1/fill/w_900,h_700,al_c,q_90/file.png', href: '/materiali#seta' },
-  { tKey: 'cashmere', code: 'WS', image: 'https://static.wixstatic.com/media/a34b56_a8f747d43425400e9268c9c5a50583dd~mv2.png/v1/fill/w_900,h_700,al_c,q_90/file.png', href: '/materiali#cashmere' },
-  { tKey: 'lana', code: 'WO', image: 'https://static.wixstatic.com/media/a34b56_18eec7b7887f47f69567da3fbe1af6ca~mv2.png/v1/fill/w_900,h_700,al_c,q_90/file.png', href: '/materiali#merino' },
-  { tKey: 'cotone', code: 'CO', image: '/materials/cotone.jpg', href: '/materiali#lino-cotone' },
-  { tKey: 'lino', code: 'LI', image: '/materials/lino.jpg', href: '/materiali#lino-cotone' },
-];
-
 const TAB_KEYS: TabKey[] = ['origine', 'caratteristiche', 'beneficio'];
 
 const containerVariants = {
@@ -42,11 +21,10 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
 };
 
-function MaterialCardComponent({ material }: { material: MaterialCard }) {
+function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
   const t = useTranslations('home.materials');
   const [activeTab, setActiveTab] = useState<TabKey>('origine');
   const active = material.tabs[activeTab];
-  void active;
 
   return (
     <motion.div
@@ -56,7 +34,6 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
         boxShadow: '0 1px 2px rgba(23,23,23,0.04), 0 12px 32px -16px rgba(23,23,23,0.10)',
       }}
     >
-      {/* Header: name + code */}
       <div className="flex items-baseline justify-between mb-6">
         <h3 className="font-display font-light text-3xl md:text-4xl text-soft-black group-hover:text-gold-dark transition-colors duration-500">
           {material.name}
@@ -66,7 +43,6 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
         </span>
       </div>
 
-      {/* Image */}
       <div
         className="relative aspect-[4/3] mb-7 overflow-hidden"
         style={{
@@ -74,17 +50,18 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
           boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.06)',
         }}
       >
-        <Image
-          src={material.image}
-          alt={material.name}
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          quality={92}
-          className="object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04]"
-        />
+        {material.image ? (
+          <Image
+            src={material.image}
+            alt={material.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            quality={92}
+            className="object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04]"
+          />
+        ) : null}
       </div>
 
-      {/* Tabs — elegant underline style */}
       <div role="tablist" className="flex border-b border-pearl-grey/60 mb-6">
         {TAB_KEYS.map((key) => {
           const isActive = activeTab === key;
@@ -95,9 +72,7 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
               aria-selected={isActive}
               onClick={() => setActiveTab(key)}
               className={`relative flex-1 min-w-0 px-0.5 pb-3 pt-1 text-[8px] uppercase tracking-[0.08em] font-medium whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-300 ${
-                isActive
-                  ? 'text-gold-dark'
-                  : 'text-soft-black/45 hover:text-soft-black/80'
+                isActive ? 'text-gold-dark' : 'text-soft-black/45 hover:text-soft-black/80'
               }`}
             >
               {t(`tabs.${key}`)}
@@ -111,7 +86,6 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
         })}
       </div>
 
-      {/* Active panel */}
       <div
         role="tabpanel"
         key={activeTab}
@@ -125,7 +99,6 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
         </p>
       </div>
 
-      {/* Link */}
       <Link
         href={material.href}
         className="inline-flex items-center gap-2 mt-8 text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-gold-primary/40 hover:border-gold-primary self-start pb-1 transition-colors"
@@ -137,21 +110,11 @@ function MaterialCardComponent({ material }: { material: MaterialCard }) {
   );
 }
 
-export function Materials() {
+export function Materials({ materials }: { materials?: HomeMaterialCard[] }) {
   const t = useTranslations('home.materials');
-  const tc = useTranslations('home.materials.cards');
 
-  const MATERIALS: MaterialCard[] = MATERIAL_DEFS.map((def) => ({
-    name: tc(`${def.tKey}.name` as any),
-    code: def.code,
-    image: def.image,
-    href: def.href,
-    tabs: {
-      origine: { title: tc(`${def.tKey}.tabs.origine.title` as any), body: tc(`${def.tKey}.tabs.origine.body` as any) },
-      caratteristiche: { title: tc(`${def.tKey}.tabs.caratteristiche.title` as any), body: tc(`${def.tKey}.tabs.caratteristiche.body` as any) },
-      beneficio: { title: tc(`${def.tKey}.tabs.beneficio.title` as any), body: tc(`${def.tKey}.tabs.beneficio.body` as any) },
-    },
-  }));
+  if (!materials || materials.length === 0) return null;
+
   return (
     <section className="py-24 md:py-section bg-warm-white text-soft-black overflow-hidden">
       <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
@@ -178,8 +141,8 @@ export function Materials() {
           viewport={{ once: true, margin: '-50px' }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-5"
         >
-          {MATERIALS.map((m) => (
-            <MaterialCardComponent key={m.code} material={m} />
+          {materials.map((m) => (
+            <MaterialCardComponent key={m.id} material={m} />
           ))}
         </motion.div>
 

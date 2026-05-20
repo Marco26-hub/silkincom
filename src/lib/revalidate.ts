@@ -26,3 +26,22 @@ export function revalidateCollections() {
   revalidateTag('collections-meta');
   revalidatePath('/', 'layout');
 }
+
+/**
+ * Invalidates the home_sections CMS cache (BrandStory / EditorialBanner /
+ * InstagramFeed) after an admin mutation.
+ */
+export function revalidateHomeSections(sectionKey?: string) {
+  revalidateTag('home-sections');
+  if (sectionKey) revalidateTag(`home-section:${sectionKey}`);
+  revalidatePath('/', 'layout');
+}
+
+/**
+ * Invalidates the home-page Materials cards cache after an admin mutation
+ * on the materials table content.
+ */
+export function revalidateHomeMaterials() {
+  revalidateTag('home-materials');
+  revalidatePath('/', 'layout');
+}
