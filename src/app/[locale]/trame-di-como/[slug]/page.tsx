@@ -6,6 +6,23 @@ import { POST_SLUGS, getPosts, getPost } from '@/data/posts';
 import { localizedAlternates } from '@/i18n/routing';
 import { ArrowUpRight } from 'lucide-react';
 
+// Posts that follow a step-by-step structure also emit schema.org HowTo
+// for better discoverability in voice search and AI/GEO surfaces.
+const HOWTO_POSTS: Record<string, { totalTime: string; steps: Array<{ name: string; text: string }> }> = {
+  'come-riconoscere-seta-vera': {
+    totalTime: 'PT3M',
+    steps: [
+      { name: 'Prova del tatto', text: 'Sfrega il tessuto tra le dita per dieci secondi: la seta autentica si riscalda piano e ridistribuisce il calore. Il poliestere resta freddo o si surriscalda.' },
+      { name: 'Prova del nodo', text: "Annoda il foulard e tira delicatamente: la seta conserva il nodo e poi si scioglie con un drappeggio naturale. Il poliestere scatta via o resta stropicciato." },
+      { name: 'Prova del fuoco', text: "Su una fibra del bordo: la seta brucia lentamente, lascia cenere friabile e nera e un odore di capello bruciato. Il poliestere fonde e fa una pallina dura." },
+      { name: 'Prova della luce', text: "La seta riflette la luce con lucentezza profonda e iridescente che cambia con l'angolazione. Il poliestere riflette in modo piatto, quasi metallico." },
+      { name: 'Prova del prezzo', text: 'Servono circa 2.500 bozzoli per un metro di tessuto: un foulard di pura seta sotto i €40–50 è statisticamente improbabile.' },
+      { name: "Prova dell'etichetta", text: 'Cerca "100% seta" o "100% silk". Etichette generiche come "seta naturale" o "seta-poliestere" sono campanelli d\'allarme.' },
+      { name: "Prova dell'orlo", text: "Una seta di qualità ha l'orlo cucito a mano (rouletté arrotolato verso l'interno), non tagliato a macchina o termo-sigillato." },
+    ],
+  },
+};
+
 export function generateStaticParams() {
   return POST_SLUGS.map((slug) => ({ slug }));
 }
@@ -59,9 +76,31 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     inLanguage: locale,
   };
 
+  const howToConfig = HOWTO_POSTS[post.slug];
+  const howToSchema = howToConfig
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: post.title,
+        description: post.description,
+        totalTime: howToConfig.totalTime,
+        image: post.image ? [post.image.startsWith('http') ? post.image : `${baseUrl}${post.image}`] : undefined,
+        inLanguage: locale,
+        step: howToConfig.steps.map((s, i) => ({
+          '@type': 'HowToStep',
+          position: i + 1,
+          name: s.name,
+          text: s.text,
+        })),
+      }
+    : null;
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      {howToSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
+      )}
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         {post.image && (
           <Image src={post.image} alt={post.title} fill priority className="object-cover scale-105 animate-[heroZoom_20s_ease-out_forwards]" />
