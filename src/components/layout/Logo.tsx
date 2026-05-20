@@ -31,7 +31,14 @@ function OfficialLogo({ size = 'md', variant = 'default', className = '' }: {
     filters.push('drop-shadow(0 0 18px rgba(212,175,55,0.45))');
     filters.push('drop-shadow(0 0 4px rgba(212,175,55,0.65))');
   } else {
-    filters.push('drop-shadow(0 1px 8px rgba(212,175,55,0.18))');
+    // Default variant — used on the header over the hero. The logo is a gold
+    // PNG that previously washed out against light photo subjects. Two
+    // stacked drop-shadows: a tight dark one for crisp edge contrast, plus a
+    // wider gold halo that keeps the brand feel premium.
+    filters.push('drop-shadow(0 1px 2px rgba(30,30,30,0.35))');
+    filters.push('drop-shadow(0 0 14px rgba(212,175,55,0.35))');
+    filters.push('contrast(1.05)');
+    filters.push('saturate(1.1)');
   }
 
   return (

@@ -45,7 +45,7 @@ export function Header() {
         className={`fixed top-9 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${
           scrolled
             ? 'bg-warm-white/95 backdrop-blur-md border-b border-pearl-grey/40 py-2.5'
-            : 'bg-warm-white/60 backdrop-blur-sm py-3 md:py-4'
+            : 'bg-warm-white/88 backdrop-blur-md py-3 md:py-4 shadow-[0_1px_0_rgba(212,175,55,0.18)]'
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center">
