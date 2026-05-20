@@ -20,18 +20,19 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
   const locale = await getLocale();
-  const [slides, featured, brandStory, editorial, instagram, materials] = await Promise.all([
+  const [slides, featured, brandStory, editorial, instagram, materials, valueProps] = await Promise.all([
     getHomeSlides(locale),
     getFeaturedCollections(locale),
     getHomeSection('brand_story', locale),
     getHomeSection('editorial_banner', locale),
     getHomeSection('instagram_feed', locale),
     getHomeMaterials(locale),
+    getHomeSection('value_props', locale),
   ]);
   return (
     <>
       <Hero slides={slides} />
-      <ValueProps />
+      <ValueProps section={valueProps} />
       <FeaturedCollections collections={featured} />
       <BrandStory section={brandStory} />
       <BestsellerSection />

@@ -7,6 +7,7 @@ import '../globals.css';
 import { PublicChrome } from '@/components/layout/PublicChrome';
 import { Analytics } from '@/components/analytics/Analytics';
 import { routing } from '@/i18n/routing';
+import { getHomeSection } from '@/data/home-content';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -198,6 +199,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  const announcementSection = await getHomeSection('announcement_bar', locale);
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${inter.variable} ${baskerville.variable}`}>
@@ -222,7 +224,7 @@ export default async function LocaleLayout({
       <body className="min-h-screen bg-warm-white text-soft-black antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Analytics />
-          <PublicChrome>{children}</PublicChrome>
+          <PublicChrome announcementSection={announcementSection}>{children}</PublicChrome>
         </NextIntlClientProvider>
       </body>
     </html>

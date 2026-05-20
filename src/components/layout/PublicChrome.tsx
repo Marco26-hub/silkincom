@@ -8,8 +8,15 @@ import { CookieBanner } from '@/components/ui/CookieBanner';
 import { SalesNotification } from '@/components/ui/SalesNotification';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { FloatingNav } from '@/components/ui/FloatingNav';
+import type { HomeSectionLocalized } from '@/data/home-content';
 
-export function PublicChrome({ children }: { children: React.ReactNode }) {
+export function PublicChrome({
+  children,
+  announcementSection,
+}: {
+  children: React.ReactNode;
+  announcementSection?: HomeSectionLocalized | null;
+}) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
 
@@ -19,7 +26,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <AnnouncementBar />
+      <AnnouncementBar section={announcementSection} />
       <Header />
       <CartDrawer />
       <main>{children}</main>

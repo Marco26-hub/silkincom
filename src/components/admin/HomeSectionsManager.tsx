@@ -19,6 +19,30 @@ type Section = {
 };
 
 const SECTION_META: Record<string, { title: string; description: string; fields: { name: string; label: string; type: 'input' | 'textarea' }[]; allowsManyImages?: boolean; hasSocials?: boolean }> = {
+  announcement_bar: {
+    title: 'Barra annunci (top strip rotante)',
+    description: 'Fino a 4 messaggi che ruotano in cima a ogni pagina ogni 5 secondi. Lascia vuoto per disattivare uno slot.',
+    fields: [
+      { name: 'msg1', label: 'Messaggio 1 (es. spedizione gratuita)', type: 'input' },
+      { name: 'msg2', label: 'Messaggio 2 (es. confezione regalo)', type: 'input' },
+      { name: 'msg3', label: 'Messaggio 3 (es. Made in Como)', type: 'input' },
+      { name: 'msg4', label: 'Messaggio 4 (es. resi gratuiti)', type: 'input' },
+    ],
+  },
+  value_props: {
+    title: 'Value Props (4 card sotto hero)',
+    description: '4 perks brand (icona + titolo + breve descrizione). Icone fisse: Made in Como, Spedizione, Confezione regalo, Resi.',
+    fields: [
+      { name: 'madeInComoTitle', label: 'Card 1 — Titolo (Made in Como)', type: 'input' },
+      { name: 'madeInComoDesc', label: 'Card 1 — Descrizione', type: 'input' },
+      { name: 'shippingTitle', label: 'Card 2 — Titolo (Spedizione)', type: 'input' },
+      { name: 'shippingDesc', label: 'Card 2 — Descrizione', type: 'input' },
+      { name: 'giftBoxTitle', label: 'Card 3 — Titolo (Confezione regalo)', type: 'input' },
+      { name: 'giftBoxDesc', label: 'Card 3 — Descrizione', type: 'input' },
+      { name: 'returnsTitle', label: 'Card 4 — Titolo (Resi)', type: 'input' },
+      { name: 'returnsDesc', label: 'Card 4 — Descrizione', type: 'input' },
+    ],
+  },
   brand_story: {
     title: 'Brand Story (storia maison)',
     description: 'Riquadro con foto principale + tile + testo. Tutti i campi i18n.',

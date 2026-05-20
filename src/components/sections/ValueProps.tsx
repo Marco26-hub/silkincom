@@ -3,14 +3,39 @@
 import { Truck, Award, Heart, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import type { HomeSectionLocalized } from '@/data/home-content';
 
-export function ValueProps() {
+export function ValueProps({ section }: { section?: HomeSectionLocalized | null }) {
   const t = useTranslations('home.perks');
+  const c = section?.content || {};
+
+  // Each card: icon + admin-editable title + admin-editable description.
+  // Falls back to messages.home.perks.* if the DB row hasn't been touched.
   const VALUES = [
-    { icon: Award, key: 'madeInComo' as const },
-    { icon: Truck, key: 'shipping' as const },
-    { icon: Package, key: 'giftBox' as const },
-    { icon: Heart, key: 'returns' as const },
+    {
+      icon: Award,
+      title: c.madeInComoTitle || t('madeInComo.title'),
+      desc: c.madeInComoDesc || t('madeInComo.desc'),
+      key: 'madeInComo',
+    },
+    {
+      icon: Truck,
+      title: c.shippingTitle || t('shipping.title'),
+      desc: c.shippingDesc || t('shipping.desc'),
+      key: 'shipping',
+    },
+    {
+      icon: Package,
+      title: c.giftBoxTitle || t('giftBox.title'),
+      desc: c.giftBoxDesc || t('giftBox.desc'),
+      key: 'giftBox',
+    },
+    {
+      icon: Heart,
+      title: c.returnsTitle || t('returns.title'),
+      desc: c.returnsDesc || t('returns.desc'),
+      key: 'returns',
+    },
   ];
 
   return (
@@ -27,10 +52,10 @@ export function ValueProps() {
           >
             <v.icon className="w-7 h-7 text-gold-primary mb-3 stroke-1" />
             <h3 className="text-[11px] uppercase tracking-[0.2em] text-soft-black mb-1.5 font-medium">
-              {t(`${v.key}.title`)}
+              {v.title}
             </h3>
             <p className="text-xs text-soft-black/75 font-normal leading-relaxed max-w-[200px]">
-              {t(`${v.key}.desc`)}
+              {v.desc}
             </p>
           </motion.div>
         ))}
