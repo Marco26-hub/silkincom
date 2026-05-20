@@ -5,7 +5,7 @@ import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
   ArrowUp, ArrowDown, Pencil, Trash2, Eye, EyeOff,
-  Upload, Languages, Save, X, Plus, Loader2, ImageIcon,
+  Upload, Languages, Save, X, Plus, Loader2, ImageIcon, Sparkles,
 } from 'lucide-react';
 
 type I18nMap = Record<string, string>;
@@ -232,6 +232,49 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
   const [focus, setFocus] = useState('center');
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [suggesting, setSuggesting] = useState(false);
+  const [aiInfo, setAiInfo] = useState<string | null>(null);
+
+  function onFilePicked() {
+    const file = fileRef.current?.files?.[0];
+    setAiInfo(null);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
+    } else {
+      setPreviewUrl(null);
+    }
+  }
+
+  async function suggest() {
+    const file = fileRef.current?.files?.[0];
+    if (!file) {
+      setErr('Carica prima un\'immagine');
+      return;
+    }
+    setSuggesting(true);
+    setErr(null);
+    setAiInfo(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/admin/home-slides/suggest', { method: 'POST', body: fd });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
+      if (j.title_it) setTitleIt(j.title_it);
+      if (j.subtitle_it) setSubtitleIt(j.subtitle_it);
+      if (j.alt_it) setAltIt(j.alt_it);
+      setAiInfo(`Suggerito da AI (${j.model || 'vision model'}). Modifica liberamente prima di caricare.`);
+    } catch (e) {
+      setErr(`AI: ${(e as Error).message}`);
+    } finally {
+      setSuggesting(false);
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -273,8 +316,40 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
 
       <div>
         <label className="block text-xs uppercase tracking-wider text-soft-grey mb-1">Immagine *</label>
-        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" required className="text-sm" />
+        <div className="flex items-start gap-3 flex-wrap">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            required
+            className="text-sm"
+            onChange={onFilePicked}
+          />
+          {previewUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={previewUrl}
+              alt="anteprima"
+              className="w-28 h-20 object-cover border border-pearl-grey"
+            />
+          ) : null}
+          <button
+            type="button"
+            onClick={suggest}
+            disabled={suggesting || !previewUrl}
+            className="inline-flex items-center gap-2 border border-gold-primary text-gold-dark px-3 py-1.5 text-xs uppercase tracking-[0.18em] hover:bg-gold-primary hover:text-soft-black disabled:opacity-50 transition-colors"
+            title={previewUrl ? 'Genera titolo/sottotitolo/alt italiani da questa immagine' : 'Carica prima un\'immagine'}
+          >
+            {suggesting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            Suggerisci con AI
+          </button>
+        </div>
         <p className="text-[11px] text-soft-grey mt-1">JPG/PNG/WebP, max 10 MB. Sarà caricata su Supabase Storage (bucket <code>home-slides</code>).</p>
+        {aiInfo ? (
+          <p className="text-[11px] text-gold-dark mt-1 inline-flex items-center gap-1">
+            <Sparkles className="w-3 h-3" /> {aiInfo}
+          </p>
+        ) : null}
       </div>
 
       <div>
