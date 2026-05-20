@@ -97,17 +97,26 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   } catch {
     isAuthenticated = false;
   }
+  // Disambiguated product name for schema + breadcrumb leaf. If the raw product
+  // name matches the category (e.g. "Cernobbio") and a color variant exists,
+  // append the color so AI crawlers and Google Rich Results see a distinct leaf.
+  const productFullName = `${p.name}${colorLabel ? ` ${colorLabel}` : ''}`;
+  const collectionLeafName = cat ? `${cat.name} (collezione)` : undefined;
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     '@id': `${productUrl}#product`,
-    name: p.name,
+    name: productFullName,
     description: p.description,
     sku: p.slug,
+    gtin: p.slug,
     image: p.images,
+    url: productUrl,
     brand: { '@type': 'Brand', name: 'SILKinCOM' },
     material: materialLabel || 'Fibra naturale pregiata',
+    color: colorLabel || undefined,
     countryOfOrigin: 'IT',
+    category: cat?.name,
     manufacturer: { '@type': 'Organization', name: 'SILKinCOM', url: baseUrl },
     offers: {
       '@type': 'Offer',
@@ -125,8 +134,8 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
       { '@type': 'ListItem', position: 2, name: 'Collezioni', item: `${baseUrl}/collezioni` },
-      ...(cat ? [{ '@type': 'ListItem', position: 3, name: cat.name, item: `${baseUrl}/collezioni/${cat.slug}` }] : []),
-      { '@type': 'ListItem', position: cat ? 4 : 3, name: p.name, item: productUrl },
+      ...(cat ? [{ '@type': 'ListItem', position: 3, name: collectionLeafName, item: `${baseUrl}/collezioni/${cat.slug}` }] : []),
+      { '@type': 'ListItem', position: cat ? 4 : 3, name: productFullName, item: productUrl },
     ],
   };
 

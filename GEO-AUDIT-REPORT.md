@@ -1,186 +1,241 @@
-# GEO + SEO Audit Report: SILKinCOM (re-audit)
+# GEO Audit Report: SILKinCOM (final pre-cutover)
 
-**Audit Date:** 19 maggio 2026
-**URL:** https://silkincom.vercel.app/
-**Business Type:** E-commerce — accessori luxury in seta/cashmere, Made in Como (Next.js 15)
-**Pages Analyzed:** ~22 (homepage, robots, sitemap, llms.txt, prodotti, collezioni, materiali, blog, contatti, faq, la-nostra-storia, artigiani — IT + EN/FR/DE campioni)
-
-> Re-audit del sito Next.js dopo gli interventi i18n/SEO. Audit precedente: **57/100 Poor**.
+**Audit Date:** 2026-05-20
+**URL:** https://silkincom.vercel.app
+**Business Type:** E-commerce (luxury accessories — silk, cashmere, wool scarves Made in Como)
+**Pages Analyzed:** 10 sampled across 83 sitemap URLs × 7 locales
+**Founder:** Marco Dibenedetto · P.IVA IT03786790133 · Cermenate (CO)
+**Cutover scheduled:** 2026-05-22 → silkincom.com
 
 ---
 
 ## Executive Summary
 
-**Overall GEO Score: 62/100 — Fair** (da 57 Poor)
+**Overall GEO Score: 66/100 (Fair)**
 
-Il sito è migliorato: contenuti tradotti e indicizzabili in 7 lingue, URL con prefisso locale, sitemap con hreflang, canonical aggiunto, schema solido. Citabilità AI e qualità contenuti salgono. Ma due regressioni critiche nel codice frenano il punteggio: **il canonical è corretto solo in italiano** — su EN/ES/FR/DE/PT/NL punta all'URL italiano, dicendo a Google che le 6 lingue sono duplicati (vanifica la migrazione multilingua). E la brand authority off-site resta a zero.
+On-site GEO infrastructure is near best-in-class — comprehensive schema stack, full hreflang/canonical coverage, llms.txt, server-rendered content, premium editorial pillars, founder + Person + AboutPage entity layer. The single binding constraint is **off-site brand authority**: zero Wikipedia, no Wikidata Q-ID, no Reddit/YouTube/press mentions, and an active `*.vercel.app` preview domain that caps indexing trust across every AI platform. Migrating to silkincom.com on Fri and seeding 3-4 third-party validations would lift this score to ~82/100 within 30 days without any further code changes.
 
 ### Score Breakdown
 
-| Categoria | Punteggio | Peso | Pesato | Δ vs 57 |
-|---|---|---|---|---|
-| AI Citability | 78/100 | 25% | 19.5 | +7 |
-| Brand Authority | 15/100 | 20% | 3.0 | +1 |
-| Content E-E-A-T | 64/100 | 20% | 12.8 | +6 |
-| Technical GEO | 78/100 | 15% | 11.7 | +7 |
-| Schema & Structured Data | 84/100 | 10% | 8.4 | +2 |
-| Platform Optimization | 61/100 | 10% | 6.1 | +3 |
-| **Overall GEO Score** | | | **62/100** | **+5** |
+| Category | Score | Weight | Weighted |
+|---|---|---|---|
+| AI Citability | 76/100 | 25% | 19.00 |
+| Brand Authority | 18/100 | 20% | 3.60 |
+| Content E-E-A-T | 78/100 | 20% | 15.60 |
+| Technical GEO | 87/100 | 15% | 13.05 |
+| Schema & Structured Data | 82/100 | 10% | 8.20 |
+| Platform Optimization | 64/100 | 10% | 6.40 |
+| **Overall GEO Score** | | | **65.85 → 66** |
+
+### Platform Readiness
+
+| Platform | Score | Status |
+|---|---|---|
+| Google AI Overviews | 72/100 | Good |
+| Google Gemini | 68/100 | Good |
+| ChatGPT Web Search | 58/100 | Fair |
+| Perplexity AI | 55/100 | Fair |
+| Bing Copilot | 49/100 | Poor |
 
 ---
 
-## Problemi Critici (Risolvere Subito)
+## Critical Issues (Fix Immediately)
 
-### C1 — Canonical sbagliato su 6 lingue su 7
-**Pagine:** tutte le pagine non-italiane (`/en/*`, `/es/*`, `/fr/*`, `/de/*`, `/pt/*`, `/nl/*`)
+1. **Vercel preview domain caps indexing trust across all 5 AI platforms.** `*.vercel.app` URLs receive degraded ranking signals; ChatGPT/Perplexity/Bing rarely cite preview-domain sources over branded domains. Single biggest GEO drag.
+   - **Fix:** Execute DNS cutover to `silkincom.com` per `LAUNCH-CHECKLIST.md` Fri 22/05. Update `NEXT_PUBLIC_APP_URL` on Vercel.
 
-`/en/prodotto/bellagio` dichiara `<link rel="canonical" href="https://silkincom.vercel.app/prodotto/bellagio">` — punta all'URL **italiano**, non a sé stesso. Idem `/fr`, `/de` ecc. → la homepage IT è il canonical di tutte le lingue.
+2. **Cross-domain `@id` mismatch in Organization/WebSite schema.** `@id` references `silkincom.com` while pages live at `silkincom.vercel.app`. AI crawlers treat these as separate entities, fracturing the knowledge graph.
+   - **Fix:** Auto-derive `@id` from `NEXT_PUBLIC_APP_URL`. Already partial — Article/Person/Breadcrumb correctly use vercel.app; align Organization/WebSite immediately or finalize post-cutover.
 
-Causa: in `generateMetadata` il canonical è `/prodotto/${slug}` (path relativo senza prefisso locale); risolto contro `metadataBase` perde il segmento `/en`, `/fr`…
-
-Effetto: Google tratta le 6 lingue tradotte come duplicati dell'italiano → **de-indicizzazione di 6 lingue su 7**. Annulla quasi del tutto la migrazione multilingua (C2) e tutto il lavoro di traduzione.
-
-**Fix:** costruire canonical per-locale. In ogni `generateMetadata` includere il prefisso locale: per locale ≠ it → `/{locale}/prodotto/{slug}`; per it → `/prodotto/{slug}`. Vale per prodotti, collezioni, blog, pagine statiche, homepage.
-
-### C2 — Schema @id su host sbagliato + LocalBusiness placeholder
-- Organization/WebSite usano `@id: "https://silkincom.com/#organization"` / `#website` mentre tutto il resto (e il sito live) è su `silkincom.vercel.app` → identificatore d'entità incoerente.
-- `/contatti` emette un **secondo** nodo LocalBusiness (`#atelier`) con indirizzo placeholder "Via dell'Atelier", telefono finto **`+39 031 0000000`**, email diversa da quella reale. Due business in conflitto + dati finti = rischio trust per Google/AI.
-
-**Fix:** uniformare gli `@id` a `silkincom.vercel.app`; rimuovere il nodo `#atelier` (o riempirlo con dati reali). Mai pubblicare il telefono placeholder.
+3. **Zero third-party entity validation.** No Wikipedia, no Wikidata Q-ID, no LinkedIn company page, no Reddit/YouTube/press mentions for "SILKinCOM" or "Marco Dibenedetto" tied to Como silk. LLMs cannot resolve the entity with confidence.
+   - **Fix:** Wikidata stub (autoconfirmed unblock in ~2 days), LinkedIn company page, 2-3 press placements (lakecomotravel.com, Italian fashion blogs). 30-day timeline.
 
 ---
 
-## Problemi Alta Priorità (entro 1 settimana)
+## High Priority Issues (Fix Within 1 Week)
 
-### H1 — Nessun tag `<link rel="alternate" hreflang>` nell'`<head>`
-Gli hreflang esistono solo in `sitemap.xml` e nell'header HTTP `Link:`. Mancano dai `<head>` delle pagine. Googlebot li onora via header, ma diversi crawler AI e i generatori di anteprime leggono solo l'HTML renderizzato. **Fix:** `metadata.alternates.languages` in `generateMetadata` → tag hreflang nel head.
+1. **Product pages reuse homepage `<title>` and lack Product JSON-LD schema.** AI engines cannot extract price/availability/brand/SKU. Google Merchant feed compensates but on-page schema missing.
+   - **Fix:** Add `generateMetadata` per-product in `app/[locale]/prodotto/[slug]/page.tsx` emitting unique title + description + Product/Offer JSON-LD. ~2h.
 
-### H2 — `og:locale` sempre `it_IT` + OG tag globali
-Le pagine EN/FR servono `og:locale: it_IT` e `og:title`/`og:description`/`og:url` della homepage italiana. Anteprime social/AI in lingua sbagliata. **Fix:** mappare locale → `en_US`/`fr_FR`/… + `og:locale:alternate`; generare OG per pagina e locale.
+2. **`/llms-full.txt` returns 404.** llms.txt caps at 70/100; full markdown corpus would lift to 90/100.
+   - **Fix:** Generate `/llms-full.txt` with pillar Storia-della-seta + product specs + cura/[material] content. Single-fetch corpus for LLMs.
 
-### H3 — Brand inesistente off-site
-Brand Authority 15/100. Zero Wikipedia/Wikidata/Reddit/LinkedIn/Trustpilot/stampa. Collisione di nome con competitor (INCOMO, Silk of Como, SILKSILKY, Creasilk, Larioseta) — l'AI cita i concorrenti. Tappo strutturale alla visibilità AI reale.
+3. **Pillar `/trame-di-como/storia-della-seta-a-como` has H1 only, no H2/H3 hierarchy.** AI passage extraction halved.
+   - **Fix:** Inject 5-6 H2 (Quattrocento, Settecento industriale, '900 case storiche, declino anni '90, rinascita contemporanea, oggi) + 2-3 H3 each. ~1h.
 
-### H4 — Fondatore invisibile + nessun byline
-Marco Dibenedetto solo in `llms.txt`, mai in HTML visibile. `/la-nostra-storia` ~280 parole (sotto soglia thin content). 4 blog post attribuiti a "SILKinCOM (Organization)", nessun autore umano. Leva E-E-A-T più forte, inutilizzata.
+4. **OAI-SearchBot + Bingbot directives missing from robots.txt.** ChatGPT search index + Bing Copilot crawl trust both impacted.
+   - **Fix:** Add explicit `User-agent: OAI-SearchBot` Allow + `User-agent: Bingbot` Allow. Lift Citability + Platform.
 
-### H5 — Nessun ItemList/CollectionPage schema sulle 10 collezioni
-`/collezioni/*` emette solo Organization+WebSite. Prodotti non enumerati per l'AI.
+5. **Founder bio thin (~280 words, no photo, no LinkedIn sameAs).** Weakest E-E-A-T anchor for a Maison page.
+   - **Fix:** Expand `/maison/marco-dibenedetto` to 700-900 words (timeline, mentors, atelier collaborations), add portrait, add LinkedIn URL to Person `sameAs`. ~3h editorial.
+
+6. **No IndexNow key file at root.** Bing Webmaster + Yandex pings unavailable. Blocked from session classifier per HANDOFF §7 — needs manual addition.
+   - **Fix:** Generate IndexNow key, drop `<key>.txt` at site root, configure `app/api/indexnow/route.ts` to ping on publish.
 
 ---
 
-## Problemi Media Priorità (entro 1 mese)
+## Medium Priority Issues (Fix Within 1 Month)
 
-- **M1 — `<title>` doppio suffisso:** `Bellagio — Cashmere | SILKinCOM | SILKinCOM` — il template `%s | SILKinCOM` si applica a un titolo che già finisce con "| SILKinCOM". Fix: togliere il suffisso dal titolo di pagina (lo aggiunge il template).
-- **M2 — Article author = Organization** invece di Person (Marco Dibenedetto). Caratteri U+FEFF residui in headline/description di un post.
-- **M3 — Incoerenza prezzo/dimensioni Bellagio:** homepage €120 / 180x45 cm, scheda prodotto €180 / 180x70 cm. Un fatto canonico per prodotto.
-- **M4 — `Cache-Control: private, no-cache, no-store`** sulle pagine prodotto — disabilita la cache CDN, peggiora TTFB/LCP. Usare ISR/`s-maxage` sul catalogo.
-- **M5 — Bing:** nessun `msvalidate.01`, nessun file IndexNow → Bing Copilot non accelerato.
-- **M6 — H1 homepage decorativo/frammentato** ("lago_tessuta__a__Como" con underscore) — non citabile. Servono H1 semantico + H2 a domanda con paragrafi-risposta 40-60 parole.
-- **M7 — Blog senza citazioni esterne** — nessun link ad autorità tessili / distretto serico / standard fibre.
+1. **`sameAs` array on Organization incomplete.** Only Instagram/Facebook/Pinterest. Missing Wikipedia/Wikidata/LinkedIn/YouTube/Crunchbase.
+   - **Fix:** Add stubs even if empty; create LinkedIn company page; add YouTube channel URL.
 
-## Problemi Bassa Priorità
+2. **Speakable schema only on 1 article.** AboutPage, Person, FAQPage prime readout candidates ignored.
+   - **Fix:** Add `speakable` cssSelector to `/la-nostra-storia`, `/maison/marco-dibenedetto`, `/faq` mainEntity answers.
 
-- **L1 — `speakable`** assente su Article/FAQ.
-- **L2 — `© 2026`** copyright statico — rendere dinamico.
-- **L3 — sameAs solo 3 social** — aggiungere Wikidata, LinkedIn, Google Business.
-- **L4 — Descrizioni prodotto corte** (~95 parole) — portare a 150+ con cura prodotto inline.
-- **L5 — llms.txt** manca `llms-full.txt`.
+3. **37/39 `<img>` lack explicit width/height.** CLS risk on hydration, weakens AI image understanding.
+   - **Fix:** Set `width`/`height` on every `next/image` (or use `fill` with parent `aspect-ratio`). ~1h.
+
+4. **Sitemap omits `x-default` hreflang in URL entries** (present in HTTP Link header only).
+   - **Fix:** Inject `<xhtml:link rel="alternate" hreflang="x-default">` in `app/sitemap.ts`. ~15 min.
+
+5. **HowTo `/cura-prodotto/seta` steps lack `name`/`image` per step.** Shallower than `/trame-di-como/come-riconoscere-seta-vera` HowTo.
+   - **Fix:** Enrich step objects with `name` + `image`. ~30 min × 5 materials.
+
+6. **Product/cura/material pages lack citable answer blocks.** Avg citability ~50; pillar at 76.
+   - **Fix:** Add 1-2 sentence definitional openers + measurable claims (GSM, micron, fiber length) + FAQPage per page.
+
+7. **Founder entity disambiguation risk.** "Marco Dibenedetto" returns unrelated D&B/LinkedIn profiles in search.
+   - **Fix:** Once Wikipedia stub exists, link from `/maison` + Person.sameAs. Until then, prominent "Founder of SILKinCOM" in LinkedIn headline.
+
+---
+
+## Low Priority Issues
+
+1. **BreadcrumbList on product duplicates leaf node** (position 3 = position 4 = "Cernobbio"). Rename position 3 to "Cernobbio (collezione)".
+2. **`inLanguage:"it-IT"` hardcoded on Organization** — evaluate per-locale variants emit `inLanguage` matching locale.
+3. **Homepage title 67 chars + meta description 240 chars** slightly long — trim for SERP.
+4. **CSP uses `unsafe-inline` + `unsafe-eval`** (acceptable for Next.js; tighten with nonces later).
+5. **No phone number visible** on contact page — adds Trust signal.
+6. **No editorial-standards page** — lift E-E-A-T Trust from 21 to 24/25.
 
 ---
 
 ## Category Deep Dives
 
-### AI Citability — 78/100 (da 71)
-SSR completo, contenuti estraibili. Passaggi citabili forti: guida materiali (micron seta 10-12μm, cashmere 14-16μm, assorbimento umidità) 88/100; scheda Bellagio (composizione, 180x70 cm, €180, codice) 82/100; checklist comparativa materiali 81/100. Deboli: heading homepage con underscore (~25/100). Multilingua aiuta la citabilità in lingue non-IT.
+### AI Citability (76/100)
 
-### Brand Authority — 15/100 (da 14)
-Quasi invariato. Zero footprint terze parti. Collisione nome peggiore del previsto — le ricerche restituiscono Silk Maison, SILKSILKY, Creasilk. Senza ancora Wikipedia/Wikidata l'AI non può disambiguare il brand.
+Strong pillars, weak product pages. Top samples scored 88/100 (Como silk 70% statistic), 82/100 (definitional opener), 76/100 (founder thesis). Product Bellagio specs 64/100 — measurable but fragmentary. Hero CTAs with stylized underscores break parser cleanliness at ~35/100.
 
-### Content E-E-A-T — 64/100 (da 58)
-Experience 14/25, Expertise 16/25, Authoritativeness 15/25, Trust 19/25. Migliorato da: localizzazione 7 lingue, blog datato e approfondito (580-850 parole, dati tecnici), materiali strutturati. Gap: fondatore invisibile, zero byline, /la-nostra-storia thin, nessuna citazione esterna.
+**Lift path:** add citable openers + GSM/micron/fiber-length data to all 41 product pages + 5 cura pages.
 
-### Technical GEO — 78/100 (da 71)
-Migliorato: SSR, routing locale path-prefix, sitemap 140+ URL con hreflang, security header eccellenti (HSTS, CSP, nosniff). Critico: canonical per-locale rotto (C1). Alto: hreflang non nel head, og:locale errato.
+### Brand Authority (18/100)
 
-### Schema & Structured Data — 84/100 (da 82)
-Forte e tutto server-rendered: Organization/LocalBusiness/WebSite+SearchAction, Product+Offer+BreadcrumbList, FAQPage (25 Q&A), Article. Difetti: @id host incoerente, LocalBusiness duplicato con placeholder, no ItemList collezioni, author=Organization.
-
-### Platform Optimization — 61/100 (da 58)
-Google AI Overviews 66, ChatGPT 67, Gemini 60, Bing Copilot 52, Perplexity 46. Multilingua + SSR + llms.txt aiutano ChatGPT/Gemini. Perplexity resta basso (zero community validation). Canonical e hreflang frenano AIO/Gemini.
-
----
-
-## Quick Wins (questa settimana)
-
-1. **Fix canonical per-locale** — includere il prefisso locale nel canonical di ogni `generateMetadata`. Sblocca l'indicizzazione di 6 lingue. Impatto massimo, una modifica di codice.
-2. **hreflang nel `<head>`** — `metadata.alternates.languages` con tutti i locale + `x-default`.
-3. **`og:locale` per locale** + OG title/description/url per pagina.
-4. **Fix `<title>` doppio suffisso** — togliere "| SILKinCOM" dai titoli di pagina.
-5. **Schema:** uniformare `@id` a `silkincom.vercel.app`, rimuovere LocalBusiness placeholder.
-6. **Creare Wikidata entry** SILKinCOM (fondatore, P.IVA, sede Cermenate/Como).
-
-## Piano 30 Giorni
-
-### Settimana 1 — Fix SEO critici di codice
-- [ ] Canonical per-locale su prodotti/collezioni/blog/pagine/homepage
-- [ ] hreflang `<link>` nel head + `x-default`
-- [ ] og:locale + OG per pagina/locale
-- [ ] Titolo: rimuovere doppio suffisso
-
-### Settimana 2 — Schema & dati
-- [ ] Uniformare `@id` host; rimuovere nodo `#atelier` placeholder
-- [ ] ItemList/CollectionPage sulle 10 collezioni
-- [ ] Article author = Person (Marco Dibenedetto); pulire U+FEFF
-- [ ] Riconciliare prezzo/dimensioni Bellagio
-
-### Settimana 3 — Entity & autorità
-- [ ] Wikidata + Google Business Profile + LinkedIn azienda
-- [ ] Trustpilot + raccolta recensioni reali
-- [ ] 3-5 menzioni terze (directory artigiane comasche, stampa moda IT)
-
-### Settimana 4 — Contenuto
-- [ ] Sezione fondatore visibile su /la-nostra-storia + Person schema (~600-800 parole)
-- [ ] Byline autore sui 4 blog post + 2-4 citazioni esterne per post
-- [ ] H1 homepage semantico + H2 a domanda
-- [ ] Bing Webmaster + IndexNow
-- [ ] ISR/cache sul catalogo
-
----
-
-## Appendice — Pagine Analizzate
-
-| URL | Note |
-|---|---|
-| / | SSR ok, H1 decorativo, OG globali |
-| /prodotto/bellagio | canonical ok (IT), title doppio suffisso, Product schema valido |
-| /en/prodotto/bellagio | **canonical → URL IT (critico)** |
-| /collezioni/bellagio | nessun ItemList schema |
-| /la-nostra-storia | ~280 parole, fondatore assente |
-| /artigiani | 1 artigiano nominato, contenuto atmosferico |
-| /materiali | contenuto tecnico forte e citabile |
-| /faq | FAQPage schema valido (25 Q&A) |
-| /contatti | LocalBusiness duplicato + placeholder telefono |
-| /trame-di-como/* | Article schema, author=Organization, no byline, no fonti |
-| robots.txt | crawler AI ammessi |
-| sitemap.xml | 140+ URL, hreflang 7 locale |
-| llms.txt | presente, valido, no llms-full.txt |
-
----
-
-## Confronto Audit Precedente
-
-| | Audit 1 (57) | Re-audit (62) |
+| Platform | Score | Status |
 |---|---|---|
-| GEO Score | 57 Poor | **62 Fair** |
-| Multilingua | cookie, 1 lingua indicizzabile | 7 lingue path-prefix + sitemap hreflang |
-| Canonical | tutti → homepage | IT ok, 6 lingue ancora rotte |
-| Contenuti | IT/EN | tradotti 7 lingue |
-| Technical | 71 | 78 |
-| Citability | 71 | 78 |
+| Wikipedia | 0/30 | Absent — no SILKinCOM or Marco Dibenedetto (silk) entry |
+| Reddit | 0/20 | Zero indexed discussions |
+| YouTube | 0/15 | Competitors (Elizabetta, Serà, LARIOSETA) dominate "Como silk" |
+| LinkedIn | 3/10 | Founder profile exists but not linked to SILKinCOM |
+| Industry/Press | 15/25 | D&B partial; no Vogue/lakecomotravel/fashion press |
 
-Progresso reale. Il blocco residuo: **fix canonical per-locale** (settimana 1) + **brand authority off-site** (lavoro continuativo).
+**Lift path:** Wikidata + LinkedIn company + 2-3 press = +30 points within 30 days.
+
+### Content E-E-A-T (78/100)
+
+| Dimension | Score | Evidence |
+|---|---|---|
+| Experience | 20/25 | First-hand voice, founder editorial, atelier references |
+| Expertise | 19/25 | Technical lexicon, 7-step HowTo, named manufacturers |
+| Authoritativeness | 18/25 | Citation refs (Wikipedia/Mantero/Ratti/CCIAA), Person schema, 3 artisans |
+| Trustworthiness | 21/25 | HTTPS, P.IVA + address visible, privacy/cookie/terms, dated byline |
+
+**AI content check:** Highly likely human. Zero "delve into / in today's landscape" patterns. Named entities + dated facts. Citation refs verifiable.
+
+### Technical GEO (87/100)
+
+SSR confirmed (Next.js 15 App Router RSC, 13,351 body words server-rendered home). robots.txt with 14 AI bots allowed. sitemap 184 hreflang-rich URL entries. 7 security headers present (HSTS preload, CSP, X-Frame-Options DENY, Referrer-Policy strict-origin, Permissions-Policy locked). Manifest + security.txt + icons all 200 OK.
+
+**Gaps:** product `<title>` reuse, Product JSON-LD absent on /prodotto, sitemap x-default missing, 37/39 imgs no dimensions.
+
+### Schema & Structured Data (82/100)
+
+| Dimension | Score |
+|---|---|
+| Coverage | 92/100 |
+| Completeness | 78/100 |
+| Validation | 95/100 |
+| AI-citation-critical | 65/100 |
+
+All 10 sampled pages have expected schema. Org+LocalBusiness combo, Product+Offer+Breadcrumb, Article+Speakable, HowTo×7-step, FAQPage×25, AboutPage+Person, CollectionPage+ItemList, Person×3 artigiani — all parse-clean.
+
+**Gaps:** sameAs ceiling (3 platforms), @id domain mismatch, speakable scarce.
+
+### Platform Optimization (64/100)
+
+Best on Google AI Overviews (72) — comprehensive schema, question-based H2s, 7-lang hreflang, pillar content, founder Person. Worst on Bing Copilot (49) — no IndexNow, no Bingbot directive, no msvalidate.01, vercel.app subdomain.
 
 ---
 
-*Report generato — GEO+SEO re-audit, 5 subagent specializzati (AI Visibility, Platform, Technical, Content E-E-A-T, Schema).*
+## Quick Wins (Implement This Week)
+
+1. **DNS cutover to silkincom.com** — single action lifts composite +15 (resolves Vercel domain drag across all 5 platforms).
+2. **Add Product JSON-LD + per-product generateMetadata** — unlocks Google rich results + Gemini product cards. ~2h.
+3. **Inject H2/H3 hierarchy on storia-della-seta pillar** — doubles AI passage extraction. ~1h.
+4. **Generate /llms-full.txt** with pillar + products + cura content. ~30 min.
+5. **Add OAI-SearchBot + Bingbot directives** to robots.txt. ~5 min.
+
+---
+
+## 30-Day Action Plan
+
+### Week 1: Cutover + on-page fixes (silkincom.com live)
+- [ ] DNS cutover silkincom.com (Fri 22/05)
+- [ ] `NEXT_PUBLIC_APP_URL` → https://silkincom.com on Vercel + redeploy
+- [ ] Align Organization/WebSite `@id` to canonical domain
+- [ ] Add Product JSON-LD + generateMetadata on `app/[locale]/prodotto/[slug]/page.tsx`
+- [ ] Add OAI-SearchBot + Bingbot directives to robots.ts
+- [ ] Generate /llms-full.txt route + populate
+
+### Week 2: Pillar densification + technical fixes
+- [ ] Refactor `/trame-di-como/storia-della-seta-a-como` H2/H3 hierarchy
+- [ ] Add citable openers + GSM/micron/fiber data to all 5 /cura-prodotto/* pages
+- [ ] Set width/height on all next/image (or aspect-ratio container)
+- [ ] Inject x-default hreflang in sitemap entries
+- [ ] Enrich HowTo seta/cashmere/lana/lino/cotone step objects with name + image
+
+### Week 3: Founder + entity graph
+- [ ] Expand /maison/marco-dibenedetto to 700-900 words + portrait
+- [ ] Create LinkedIn company page SILKinCOM, link founder profile
+- [ ] Add LinkedIn + Wikidata + YouTube + Crunchbase to Organization.sameAs (stubs OK)
+- [ ] Speakable schema on /la-nostra-storia, /maison, /faq
+- [ ] Wikidata stub creation (autoconfirmed unblock ~24/05)
+
+### Week 4: Off-site validation + Bing ecosystem
+- [ ] IndexNow key file + ping endpoint
+- [ ] Bing Webmaster Tools verification + sitemap submit
+- [ ] Google Search Console DNS verification + sitemap submit
+- [ ] Google Merchant Center feed activation
+- [ ] 2-3 press outreach (lakecomotravel.com, Vogue Italia digital, Italian fashion blogs)
+- [ ] Reddit/community seed: r/femalefashionadvice, r/cashmere, r/MalefashionAdvice authoritative comments with brand mention
+
+---
+
+## Expected Score Trajectory
+
+| Milestone | GEO Score | Delta |
+|---|---|---|
+| Baseline (today, vercel.app) | **66** | — |
+| Post-cutover (silkincom.com live, Fri 22/05) | **74** | +8 |
+| Post Week 2 (on-page + pillar fixes) | **78** | +4 |
+| Post Week 3 (founder + sameAs graph) | **81** | +3 |
+| Post Week 4 (off-site validation) | **83-85** | +2-4 |
+
+Ceiling without sustained PR/press: ~88. Wikipedia article (when notable enough) lifts to ~92.
+
+---
+
+## Appendix: Pages Analyzed
+
+| URL | Schema Types | Citability | Issues |
+|---|---|---|---|
+| `/` (home) | Org+LocalBusiness, WebSite+SearchAction, Brand, ContactPoint | 70 | Hero CTA underscore parsing |
+| `/prodotto/cernobbio-azzurra` | Product, Offer, BreadcrumbList | 64 | Title reuse, no per-product metadata, dupe breadcrumb leaf |
+| `/collezioni/inverno` | CollectionPage, ItemList(19) | 60 | — |
+| `/trame-di-como/storia-della-seta-a-como` | Article, Speakable, BreadcrumbList | 88 | H1 only, no H2/H3 |
+| `/trame-di-como/come-riconoscere-seta-vera` | Article+Speakable, BreadcrumbList, HowTo(7) | 78 | — |
+| `/la-nostra-storia` | AboutPage+Org+Person | 65 | No speakable |
+| `/maison/marco-dibenedetto` | Person+Country+Place, BreadcrumbList | 76 | Bio thin (~280 words), no LinkedIn sameAs |
+| `/materiali` | ItemList+Product×5, BreadcrumbList | 60 | No speakable |
+| `/faq` | FAQPage(25), BreadcrumbList | 72 | No speakable on answers |
+| `/cura-prodotto/seta` | HowTo(4 step), BreadcrumbList | 55 | Steps lack name/image |
+| `/artigiani` | CollectionPage+ItemList+Person×3, BreadcrumbList | 62 | — |

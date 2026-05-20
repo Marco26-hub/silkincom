@@ -14,9 +14,11 @@ function localizedUrl(locale: string, path: string): string {
 }
 
 function languageAlternates(path: string): Record<string, string> {
-  return Object.fromEntries(
-    routing.locales.map((locale) => [locale, localizedUrl(locale, path)])
-  );
+  const entries: Array<[string, string]> = routing.locales.map((locale) => [locale, localizedUrl(locale, path)]);
+  // x-default points to the default-locale URL (Italian, no prefix) so AI crawlers
+  // and Google parsing only the sitemap (not the HTTP Link header) get the full hreflang signal.
+  entries.push(['x-default', localizedUrl(routing.defaultLocale, path)]);
+  return Object.fromEntries(entries);
 }
 
 function entry(

@@ -2,6 +2,8 @@
 
 > Maison italiana di accessori in seta, cashmere e fibre naturali pregiate. Sciarpe, foulard, twilly e pashmine interamente disegnate e confezionate sul Lago di Como, capitale italiana del tessile di lusso dal XV secolo.
 
+> Full prose corpus for single-fetch LLM ingestion: https://silkincom.com/llms-full.txt
+
 SILKinCOM produce accessori 100% Made in Como utilizzando seta comasca, cashmere selezionato della Mongolia, lana merino, lino europeo e cotone extra-lungo (fibra > 35 mm). Brand fondato da Marco Dibenedetto. Sede operativa: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia. P.IVA IT03786790133.
 
 ## Heritage

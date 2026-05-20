@@ -171,10 +171,40 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               "{post.description}"
             </p>
           )}
-          <div className="first-letter:float-left first-letter:font-display first-letter:text-7xl first-letter:pr-4 first-letter:pt-2 first-letter:text-gold-primary first-letter:leading-[0.8] first-line:uppercase first-line:tracking-widest">
-            {paragraphs.map((p, i) => (
-              <p key={i} className="mb-8">{p}</p>
-            ))}
+          <div>
+            {paragraphs.map((p, i) => {
+              // Inline markdown-style headings inside the body so a single
+              // editor-supplied paragraph can become a real <h2>/<h3>. This
+              // lifts AI passage extraction (semantic anchors) and lets
+              // search engines surface the structured hierarchy.
+              if (p.startsWith('### ')) {
+                return (
+                  <h3 key={i} className="not-prose font-display font-light text-xl md:text-2xl mt-10 mb-4 text-soft-black">
+                    {p.slice(4)}
+                  </h3>
+                );
+              }
+              if (p.startsWith('## ')) {
+                return (
+                  <h2 key={i} className="not-prose font-display font-light text-2xl md:text-3xl mt-14 mb-5 text-soft-black border-l-2 border-gold-primary pl-4">
+                    {p.slice(3)}
+                  </h2>
+                );
+              }
+              const isFirst = i === 0;
+              return (
+                <p
+                  key={i}
+                  className={
+                    isFirst
+                      ? 'mb-8 first-letter:float-left first-letter:font-display first-letter:text-7xl first-letter:pr-4 first-letter:pt-2 first-letter:text-gold-primary first-letter:leading-[0.8] first-line:uppercase first-line:tracking-widest'
+                      : 'mb-8'
+                  }
+                >
+                  {p}
+                </p>
+              );
+            })}
           </div>
           {CITATIONS[post.slug] && (
             <aside className="not-prose mt-16 pt-10 border-t border-pearl-grey/60">
