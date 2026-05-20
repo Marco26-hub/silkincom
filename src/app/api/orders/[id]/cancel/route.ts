@@ -41,7 +41,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   // Load order + verify ownership
   const { data: order } = await supabase
     .from('orders')
-    .select('id, status, customer_id, customer_email, created_at, order_items(product_id, quantity)')
+    .select('id, status, customer_id, customer_email, created_at, order_items(product_id, variant_id, quantity)')
     .eq('id', orderId)
     .single();
 
@@ -66,14 +66,22 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     );
   }
 
-  // Restore inventory
-  for (const item of (order.order_items as Array<{ product_id: string; quantity: number }>) || []) {
+  // Restore inventory — variant-aware so apparel sizes return to the
+  // correct inventory row instead of the (non-existent) product-level row.
+  for (const item of (order.order_items as Array<{ product_id: string; variant_id: string | null; quantity: number }>) || []) {
     try {
-      // Negative quantity adds back to stock via apply_inventory_movement
-      await supabase.rpc('decrement_inventory', {
+      const { error: invErr } = await supabase.rpc('apply_inventory_movement', {
         p_product_id: item.product_id,
-        p_quantity: -item.quantity,
+        p_variant_id: item.variant_id ?? null,
+        p_movement_type: 'cancellation',
+        p_quantity_change: item.quantity,
+        p_reason: 'Cancellazione ordine cliente',
+        p_reference_order_id: orderId,
+        p_performed_by: user.id,
       });
+      if (invErr) {
+        console.error('Inventory restore failed:', invErr, { orderId, item });
+      }
     } catch (e) {
       console.error('Inventory restore failed:', e);
       // Continue — inventory drift is preferable to leaving order pending

@@ -365,9 +365,15 @@ export function CheckoutClient() {
             <h3 className="text-[11px] uppercase tracking-[0.2em] text-soft-grey">{tcart('summary')}</h3>
             <div className="space-y-3">
               {items.map((item) => (
-                <div key={item.slug} className="flex justify-between text-sm">
+                <div key={`${item.slug}::${item.variantId ?? ''}`} className="flex justify-between text-sm">
                   <span className="text-soft-black/80 truncate max-w-[60%]">
-                    {item.name} <span className="text-soft-grey">×{item.quantity}</span>
+                    {item.name}
+                    {item.size ? (
+                      <span className="ml-1.5 text-[10px] uppercase tracking-[0.15em] text-gold-dark">
+                        Taglia {item.size}
+                      </span>
+                    ) : null}
+                    <span className="text-soft-grey"> ×{item.quantity}</span>
                   </span>
                   <span>{formatPrice(item.price * item.quantity)}</span>
                 </div>
