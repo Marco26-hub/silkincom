@@ -1176,11 +1176,11 @@
       },
       "twill": {
         "name": "Roberta",
-        "role": "Rouletté Hand-Hemmer",
+        "role": "Embroiderer",
         "city": "Como",
-        "alt": "Roberta, SILKinCOM hand-hemmer, sewing the rouletté edge of a foulard",
-        "caption": "Rouletté hand-stitched edge",
-        "story": "Hand-sews the rouletté edge of the foulard: the cut is rolled inward and fixed with an invisible stitch. Each scarf takes between 90 and 180 minutes. It is the detail that separates a high-end foulard from an industrial accessory."
+        "alt": "Roberta, SILKinCOM embroiderer, hand-stitching a monogram on a silk foulard",
+        "caption": "Hand embroidery in progress",
+        "story": "Hand-embroiders the details — logos, monograms, decorative motifs — on the silk foulards and scarves. Each stitch is set by eye with needle and silk thread matched to the fabric's weight. A custom monogram takes between 2 and 6 hours, depending on the complexity of the design."
       }
     },
     "cta": {

@@ -1176,11 +1176,11 @@
       },
       "twill": {
         "name": "Roberta",
-        "role": "Ourleuse rouletté",
+        "role": "Brodeuse",
         "city": "Como",
-        "alt": "Roberta, ourleuse SILKinCOM, en train de coudre à la main le rouletté d'un foulard",
-        "caption": "Rouletté cousu main",
-        "story": "Coud à la main le rouletté du foulard : le bord est roulé vers l'intérieur et fixé d'un point invisible. Chaque carré demande entre 90 et 180 minutes. C'est le détail qui distingue un foulard haut de gamme d'un accessoire industriel."
+        "alt": "Roberta, brodeuse SILKinCOM, en train de broder à la main un monogramme sur un foulard de soie",
+        "caption": "Broderie main en cours",
+        "story": "Brode à la main les détails — logos, monogrammes, motifs décoratifs — sur les foulards et écharpes de soie. Chaque point est exécuté à vue avec aiguille et fil de soie au grammage du tissu. Un monogramme personnalisé demande de 2 à 6 heures, selon la complexité du dessin."
       }
     },
     "cta": {

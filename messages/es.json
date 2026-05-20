@@ -1176,11 +1176,11 @@
       },
       "twill": {
         "name": "Roberta",
-        "role": "Dobladilladora rouletté",
+        "role": "Bordadora",
         "city": "Como",
-        "alt": "Roberta, dobladilladora SILKinCOM, mientras cose a mano el borde rouletté de un pañuelo",
-        "caption": "Rouletté cosido a mano",
-        "story": "Cose a mano el rouletté del pañuelo: el borde se enrolla hacia el interior y se fija con un punto invisible. Cada cuadrado requiere entre 90 y 180 minutos de trabajo. Es el detalle que distingue un pañuelo de alta gama de un accesorio industrial."
+        "alt": "Roberta, bordadora SILKinCOM, mientras borda a mano un monograma en un foulard de seda",
+        "caption": "Bordado a mano en curso",
+        "story": "Borda a mano los detalles — logotipos, monogramas, motivos decorativos — en los foulards y pañuelos de seda. Cada puntada se ejecuta a la vista con aguja e hilo de seda del mismo peso del tejido. Un monograma personalizado requiere entre 2 y 6 horas, según la complejidad del diseño."
       }
     },
     "cta": {
