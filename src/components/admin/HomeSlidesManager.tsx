@@ -6,6 +6,7 @@ import Image from 'next/image';
 import {
   ArrowUp, ArrowDown, Pencil, Trash2, Eye, EyeOff,
   Upload, Languages, Save, X, Plus, Loader2, ImageIcon, Sparkles,
+  Monitor, Tablet, Smartphone, ZoomIn, ZoomOut,
 } from 'lucide-react';
 
 type I18nMap = Record<string, string>;
@@ -242,6 +243,9 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
   const [apiKey, setApiKey] = useState<string>('');
   const [showApiKey, setShowApiKey] = useState(false);
   const [hasEnvKey, setHasEnvKey] = useState<boolean>(true);
+  // Preview viewport + zoom — operator can test crop/focus before publishing.
+  const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [zoom, setZoom] = useState<number>(1);
 
   // Load model catalogue on first mount. Endpoint is admin-gated, so the
   // user already authenticated to reach this form. If GET fails we still
@@ -276,6 +280,7 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
   function onFilePicked() {
     const file = fileRef.current?.files?.[0];
     setAiInfo(null);
+    setZoom(1);
     if (file) {
       const url = URL.createObjectURL(file);
       setPreviewUrl((prev) => {
@@ -451,6 +456,19 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
         />
         <p className="text-[11px] text-soft-grey mt-1">Usa <code>||</code> per separare la riga principale dalla riga in corsivo oro.</p>
       </div>
+
+      {previewUrl ? (
+        <SlidePreview
+          src={previewUrl}
+          focus={focus}
+          titleIt={titleIt}
+          subtitleIt={subtitleIt}
+          viewport={viewport}
+          zoom={zoom}
+          onViewportChange={setViewport}
+          onZoomChange={setZoom}
+        />
+      ) : null}
 
       <div>
         <label className="block text-xs uppercase tracking-wider text-soft-grey mb-1">Sottotitolo IT</label>
@@ -683,6 +701,160 @@ function EditForm({ slide, onCancel, onSaved }: { slide: Slide; onCancel: () => 
         </button>
         <button type="button" onClick={onCancel} className="px-4 py-2 text-sm border border-pearl-grey">Annulla</button>
       </div>
+    </div>
+  );
+}
+
+// Live preview that mirrors the public Hero crop: object-cover with the
+// chosen focus + a subtle gradient overlay + the localised title block.
+// Viewport buttons swap aspect ratio (Desktop 16:9, Tablet 4:3 portrait-ish,
+// Mobile 9:16). Zoom slider scales the underlying image so the operator
+// can verify the focus point still captures the subject when the user
+// scrolls past and the parallax pumps the scale up to 1.12x at runtime.
+function SlidePreview({
+  src,
+  focus,
+  titleIt,
+  subtitleIt,
+  viewport,
+  zoom,
+  onViewportChange,
+  onZoomChange,
+}: {
+  src: string;
+  focus: string;
+  titleIt: string;
+  subtitleIt: string;
+  viewport: 'desktop' | 'tablet' | 'mobile';
+  zoom: number;
+  onViewportChange: (v: 'desktop' | 'tablet' | 'mobile') => void;
+  onZoomChange: (z: number) => void;
+}) {
+  const ASPECTS: Record<typeof viewport, { ratio: string; label: string; w: number; icon: React.ComponentType<{ className?: string }> }> = {
+    desktop: { ratio: '16 / 9', label: 'Desktop · 1440×810', w: 720, icon: Monitor },
+    tablet: { ratio: '3 / 4', label: 'Tablet · 768×1024', w: 360, icon: Tablet },
+    mobile: { ratio: '9 / 16', label: 'Mobile · 390×844', w: 240, icon: Smartphone },
+  };
+  const cfg = ASPECTS[viewport];
+  // Split the title on || the same way Hero does.
+  const [mainTitle, accentTitle] = titleIt.split('||').map((s) => s.trim());
+
+  return (
+    <div className="border border-pearl-grey bg-pearl-grey/15 p-4 space-y-3">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <span className="text-[10px] uppercase tracking-[0.22em] text-soft-grey">
+          Anteprima live · {cfg.label}
+        </span>
+        <div className="flex items-center gap-1">
+          {(['desktop', 'tablet', 'mobile'] as const).map((v) => {
+            const Icon = ASPECTS[v].icon;
+            const active = viewport === v;
+            return (
+              <button
+                key={v}
+                type="button"
+                onClick={() => onViewportChange(v)}
+                className={`inline-flex items-center gap-1 px-2 py-1 text-[10px] uppercase tracking-wider border transition-colors ${
+                  active ? 'bg-soft-black text-warm-white border-soft-black' : 'bg-white text-soft-black border-pearl-grey hover:border-soft-black'
+                }`}
+                title={v}
+              >
+                <Icon className="w-3 h-3" />
+                {v}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex justify-center">
+        <div
+          className="relative overflow-hidden bg-soft-black"
+          style={{ aspectRatio: cfg.ratio, width: `${cfg.w}px`, maxWidth: '100%' }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt="anteprima slide"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
+            style={{ objectPosition: focus || 'center', transform: `scale(${zoom})` }}
+          />
+          {/* Same gradients as Hero so contrast looks real */}
+          <div className="absolute inset-0 bg-gradient-to-b from-soft-black/55 via-soft-black/15 to-soft-black/85 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-soft-black/60 via-transparent to-transparent pointer-events-none" />
+          {/* Text overlay — gives operator a real-world legibility read */}
+          <div className="absolute inset-0 flex items-end p-4 sm:p-6 pointer-events-none">
+            <div className="text-warm-white max-w-[80%]">
+              {mainTitle ? (
+                <p
+                  className="font-display font-light leading-tight"
+                  style={{ fontSize: viewport === 'desktop' ? '24px' : viewport === 'tablet' ? '20px' : '16px' }}
+                >
+                  {mainTitle}
+                </p>
+              ) : null}
+              {accentTitle ? (
+                <p
+                  className="font-display font-light italic text-gold-primary leading-tight mt-1"
+                  style={{ fontSize: viewport === 'desktop' ? '22px' : viewport === 'tablet' ? '18px' : '14px' }}
+                >
+                  {accentTitle}
+                </p>
+              ) : null}
+              {subtitleIt ? (
+                <p
+                  className="text-warm-white/85 mt-2 font-light leading-relaxed"
+                  style={{ fontSize: viewport === 'mobile' ? '10px' : '11px' }}
+                >
+                  {subtitleIt.length > 140 ? subtitleIt.slice(0, 140) + '…' : subtitleIt}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => onZoomChange(Math.max(0.5, +(zoom - 0.1).toFixed(2)))}
+          className="p-1.5 border border-pearl-grey hover:border-soft-black"
+          title="Zoom out"
+        >
+          <ZoomOut className="w-3.5 h-3.5" />
+        </button>
+        <input
+          type="range"
+          min={0.5}
+          max={2}
+          step={0.05}
+          value={zoom}
+          onChange={(e) => onZoomChange(Number(e.target.value))}
+          className="flex-1 accent-gold-primary"
+        />
+        <button
+          type="button"
+          onClick={() => onZoomChange(Math.min(2, +(zoom + 0.1).toFixed(2)))}
+          className="p-1.5 border border-pearl-grey hover:border-soft-black"
+          title="Zoom in"
+        >
+          <ZoomIn className="w-3.5 h-3.5" />
+        </button>
+        <span className="text-[11px] text-soft-grey tabular-nums w-12 text-right">
+          {(zoom * 100).toFixed(0)}%
+        </span>
+        <button
+          type="button"
+          onClick={() => onZoomChange(1)}
+          className="text-[10px] uppercase tracking-wider text-soft-grey hover:text-soft-black"
+          title="Reset zoom"
+        >
+          Reset
+        </button>
+      </div>
+      <p className="text-[11px] text-soft-grey">
+        Hero applica parallax fino a <strong>112%</strong> di zoom durante lo scroll. Verifica che il soggetto resti centrato anche a 1.12x.
+      </p>
     </div>
   );
 }
