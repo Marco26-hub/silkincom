@@ -1,5 +1,7 @@
--- Clothing size variants for apparel categories (lario t-shirts, melzi camicie,
--- riva camicie miste, tivan). Sciarpe / foulard / pashmine restano senza taglie.
+-- Clothing size variants for apparel categories (lario t-shirts, melzi
+-- camicie, riva camicie miste). Sciarpe / foulard / pashmine restano senza
+-- taglie. Tivan è un accessorio a taglia unica (gestito tramite il campo
+-- `dimensions` sul prodotto, nessuna variante size).
 --
 -- Strategy:
 -- 1. ADD `size` TEXT column on product_variants with a CHECK constraint that
@@ -7,7 +9,7 @@
 --    (legacy variants without a size attribute).
 -- 2. Index on size so admin and frontend can filter variants per size cheaply.
 -- 3. Bulk-create 5 size variants (S/M/L/XL/XXL) for every product in the
---    'lario','melzi','riva','tivan' categories. variant_sku = '<product>-<size>',
+--    'lario','melzi','riva' categories. variant_sku = '<product>-<size>',
 --    variant_name = '<size>', color_id copied from the parent product so size
 --    selection inherits the color displayed in the catalog.
 -- 4. For each new variant create an inventory row with quantity 0 and the
@@ -28,7 +30,7 @@ WITH clothing AS (
   SELECT p.id AS product_id, p.slug, p.color_id
   FROM products p
   JOIN categories c ON p.category_id = c.id
-  WHERE c.slug IN ('lario','melzi','riva','tivan')
+  WHERE c.slug IN ('lario','melzi','riva')
 ),
 sizes AS (
   SELECT unnest(ARRAY['S','M','L','XL','XXL']) AS sz
