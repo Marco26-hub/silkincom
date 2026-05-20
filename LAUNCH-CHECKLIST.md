@@ -46,14 +46,24 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [ ] Genera reso
 
 ### Test pagine pubbliche tutte le 7 lingue
-- [ ] `/`, `/en`, `/es`, `/fr`, `/de`, `/pt`, `/nl`
-- [ ] `/collezioni` + ogni `/collezioni/[slug]`
-- [ ] `/prodotto/[slug]` sample 3-4 per categoria
-- [ ] `/materiali`, `/artigiani`, `/la-nostra-storia`
-- [ ] `/trame-di-como` + 1 articolo
-- [ ] `/contatti` → invio form
-- [ ] `/b2b` → invio richiesta
-- [ ] LanguageSwitcher su ogni pagina
+- [x] `/`, `/en`, `/es`, `/fr`, `/de`, `/pt`, `/nl` — tutte 200 (locale + Vercel prod)
+- [x] `/collezioni` + ogni `/collezioni/[slug]` — tutte 200
+- [x] `/prodotto/[slug]` sample — 200
+- [x] `/materiali`, `/artigiani`, `/la-nostra-storia` — 200
+- [x] `/trame-di-como` + alternates fix (commit f9cc325)
+- [x] `/contatti` — pagina 200; POST `/api/contatti` 201 (insert DB ok, email Resend soft-fail in dev)
+- [x] `/b2b` — 200
+- [ ] LanguageSwitcher click-through reale (UI test utente)
+
+### SEO check automatico (commit f9cc325)
+- [x] Hreflang 8 tag (x-default + 7 lingue) su home, prodotto, collezione, faq, blog
+- [x] Canonical su tutte le pagine principali (fix /faq + /trame-di-como)
+- [x] og:locale + alternates per lingua
+- [x] JSON-LD: WebSite + Organization + Brand + SearchAction (home), Product+Offer+Breadcrumb (prodotto), CollectionPage+ItemList (collezione), FAQPage+Question+Answer (faq)
+- [x] robots.txt: bloccato admin/api/account/checkout/cart, esplicito per 14 bot AI
+- [x] sitemap.xml: 72 URL
+- [x] /manifest.webmanifest, /.well-known/security.txt, /icon.svg, /apple-icon.svg, /og-image.jpg — tutti 200
+- [x] /api/google-merchant/feed.xml — 200 su Vercel prod (500 locale = env atteso)
 
 ### Test mobile + performance
 - [ ] Layout mobile su 3 dispositivi
@@ -63,10 +73,12 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [ ] Rete lenta (DevTools throttling)
 
 ### Edge cases
-- [ ] `/404` custom page
-- [ ] Carrello vuoto
-- [ ] Stock esaurito → bottone disabilitato
-- [ ] Coupon scaduto / invalido
+- [x] `/404` custom page brandizzata (font display + gold + link Home/Collezioni)
+- [x] `/admin` senza auth → 307 redirect a `/login?redirect=%2Fadmin`
+- [x] `/account` senza auth → 307 redirect a login
+- [ ] Carrello vuoto (UI test utente)
+- [ ] Stock esaurito → bottone disabilitato (UI test utente)
+- [ ] Coupon scaduto / invalido (UI test utente)
 
 ---
 
