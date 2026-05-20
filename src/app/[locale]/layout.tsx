@@ -143,7 +143,21 @@ const organizationSchema = {
     longitude: 9.0856,
   },
   vatID: 'IT03786790133',
-  founder: { '@type': 'Person', name: 'Marco Dibenedetto' },
+  founder: {
+    '@type': 'Person',
+    name: 'Marco Dibenedetto',
+    jobTitle: 'Fondatore',
+    url: 'https://silkincom.com/maison/marco-dibenedetto',
+  },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'info@silkincom.com',
+      areaServed: ['IT', 'EU', 'Worldwide'],
+      availableLanguage: ['Italian', 'English', 'Spanish', 'French', 'German', 'Portuguese', 'Dutch'],
+    },
+  ],
   sameAs: [
     'https://www.instagram.com/silkincom.official/',
     'https://www.facebook.com/profile.php?id=61581900780447',

@@ -45,8 +45,44 @@ export default async function ArtigianiPage() {
     },
   ];
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+  const artisansSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${baseUrl}/artigiani#collectionpage`,
+    name: t('metadata.title'),
+    description: t('metadata.description'),
+    url: `${baseUrl}/artigiani`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: artisans.length,
+      itemListElement: artisans.map((a, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Person',
+          name: a.name,
+          jobTitle: a.role,
+          worksFor: { '@id': `${baseUrl}/#organization` },
+          homeLocation: { '@type': 'Place', name: a.city },
+          image: `${baseUrl}${a.image}`,
+        },
+      })),
+    },
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}/` },
+      { '@type': 'ListItem', position: 2, name: 'I Nostri Artigiani', item: `${baseUrl}/artigiani` },
+    ],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(artisansSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       {/* Hero */}
       <section className="pt-44 pb-20 bg-ivory">

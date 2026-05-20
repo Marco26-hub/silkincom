@@ -6,6 +6,30 @@ import { POST_SLUGS, getPosts, getPost } from '@/data/posts';
 import { localizedAlternates } from '@/i18n/routing';
 import { ArrowUpRight } from 'lucide-react';
 
+// External citation references appended to pillar posts. Strengthens
+// E-E-A-T and gives AI grounding back-links to authoritative sources.
+const CITATIONS: Record<string, Array<{ label: string; url: string }>> = {
+  'storia-della-seta-a-como': [
+    { label: 'Distretto serico di Como — Wikipedia', url: 'https://it.wikipedia.org/wiki/Distretto_serico_di_Como' },
+    { label: 'Bachicoltura italiana — Wikipedia', url: 'https://it.wikipedia.org/wiki/Bachicoltura' },
+    { label: 'Mantero Seta', url: 'https://www.mantero.com/' },
+    { label: 'Ratti S.p.A.', url: 'https://www.ratti.it/' },
+    { label: 'Camera di Commercio di Como — distretto tessile', url: 'https://www.co.camcom.it/' },
+  ],
+  'cashmere-mongolo-vs-cinese': [
+    { label: 'Capra cashmere — Wikipedia', url: 'https://it.wikipedia.org/wiki/Capra_cashmere' },
+    { label: 'Cashmere — Wikipedia', url: 'https://it.wikipedia.org/wiki/Cashmere_(tessuto)' },
+  ],
+  'pashmina-vs-sciarpa-differenze': [
+    { label: 'Pashmina — Wikipedia', url: 'https://it.wikipedia.org/wiki/Pashmina' },
+    { label: 'Changthangi — Wikipedia', url: 'https://en.wikipedia.org/wiki/Changthangi' },
+  ],
+  'come-riconoscere-seta-vera': [
+    { label: 'Seta — Wikipedia', url: 'https://it.wikipedia.org/wiki/Seta' },
+    { label: 'Bombyx mori — Wikipedia', url: 'https://it.wikipedia.org/wiki/Bombyx_mori' },
+  ],
+};
+
 // Posts that follow a step-by-step structure also emit schema.org HowTo
 // for better discoverability in voice search and AI/GEO surfaces.
 const HOWTO_POSTS: Record<string, { totalTime: string; steps: Array<{ name: string; text: string }> }> = {
@@ -133,6 +157,15 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <section className="py-20 md:py-32 bg-warm-white relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16 bg-gradient-to-b from-pearl-grey to-transparent" />
         <article className="max-w-3xl mx-auto px-6 prose prose-lg md:prose-xl font-light text-soft-black/85 leading-relaxed prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-p:text-soft-black/80 prose-a:text-gold-primary hover:prose-a:text-gold-dark">
+          {/* Author byline — E-E-A-T signal for search and AI engines */}
+          <div className="not-prose flex items-center justify-center gap-3 mb-12 text-[11px] uppercase tracking-[0.3em] text-soft-grey">
+            <span>di</span>
+            <Link href="/maison/marco-dibenedetto" className="text-gold-primary hover:text-gold-dark transition-colors font-medium">
+              Marco Dibenedetto
+            </Link>
+            <span className="text-soft-grey/60">—</span>
+            <span>Fondatore SILKinCOM</span>
+          </div>
           {post.description && (
             <p className="font-display italic text-2xl md:text-3xl text-soft-black/90 mb-16 pb-12 border-b border-pearl-grey/50 text-center leading-relaxed">
               "{post.description}"
@@ -143,6 +176,27 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               <p key={i} className="mb-8">{p}</p>
             ))}
           </div>
+          {CITATIONS[post.slug] && (
+            <aside className="not-prose mt-16 pt-10 border-t border-pearl-grey/60">
+              <p className="text-[11px] uppercase tracking-[0.3em] text-gold-primary mb-4 font-medium">
+                Fonti e approfondimenti
+              </p>
+              <ul className="text-sm text-soft-black/70 space-y-2 list-none pl-0">
+                {CITATIONS[post.slug].map((c, i) => (
+                  <li key={i}>
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gold-primary hover:text-gold-dark underline-offset-4 hover:underline transition-colors"
+                    >
+                      {c.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )}
         </article>
       </section>
 

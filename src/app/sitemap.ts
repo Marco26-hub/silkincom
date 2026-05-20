@@ -56,6 +56,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry('/atelier', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
     entry('/b2b', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
     entry('/artigiani', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
+    entry('/maison/marco-dibenedetto', { changeFrequency: 'monthly', priority: 0.7, lastModified: now }),
+    entry('/press', { changeFrequency: 'monthly', priority: 0.5, lastModified: now }),
     entry('/recensioni', { changeFrequency: 'weekly', priority: 0.6, lastModified: now }),
     entry('/privacy-policy', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
     entry('/cookie-policy', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
