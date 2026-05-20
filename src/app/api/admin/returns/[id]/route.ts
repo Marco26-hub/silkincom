@@ -73,6 +73,62 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { error } = await supabase.from('returns').update(updates).eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Auto-restock: when the return status transitions to 'received' (or
+  // 'refunded' as a safety net if 'received' is skipped) restore the units
+  // back to inventory. Idempotent via the return_items.restocked flag —
+  // re-running a PATCH won't double-restock.
+  if (status === 'received' || status === 'refunded') {
+    try {
+      const { data: items } = await supabase
+        .from('return_items')
+        .select('id, quantity, restocked, order_item_id, order_items(product_id, variant_id)')
+        .eq('return_id', id)
+        .eq('restocked', false);
+
+      const { data: retRow } = await supabase
+        .from('returns')
+        .select('order_id')
+        .eq('id', id)
+        .single();
+
+      type Item = {
+        id: string;
+        quantity: number;
+        restocked: boolean;
+        order_item_id: string;
+        order_items: { product_id: string; variant_id: string | null } | null;
+      };
+
+      for (const raw of (items ?? []) as unknown[]) {
+        const it = raw as Item;
+        const productId = it.order_items?.product_id;
+        if (!productId || !it.quantity || it.quantity <= 0) continue;
+
+        const { error: mvErr } = await supabase.rpc('apply_inventory_movement', {
+          p_product_id: productId,
+          p_variant_id: it.order_items?.variant_id ?? null,
+          p_movement_type: 'return',
+          p_quantity_change: it.quantity,
+          p_reason: `Reso cliente accettato (return ${id.slice(0, 8)})`,
+          p_reference_order_id: retRow?.order_id ?? null,
+          p_performed_by: user.id,
+        });
+
+        if (mvErr) {
+          console.error('Return restock RPC failed for item', it.id, mvErr);
+          continue;
+        }
+
+        await supabase
+          .from('return_items')
+          .update({ restocked: true, restocked_at: new Date().toISOString() })
+          .eq('id', it.id);
+      }
+    } catch (restockErr) {
+      console.error('Return auto-restock loop failed:', restockErr);
+    }
+  }
+
   await logAdminAction(user.id, `return_${status}`, 'return', id, { status, admin_notes, refund_amount });
 
   // Send customer email for actionable statuses
