@@ -247,6 +247,56 @@ Commit di riferimento sessione 20/05: `f9cc325` → `22c9a17`.
 
 Commit di riferimento parte 3: `61a151c` → `8f06c61` → `efd3a44`.
 
+### Sessione 20/05 — parte 4 (Home CMS — BrandStory + EditorialBanner + InstagramFeed + Materials)
+
+**Migration `020_home_content`** (commit `b1ae3f2`):
+- Nuova tabella `home_sections` (id, section_key UNIQUE, content_i18n JSONB nested per-field, images JSONB array `{url, storage_path, alt_i18n}`, social_links JSONB, is_active) + RLS pubblica read, admin write.
+- ALTER `materials` + colonne JSONB i18n: `name_i18n`, `description_i18n`, `origin_title_i18n`, `origin_body_i18n`, `characteristics_title_i18n`, `characteristics_body_i18n`, `benefit_title_i18n`, `benefit_body_i18n`, `slug` UNIQUE, `href`, `storage_path`, `is_active`.
+- Bucket Storage `home-content` (public read, RLS admin write) — usato sia per home_sections.images sia per materials.image_url.
+
+**Seed completo** (tutti 7 lingue già popolate da `messages/*.json` + `catalog-i18n.json`):
+- `home_sections.brand_story` — eyebrow, titlePlain, titleAccent, paragraph1, paragraph2, cta, quote, quoteAuthor, imageMainAlt, imageTileAlt + 2 immagini Wix.
+- `home_sections.editorial_banner` — eyebrow, titlePlain, titleAccent, description, cta + 1 background Wix.
+- `home_sections.instagram_feed` — titleStart, titleEmphasis, description, followEyebrow + 18 foto Wix + social_links {instagram, facebook, pinterest}.
+- `materials` — 5 righe (seta/cashmere/lana/cotone/lino) con tutti i campi i18n popolati 7/7 lingue.
+
+**Loader server-only** [`src/data/home-content.ts`](src/data/home-content.ts):
+- `getHomeSection(key, locale)` con `unstable_cache(60s)` + tag `home-sections` + `home-section:{key}`.
+- `getHomeMaterials(locale)` con `unstable_cache(60s)` + tag `home-materials`.
+
+**Revalidate helpers** ([`src/lib/revalidate.ts`](src/lib/revalidate.ts)):
+- `revalidateHomeSections(sectionKey?)` — `revalidateTag('home-sections')` + ottionalmente `home-section:{key}` + `revalidatePath('/', 'layout')`.
+- `revalidateHomeMaterials()` — `revalidateTag('home-materials')` + `revalidatePath`.
+
+**API admin**:
+- `GET /api/admin/home-sections` — list all.
+- `PATCH /api/admin/home-sections/[key]` — update content_it (subset di field), is_active, social_links, images array. Auto-translate via OpenRouter se IT cambia (`body.translate !== false`).
+- `POST /api/admin/home-sections/[key]/image[?index=N]` — upload nuova foto. Se `index` query, sostituisce N-esima; altrimenti append. Cancella storage object precedente (skip `legacy:`).
+- `DELETE /api/admin/home-sections/[key]/image?index=N` — rimuove foto N + storage.
+- `GET /api/admin/home-materials` — list 5 card.
+- `PATCH /api/admin/home-materials/[id]` — update qualsiasi `*_it` field, auto-translate, sync legacy text columns (`name`, `description`, `origin`, `characteristics`, `benefits`).
+- `POST /api/admin/home-materials/[id]/image` — replace foto material card.
+
+**Frontend refactor** (`page.tsx` server fetch parallel `Promise.all`):
+- `BrandStory` accetta `section: HomeSectionLocalized | null`. Fallback a `useTranslations` se DB empty.
+- `EditorialBanner` accetta `section`. Background image da DB o fallback Wix.
+- `InstagramFeed` accetta `section`. 18 foto + social URL da DB. Se images vuoto → `return null`.
+- `Materials` accetta `materials: HomeMaterialCard[]`. Card titolo/descrizione/3-tabs/foto da DB. Se materials vuoto → `return null`.
+
+**Admin UI** ([`HomeSectionsManager.tsx`](src/components/admin/HomeSectionsManager.tsx), [`HomeMaterialsManager.tsx`](src/components/admin/HomeMaterialsManager.tsx)):
+- `/admin/sezioni-home` — 3 card sezioni con grid foto (replace inline + delete + add), edit form testi auto-traduzione, editor link social (solo instagram_feed).
+- `/admin/materiali-home` — 5 card material con foto thumbnail, toggle attiva, cambia foto button, edit form 8 campi i18n (name/description + 3 tab × title+body).
+
+**Sidebar admin**: 2 nuove entry "Sezioni Home" + "Materiali Home" sotto "Clienti & Contenuti".
+
+**Smoke prod (`silkincom.vercel.app`, commit `b1ae3f2` live)**:
+- `/` 200 + render completo DB: Hero + Featured + BrandStory ("La Maison", "Dal 1400") + Materials ("Fibra extra") + EditorialBanner ("Atelier privato") + InstagramFeed ("Trame di Como").
+- `/it/admin/sezioni-home` + `/it/admin/materiali-home` 307 → login gated ✓
+- `/api/admin/home-sections` + `/api/admin/home-materials` 401 ✓
+- DB integrity: 3 home_sections, 5 materials con slug+i18n, 3 bucket Storage (home-slides/collections/home-content).
+
+Commit di riferimento parte 4: `b1ae3f2`.
+
 ---
 
 ## 7. Problemi noti / aperti
@@ -279,7 +329,8 @@ Commit di riferimento parte 3: `61a151c` → `8f06c61` → `efd3a44`.
 | Featured Collections CMS DB-backed | Migration 019 i18n JSONB + bucket `collections` + admin `/admin/collezioni-home` + propagazione su `/collezioni` + `[slug]` | **✓ Fatto** (commit `8f06c61`, `efd3a44`) |
 | Cambia foto admin (slide + collezioni) | Bottone row-level + endpoint `/image` dedicato | **✓ Fatto** (commit `efd3a44`) |
 | Slide hero traduzioni i18n | 3 slide seed solo IT. Necessario hit "Traduci" admin dopo `OPENROUTER_API_KEY` Vercel + cliente in browser | **Da fare (utente)** |
-| Sezioni home ancora hardcoded | BrandStory / Materials / EditorialBanner / InstagramFeed — pattern uguale a quello già implementato per Hero/Featured | Aperto (su richiesta) |
+| Sezioni home ancora hardcoded | BrandStory / Materials / EditorialBanner / InstagramFeed | **✓ Fatto** (commit `b1ae3f2`) — migration 020 + bucket home-content + UI `/admin/sezioni-home` + `/admin/materiali-home` |
+| Foto sezioni home su CDN Wix | Upload nuove foto via admin → bucket `home-content`. Le foto legacy Wix restano fino al replace. | Aperto (utente sostituisce gradualmente) |
 | Pillar heritage Como | `/trame-di-como/storia-della-seta-a-como` (~5000 char) | **✓ Fatto** |
 | 3 blog quick-win + traduzione 7 lingue | come-riconoscere, pashmina-vs-sciarpa, cashmere-mongolo | **✓ Fatto** |
 | Splitting cura-prodotto | 5 sub-pages per materiale | **✓ Fatto** |
