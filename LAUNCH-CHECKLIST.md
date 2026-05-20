@@ -225,3 +225,16 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [x] favicon + apple-touch-icon + manifest PWA *(manifest.ts creato — commit fc4ddd9)*
 - [x] `/security.txt` (responsible disclosure) *(RFC 9116 — commit fc4ddd9)*
 - [x] `silkincom.com/.well-known/*` *(apple-pay esistente + security.txt aggiunto)*
+
+## SEO content & technical (20 mag)
+
+- [x] **Pillar page heritage** — `/trame-di-como/storia-della-seta-a-como` (~5000 chars, 10 paragrafi, 6 secoli di storia) *(commit 9d91c07)*
+- [x] **Blog quick-win** `come-riconoscere-seta-vera` (7 prove pratiche) *(commit ad16b30)*
+- [x] **Blog quick-win** `pashmina-vs-sciarpa-differenze` (comparison) *(commit ad16b30)*
+- [x] **Blog quick-win** `cashmere-mongolo-vs-cinese` (origin + recognition) *(commit ad16b30)*
+- [x] **Split /cura-prodotto** in 5 sub-pages per materiale (seta/cashmere/lana/lino/cotone) con title SEO + cross-links *(commit c20ce52)*
+- [x] LocalBusiness schema *(già presente nel layout `Organization` + `LocalBusiness` con address Cermenate, geo coords, vatID, founder)*
+- [x] SEO quick wins — fix title duplicati, meta desc CTA-driven, H1 prodotto con colore, alt img *(commit 214e383)*
+- [x] Trust badges contrast fix *(commit 141aac2)*
+- [ ] **IndexNow setup** — bloccato dal classifier (genera key file in `public/`). Da fare con permission rule o manualmente
+- [ ] Traduzione blog post nelle 6 lingue (`npm run translate` quando hai `ANTHROPIC_API_KEY` o aggiunti i blog ai bottoni traduci admin)
