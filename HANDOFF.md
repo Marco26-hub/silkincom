@@ -196,6 +196,57 @@ Commit di riferimento sessione 20/05: `f9cc325` → `22c9a17`.
 - `public/journal/telaio.jpg` (245 KB) → hero `storia-della-seta-a-como`
 - `public/journal/foto_sciarpe_1.png` (2.4 MB) → hero `cashmere-mongolo-vs-cinese`
 
+### Sessione 20/05 — parte 3 (Home CMS — Hero slides + Featured Collections)
+
+**Migration `018_home_slides`** (commit `61a151c`):
+- Nuova tabella `home_slides` (id, image_url, storage_path, title_i18n/subtitle_i18n/alt_i18n JSONB, focus, display_order, is_active) + RLS + bucket Storage `home-slides`.
+- Hero refactored: accetta prop `slides`, titolo/sottotitolo per-slide con animazione remount, separatore `||` per accent gold, fallback hardcoded `FALLBACK_SLIDES` se DB vuoto.
+- Loader server-only [`src/data/home-slides.ts`](src/data/home-slides.ts) con `unstable_cache` + tag `home-slides`. Helper `revalidateHomeSlides()` in [`src/lib/revalidate.ts`](src/lib/revalidate.ts).
+- API admin: GET/POST `/api/admin/home-slides`, PATCH/DELETE `/api/admin/home-slides/[id]`, POST `/api/admin/home-slides/reorder`, POST `/api/admin/home-slides/[id]/translate`.
+- UI admin `/admin/foto-home` ([`HomeSlidesManager.tsx`](src/components/admin/HomeSlidesManager.tsx)): upload, edit form, reorder ↑/↓, toggle attiva, traduci, elimina.
+- 3 slide seed (ig-06/02/01 con testi IT estratti da messages.home.hero + 2 fittizi twilly/cotone).
+
+**Helper traduzione condiviso** ([`src/lib/translate.ts`](src/lib/translate.ts), commit `61a151c`):
+- `translateFields(targetLang, fields, context)` — OpenRouter (`google/gemma-4-31b-it:free`, override `TRANSLATE_MODEL`), JSON-out, gestione `<think>` tag.
+- `translateToAllLocales(it, ctx)` — sequenziale per rate limit free tier.
+- `buildI18nMap(itValue, perLocale, key)` — costruisce `{it, en, es, fr, de, pt, nl}`.
+
+**Migration `019_collections_i18n`** (commit `8f06c61`):
+- ALTER `collections` + colonne JSONB `name_i18n/tagline_i18n/short_name_i18n/accent_i18n/description_i18n` + `storage_path` + bucket Storage `collections`.
+- Seed 3 collezioni (inverno/iconica/primavera) da `catalog-i18n.json` con tutte le 7 lingue.
+- Loader [`src/data/collections-db.ts`](src/data/collections-db.ts) — `getFeaturedCollections(locale)` + `getFeaturedCollection(slug, locale)`. Cache tag `collections-meta`.
+- API admin: GET `/api/admin/collections-content`, PATCH/translate/upload-image `/api/admin/collections-content/[id]/*`.
+- UI admin `/admin/collezioni-home` ([`CollectionsContentManager.tsx`](src/components/admin/CollectionsContentManager.tsx)) — modifica per collezione: nome/short/accent/tagline/descrizione + upload foto + traduci.
+
+**Tutti i lettori di collezioni passati a DB** (commit `efd3a44`):
+- `FeaturedCollections.tsx` (homepage) → accetta prop `collections`, immagini da DB con fallback per slug.
+- `/it/collezioni/page.tsx` → `getFeaturedCollections(locale)` async.
+- `/it/collezioni/[slug]/page.tsx` → `getFeaturedCollection(slug, locale)` per metadata + lookup; `ProductFilters` riceve DB collections.
+
+**Image-only replace** (commit `efd3a44`):
+- POST `/api/admin/home-slides/[id]/image` (multipart `file`) — sostituisce SOLO foto slide hero, mantiene tutti gli altri campi, cancella storage object precedente (skip `legacy:` markers).
+- Bottone "Cambia foto" (icona quadro) su ogni riga slide hero + ogni riga collezione → file picker → upload → cache invalidata.
+- Endpoint analogo già esistente `POST /api/admin/collections-content/[id]/image` per collezioni.
+
+**Sidebar admin** ([`AdminSidebar.tsx`](src/components/admin/AdminSidebar.tsx)): 2 nuove entry sotto "Clienti & Contenuti": **Foto Home** + **Collezioni Home**.
+
+**Cleanup DB**: `collections.slug='estate'` (orfana, già flaggata in §5) settata `is_active=false` per non apparire più in `/collezioni` ora che la pagina è DB-driven.
+
+**Stato traduzioni**: 3 slide seed hanno solo IT (`slides_en_translated: 0`); le 6 lingue derivano da fallback IT in `pickI18n`. User deve hit "Traduci" su ogni slide da admin (richiede `OPENROUTER_API_KEY` su Vercel) per popolare. Le 3 collezioni hanno già 7 lingue (seed da `catalog-i18n.json`).
+
+**Smoke prod (`silkincom.vercel.app`, commit `efd3a44` live)**:
+- `/` 200 + render 3 slide hero + 3 collezioni DB
+- `/it/collezioni` 200 + render DB (Inverno/Iconica/Primavera + tagline/accent)
+- `/it/collezioni/inverno` 200 + DB metadata
+- `/en/collezioni` 200 (i18n fallback IT funzionante)
+- `/it/admin/foto-home` + `/it/admin/collezioni-home` 200 (login gated)
+- `/api/admin/home-slides` + `/api/admin/collections-content` GET/POST 401 (auth required) ✓
+- robots.txt: `/admin/` + `/api/` disallow ✓
+- sitemap: 83 URL invariato, nessuna leak admin ✓
+- bucket `home-slides` + `collections` presenti su Storage ✓
+
+Commit di riferimento parte 3: `61a151c` → `8f06c61` → `efd3a44`.
+
 ---
 
 ## 7. Problemi noti / aperti
@@ -224,6 +275,11 @@ Commit di riferimento sessione 20/05: `f9cc325` → `22c9a17`.
 | Card prodotto mostra `description` DB reale | line-clamp-2 | **✓ Fatto** |
 | Collezioni unificate `catalog-i18n.json` | Una sola fonte + getCollections() esteso | **✓ Fatto** |
 | Materiali tabella DB popolata | 5 materiali per dropdown variante | **✓ Fatto** |
+| Hero slides CMS DB-backed | Tabella `home_slides` + bucket Storage + admin UI `/admin/foto-home` + traduzione OpenRouter | **✓ Fatto** (commit `61a151c`) |
+| Featured Collections CMS DB-backed | Migration 019 i18n JSONB + bucket `collections` + admin `/admin/collezioni-home` + propagazione su `/collezioni` + `[slug]` | **✓ Fatto** (commit `8f06c61`, `efd3a44`) |
+| Cambia foto admin (slide + collezioni) | Bottone row-level + endpoint `/image` dedicato | **✓ Fatto** (commit `efd3a44`) |
+| Slide hero traduzioni i18n | 3 slide seed solo IT. Necessario hit "Traduci" admin dopo `OPENROUTER_API_KEY` Vercel + cliente in browser | **Da fare (utente)** |
+| Sezioni home ancora hardcoded | BrandStory / Materials / EditorialBanner / InstagramFeed — pattern uguale a quello già implementato per Hero/Featured | Aperto (su richiesta) |
 | Pillar heritage Como | `/trame-di-como/storia-della-seta-a-como` (~5000 char) | **✓ Fatto** |
 | 3 blog quick-win + traduzione 7 lingue | come-riconoscere, pashmina-vs-sciarpa, cashmere-mongolo | **✓ Fatto** |
 | Splitting cura-prodotto | 5 sub-pages per materiale | **✓ Fatto** |
