@@ -5,8 +5,23 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const ADMIN_ROLES = ['admin', 'super_admin', 'editor'];
-const MODEL = process.env.VISION_MODEL || 'google/gemini-2.0-flash-exp:free';
+const DEFAULT_MODEL = process.env.VISION_MODEL || 'google/gemini-2.0-flash-exp:free';
 const MAX_BYTES = 8 * 1024 * 1024;
+
+// Server-side allowlist. Keeps clients from invoking arbitrary models that
+// could spend tokens unexpectedly. All entries are vision-capable.
+const ALLOWED_MODELS = new Set([
+  'google/gemini-2.0-flash-exp:free',
+  'google/gemini-flash-1.5',
+  'google/gemini-flash-1.5-8b',
+  'meta-llama/llama-3.2-90b-vision-instruct:free',
+  'meta-llama/llama-3.2-11b-vision-instruct:free',
+  'qwen/qwen-2-vl-7b-instruct:free',
+  'anthropic/claude-3.5-sonnet',
+  'anthropic/claude-3-haiku',
+  'openai/gpt-4o',
+  'openai/gpt-4o-mini',
+]);
 
 const SYSTEM_PROMPT = `You are the editorial copywriter for SILKinCOM, a luxury silk, cashmere, wool, linen and cotton accessories maison Made in Como, Italy. Founder: Marco Dibenedetto. Voice: refined, editorial, evocative, never marketing-cliché. Lake Como heritage is the soul.
 
@@ -22,10 +37,6 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdminApi(ADMIN_ROLES);
   if (!auth.ok) return forbidden(auth.status);
 
-  if (!process.env.OPENROUTER_API_KEY) {
-    return NextResponse.json({ error: 'OPENROUTER_API_KEY non configurata su Vercel' }, { status: 500 });
-  }
-
   const formData = await req.formData().catch(() => null);
   const file = formData?.get('file') as File | null;
   if (!file) return NextResponse.json({ error: 'File mancante' }, { status: 400 });
@@ -34,6 +45,20 @@ export async function POST(req: NextRequest) {
   }
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ error: 'Immagine oltre 8 MB' }, { status: 400 });
+  }
+
+  const requestedModel = (formData?.get('model') as string | null)?.trim() || DEFAULT_MODEL;
+  if (!ALLOWED_MODELS.has(requestedModel)) {
+    return NextResponse.json({ error: `Modello non ammesso: ${requestedModel}` }, { status: 400 });
+  }
+  // Per-request API key override. Never persisted server-side, never logged.
+  const keyOverride = (formData?.get('api_key') as string | null)?.trim();
+  const apiKey = keyOverride || process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: 'OPENROUTER_API_KEY non configurata su Vercel e nessun override fornito' },
+      { status: 500 }
+    );
   }
 
   const buf = Buffer.from(await file.arrayBuffer());
@@ -45,12 +70,12 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        authorization: `Bearer ${apiKey}`,
         'HTTP-Referer': 'https://silkincom.com',
         'X-Title': 'SILKinCOM',
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: requestedModel,
         max_tokens: 600,
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
@@ -96,6 +121,35 @@ export async function POST(req: NextRequest) {
     title_it: (parsed.title || '').trim(),
     subtitle_it: (parsed.subtitle || '').trim(),
     alt_it: (parsed.alt || '').trim(),
-    model: MODEL,
+    model: requestedModel,
   });
 }
+
+// GET — list the allowed models so the admin form can render a dropdown
+// without hardcoding the catalogue client-side.
+export async function GET() {
+  const auth = await requireAdminApi(ADMIN_ROLES);
+  if (!auth.ok) return forbidden(auth.status);
+  return NextResponse.json({
+    default_model: DEFAULT_MODEL,
+    has_env_key: !!process.env.OPENROUTER_API_KEY,
+    models: Array.from(ALLOWED_MODELS).map((id) => ({
+      id,
+      label: MODEL_LABELS[id] ?? id,
+      free: id.endsWith(':free'),
+    })),
+  });
+}
+
+const MODEL_LABELS: Record<string, string> = {
+  'google/gemini-2.0-flash-exp:free': 'Gemini 2.0 Flash · gratis · consigliato',
+  'google/gemini-flash-1.5': 'Gemini Flash 1.5 · ~$0.0004/img',
+  'google/gemini-flash-1.5-8b': 'Gemini Flash 1.5 8B · ~$0.0002/img',
+  'meta-llama/llama-3.2-90b-vision-instruct:free': 'Llama 3.2 90B Vision · gratis · lento',
+  'meta-llama/llama-3.2-11b-vision-instruct:free': 'Llama 3.2 11B Vision · gratis · veloce',
+  'qwen/qwen-2-vl-7b-instruct:free': 'Qwen 2 VL 7B · gratis · IT debole',
+  'anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet · ~$0.003/img · top brand voice',
+  'anthropic/claude-3-haiku': 'Claude 3 Haiku · ~$0.00025/img',
+  'openai/gpt-4o': 'GPT-4o · ~$0.005/img',
+  'openai/gpt-4o-mini': 'GPT-4o mini · ~$0.001/img',
+};

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useTransition } from 'react';
+import { useState, useRef, useTransition, useEffect } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
@@ -224,6 +224,8 @@ export function HomeSlidesManager({ initialSlides }: { initialSlides: Slide[] })
   );
 }
 
+type AiModel = { id: string; label: string; free: boolean };
+
 function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [titleIt, setTitleIt] = useState('');
@@ -235,6 +237,31 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [suggesting, setSuggesting] = useState(false);
   const [aiInfo, setAiInfo] = useState<string | null>(null);
+  const [models, setModels] = useState<AiModel[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>('');
+  const [apiKey, setApiKey] = useState<string>('');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [hasEnvKey, setHasEnvKey] = useState<boolean>(true);
+
+  // Load model catalogue on first mount. Endpoint is admin-gated, so the
+  // user already authenticated to reach this form.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/home-slides/suggest');
+        if (!res.ok) return;
+        const j = await res.json();
+        if (cancelled) return;
+        setModels(j.models || []);
+        setSelectedModel(j.default_model || '');
+        setHasEnvKey(!!j.has_env_key);
+      } catch {
+        // Silent — dropdown stays empty, user can still hit submit with default.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   function onFilePicked() {
     const file = fileRef.current?.files?.[0];
@@ -262,6 +289,8 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
     try {
       const fd = new FormData();
       fd.append('file', file);
+      if (selectedModel) fd.append('model', selectedModel);
+      if (apiKey.trim()) fd.append('api_key', apiKey.trim());
       const res = await fetch('/api/admin/home-slides/suggest', { method: 'POST', body: fd });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
@@ -350,6 +379,54 @@ function UploadForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
             <Sparkles className="w-3 h-3" /> {aiInfo}
           </p>
         ) : null}
+
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 p-3 bg-pearl-grey/20 border border-pearl-grey">
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-soft-grey mb-1">
+              Modello AI vision
+            </label>
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              className="w-full border border-pearl-grey px-2 py-1.5 text-xs bg-white"
+            >
+              {models.length === 0 ? <option value="">Caricamento…</option> : null}
+              {models.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.free ? '🆓 ' : '💳 '}{m.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-[10px] text-soft-grey mt-1">Default free. Modelli a pagamento richiedono crediti su OpenRouter.</p>
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase tracking-wider text-soft-grey mb-1">
+              API key OpenRouter
+              <span className="ml-1 text-soft-grey/70 normal-case">
+                {hasEnvKey ? '(env Vercel attiva — vuoto = usa quella)' : '(env mancante — obbligatorio)'}
+              </span>
+            </label>
+            <div className="flex gap-1">
+              <input
+                type={showApiKey ? 'text' : 'password'}
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder={hasEnvKey ? 'sk-or-v1-… (opzionale)' : 'sk-or-v1-… (obbligatorio)'}
+                autoComplete="off"
+                className="flex-1 border border-pearl-grey px-2 py-1.5 text-xs font-mono"
+              />
+              <button
+                type="button"
+                onClick={() => setShowApiKey((v) => !v)}
+                className="px-2 py-1.5 text-xs border border-pearl-grey hover:border-soft-black"
+                title={showApiKey ? 'Nascondi' : 'Mostra'}
+              >
+                {showApiKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              </button>
+            </div>
+            <p className="text-[10px] text-soft-grey mt-1">Solo per questa richiesta. Mai salvata, mai loggata.</p>
+          </div>
+        </div>
       </div>
 
       <div>
