@@ -1104,7 +1104,10 @@
     "title": "Seite nicht gefunden",
     "subtitle": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     "browseCollections": "Kollektionen entdecken",
-    "home": "Startseite"
+    "home": "Startseite",
+    "exploreLabel": "Entdecken",
+    "journal": "Journal",
+    "contact": "Kontakt"
   },
   "errorPage": {
     "tag": "Fehler",

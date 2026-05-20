@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { localizedAlternates } from '@/i18n/routing';
+import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export async function generateMetadata({
   params,
@@ -35,6 +36,12 @@ export default async function FaqPage() {
 
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: 'Home', path: '/' },
+          { name: 'FAQ', path: '/faq' },
+        ]}
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <LegalPage title={t('title')}>
         {faqs.map((f, i) => (

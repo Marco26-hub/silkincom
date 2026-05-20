@@ -1104,7 +1104,10 @@
     "title": "Pagina niet gevonden",
     "subtitle": "De pagina die u zoekt bestaat niet of is verplaatst.",
     "browseCollections": "Collecties bekijken",
-    "home": "Home"
+    "home": "Home",
+    "exploreLabel": "Ontdekken",
+    "journal": "Journal",
+    "contact": "Contact"
   },
   "errorPage": {
     "tag": "Fout",

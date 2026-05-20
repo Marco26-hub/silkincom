@@ -4,6 +4,7 @@ import { Mail, MapPin, Instagram, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export function ContattiClient() {
   const t = useTranslations('contatti');
@@ -61,6 +62,12 @@ export function ContattiClient() {
 
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: 'Home', path: '/' },
+          { name: 'Contatti', path: '/contatti' },
+        ]}
+      />
       {/* Floating success toast — fixed at top so the user sees it after
           scrollTo + ensures feedback is unmissable on mobile. */}
       <AnimatePresence>

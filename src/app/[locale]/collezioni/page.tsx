@@ -6,6 +6,7 @@ import { getCategories, getMaterials, getProducts } from '@/data/catalog';
 import { getFeaturedCollections } from '@/data/collections-db';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
+import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export async function generateMetadata() {
   const locale = await getLocale();
@@ -24,6 +25,12 @@ export default async function CollezioniPage() {
   const materials = getMaterials(locale);
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: 'Home', path: '/' },
+          { name: 'Collezioni', path: '/collezioni' },
+        ]}
+      />
       <section className="pt-40 pb-16 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">
           <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">

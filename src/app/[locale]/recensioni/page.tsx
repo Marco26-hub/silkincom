@@ -2,6 +2,7 @@ import { Link } from '@/i18n/navigation';
 import { ArrowRight, Star } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { createServiceClient } from '@/lib/supabase/server';
+import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export async function generateMetadata() {
   const t = await getTranslations('recensioniPage');
@@ -45,6 +46,12 @@ export default async function RecensioniPage() {
 
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: 'Home', path: '/' },
+          { name: 'Recensioni', path: '/recensioni' },
+        ]}
+      />
       {/* Hero */}
       <section className="pt-44 pb-20 bg-ivory">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 text-center">

@@ -1104,7 +1104,10 @@
     "title": "Página não encontrada",
     "subtitle": "A página que procura não existe ou foi movida.",
     "browseCollections": "Explorar coleções",
-    "home": "Início"
+    "home": "Início",
+    "exploreLabel": "Explorar",
+    "journal": "Journal",
+    "contact": "Contacto"
   },
   "errorPage": {
     "tag": "Erro",

@@ -1104,7 +1104,10 @@
     "title": "Page not found",
     "subtitle": "The page you're looking for doesn't exist or has been moved.",
     "browseCollections": "Browse collections",
-    "home": "Home"
+    "home": "Home",
+    "exploreLabel": "Explore",
+    "journal": "Journal",
+    "contact": "Contact"
   },
   "errorPage": {
     "tag": "Error",

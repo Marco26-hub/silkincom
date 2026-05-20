@@ -203,11 +203,13 @@ export default async function LocaleLayout({
     <html lang={locale} className={`${cormorant.variable} ${inter.variable} ${baskerville.variable}`}>
       <head>
         {/* Preconnect critical third-party origins */}
+        <link rel="preconnect" href="https://fjudulhxsafjizcmrifw.supabase.co" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="preconnect" href="https://static.wixstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://api.stripe.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

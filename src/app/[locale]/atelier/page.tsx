@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
+import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export const metadata = {
   title: 'Atelier — Su misura',
@@ -19,6 +20,12 @@ export default async function AtelierPage() {
 
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: 'Home', path: '/' },
+          { name: 'Atelier', path: '/atelier' },
+        ]}
+      />
       <section className="relative h-[80vh] min-h-[560px] overflow-hidden">
         <Image
           src="https://static.wixstatic.com/media/11062b_07ccc5eabef74564bafa19a17ab1fd0b~mv2_d_5262_3508_s_4_2.jpg/v1/fill/w_2400,h_1600,al_c,q_90,usm_0.66_1.00_0.01/file.jpg"

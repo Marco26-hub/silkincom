@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, Hotel, Gift, Briefcase } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export async function generateMetadata() {
   const t = await getTranslations('b2bPage');
@@ -15,6 +16,12 @@ export default async function B2BPage() {
   const t = await getTranslations('b2bPage');
   return (
     <>
+      <BreadcrumbSchema
+        trail={[
+          { name: 'Home', path: '/' },
+          { name: 'B2B', path: '/b2b' },
+        ]}
+      />
 
       {/* Hero */}
       <section className="pt-44 pb-20 bg-ivory">
