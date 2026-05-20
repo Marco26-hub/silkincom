@@ -379,6 +379,20 @@ function GiacenzeTab({
               const isFirstOfGroup = !prev || prev.product_id !== r.product_id;
               const sku = r.product_variants?.variant_sku ?? r.products?.sku ?? '';
               const isVariant = r.variant_id !== null;
+              // Aggregate per-size availability for the parent row of an
+              // apparel product so the user sees S:N · M:N · L:N · XL:N · XXL:N
+              // without scrolling through every variant row.
+              const sizeBreakdown = isFirstOfGroup
+                ? rows
+                    .filter((x) => x.product_id === r.product_id && x.product_variants?.size)
+                    .sort((a, b) => {
+                      const ord: Record<string, number> = { XS: 0, S: 1, M: 2, L: 3, XL: 4, XXL: 5, XXXL: 6, UNI: 9 };
+                      const ao = ord[a.product_variants?.size ?? ''] ?? 99;
+                      const bo = ord[b.product_variants?.size ?? ''] ?? 99;
+                      return ao - bo;
+                    })
+                    .map((x) => ({ size: x.product_variants!.size!, qty: x.quantity_available }))
+                : [];
               return (
                 <tr
                   key={r.id}
@@ -395,7 +409,28 @@ function GiacenzeTab({
                       <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-transparent group-hover:bg-gold-primary transition-colors" />
                     )}
                     {isFirstOfGroup ? (
-                      r.products?.name ?? '—'
+                      <div>
+                        <span>{r.products?.name ?? '—'}</span>
+                        {sizeBreakdown.length > 0 ? (
+                          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                            {sizeBreakdown.map((b) => (
+                              <span
+                                key={b.size}
+                                className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] tracking-wider uppercase border ${
+                                  b.qty === 0
+                                    ? 'border-pearl-grey/60 text-soft-grey/60'
+                                    : b.qty < 5
+                                    ? 'border-amber-400 text-amber-800 bg-amber-50/40'
+                                    : 'border-soft-black text-soft-black'
+                                }`}
+                              >
+                                <span className="font-medium">{b.size}</span>
+                                <span className="tabular-nums">{b.qty}</span>
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
                     ) : (
                       <span className="pl-5 text-soft-grey/50 text-xs">↳</span>
                     )}
