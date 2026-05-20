@@ -1,7 +1,7 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 19 maggio 2026 (parte 2) · ultimo commit di riferimento: `f676d6c`.
+Ultimo aggiornamento: 20 maggio 2026 · ultimo commit di riferimento: `22c9a17`.
 
 ---
 
@@ -131,6 +131,67 @@ Collezioni: fonte unica `src/data/catalog-i18n.json`. `home.featured.items.*` ri
 
 Commit di riferimento per la parte 2: `f51721b` → `f676d6c`.
 
+### Sessione 20/05 — go-live prep (test + SEO/GEO premium + content)
+
+**Test smoke completo (commit `0a2c124`, `f9cc325`):**
+- 59/59 endpoint testati 200 su Vercel prod (silkincom.vercel.app)
+- Fix conflitto `public/icon.svg` ↔ `src/app/icon.svg` (Next 13 metadata pipeline)
+- Fix mancanti `alternates` SEO su `/faq` e `/trame-di-como` (canonical + 8 hreflang)
+- `LAUNCH-CHECKLIST.md` creata (go-live runbook completo)
+
+**SEO quick wins (commit `141aac2`, `214e383`):**
+- Trust badges contrast fix (`text-soft-grey font-light` → `text-soft-black/75 font-normal`)
+- Title duplicati `SILKinCOM | SILKinCOM` rimossi su `/collezioni/[slug]` e `/artigiani`
+- `/materiali` ora ha metadata custom (era default home)
+- Meta description prodotto CTA-driven (`${name} ${color} in ${material}. €dim. Sciarpa luxury Made in Como, spedizione gratuita oltre €200`)
+- H1 prodotto include colore (`Cernobbio Azzurra`)
+- Alt img prodotto include color + material
+
+**Content pillar + 3 blog quick-win (commit `9d91c07`, `ad16b30`, `bde9cee`, `b0d1730`, `d35efd5`):**
+- Pillar heritage `/trame-di-como/storia-della-seta-a-como` (~5000 chars, 10 paragrafi, sei secoli di storia + Mantero/Ratti dynasties)
+- Blog `come-riconoscere-seta-vera` (7 prove pratiche)
+- Blog `pashmina-vs-sciarpa-differenze` (comparison + dimensioni + fibra)
+- Blog `cashmere-mongolo-vs-cinese` (origine + micronaggio + prezzi)
+- 4 post × 7 lingue = 28 versioni live (8 via OpenRouter `gemma-4-31b:free`, 16 manualmente, 4 riscritti per QA premium editorial)
+
+**Split /cura-prodotto (commit `c20ce52`):**
+- `/cura-prodotto/[material]` dynamic per seta/cashmere/lana/lino/cotone
+- Title keyword-rich + cross-links + sitemap entries
+
+**GEO/SEO premium batch (commit `152dd18`, `5c30474`, `8e891a7`, `5f3a2e9`):**
+- `llms.txt` da 37 → 101 righe (heritage, differenziatori, catalog completo, FAQ, prezzi, social, lingue)
+- HowTo schema su `come-riconoscere-seta-vera` (7 HowToStep) e su 5 `/cura-prodotto/[material]`
+- BreadcrumbList schema su blog post + cura sub + materiali
+- AboutPage schema su `/la-nostra-storia` (mainEntity = Organization + founder)
+- ItemList schema su `/materiali` (5 Product entries)
+
+**GEO E-E-A-T quick wins x6 (commit `22c9a17`):**
+- Byline visibile sui blog post ("di Marco Dibenedetto — Fondatore") con link a `/maison/marco-dibenedetto`
+- Organization schema ContactPoint (email + 7 lingue + areaServed IT/EU/Worldwide)
+- `/artigiani` con CollectionPage + ItemList × 3 Person schema
+- **Nuova** `/maison/marco-dibenedetto` — bio editorial + Person schema completo (knowsAbout, affiliation, nationality, homeLocation)
+- **Nuova** `/press` — press kit (boilerplate, fact sheet, logo, contatti, story angles) + WebPage schema
+- Citation references su tutti i 4 nuovi blog post (Wikipedia, Mantero, Ratti, Camera di Commercio)
+
+**Schema coverage finale per tipo pagina:**
+- Home: WebSite + Organization+LocalBusiness + Brand + SearchAction + ContactPoint
+- Prodotto: Product + Offer + BreadcrumbList + ReviewSchema (quando reviews > 0)
+- Collezione: CollectionPage + ItemList + Offer
+- Blog post: Article + Speakable + BreadcrumbList (+ HowTo se step-by-step)
+- FAQ: FAQPage + Question + Answer
+- Cura/[material]: HowTo + HowToStep + BreadcrumbList
+- Materiali: ItemList + Product + BreadcrumbList
+- La nostra storia: AboutPage + Organization + Person (founder)
+- Artigiani: CollectionPage + ItemList + Person × N
+- Maison/marco-dibenedetto: Person + Country + Place + BreadcrumbList
+- Press: WebPage + BreadcrumbList
+
+**Sitemap finale**: 83 URL + 567 hreflang alternates xhtml:link.
+
+**Metriche stimate GEO score**: 78 → ~95/100 (residuo = brand authority off-site).
+
+Commit di riferimento sessione 20/05: `f9cc325` → `22c9a17`.
+
 ---
 
 ## 7. Problemi noti / aperti
@@ -138,18 +199,34 @@ Commit di riferimento per la parte 2: `f51721b` → `f676d6c`.
 | # | Problema | Stato |
 |---|---|---|
 | Architettura | Arch A scelta e implementata (§3) | **✓ Fatto** |
-| Vercel env | `OPENROUTER_API_KEY` da aggiungere alle env Vercel + Redeploy. Necessaria per il bottone "Traduci" admin. Senza, il save di un prodotto con testo cambiato dà errore 500. | **Da fare (utente)** |
+| Vercel env | `OPENROUTER_API_KEY` da aggiungere alle env Vercel + Redeploy. Necessaria per il bottone "Traduci" admin prodotti. | **Da fare (utente)** |
 | Compositions doppioni | DELETE manuale dei 2 duplicati casing nella tabella `compositions`: `100% cashmere` (id `10968fd8-…`, 0 prodotti) e `100% Cotone` (id `8987a45f-…`, 0 prodotti). Da Supabase Studio. | **Da fare (utente)** |
-| Dati prodotti sporchi | DB `darsena-bianco.description_long` ha refuso "Il **cavallo** Darsena…" (→ "cappellino"). `darsena-blu`/`darsena-verde` `description_long` inizia con "Composizione:…" (scheda tecnica, non descrizione). Correggi dall'admin. | Da fare (contenuto) |
+| Dati prodotti sporchi | `darsena-bianco` refuso "cavallo→cappellino" + intro narrativa per `darsena-blu`/`darsena-verde` | **✓ Fatto** (UPDATE DB) |
 | ISR cache catalogo | `unstable_cache` 60s + `revalidateCatalog` on-demand | **✓ Fatto** |
-| Bellagio prezzo/dimensioni | Era effetto del bug frontend statico vs DB. Risolto con Arch A: home e pagina prodotto leggono entrambe dal DB. | **✓ Fatto** |
-| Dominio | Migrare il Next.js da `silkincom.vercel.app` a `silkincom.com` | Da fare (§8) |
-| Brand Authority | GEO score basso (15/100) — serve presenza off-site | In corso (utente) |
-| Wikidata | Entità SILKinCOM da creare. Account `SILKinCOM` registrato ma **troppo nuovo**: `Special:NewItem` non renderizza il CAPTCHA. Serve **autoconfirmed** = 4 giorni + 50 modifiche. Valori pronti nel guide dato all'utente. | Bloccato 4gg |
-| Founder/E-E-A-T | Sezione fondatore visibile su `/la-nostra-storia` + byline blog | Da fare (contenuto) |
-| GEO medi | Bing Webmaster/IndexNow; H1 homepage semantico (è poetico — decisione branding) | Da fare |
-| T-shirt bianca | Confermata OK dall'utente | **✓ Chiuso** |
-| Categorie orfane DB | Confermate aggiornate dall'utente | **✓ Chiuso** |
+| Bellagio prezzo/dimensioni | Risolto con Arch A | **✓ Fatto** |
+| Dominio | Migrare il Next.js da `silkincom.vercel.app` a `silkincom.com` | **Da fare** ven 22/05 (§8) |
+| Codice pre-cutover | URL hardcoded `silkincom.vercel.app` → `silkincom.com` in 13 file | **✓ Fatto** (commit `c7920f6`) |
+| Brand Authority off-site | Wikidata, Wikipedia, press release | In corso (utente) |
+| Wikidata | Entità SILKinCOM da creare. Sbloccato dopo autoconfirmed (4 giorni). | Bloccato 4gg |
+| Founder/E-E-A-T | Pagina `/maison/marco-dibenedetto` + Person schema + byline blog + ContactPoint + press kit | **✓ Fatto** (commit `22c9a17`) |
+| Press / Media kit | Pagina `/press` con press kit + WebPage schema | **✓ Fatto** (commit `22c9a17`) |
+| IndexNow | Bloccato dal classifier (token file). Da fare con permission rule o manualmente. | Da fare (utente) |
+| H1 home keyword-rich | "L'eleganza del lago tessuta a Como" — branding/poetico. Cambio = decisione branding. | Aperto |
+| Lighthouse / Core Web Vitals | Test browser manuale. | Da fare (utente) |
+| Schema Google Rich Results test | Manuale su Search Console post-cutover. | Da fare (utente) |
+| Form contatti email | Resend integrato, `info@silkincom.com` | **✓ Fatto** |
+| Manifest PWA + security.txt | RFC 9116 + manifest.ts | **✓ Fatto** |
+| Modifica varianti admin | UI matita + form condiviso + PATCH | **✓ Fatto** |
+| Card prodotto mostra `description` DB reale | line-clamp-2 | **✓ Fatto** |
+| Collezioni unificate `catalog-i18n.json` | Una sola fonte + getCollections() esteso | **✓ Fatto** |
+| Materiali tabella DB popolata | 5 materiali per dropdown variante | **✓ Fatto** |
+| Pillar heritage Como | `/trame-di-como/storia-della-seta-a-como` (~5000 char) | **✓ Fatto** |
+| 3 blog quick-win + traduzione 7 lingue | come-riconoscere, pashmina-vs-sciarpa, cashmere-mongolo | **✓ Fatto** |
+| Splitting cura-prodotto | 5 sub-pages per materiale | **✓ Fatto** |
+| Citation refs blog | Aside "Fonti e approfondimenti" sui 4 post | **✓ Fatto** |
+| llms.txt premium | 101 righe (heritage, catalog, FAQ, prezzi, social, lingue) | **✓ Fatto** |
+| Schema HowTo / AboutPage / ItemList | Full coverage | **✓ Fatto** |
+| T-shirt bianca / Categorie orfane DB | Confermate aggiornate dall'utente | **✓ Chiuso** |
 
 GEO audit completo con piano 30 giorni: vedi `GEO-AUDIT-REPORT.md`.
 
