@@ -44,18 +44,18 @@ export function Header() {
       <header
         className={`fixed top-9 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${
           scrolled
-            ? 'bg-warm-white/95 backdrop-blur-md border-b border-pearl-grey/40 py-3'
-            : 'bg-warm-white/60 backdrop-blur-sm py-5 md:py-6'
+            ? 'bg-warm-white/95 backdrop-blur-md border-b border-pearl-grey/40 py-2.5'
+            : 'bg-warm-white/60 backdrop-blur-sm py-3 md:py-4'
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center">
           {/* Left nav (desktop) */}
-          <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] text-soft-black">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.2em] text-soft-black">
             {NAV_LINKS.slice(0, 4).map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="hover:text-gold-primary transition-colors duration-300 relative group"
+                className="whitespace-nowrap hover:text-gold-primary transition-colors duration-300 relative group"
               >
                 {l.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-primary group-hover:w-full transition-all duration-300" />
@@ -78,12 +78,12 @@ export function Header() {
           </div>
 
           {/* Right nav + icons */}
-          <div className="hidden lg:flex items-center justify-end gap-8 text-[11px] uppercase tracking-[0.2em] text-soft-black">
+          <div className="hidden lg:flex items-center justify-end gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.2em] text-soft-black">
             {NAV_LINKS.slice(4).map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="hover:text-gold-primary transition-colors duration-300 relative group"
+                className="whitespace-nowrap hover:text-gold-primary transition-colors duration-300 relative group"
               >
                 {l.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-primary group-hover:w-full transition-all duration-300" />
