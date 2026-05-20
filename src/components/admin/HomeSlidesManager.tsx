@@ -24,12 +24,31 @@ type Slide = {
 };
 
 const FOCUS_OPTIONS = [
-  { value: 'center', label: 'Centro' },
+  { value: 'center', label: 'Centro (face-safe)' },
+  { value: 'face', label: 'Viso (volti chiari)' },
+  { value: 'face-top', label: 'Viso alto (ritratti stretti)' },
   { value: 'top', label: 'Alto' },
   { value: 'bottom', label: 'Basso' },
   { value: 'left', label: 'Sinistra' },
   { value: 'right', label: 'Destra' },
 ];
+
+// Mirror src/components/sections/Hero.tsx resolveFocus so admin preview
+// matches public Hero pixel-for-pixel.
+function resolveFocus(focus: string | undefined | null): string {
+  if (!focus) return '50% 28%';
+  const f = focus.trim().toLowerCase();
+  switch (f) {
+    case 'center': return '50% 28%';
+    case 'top': return '50% 0%';
+    case 'bottom': return '50% 100%';
+    case 'left': return '0% 50%';
+    case 'right': return '100% 50%';
+    case 'face': case 'viso': return '50% 22%';
+    case 'face-top': case 'viso-alto': return '50% 12%';
+    default: return focus;
+  }
+}
 
 export function HomeSlidesManager({ initialSlides }: { initialSlides: Slide[] }) {
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
@@ -777,11 +796,20 @@ function SlidePreview({
             src={src}
             alt="anteprima slide"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
-            style={{ objectPosition: focus || 'center', transform: `scale(${zoom})` }}
+            style={{ objectPosition: resolveFocus(focus), transform: `scale(${zoom})` }}
           />
-          {/* Same gradients as Hero so contrast looks real */}
-          <div className="absolute inset-0 bg-gradient-to-b from-soft-black/55 via-soft-black/15 to-soft-black/85 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-soft-black/60 via-transparent to-transparent pointer-events-none" />
+          {/* Same overlay stack as the public Hero so the operator's preview
+              matches what ships pixel-for-pixel. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-soft-black/65 via-soft-black/10 to-soft-black/90 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-soft-black/70 via-soft-black/20 to-transparent pointer-events-none" />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgba(0,0,0,0.55) 100%)' }}
+          />
+          <div
+            className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none mix-blend-soft-light"
+            style={{ background: 'linear-gradient(to top, rgba(212,175,55,0.18) 0%, transparent 100%)' }}
+          />
           {/* Text overlay — gives operator a real-world legibility read */}
           <div className="absolute inset-0 flex items-end p-4 sm:p-6 pointer-events-none">
             <div className="text-warm-white max-w-[80%]">

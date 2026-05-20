@@ -55,6 +55,38 @@ const SLIDE_DURATION = 6500;
 // by the parallax + slideshow zoom stack.
 const KEN_BURNS_MAX_SCALE = 1.04;
 
+// Translate the admin Focus dropdown values into CSS objectPosition pairs.
+// Default "center" used to be 50%/50%, which decapitates portrait subjects
+// shot from chest-up — the face sat above the visible band. We treat plain
+// "center" as a face-safe center (50% 28%) and add explicit "face" / "face-
+// top" options so the operator can opt-in to a tighter framing without
+// relying on a heuristic.
+function resolveFocus(focus: string | undefined | null): string {
+  if (!focus) return '50% 28%';
+  const f = focus.trim().toLowerCase();
+  switch (f) {
+    case 'center':
+      return '50% 28%';
+    case 'top':
+      return '50% 0%';
+    case 'bottom':
+      return '50% 100%';
+    case 'left':
+      return '0% 50%';
+    case 'right':
+      return '100% 50%';
+    case 'face':
+    case 'viso':
+      return '50% 22%';
+    case 'face-top':
+    case 'viso-alto':
+      return '50% 12%';
+    default:
+      // Pass-through for raw CSS values like "30% 70%".
+      return focus;
+  }
+}
+
 export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
   const t = useTranslations('home.hero');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -124,7 +156,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                     priority={i === 0}
                     sizes="100vw"
                     className="object-cover"
-                    style={{ objectPosition: slide.focus || 'center' }}
+                    style={{ objectPosition: resolveFocus(slide.focus) }}
                     quality={92}
                   />
                 </motion.div>
@@ -134,14 +166,36 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
         </AnimatePresence>
       </motion.div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-soft-black/55 via-soft-black/15 to-soft-black/85 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-soft-black/60 via-transparent to-transparent pointer-events-none" />
-
+      {/* Premium overlay stack — read top to bottom:
+            1. vertical scrim: blacker at the top so the nav floats clean
+            2. left-side scrim: text column readability without darkening
+               the whole photograph
+            3. cinematic vignette: edges fall off subtly, focuses the eye
+            4. warm gold haze on the lower band: ties the photo to the
+               brand palette without a heavy filter
+            5. film-grain noise (SVG turbulence): luxury editorial finish */}
+      <div className="absolute inset-0 bg-gradient-to-b from-soft-black/65 via-soft-black/10 to-soft-black/90 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-soft-black/70 via-soft-black/20 to-transparent pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.45) 100%)',
+            'radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgba(0,0,0,0.55) 100%)',
+        }}
+      />
+      <div
+        className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none mix-blend-soft-light"
+        style={{
+          background:
+            'linear-gradient(to top, rgba(212,175,55,0.18) 0%, transparent 100%)',
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/><feColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+          backgroundSize: '160px 160px',
         }}
       />
 
