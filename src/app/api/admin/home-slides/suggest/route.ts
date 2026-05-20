@@ -47,13 +47,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Immagine oltre 8 MB' }, { status: 400 });
   }
 
-  const requestedModel = (formData?.get('model') as string | null)?.trim() || DEFAULT_MODEL;
+  const rawModel = (formData?.get('model') as string | null) ?? '';
+  const requestedModel = rawModel.trim().replace(/[^\x20-\x7e]/g, '') || DEFAULT_MODEL;
   if (!ALLOWED_MODELS.has(requestedModel)) {
     return NextResponse.json({ error: `Modello non ammesso: ${requestedModel}` }, { status: 400 });
   }
+
   // Per-request API key override. Never persisted server-side, never logged.
-  const keyOverride = (formData?.get('api_key') as string | null)?.trim();
-  const apiKey = keyOverride || process.env.OPENROUTER_API_KEY;
+  // HTTP headers must be ASCII (ByteString). Smart-quotes, em-dashes and other
+  // characters introduced by copy-paste would crash fetch(), so we sanitise
+  // before deciding whether the override is usable. If sanitisation actually
+  // changed the value we treat the original input as invalid (the user almost
+  // certainly intended to paste a clean key).
+  const rawKeyValue = (formData?.get('api_key') as string | null) ?? '';
+  const rawKey = rawKeyValue.trim();
+  const cleanKey = rawKey.replace(/[^\x20-\x7e]/g, '');
+  if (rawKey && cleanKey !== rawKey) {
+    return NextResponse.json(
+      { error: 'API key contiene caratteri non ASCII (em-dash o virgolette smart). Ricopiala come testo semplice.' },
+      { status: 400 }
+    );
+  }
+  if (cleanKey && !/^sk-or-v1-[a-f0-9]{32,128}$/i.test(cleanKey)) {
+    return NextResponse.json(
+      { error: 'Formato API key OpenRouter non valido (atteso sk-or-v1-…)' },
+      { status: 400 }
+    );
+  }
+  const envKey = (process.env.OPENROUTER_API_KEY || '').trim().replace(/[^\x20-\x7e]/g, '');
+  const apiKey = cleanKey || envKey;
   if (!apiKey) {
     return NextResponse.json(
       { error: 'OPENROUTER_API_KEY non configurata su Vercel e nessun override fornito' },
