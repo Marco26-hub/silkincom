@@ -63,16 +63,20 @@ export function InventoryAdjustForm({
       close();
     }
     function onKey(e: KeyboardEvent) { if (e.key === 'Escape') close(); }
+    // Close only on page-level scroll (window event, not capture) — inner
+    // overflow-y-auto containers inside the popover do NOT bubble scroll
+    // to window, so the popover stays open while the user scrolls the
+    // radio list.
     function onScroll() { close(); }
     document.addEventListener('mousedown', onPointer);
     document.addEventListener('keydown', onKey);
-    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     return () => {
       cancelAnimationFrame(focus);
       document.removeEventListener('mousedown', onPointer);
       document.removeEventListener('keydown', onKey);
-      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,6 +167,9 @@ export function InventoryAdjustForm({
               transition={{ duration: 0.22, ease: [0.21, 0.47, 0.32, 0.98] }}
               style={{ position: 'fixed', top: pos.top, left: pos.left, width: POPOVER_W, zIndex: 60 }}
               className="bg-warm-white shadow-[0_20px_60px_-15px_rgba(20,20,20,0.25)] border border-pearl-grey"
+              onMouseDown={(e) => e.stopPropagation()}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="h-[3px] bg-gradient-to-r from-gold-primary via-gold-dark to-gold-primary" />
 
