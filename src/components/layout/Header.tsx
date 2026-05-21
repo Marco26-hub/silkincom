@@ -92,9 +92,15 @@ export function Header() {
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Logo — hero brand presence */}
+          {/* Logo — hero brand presence. Over the dark hero the default
+              (halo) treatment pops; on the solid cream bar the gold is
+              deepened so it never washes out. */}
           <div className="flex justify-center">
-            <Logo size={scrolled ? 'md' : 'lg'} variant="default" withMark />
+            <Logo
+              size={scrolled ? 'md' : 'lg'}
+              variant={overHero ? 'default' : 'solid'}
+              withMark
+            />
           </div>
 
           {/* Right nav + icons */}
@@ -156,7 +162,7 @@ export function Header() {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 bg-warm-white lg:hidden">
           <div className="flex justify-between items-center p-6 border-b border-pearl-grey">
-            <Logo size="sm" variant="default" href={null} withMark />
+            <Logo size="sm" variant="solid" href={null} withMark />
             <button onClick={() => setMobileOpen(false)} aria-label={tc('close')}>
               <X className="w-6 h-6" />
             </button>

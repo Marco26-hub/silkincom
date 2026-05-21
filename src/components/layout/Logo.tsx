@@ -1,8 +1,10 @@
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 
+type LogoVariant = 'default' | 'light' | 'gold' | 'solid';
+
 type LogoProps = {
-  variant?: 'default' | 'light' | 'gold';
+  variant?: LogoVariant;
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   href?: string | null;
   className?: string;
@@ -20,7 +22,7 @@ const sizeClasses = {
 // Official logo SVG — extracted from silkincom.com (gold/white variant via filter)
 function OfficialLogo({ size = 'md', variant = 'default', className = '' }: {
   size?: keyof typeof sizeClasses;
-  variant?: 'default' | 'light' | 'gold';
+  variant?: LogoVariant;
   className?: string;
 }) {
   const filters: string[] = [];
@@ -30,6 +32,15 @@ function OfficialLogo({ size = 'md', variant = 'default', className = '' }: {
     filters.push('brightness(1.25) saturate(1.15)');
     filters.push('drop-shadow(0 0 18px rgba(212,175,55,0.45))');
     filters.push('drop-shadow(0 0 4px rgba(212,175,55,0.65))');
+  } else if (variant === 'solid') {
+    // Header over a light (cream) background. A pale gold PNG washes out on
+    // cream, so the gold is deepened and given a crisp, two-layer embossed
+    // shadow — a foil-stamped, premium finish that stays clearly legible.
+    filters.push('saturate(1.4)');
+    filters.push('contrast(1.22)');
+    filters.push('brightness(0.9)');
+    filters.push('drop-shadow(0 1px 1px rgba(58,42,12,0.55))');
+    filters.push('drop-shadow(0 5px 14px rgba(120,88,28,0.28))');
   } else {
     // Default variant — used on the header over the hero. The logo is a gold
     // PNG that previously washed out against light photo subjects. Two
