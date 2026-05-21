@@ -15,24 +15,40 @@ function formatPrice(n: number) {
 export default async function AdminProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; category?: string; stock?: string }>;
 }) {
   const params = await searchParams;
   const q = params.q ?? '';
   const status = VALID_STATUSES.includes(params.status as any) ? params.status : '';
+  const category = (params.category ?? '').replace(/[^a-z-]/gi, '');
+  const stock = params.stock ?? '';
 
   const supabase = createServiceClient();
 
+  // Order by name so colour/size variants of the same family land together
+  // (all "Bellagio …", all "Lario …" in one block).
   let query = supabase
     .from('products')
     .select('id, name, slug, sku, price, status, is_featured, inventory(quantity_available)')
-    .order('created_at', { ascending: false })
+    .order('name', { ascending: true })
     .limit(200);
 
   if (status) query = query.eq('status', status);
+  // Category = slug prefix (bellagio, lario, como, …).
+  if (category) query = query.ilike('slug', `${category}%`);
   if (q) query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%`);
 
-  const { data: products } = await query;
+  const { data: productsRaw } = await query;
+
+  // Stock filter — applied here because it depends on the joined inventory row.
+  const products = (productsRaw ?? []).filter((p: any) => {
+    if (!stock) return true;
+    const s = Array.isArray(p.inventory) ? p.inventory[0]?.quantity_available ?? 0 : 0;
+    if (stock === 'out') return s <= 0;
+    if (stock === 'low') return s > 0 && s < 5;
+    if (stock === 'in') return s >= 5;
+    return true;
+  });
 
   return (
     <div className="space-y-6 max-w-[1400px]">

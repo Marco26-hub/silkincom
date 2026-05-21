@@ -42,7 +42,7 @@ type DBProduct = {
   description_long_i18n: I18nMap;
   description_short_i18n: I18nMap;
   composition_i18n: I18nMap;
-  product_images: Array<{ image_url: string }>;
+  product_images: Array<{ image_url: string; display_order: number }>;
   product_categories: Array<{ category_id: string; categories: { slug: string } | null }>;
   product_collections: Array<{ collection_id: string; collections: { slug: string } | null }>;
   product_variants: Array<{
@@ -61,7 +61,7 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
     .select(
       `id, slug, name, sku, price, description_long, description_short, composition, dimensions,
        name_i18n, description_long_i18n, description_short_i18n, composition_i18n,
-       product_images(image_url),
+       product_images(image_url, display_order),
        product_categories(
          category_id,
          categories(slug)
@@ -139,7 +139,9 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
         : (dbProduct.description_short_i18n?.[locale] ?? dbProduct.description_short ?? ''),
     composition: resolve(dbProduct.composition_i18n, 'composition', dbProduct.composition),
     dimensions: dbProduct.dimensions,
-    images: dbProduct.product_images.map((img) => img.image_url),
+    images: [...dbProduct.product_images]
+      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+      .map((img) => img.image_url),
     category: meta.category,
     collections: meta.collections,
     material: meta.material,

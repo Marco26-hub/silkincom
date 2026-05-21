@@ -515,22 +515,69 @@ const MOVEMENT_LABEL: Record<string, { label: string; color: string }> = {
 };
 
 function MovimentiTab({ rows }: { rows: Movement[] }) {
+  const [search, setSearch] = useState('');
+  const [type, setType] = useState('');
+
+  // Only offer movement types actually present in the data.
+  const types = Array.from(new Set(rows.map((m) => m.movement_type)));
+  const q = search.trim().toLowerCase();
+  const filtered = rows.filter((m) => {
+    if (type && m.movement_type !== type) return false;
+    if (q) {
+      const hay = `${m.products?.name ?? ''} ${m.reason ?? ''}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
   return (
-    <div className="border border-pearl-grey bg-white overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead className="bg-warm-white border-b border-pearl-grey">
-          <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-            <th className="px-5 py-3 font-medium">Quando</th>
-            <th className="px-5 py-3 font-medium">Prodotto</th>
-            <th className="px-5 py-3 font-medium">Tipo</th>
-            <th className="px-5 py-3 font-medium text-right">Δ</th>
-            <th className="px-5 py-3 font-medium text-right">Prima → Dopo</th>
-            <th className="px-5 py-3 font-medium">Motivo</th>
-            <th className="px-5 py-3 font-medium">Ordine</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-pearl-grey/60">
-          {rows.map((m) => {
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-soft-grey" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cerca prodotto o motivo..."
+            className="border border-pearl-grey pl-8 pr-3 py-2 text-sm focus:outline-none focus:border-soft-black w-64"
+          />
+        </div>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="border border-pearl-grey px-3 py-2 text-sm bg-white focus:outline-none focus:border-soft-black"
+        >
+          <option value="">Tutti i tipi</option>
+          {types.map((t) => (
+            <option key={t} value={t}>{MOVEMENT_LABEL[t]?.label ?? t}</option>
+          ))}
+        </select>
+        <span className="text-xs text-soft-grey">{filtered.length} movimenti</span>
+        {(search || type) && (
+          <button
+            type="button"
+            onClick={() => { setSearch(''); setType(''); }}
+            className="text-xs text-soft-grey hover:text-soft-black underline"
+          >
+            Azzera
+          </button>
+        )}
+      </div>
+      <div className="border border-pearl-grey bg-white overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-warm-white border-b border-pearl-grey">
+            <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+              <th className="px-5 py-3 font-medium">Quando</th>
+              <th className="px-5 py-3 font-medium">Prodotto</th>
+              <th className="px-5 py-3 font-medium">Tipo</th>
+              <th className="px-5 py-3 font-medium text-right">Δ</th>
+              <th className="px-5 py-3 font-medium text-right">Prima → Dopo</th>
+              <th className="px-5 py-3 font-medium">Motivo</th>
+              <th className="px-5 py-3 font-medium">Ordine</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-pearl-grey/60">
+            {filtered.map((m) => {
             const meta = MOVEMENT_LABEL[m.movement_type] ?? { label: m.movement_type, color: 'bg-gray-100 text-gray-700' };
             return (
               <tr key={m.id} className="transition-colors hover:bg-pearl-grey/20">
@@ -558,15 +605,16 @@ function MovimentiTab({ rows }: { rows: Movement[] }) {
               </tr>
             );
           })}
-          {!rows.length ? (
-            <tr>
-              <td colSpan={7} className="px-5 py-16">
-                <EmptyState icon={Activity} title="Nessun movimento registrato" hint="Vendite, carichi, scarichi e rettifiche compaiono qui in tempo reale." />
-              </td>
-            </tr>
-          ) : null}
-        </tbody>
-      </table>
+            {!filtered.length ? (
+              <tr>
+                <td colSpan={7} className="px-5 py-16">
+                  <EmptyState icon={Activity} title="Nessun movimento trovato" hint="Vendite, carichi, scarichi e rettifiche compaiono qui in tempo reale." />
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
