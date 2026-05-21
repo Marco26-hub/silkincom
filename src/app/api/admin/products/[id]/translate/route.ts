@@ -20,16 +20,16 @@ const TARGET_LANGS: Record<string, string> = {
 // OpenRouter model — override with TRANSLATE_MODEL.
 const MODEL = process.env.TRANSLATE_MODEL || 'google/gemma-4-31b-it:free';
 
-type Fields = { name: string; description: string; composition: string };
+type Fields = { name: string; description: string; descriptionShort: string; composition: string };
 
 async function translateFields(targetLang: string, fields: Fields): Promise<Fields> {
   const system =
     `You translate content for SILKinCOM, a luxury silk and cashmere accessories brand, Made in Como, Italy. ` +
     `Translate from Italian into ${targetLang}. Use a premium, editorial tone. ` +
     `Keep brand names (SILKinCOM, Como) unchanged; render "Lago di Como" with the natural local name for Lake Como. ` +
-    `Return ONLY a JSON object with keys "name", "description", "composition" — no prose, no code fence.`;
+    `Return ONLY a JSON object with keys "name", "description", "descriptionShort", "composition" — no prose, no code fence.`;
   const user =
-    `Translate these Italian product fields to ${targetLang}. Return JSON {name, description, composition}.\n\n` +
+    `Translate these Italian product fields to ${targetLang}. Return JSON {name, description, descriptionShort, composition}.\n\n` +
     JSON.stringify(fields);
 
   const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -75,7 +75,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
 
   const { data: product, error: readErr } = await supabase
     .from('products')
-    .select('id, name, description_long, composition')
+    .select('id, name, description_long, description_short, composition')
     .eq('id', id)
     .single();
   if (readErr || !product) return NextResponse.json({ error: 'Prodotto non trovato' }, { status: 404 });
@@ -83,12 +83,14 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
   const source: Fields = {
     name: product.name || '',
     description: product.description_long || '',
+    descriptionShort: product.description_short || '',
     composition: product.composition || '',
   };
 
   // Italian is stored as the `it` key alongside the translations.
   const nameI18n: Record<string, string> = { it: source.name };
   const descI18n: Record<string, string> = { it: source.description };
+  const shortI18n: Record<string, string> = { it: source.descriptionShort };
   const compI18n: Record<string, string> = { it: source.composition };
 
   // Sequential, not parallel: free-tier OpenRouter models rate-limit bursts.
@@ -101,6 +103,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
       const t = await translateFields(langName, source);
       nameI18n[loc] = t.name;
       descI18n[loc] = t.description;
+      shortI18n[loc] = t.descriptionShort;
       compI18n[loc] = t.composition;
     } catch (e) {
       failedLocales.push({ locale: loc, error: (e as Error).message });
@@ -121,6 +124,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     .update({
       name_i18n: nameI18n,
       description_long_i18n: descI18n,
+      description_short_i18n: shortI18n,
       composition_i18n: compI18n,
     })
     .eq('id', id);

@@ -58,7 +58,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = await getProduct(slug, locale);
   if (!p) return {};
   const mat = materialName(p.material, locale);
-  const color = colorFromSlug(p.slug, p.category);
+  const rawColor = colorFromSlug(p.slug, p.category);
+  const color = rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? rawColor : '';
   const colorBit = color ? ` ${color}` : '';
   const matBit = mat ? ` in ${mat}` : '';
   const dimBit = p.dimensions ? ` ${p.dimensions}.` : '';
@@ -79,7 +80,8 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const tn = await getTranslations('nav');
   const cat = getCategories(locale).find((c) => c.slug === p.category);
   const materialLabel = materialName(p.material, locale);
-  const color = colorFromSlug(p.slug, p.category);
+  const rawColor = colorFromSlug(p.slug, p.category);
+  const color = rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? rawColor : '';
   const colorLabel = color ? titleCase(color) : '';
   const altDescriptor = [p.name, color, materialLabel].filter(Boolean).join(' ');
   const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);

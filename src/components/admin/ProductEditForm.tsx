@@ -94,6 +94,7 @@ export function ProductEditForm({
     const textChanged =
       form.name !== (product.name ?? '') ||
       form.description_long !== (product.description_long ?? '') ||
+      form.description_short !== (product.description_short ?? '') ||
       form.composition !== (product.composition ?? '');
     const res = await fetch(`/api/admin/products/${product.id}`, {
       method: 'PATCH',

@@ -9,7 +9,11 @@ export const routing = defineRouting({
   locales: LOCALES as unknown as string[],
   defaultLocale: DEFAULT_LOCALE,
   localePrefix: 'as-needed',
-  localeDetection: true,
+  // Detection off: the bare `/` must stay the Italian home deterministically.
+  // With detection on, `/` (the logo / home link target) got redirected to a
+  // prefixed locale from the cookie/Accept-Language — clicking the logo on an
+  // IT page sent English-browser users to /en. Also keeps Googlebot on `/`.
+  localeDetection: false,
   localeCookie: { name: LOCALE_COOKIE, maxAge: 60 * 60 * 24 * 365 },
 });
 

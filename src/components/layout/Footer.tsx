@@ -165,13 +165,13 @@ export function Footer() {
         )}
 
         {/* Legal */}
-        <div className="pt-8 flex flex-col md:flex-row justify-between gap-4 text-[11px] text-warm-white/40 uppercase tracking-[0.15em]">
+        <div className="pt-8 flex flex-col items-center gap-3 text-center text-[11px] text-warm-white/40 uppercase tracking-[0.15em] md:flex-row md:items-center md:justify-between md:gap-4 md:text-left">
           <p>© {new Date().getFullYear()} SILKinCOM — {t('madeIn')}</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 md:justify-end">
             <Link href="/privacy-policy" className="hover:text-gold-primary transition-colors">{t('links.privacy')}</Link>
             <Link href="/cookie-policy" className="hover:text-gold-primary transition-colors">{t('links.cookies')}</Link>
             <Link href="/termini" className="hover:text-gold-primary transition-colors">{t('links.terms')}</Link>
-            <span>P.IVA 03786790133</span>
+            <span className="text-warm-white/30">P.IVA 03786790133</span>
           </div>
         </div>
       </div>

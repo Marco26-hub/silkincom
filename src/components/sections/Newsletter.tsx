@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 // Basic RFC-5322-ish email validation. Enough for live feedback; final
 // validation still happens server-side at /api/newsletter.
@@ -124,9 +125,9 @@ export function Newsletter() {
         <p className="text-[11px] text-soft-grey mt-4 max-w-md mx-auto leading-relaxed">
           {t.rich('privacyDisclaimer', {
             link: (chunks) => (
-              <a href="/privacy-policy" className="underline hover:text-gold-primary transition-colors">
+              <Link href="/privacy-policy" className="underline hover:text-gold-primary transition-colors">
                 {chunks}
-              </a>
+              </Link>
             ),
           })}
         </p>

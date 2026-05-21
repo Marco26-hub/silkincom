@@ -29,7 +29,13 @@ export function FloatingNav() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setCanBack(window.history.length > 1);
-    const onScroll = () => setVisible(window.scrollY > 480);
+    const onScroll = () => {
+      const y = window.scrollY;
+      // Hide near the footer so the buttons don't overlap the legal row.
+      const nearFooter =
+        y + window.innerHeight >= document.documentElement.scrollHeight - 160;
+      setVisible(y > 480 && !nearFooter);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -65,14 +71,9 @@ export function FloatingNav() {
               type="button"
               onClick={goBack}
               aria-label={t('back')}
-              className="group pointer-events-auto inline-flex items-center gap-2.5 pl-3 pr-5 py-3 bg-soft-black text-warm-white shadow-2xl border border-gold-primary/30 hover:border-gold-primary hover:bg-gold-primary hover:text-soft-black transition-all duration-500 backdrop-blur-sm"
+              className="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-soft-black/90 text-warm-white shadow-lg border border-gold-primary/30 hover:border-gold-primary hover:bg-gold-primary hover:text-soft-black transition-all duration-500 backdrop-blur-sm"
             >
-              <span className="inline-flex items-center justify-center w-6 h-6 border border-gold-primary/40 group-hover:border-soft-black/30 rounded-full transition-colors">
-                <ArrowLeft className="w-3 h-3" strokeWidth={1.6} />
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] font-medium hidden sm:inline">
-                {t('back')}
-              </span>
+              <ArrowLeft className="h-4 w-4" strokeWidth={1.6} />
             </button>
           ) : (
             <span />
@@ -82,14 +83,9 @@ export function FloatingNav() {
             type="button"
             onClick={scrollTop}
             aria-label={t('backToTop')}
-            className="group pointer-events-auto inline-flex items-center gap-2.5 pl-5 pr-3 py-3 bg-soft-black text-warm-white shadow-2xl border border-gold-primary/30 hover:border-gold-primary hover:bg-gold-primary hover:text-soft-black transition-all duration-500 backdrop-blur-sm"
+            className="group pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-soft-black/90 text-warm-white shadow-lg border border-gold-primary/30 hover:border-gold-primary hover:bg-gold-primary hover:text-soft-black transition-all duration-500 backdrop-blur-sm"
           >
-            <span className="text-[10px] uppercase tracking-[0.3em] font-medium hidden sm:inline">
-              {t('backToTop')}
-            </span>
-            <span className="inline-flex items-center justify-center w-6 h-6 border border-gold-primary/40 group-hover:border-soft-black/30 rounded-full transition-colors">
-              <ArrowUp className="w-3 h-3 group-hover:-translate-y-0.5 transition-transform" strokeWidth={1.6} />
-            </span>
+            <ArrowUp className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" strokeWidth={1.6} />
           </button>
         </motion.div>
       ) : null}

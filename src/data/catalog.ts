@@ -35,10 +35,12 @@ type DBProduct = {
   sku: string;
   price: number;
   description_long: string;
+  description_short: string;
   composition: string;
   dimensions: string;
   name_i18n: I18nMap;
   description_long_i18n: I18nMap;
+  description_short_i18n: I18nMap;
   composition_i18n: I18nMap;
   product_images: Array<{ image_url: string }>;
   product_categories: Array<{ category_id: string; categories: { slug: string } | null }>;
@@ -57,8 +59,8 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
   const { data: products, error } = await supabase
     .from('products')
     .select(
-      `id, slug, name, sku, price, description_long, composition, dimensions,
-       name_i18n, description_long_i18n, composition_i18n,
+      `id, slug, name, sku, price, description_long, description_short, composition, dimensions,
+       name_i18n, description_long_i18n, description_short_i18n, composition_i18n,
        product_images(image_url),
        product_categories(
          category_id,
@@ -131,6 +133,10 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     sku: dbProduct.sku,
     price: dbProduct.price,
     description: resolve(dbProduct.description_long_i18n, 'description', dbProduct.description_long),
+    descriptionShort:
+      locale === 'it'
+        ? (dbProduct.description_short ?? '')
+        : (dbProduct.description_short_i18n?.[locale] ?? dbProduct.description_short ?? ''),
     composition: resolve(dbProduct.composition_i18n, 'composition', dbProduct.composition),
     dimensions: dbProduct.dimensions,
     images: dbProduct.product_images.map((img) => img.image_url),

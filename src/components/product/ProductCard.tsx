@@ -30,17 +30,24 @@ const ABBREVIATED: Record<string, string> = {
 };
 function deriveMaterialEyebrow(composition: string, fallback: string): string {
   if (!composition) return fallback.toUpperCase();
-  const tokens = Array.from(
-    composition.matchAll(/(\d+(?:[.,]\d+)?)\s*%\s*([A-Za-zÀ-ÿ]+)/g)
-  )
-    .map((m) => ({ pct: Number(m[1].replace(',', '.')), name: m[2].toLowerCase() }))
-    .filter((t) => Number.isFinite(t.pct) && t.pct > 0)
+  // Keep the highest percentage per fibre. Compositions often repeat the
+  // blend (spec line + descriptive prose), which would otherwise surface the
+  // same fibre twice — e.g. "LINO / LINO" for a 53% lino / 47% cotone shirt.
+  const byFibre = new Map<string, number>();
+  for (const m of composition.matchAll(/(\d+(?:[.,]\d+)?)\s*%\s*([A-Za-zÀ-ÿ]+)/g)) {
+    const pct = Number(m[1].replace(',', '.'));
+    const name = m[2].toLowerCase();
+    if (Number.isFinite(pct) && pct > 0) {
+      byFibre.set(name, Math.max(byFibre.get(name) ?? 0, pct));
+    }
+  }
+  const fibres = Array.from(byFibre, ([name, pct]) => ({ name, pct }))
     .sort((a, b) => b.pct - a.pct);
-  if (tokens.length === 0) return fallback.toUpperCase();
+  if (fibres.length === 0) return fallback.toUpperCase();
   const norm = (s: string) => (ABBREVIATED[s] ?? s).toUpperCase();
-  if (tokens.length === 1) return norm(tokens[0].name);
-  // Two or more fibers: show the top two so the chip stays readable.
-  return `${norm(tokens[0].name)} / ${norm(tokens[1].name)}`;
+  if (fibres.length === 1) return norm(fibres[0].name);
+  // Two or more fibres: show the top two so the chip stays readable.
+  return `${norm(fibres[0].name)} / ${norm(fibres[1].name)}`;
 }
 
 export function ProductCard({ product }: { product: Product }) {
@@ -55,8 +62,6 @@ export function ProductCard({ product }: { product: Product }) {
   const materialLabel = taxonomyName
     ? deriveMaterialEyebrow(product.composition || '', taxonomyName)
     : '';
-  const descPreview = product.description?.replace(/\s+/g, ' ').trim() || '';
-
   return (
     <article className="group relative">
       <Link href={`/prodotto/${product.slug}`} className="block">
@@ -148,12 +153,12 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="font-display text-lg md:text-[22px] font-normal leading-[1.15] text-soft-black group-hover:text-gold-dark transition-colors duration-500">
             {product.name}
           </h3>
-          {descPreview && (
-            <p className="text-[11.5px] text-soft-black/65 font-light mt-1.5 line-clamp-2 tracking-[0.01em]">
-              {descPreview}
+          {product.descriptionShort && (
+            <p className="text-[12px] text-soft-black/65 font-light mt-2 line-clamp-2 leading-relaxed">
+              {product.descriptionShort}
             </p>
           )}
-          <div className="flex items-baseline justify-between mt-3 pt-2.5 border-t border-pearl-grey/60">
+          <div className="flex items-baseline justify-between mt-4 pt-2.5 border-t border-pearl-grey/60">
             <p className="text-[15px] font-medium text-soft-black tracking-wide">
               {formatPrice(product.price)}
             </p>

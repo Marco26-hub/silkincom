@@ -54,6 +54,7 @@ export type Product = {
   sku: string;
   price: number;
   description: string;
+  descriptionShort: string;
   composition: string;
   dimensions: string;
   images: string[];

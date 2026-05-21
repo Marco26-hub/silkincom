@@ -23,7 +23,7 @@ const FALLBACK_SLIDES: HeroSlideInput[] = [
   {
     id: 'fallback-1',
     src: '/instagram/ig-06.jpg',
-    alt: 'Sciarpe in cashmere e lana SILKinCOM con logo gabbiano oro — dettaglio tessuto',
+    alt: 'Sciarpe in cashmere e lana SILKinCOM con logo Lago di Como oro — dettaglio tessuto',
     focus: 'center',
     titleMain: '',
     titleAccent: '',
