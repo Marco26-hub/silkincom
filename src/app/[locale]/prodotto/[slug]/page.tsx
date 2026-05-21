@@ -41,11 +41,14 @@ function formatPrice(n: number) {
   }).format(n);
 }
 
-// Extract first sentence from composition (often "100% cashmere ...")
+// First sentence of the description — the short "essence" line shown under
+// the price. The source is curated prose, so it is shown whole: no length
+// cap and no ellipsis (a mid-word "…" looked like broken text).
 function shortComposition(c: string): string {
   if (!c) return '';
-  const firstLine = c.split(/[\.\n]/).map((s) => s.trim()).filter(Boolean)[0] || c;
-  return firstLine.length > 80 ? firstLine.slice(0, 80) + '…' : firstLine;
+  const text = c.replace(/\s+/g, ' ').trim();
+  const cut = text.search(/\.(\s|$)/);
+  return cut >= 0 ? text.slice(0, cut + 1) : text;
 }
 
 export function generateStaticParams() {

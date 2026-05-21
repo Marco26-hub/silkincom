@@ -52,7 +52,11 @@ export async function generateMetadata({
   const info = COPY[material as Material];
   return {
     title: info.title,
-    description: info.intro.length > 160 ? info.intro.slice(0, 157) + '…' : info.intro,
+    // Trim to a clean word boundary — no trailing ellipsis.
+    description:
+      info.intro.length > 160
+        ? info.intro.slice(0, 160).replace(/\s+\S*$/, '')
+        : info.intro,
     alternates: localizedAlternates(locale, `/cura-prodotto/${material}`),
   };
 }
