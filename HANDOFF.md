@@ -485,3 +485,99 @@ curl -s -o /dev/null -w "%{http_code}\n" https://silkincom.vercel.app/   # 200
 **Commit di riferimento finale 20/05:** `987a143` (HEAD — hero cinematic motion). Vedi §6 parte 5 per il lavoro più recente.
 
 **Documento operativo go-live:** `LAUNCH-CHECKLIST.md` (runbook con date e ordine cut-over).
+
+---
+
+## 12. Mappa strutturale completa
+
+### 12.1 Struttura repo
+
+```
+silkincom/
+├── src/
+│   ├── app/
+│   │   ├── [locale]/            TUTTE le pagine (pubbliche + /admin), routing next-intl
+│   │   │   ├── layout.tsx       root layout: metadata, fonts, schema JSON-LD, NextIntlProvider
+│   │   │   ├── page.tsx         homepage (Hero, Featured, BrandStory, Materials, …)
+│   │   │   ├── prodotto/[slug]/ scheda prodotto
+│   │   │   ├── collezioni/      lista + [slug] (categoria/collezione/materiale)
+│   │   │   ├── trame-di-como/   blog (Journal) + [slug]
+│   │   │   ├── cura-prodotto/[material]/  guide cura per materiale
+│   │   │   ├── account/         area cliente (ordini, indirizzi, wishlist, recensioni, profilo)
+│   │   │   ├── admin/           pannello gestione (vedi §12.5)
+│   │   │   └── … (maison, press, materiali, faq, glossario, contatti, legali, auth)
+│   │   ├── api/                 route handlers, NO prefisso locale (vedi §12.3)
+│   │   ├── sitemap.ts · robots.ts · icon.svg · apple-icon.svg · manifest.ts
+│   ├── components/   account · admin · analytics · atelier · cart · collezioni ·
+│   │                 layout · product · schemas · sections · seo · static-pages · ui
+│   ├── data/         catalog.ts (server, DB) · catalog-meta.ts (client-safe) ·
+│   │                 catalog-i18n.json · collections-db.ts · home-content.ts ·
+│   │                 home-slides.ts · static-pages.ts · posts.ts · blog.json ·
+│   │                 products.json (fallback legacy) · artisans.ts · credentials.ts
+│   ├── i18n/         routing.ts · request.ts · navigation.ts · actions.ts
+│   ├── lib/          supabase/ · etsy/ · automation/ · stripe.ts · email.ts ·
+│   │                 revalidate.ts · translate.ts · auth.ts · audit.ts · csrf.ts ·
+│   │                 rate-limit.ts · packlink.ts · validations.ts · admin-api.ts · utils.ts
+│   ├── store/        cart.ts (zustand — stato carrello client)
+│   ├── types/        database.ts (tipi tabelle Supabase)
+│   └── middleware.ts next-intl + refresh sessione Supabase + gate /admin e /account
+├── messages/         it·en·es·fr·de·pt·nl .json (stringhe UI, 756 chiavi)
+├── supabase/migrations/  011 → 022
+└── scripts/          translate-i18n.mjs · seed-products.ts
+```
+
+### 12.2 Database — Supabase (~52 tabelle, project `fjudulhxsafjizcmrifw`)
+
+**Catalogo** — `products` (41) · `product_variants` (55, taglie S-XXL) · `product_images` (149) · `product_sizes` (6) · `categories` (13) · `collections` (4) · `colors` (13) · `compositions` (8) · `materials` (7) · `inventory` (96) · `inventory_movements` (65)
+
+**Ordini & spedizioni** — `orders` (22) · `order_items` (23) · `order_status_history` (6) · `payments` (4) · `shipments` (3) · `shipment_zones` · `returns` · `return_items`
+
+**Clienti & account** — `profiles` (5) · `customers` (5) · `customer_addresses` · `admin_users` · `wishlist` · `carts` · `cart_items`
+
+**Marketing & comunicazioni** — `coupons` (2) · `coupon_redemptions` (1) · `newsletter_subscribers` (1) · `contacts` (2) · `email_lifecycle_jobs` (22) · `reviews`
+
+**CMS / contenuti** — `home_slides` (4) · `home_sections` (5) · `static_pages` (8) · `store_settings` (5) · `site_settings` · `media_library` · `pages` · `blog_posts` · `blog_categories` (ultime 3 legacy, vuote)
+
+**Ops & integrazioni** — `audit_logs` · `error_logs` · `integrations` · `etsy_product_map` · `etsy_sync_log` · `purchase_orders` · `purchase_order_items`
+
+**Junction legacy vuote** (non usate — il catalogo usa FK diretti su `products`): `product_collections` · `product_categories` · `product_materials` · `product_colors`
+
+⚠️ **Sicurezza:** 3 tabelle hanno **RLS disabilitato** (`store_settings`, `compositions`, `product_sizes`) → leggibili/scrivibili con la anon key. Abilitare RLS + policy prima del go-live (vedi `LAUNCH-CHECKLIST.md`). RLS attivo su tutte le altre.
+
+Migrazioni chiave: `014` category/collection FK · `015` composition/size · `016` color FK · `017` product i18n JSONB · `018` home_slides · `019` collections i18n · `020` home_content · `021` static_pages · `022` product_sizes.
+
+### 12.3 Backend — API + lib
+
+**API route pubbliche** (`src/app/api/`): `catalog` · `products` · `products/[slug]` · `reviews` · `recent-sales` · `contatti` · `coupons/validate` · `newsletter` (+`/confirm`) · `orders/[id]/cancel` · `returns` · `account/delete` · `account/export` · `stripe/create-payment-intent` · `stripe/webhook` · `cron/lifecycle` · `errors` · `auth/logout` · `google-merchant/feed.xml` · `automation/*` · `etsy/*`
+
+**API route admin** (gated, `api/admin/*`): `products*` (+`/[id]/images`, `/[id]/translate`) · `variants*` · `categories*` · `collections*` · `collections-content*` (+image/translate) · `colors*` · `materials*` · `compositions` · `sizes` · `home-slides*` (+image/translate/reorder/suggest) · `home-sections*` · `home-materials*` · `static-pages*` · `pages*` · `coupons*` · `orders/[id]*` · `returns/[id]` · `reviews/[id]` · `inventory/adjust` · `purchase-orders*` · `shipment-zones*` · `shipments` · `contacts/[id]` · `media` · `notifications` · `settings`
+
+**`src/lib/`** — `supabase/server.ts` (`createPublicClient` cookieless per cache · `createServerClient` con cookie) · `supabase/client.ts` (browser) · `revalidate.ts` (`revalidateCatalog/HomeSlides/HomeSections/HomeMaterials`) · `translate.ts` (OpenRouter, `translateToAllLocales`) · `stripe.ts` · `email.ts` (Resend) · `auth.ts` · `audit.ts` · `csrf.ts` · `rate-limit.ts` · `packlink.ts` (spedizioni) · `etsy/*` · `automation/*` · `validations.ts` · `admin-api.ts`
+
+### 12.4 Frontend pubblico — pagine (`src/app/[locale]/`)
+
+Catalogo: `/` · `/collezioni` · `/collezioni/[slug]` · `/prodotto/[slug]` · `/materiali` · `/cura-prodotto` (+`/[material]`)
+Editoriale: `/trame-di-como` (+`/[slug]`) · `/la-nostra-storia` · `/maison/marco-dibenedetto` · `/artigiani` · `/atelier` · `/press` · `/glossario`
+Commerce: `/cart` · `/checkout` (+`/success`) · `/faq` · `/spedizioni` · `/resi` · `/contatti` · `/b2b`
+Account/auth: `/account` (+`/ordini`, `/ordini/[id]`, `/indirizzi`, `/wishlist`, `/recensioni`, `/profilo`) · `/login` · `/registrati` · `/recupera-password` · `/reset-password`
+Legali: `/privacy-policy` · `/cookie-policy` · `/termini` · `/newsletter/confirmed` · `/newsletter/expired` · `/recensioni`
+
+Sezioni homepage (`src/components/sections/`): Hero · ValueProps · FeaturedCollections · BrandStory · Bestsellers · Materials · EditorialBanner · InstagramFeed · Newsletter.
+Layout condiviso (`src/components/layout/`): Header · Footer · AnnouncementBar · LanguageSwitcher · SearchOverlay · PublicChrome · Logo.
+
+### 12.5 Admin (`src/app/[locale]/admin/`) — gate via middleware (ruolo profilo)
+
+Catalogo: `prodotti` (+`/[id]`, `/nuovo`) · `varianti` · `categorie` · `collezioni` · `colori` · `materiali` · `magazzino` (+`/movimenti`)
+CMS home: `foto-home` (hero slides) · `collezioni-home` · `sezioni-home` · `materiali-home` · `pagine-statiche` · `pagine` · `media`
+Commerce: `ordini` (+`/[id]`) · `pagamenti` · `resi` · `spedizioni` · `zone-spedizione` · `coupon` · `ordini-fornitori`
+Clienti & varie: `clienti` (+`/[id]`) · `contatti` · `recensioni` · `etsy` · `impostazioni` · `audit` · `errors`
+
+UI in `src/components/admin/` (form, manager, tabelle, picker). Mutazioni catalogo → chiamano i revalidate helper (§12.3) per refresh frontend immediato.
+
+### 12.6 Client — componenti client-side & stato
+
+- **Stato carrello:** `src/store/cart.ts` — store **zustand** con persistenza (localStorage). Componenti: `cart/CartDrawer.tsx`, `cart/CartPageClient.tsx`.
+- **Componenti `'use client'`** principali: `Header`, `SearchOverlay`, `LanguageSwitcher`, `ProductCard`, `ProductFilters`, `AddToCartButton`, `WishlistButton`, `ReviewForm`, `InventoryBadge`, `SizeGuideModal`, `SalesNotification`, `CookieBanner`, `FloatingNav`, sezioni Hero/Bestsellers/ecc. (animazioni framer-motion).
+- **Regola import:** i client component importano SOLO da `catalog-meta.ts` (client-safe), MAI da `catalog.ts` (server-only, DB). Per i link usare `Link` da `@/i18n/navigation` (non `next/link`).
+- **Auth client:** Supabase browser client (`lib/supabase/client.ts`); sessione rinfrescata dal `middleware.ts`.
+- **Locale:** `useLocale()`/`useTranslations()` da next-intl; cambio lingua → `LanguageSwitcher` naviga all'URL prefissato.
