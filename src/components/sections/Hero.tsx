@@ -230,7 +230,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      <div className="relative z-10 h-full flex items-end pb-24 md:items-center md:pb-0">
+      <div className="relative z-10 h-full flex items-center">
         <div className="max-w-[1500px] w-full mx-auto px-6 lg:px-12">
           <div className="max-w-3xl text-warm-white" aria-live="polite">
             {/* Editorial eyebrow — hairline / monogram-style dot / label /

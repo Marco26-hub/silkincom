@@ -29,7 +29,7 @@ export function AnnouncementBar({ section }: { section?: HomeSectionLocalized | 
   if (messages.length === 0) return null;
 
   return (
-    <div className="bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.4em] py-2.5 overflow-hidden h-9 fixed top-0 left-0 right-0 z-50">
+    <div className="bg-soft-black text-warm-white text-[9px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.4em] py-2.5 overflow-hidden h-9 fixed top-0 left-0 right-0 z-50">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10 flex items-center justify-center h-full">
         <AnimatePresence mode="wait">
           <motion.span

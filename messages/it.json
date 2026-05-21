@@ -1307,7 +1307,7 @@
     "cancel": "Annulla"
   },
   "salesNotification": {
-    "from": "da",
+    "from": "da {city}",
     "justOrdered": "ha appena ordinato",
     "minutesAgo": "{count} min fa",
     "hoursAgo": "{count} h fa",

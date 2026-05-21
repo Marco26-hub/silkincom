@@ -1307,7 +1307,7 @@
     "cancel": "Abbrechen"
   },
   "salesNotification": {
-    "from": "aus",
+    "from": "aus {city}",
     "justOrdered": "hat soeben bestellt",
     "minutesAgo": "vor {count} Min.",
     "hoursAgo": "vor {count} Std.",

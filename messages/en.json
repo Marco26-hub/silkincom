@@ -1307,7 +1307,7 @@
     "cancel": "Cancel"
   },
   "salesNotification": {
-    "from": "from",
+    "from": "from {city}",
     "justOrdered": "just ordered",
     "minutesAgo": "{count} min ago",
     "hoursAgo": "{count} h ago",

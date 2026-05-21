@@ -117,45 +117,37 @@ export function SalesNotification() {
 
   if (dismissed || !current) return null;
 
-  const productInner = (
-    <span className="font-display italic text-soft-black">{current.product}</span>
-  );
-
   return (
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-4 left-4 z-40 max-w-[320px] sm:max-w-[360px] animate-fade-in"
+      className="fixed bottom-5 left-5 z-40 max-w-[228px] animate-fade-in"
     >
-      <div className="relative flex items-start gap-3 px-4 py-3 pr-9 bg-warm-white border border-pearl-grey shadow-luxe">
-        <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold-primary/40 text-gold-primary">
-          <ShoppingBag className="h-4 w-4 stroke-1" />
-        </span>
-        <div className="min-w-0 text-[12px] leading-snug text-soft-black/80">
-          <p className="font-medium text-soft-black truncate">
-            {current.initials} <span className="text-soft-black/60">{t('from', { city: current.city })}</span>
-          </p>
-          <p className="mt-0.5">
-            {t('justOrdered')} {current.slug ? (
-              <Link href={`/prodotto/${current.slug}`} className="hover:text-gold-primary transition-colors">
-                {productInner}
-              </Link>
-            ) : (
-              productInner
-            )}
-          </p>
-          {current.when && (
-            <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-gold-dark">
-              {timeAgo(current.when, t)}
-            </p>
+      <div className="relative border border-gold-primary/20 border-l-2 border-l-gold-primary bg-warm-white/95 backdrop-blur-md pl-4 pr-7 py-3 shadow-[0_14px_44px_-16px_rgba(23,23,23,0.32)]">
+        <p className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.26em] text-gold-primary font-medium">
+          <ShoppingBag className="h-2.5 w-2.5 shrink-0 stroke-[1.6]" />
+          <span className="truncate">{t('justOrdered')}</span>
+        </p>
+        <p className="mt-1.5 font-display italic text-[14px] leading-[1.25] text-soft-black line-clamp-2">
+          {current.slug ? (
+            <Link href={`/prodotto/${current.slug}`} className="hover:text-gold-primary transition-colors">
+              {current.product}
+            </Link>
+          ) : (
+            current.product
           )}
-        </div>
+        </p>
+        <p className="mt-1.5 text-[10px] text-soft-black/45 truncate">
+          {current.initials}
+          {current.city ? ` · ${current.city}` : ''}
+          {current.when ? ` · ${timeAgo(current.when, t)}` : ''}
+        </p>
         <button
           onClick={dismiss}
           aria-label={t('dismiss')}
-          className="absolute top-1.5 right-1.5 inline-flex h-6 w-6 items-center justify-center text-soft-black/40 hover:text-soft-black transition-colors"
+          className="absolute top-1.5 right-1.5 inline-flex h-5 w-5 items-center justify-center text-soft-black/25 hover:text-soft-black transition-colors"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-3 w-3" />
         </button>
       </div>
     </div>

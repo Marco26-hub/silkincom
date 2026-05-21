@@ -1307,7 +1307,7 @@
     "cancel": "Annuler"
   },
   "salesNotification": {
-    "from": "de",
+    "from": "de {city}",
     "justOrdered": "vient de commander",
     "minutesAgo": "il y a {count} min",
     "hoursAgo": "il y a {count} h",

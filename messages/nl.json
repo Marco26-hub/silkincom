@@ -1307,7 +1307,7 @@
     "cancel": "Annuleren"
   },
   "salesNotification": {
-    "from": "uit",
+    "from": "uit {city}",
     "justOrdered": "heeft zojuist besteld",
     "minutesAgo": "{count} min geleden",
     "hoursAgo": "{count} u geleden",
