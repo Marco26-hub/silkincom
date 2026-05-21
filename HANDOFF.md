@@ -25,7 +25,7 @@ Ultimo aggiornamento: 20 maggio 2026 (sera) · ultimo commit di riferimento: `98
 
 Comandi: `npm run dev` · `npm run build` · `npm run type-check` (`tsc --noEmit`).
 
-Nota build: `npm run build` in locale fallisce su `/api/google-merchant/feed.xml` con `SUPABASE_SERVICE_ROLE_KEY is not configured`. **Non è un bug** — è una env var assente in locale, presente su Vercel. tsc e la compilazione passano puliti.
+Nota build: `npm run build` in locale fallisce in fase di prerender/export — primo errore sul primo page che richiede Supabase (`Error: supabaseUrl is required`, es. `/maison/marco-dibenedetto`); più avanti anche `/api/google-merchant/feed.xml`. **Non è un bug** — env assenti in locale (`NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`), presenti su Vercel. `tsc --noEmit` e la compilazione webpack passano puliti.
 
 ---
 
@@ -522,7 +522,7 @@ silkincom/
 │   ├── types/        database.ts (tipi tabelle Supabase)
 │   └── middleware.ts next-intl + refresh sessione Supabase + gate /admin e /account
 ├── messages/         it·en·es·fr·de·pt·nl .json (stringhe UI, 756 chiavi)
-├── supabase/migrations/  011 → 023
+├── supabase/migrations/  011 → 026
 └── scripts/          translate-i18n.mjs · seed-products.ts
 ```
 
@@ -542,9 +542,10 @@ silkincom/
 
 **Junction legacy vuote** (non usate — il catalogo usa FK diretti su `products`): `product_collections` · `product_categories` · `product_materials` · `product_colors`
 
-✅ **Sicurezza RLS:** RLS attivo su tutte le tabelle del catalogo. Migrazione `023_rls_security` (21/05) abilita RLS su `compositions` / `product_sizes` (public SELECT + admin-write) e `store_settings` (admin-only read+write). Advisor Supabase: 0 `rls_disabled_in_public`. **Residuo non-bloccante** (advisor): vista `reorder_alerts` è `SECURITY DEFINER` (ERROR); funzioni `decrement_inventory` / `apply_inventory_movement` eseguibili da `anon` via RPC — valutare REVOKE EXECUTE dopo aver verificato che il checkout usi il service role.
+✅ **Sicurezza:** Audit pre-live 21/05 — advisor Supabase **0 ERROR** (partiti da 3 ERROR + leak view). RLS attivo su tutte le 51 tabelle. Migrazioni sicurezza: `023` RLS su `compositions`/`product_sizes`/`store_settings`; `024`+`025` lockdown EXECUTE inventory RPC (`decrement_inventory`/`apply_inventory_movement`) → solo `service_role`; `026` `reorder_alerts` → `security_invoker` + REVOKE anon/authenticated (chiudeva leak `cost_price`/`supplier_name` via `/rest/v1/reorder_alerts`) + REVOKE EXECUTE su `product_review_stats`/`handle_new_user`/`log_order_status_change`. HSTS aggiunto a `next.config.js`.
+**Residuo non-bloccante** (WARN advisor, post-launch): `function_search_path_mutable` ×9 (fix: `ALTER FUNCTION … SET search_path = public, pg_temp` — rinviato, tocca funzioni order/inventory critiche); `public_bucket_allows_listing` ×4 (buckets immagini); `auth_leaked_password_protection` (toggle dashboard Supabase). `rls_policy_always_true` su `contacts`/`newsletter` INSERT = intenzionale (form pubblici).
 
-Migrazioni chiave: `014` category/collection FK · `015` composition/size · `016` color FK · `017` product i18n JSONB · `018` home_slides · `019` collections i18n · `020` home_content · `021` static_pages · `022` product_sizes · `023` RLS security.
+Migrazioni chiave: `014` category/collection FK · `015` composition/size · `016` color FK · `017` product i18n JSONB · `018` home_slides · `019` collections i18n · `020` home_content · `021` static_pages · `022` product_sizes · `023` RLS security · `024`+`025` inventory RPC lockdown · `026` security hardening.
 
 ### 12.3 Backend — API + lib
 

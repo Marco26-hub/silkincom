@@ -14,6 +14,8 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 
 ### DB pulizie (Supabase Studio)
 - [x] RLS abilitato su `store_settings`, `compositions`, `product_sizes` (migration `023_rls_security`) *(applicato 21/05 — advisor Supabase: 0 `rls_disabled_in_public`)*
+- [x] Inventory RPC (`decrement_inventory`, `apply_inventory_movement`) — EXECUTE revocato da `anon`/`authenticated`/`PUBLIC`, solo `service_role` (migration `024`+`025`) *(applicato 21/05)*
+- [x] `reorder_alerts` view → `security_invoker` + REVOKE anon/authenticated; EXECUTE revocato su `product_review_stats`/`handle_new_user`/`log_order_status_change` (migration `026`) *(applicato 21/05 — advisor: 0 ERROR)*
 - [ ] DELETE 2 doppioni `compositions` (utente — regola sicurezza permette solo a te)
   ```sql
   DELETE FROM compositions WHERE id IN (
@@ -314,3 +316,21 @@ Codice attuato (commit `cc82386` → `16af519`):
 - [ ] **Google Search Console** DNS verification + sitemap submit
 - [ ] **Press outreach** lakecomotravel.com, Vogue Italia digital, blog moda IT
 - [ ] **Trustpilot setup** + email post-acquisto Brevo workflow
+
+## Sessione 21 mag — security audit pre-live
+
+Audit sicurezza completo pre-cutover. Advisor Supabase: **0 ERROR** (partiti da 3 ERROR + 1 leak view).
+
+- [x] RLS abilitato su `store_settings`/`compositions`/`product_sizes` (migration `023`)
+- [x] Inventory RPC `decrement_inventory`/`apply_inventory_movement` — EXECUTE solo `service_role` (migration `024`+`025`)
+- [x] `reorder_alerts` view → `security_invoker=true` + REVOKE anon/authenticated — chiudeva leak `cost_price`/`supplier_name`/`estimated_cost` via `/rest/v1/reorder_alerts` (migration `026`)
+- [x] `product_review_stats`/`handle_new_user`/`log_order_status_change` — EXECUTE revocato dai ruoli pubblici (migration `026`)
+- [x] HSTS header (`Strict-Transport-Security: max-age=31536000; includeSubDomains`) aggiunto a `next.config.js`
+- [x] Secrets: 0 chiavi reali nel repo, `.gitignore` copre `.env*`, 0 var `NEXT_PUBLIC_` sensibili, 0 leak `silkincom.vercel.app` nel codice del sito
+- [x] Domini: `robots.ts`/`sitemap.ts`/`llms-full.txt` env-driven; `llms.txt` + schema `@id` su `silkincom.com`
+- [x] `tsc --noEmit` pulito
+
+### Residuo non-bloccante (post-launch)
+- [ ] `function_search_path_mutable` ×9 — `ALTER FUNCTION … SET search_path = public, pg_temp` (rinviato: tocca funzioni order/inventory critiche, rischio fix > beneficio a ridosso del go-live)
+- [ ] `public_bucket_allows_listing` ×4 — restringere la policy SELECT su `storage.objects` per i bucket immagini
+- [ ] `auth_leaked_password_protection` — abilitare da dashboard Supabase (Auth → Password settings)
