@@ -526,6 +526,7 @@
       "noAccount": "Nog geen account?",
       "createAccount": "Account aanmaken",
       "invalidCredentials": "Ongeldige inloggegevens.",
+      "emailNotConfirmed": "E-mail niet bevestigd. Controleer je inbox en klik op de bevestigingslink.",
       "missingFields": "Voer e-mailadres en wachtwoord in."
     },
     "register": {

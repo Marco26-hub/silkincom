@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 import { createServiceClient } from '@/lib/supabase/server';
-import { sendOrderConfirmationEmail } from '@/lib/email';
+import { sendOrderConfirmationEmail, sendOwnerOrderNotificationEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -91,6 +91,9 @@ export async function POST(req: NextRequest) {
       // inventory rows decrement, not the product-level row.
       // We never block payment confirmation on inventory drift — capture the
       // failures so admin can reconcile manually instead of silent loss.
+      // Accumulates non-fatal problems (inventory drift, email failures) to
+      // write onto the order in a single update — surfaced in admin Ordini.
+      const adminNotes: string[] = [];
       const inventoryFailures: { product_id: string; variant_id: string | null; quantity: number; error: string }[] = [];
       for (const item of order.order_items || []) {
         const { error: invErr } = await supabase.rpc('apply_inventory_movement', {
@@ -119,14 +122,9 @@ export async function POST(req: NextRequest) {
         }
       }
       if (inventoryFailures.length > 0) {
-        // Annotate the order so the admin Ordini detail page surfaces this
-        // without grepping Vercel logs.
-        await supabase
-          .from('orders')
-          .update({
-            admin_notes: `[INVENTORY_DRIFT] ${inventoryFailures.length} riga/e non scalata/e: ${JSON.stringify(inventoryFailures)}`,
-          })
-          .eq('id', orderId);
+        adminNotes.push(
+          `[INVENTORY_DRIFT] ${inventoryFailures.length} riga/e non scalata/e: ${JSON.stringify(inventoryFailures)}`,
+        );
       }
 
       // Record coupon redemption if applied at checkout
@@ -143,7 +141,9 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Send confirmation email (non-blocking)
+      // Confirmation emails (non-blocking). Two recipients: the customer and
+      // the shop. Each is tried independently so one failure never blocks the
+      // other, and failures are surfaced on the order for the admin.
       try {
         await sendOrderConfirmationEmail(
           order.customer_email,
@@ -151,7 +151,26 @@ export async function POST(req: NextRequest) {
           Number(order.total_amount)
         );
       } catch (emailError) {
-        console.error('Email send failed:', emailError);
+        adminNotes.push(`[EMAIL_FAIL] conferma cliente: ${(emailError as Error).message}`);
+        console.error('Customer confirmation email failed:', emailError);
+      }
+      try {
+        await sendOwnerOrderNotificationEmail(
+          order.order_number,
+          Number(order.total_amount),
+          order.customer_email
+        );
+      } catch (emailError) {
+        adminNotes.push(`[EMAIL_FAIL] notifica negozio: ${(emailError as Error).message}`);
+        console.error('Owner order notification email failed:', emailError);
+      }
+
+      // Single write for every non-fatal note collected above.
+      if (adminNotes.length > 0) {
+        await supabase
+          .from('orders')
+          .update({ admin_notes: adminNotes.join('\n') })
+          .eq('id', orderId);
       }
 
       return NextResponse.json({ received: true });

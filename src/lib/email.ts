@@ -37,6 +37,10 @@ const FROM_EMAIL = DOMAIN_VERIFIED
   : 'SILKinCOM <onboarding@resend.dev>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
+// Internal inbox that receives a notification on every paid order.
+const OWNER_EMAIL =
+  process.env.ORDER_NOTIFICATION_EMAIL || process.env.CONTACT_EMAIL_TO || 'info@silkincom.com';
+
 export async function sendOrderConfirmationEmail(
   customerEmail: string,
   orderNumber: string,
@@ -77,6 +81,33 @@ export async function sendOrderConfirmationEmail(
         </div>
       </body>
       </html>
+    `,
+  });
+}
+
+// Internal sale alert — sent to the shop, not the customer. Lets the owner
+// know a paid order came in without checking the admin dashboard.
+export async function sendOwnerOrderNotificationEmail(
+  orderNumber: string,
+  totalAmount: number,
+  customerEmail: string
+) {
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: OWNER_EMAIL,
+    replyTo: customerEmail,
+    subject: `Nuovo ordine ${e(orderNumber)} — €${e(totalAmount.toFixed(2))}`,
+    html: `
+      <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:520px;">
+        <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;">Nuovo ordine ricevuto</h2>
+        <p><strong>Numero ordine:</strong> ${e(orderNumber)}</p>
+        <p><strong>Totale:</strong> €${e(totalAmount.toFixed(2))}</p>
+        <p><strong>Cliente:</strong> <a href="mailto:${e(customerEmail)}">${e(customerEmail)}</a></p>
+        <p style="margin-top:24px;">
+          <a href="${APP_URL}/admin/ordini" style="display:inline-block;padding:12px 24px;background:#171717;color:#FFFDF8;text-decoration:none;text-transform:uppercase;letter-spacing:0.1em;font-size:12px;">Apri in amministrazione</a>
+        </p>
+        <p style="font-size:11px;color:#6B6B6B;margin-top:24px;">SILKinCOM — notifica automatica ordini</p>
+      </div>
     `,
   });
 }

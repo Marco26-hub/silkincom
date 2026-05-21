@@ -526,6 +526,7 @@
       "noAccount": "Noch kein Konto?",
       "createAccount": "Konto erstellen",
       "invalidCredentials": "Ungültige Anmeldedaten.",
+      "emailNotConfirmed": "E-Mail nicht bestätigt. Prüfen Sie Ihren Posteingang und klicken Sie auf den Bestätigungslink.",
       "missingFields": "Bitte E-Mail und Passwort eingeben."
     },
     "register": {

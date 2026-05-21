@@ -15,11 +15,15 @@ function LoginForm() {
   const params = useSearchParams();
   const redirectParam = params.get('redirect');
   const redirect = redirectParam || '/account';
+  // /auth/callback bounces failed confirmation/OAuth links here with ?error=.
+  const errorParam = params.get('error');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    errorParam === 'auth_failed' ? t('invalidCredentials') : errorParam || null,
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -33,7 +37,10 @@ function LoginForm() {
       const supabase = createBrowserClient();
       const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
       if (authError) {
-        setError(authError.message === 'Invalid login credentials' ? t('invalidCredentials') : authError.message);
+        const m = authError.message;
+        if (m === 'Invalid login credentials') setError(t('invalidCredentials'));
+        else if (/email not confirmed/i.test(m)) setError(t('emailNotConfirmed'));
+        else setError(m);
         return;
       }
 

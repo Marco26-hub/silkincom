@@ -526,6 +526,7 @@
       "noAccount": "Non hai ancora un account?",
       "createAccount": "Crea account",
       "invalidCredentials": "Credenziali non valide.",
+      "emailNotConfirmed": "Email non confermata. Controlla la posta e clicca il link di conferma.",
       "missingFields": "Inserisci email e password."
     },
     "register": {

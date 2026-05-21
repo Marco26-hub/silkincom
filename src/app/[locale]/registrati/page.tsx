@@ -49,7 +49,13 @@ function RegisterForm() {
         password: form.password,
         options: {
           data: { first_name: form.nome, last_name: form.cognome, full_name: `${form.nome} ${form.cognome}` },
-          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}${redirect}` : undefined,
+          // Confirmation link MUST land on /auth/callback so the code is
+          // exchanged for a session. Pointing straight at /account left the
+          // user unauthenticated (no code exchange) → bounced to /login.
+          emailRedirectTo:
+            typeof window !== 'undefined'
+              ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`
+              : undefined,
         },
       });
       if (authError) {
