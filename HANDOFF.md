@@ -1,7 +1,7 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 20 maggio 2026 · ultimo commit di riferimento: `b7cabfc`.
+Ultimo aggiornamento: 20 maggio 2026 (sera) · ultimo commit di riferimento: `987a143`.
 
 ---
 
@@ -297,6 +297,37 @@ Commit di riferimento parte 3: `61a151c` → `8f06c61` → `efd3a44`.
 
 Commit di riferimento parte 4: `b1ae3f2`.
 
+### Sessione 20/05 — parte 5 (Static pages CMS, varianti taglie, hero AI + cinematic, GEO week-1)
+
+**Migration `021_static_pages` — CMS pagine statiche** (commit `093cbad`, `fc67e1e`):
+- Tabella per blocchi di contenuto editabili da `/admin/pagine-statiche` (CMS unificato).
+- `/la-nostra-storia` e `/atelier` renderizzano i blocchi dal DB ("Path C proof" — pagine statiche CMS-driven).
+
+**Migration `022_product_sizes` — varianti taglie abbigliamento** (commit `6ddf650` → `e762a68`):
+- Varianti taglia **S/M/L/XL/XXL** per i capi: lario (t-shirt), melzi (pantaloncini), riva (camicie). `tivan` resta accessorio mono-taglia.
+- Admin: gestione taglie varianti dal form prodotto (`7f63aa0`).
+- Magazzino: colonna taglia + raggruppamento varianti in tabella giacenze; step selettore taglia nel modal Carico/Scarico rapido; breakdown quantità per-taglia sulla riga padre.
+- Checkout: line item Stripe **variant-aware** + decremento inventario per variante; route cancel variant-aware + badge taglia nel riepilogo.
+
+**Admin hero slides — AI vision** (commit `14e720a`, `7c0963b`, `2525a01`, `0ee9d0d`, `fc9402d`, `d81ffe3`):
+- "AI vision suggest" — genera title/subtitle/alt della slide hero dall'immagine; picker modello vision + override API key per-richiesta; canvas anteprima live (viewport + zoom); catalogo modelli aggiornato; reject input non-ASCII; fallback a shortlist statica se la GET suggest fallisce.
+
+**Hero — polish cinematografico** (commit `cce1c76`, `0b126a3`, `b5bbba0`, `987a143`, `36bfdd1`):
+- Ken Burns drift + ambient breathing, overlay cinematografico + film grain, focus face-safe (soggetti restano in frame), cornice editorial + counter magazine, logo header reso leggibile sopra l'hero.
+
+**E-E-A-T / contenuti** (commit `16af519`, `c02c7d5`, `b7c4c5b`, `0b52792`, `db1bf19`, `86ef2b5`):
+- Bio fondatore `/maison/marco-dibenedetto` espansa ~280 → **~880 parole**.
+- Artigiani reali al posto dei placeholder: **Paolo**, **Adriano** (Mastro Tintore), **Roberta** (ricamatrice).
+- Date dei blog distribuite in cadenza editoriale coerente; glossario tessile + home title/meta accorciati.
+
+**GEO week-1 quick wins** (commit `cc82386`): interventi dall'audit finale — GEO **66 → ~78** stimato.
+
+**Robustezza** (commit `c099886`): rimossi i fallback silenziosi che mascheravano errori reali.
+
+**Altro:** eyebrow materiale derivato dal blend di composizione (`3f84bc7`); polish premium Magazzino — popover/KPI/tabelle/reason preset (`26db0d4`, `13a72d6`); blog hero images spostate in `/editorial` per evitare il redirect `/journal` (`05d47e8`).
+
+Commit di riferimento parte 5: `093cbad` → **`987a143` (HEAD)**.
+
 ---
 
 ## 7. Problemi noti / aperti
@@ -338,8 +369,11 @@ Commit di riferimento parte 4: `b1ae3f2`.
 | llms.txt premium | 101 righe (heritage, catalog, FAQ, prezzi, social, lingue) | **✓ Fatto** |
 | Schema HowTo / AboutPage / ItemList | Full coverage | **✓ Fatto** |
 | T-shirt bianca / Categorie orfane DB | Confermate aggiornate dall'utente | **✓ Chiuso** |
+| Varianti taglie abbigliamento | S/M/L/XL/XXL su lario/melzi/riva, magazzino + checkout variant-aware (migration 022) | **✓ Fatto** (commit `e762a68`) |
+| CMS pagine statiche | `/admin/pagine-statiche` + render DB su la-nostra-storia/atelier (migration 021) | **✓ Fatto** (commit `fc67e1e`) |
+| Admin hero — AI vision suggest | suggest title/subtitle/alt da immagine + model picker + preview live | **✓ Fatto** (commit `d81ffe3`) |
 
-GEO audit completo con piano 30 giorni: vedi `GEO-AUDIT-REPORT.md`.
+GEO audit completo con piano 30 giorni: vedi `GEO-AUDIT-REPORT.md` (score finale **66/100**, ~78 proiettato dopo i quick win week-1).
 
 ---
 
@@ -363,8 +397,9 @@ Quando si passa al dominio reale:
 - `scripts/translate-i18n.mjs` · `scripts/.i18n-cache.json` · `scripts/seed-products.ts`
 
 **Report audit nel repo**
-- `GEO-AUDIT-REPORT.md` — re-audit completo (62/100), piano 30 giorni
-- `GEO-SEO-AUDIT-vercel.md` · `GEO-BRAND-MENTIONS.md` · `GEO-REPORT-SILKinCOM.pdf`
+- `GEO-AUDIT-REPORT.md` — audit finale pre-cutover (66/100 → ~78 proiettato), issue prioritizzate
+- `LAUNCH-CHECKLIST.md` — runbook go-live / cutover dominio
+- `GEO-SEO-AUDIT-vercel.md` · `GEO-BRAND-MENTIONS.md` · `GEO-REPORT-SILKinCOM.pdf` · `GEO-CITABILITY-AUDIT.md`
 
 **Identificatori**
 - Supabase project ref: `fjudulhxsafjizcmrifw`
@@ -415,7 +450,9 @@ cat HANDOFF.md                 # leggi questo file (sezione §6 = lavoro recente
 - ✅ 7 lingue native, 41 prodotti, 5 blog post, 5 cura/[material] sub-pages, /press, /maison/marco-dibenedetto
 - ✅ Schema premium: Product, Article, HowTo, FAQPage, AboutPage, CollectionPage, ItemList, BreadcrumbList, Speakable, Organization+LocalBusiness, Person, ContactPoint
 - ✅ llms.txt 101 righe, sitemap 83 URL + 567 hreflang alternates, robots.txt con 14 AI bots
-- ✅ GEO score stimato ~95/100
+- ✅ Varianti taglie S/M/L/XL/XXL (lario/melzi/riva), magazzino + checkout variant-aware
+- ✅ CMS completo: prodotti, hero slides, collezioni, sezioni home, materiali, pagine statiche
+- ⚠️ GEO score reale **66/100** (audit finale `GEO-AUDIT-REPORT.md`), ~78 proiettato dopo i quick win week-1. Tappo = brand authority off-site + dominio preview vercel.app.
 - ✅ Smoke test Vercel prod: 59/59 endpoint 200
 
 **Cosa DEVE fare l'utente prima del go-live (utente, non delegabile):**
@@ -445,6 +482,6 @@ cd /tmp/silkincom && npm run type-check  # 0 errori atteso
 curl -s -o /dev/null -w "%{http_code}\n" https://silkincom.vercel.app/   # 200
 ```
 
-**Commit di riferimento finale 20/05:** `b7cabfc` (immagini editorial blog).
+**Commit di riferimento finale 20/05:** `987a143` (HEAD — hero cinematic motion). Vedi §6 parte 5 per il lavoro più recente.
 
 **Documento operativo go-live:** `LAUNCH-CHECKLIST.md` (runbook con date e ordine cut-over).
