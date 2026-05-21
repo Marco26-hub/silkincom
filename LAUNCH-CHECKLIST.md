@@ -13,6 +13,7 @@ Cronoprogramma: **mer–gio test**, **ven cut-over dominio**.
 - [ ] Verifica tutte le env: `RESEND_API_KEY`, `BREVO_*`, `STRIPE_*`, `NEXT_PUBLIC_SUPABASE_*`
 
 ### DB pulizie (Supabase Studio)
+- [x] RLS abilitato su `store_settings`, `compositions`, `product_sizes` (migration `023_rls_security`) *(applicato 21/05 — advisor Supabase: 0 `rls_disabled_in_public`)*
 - [ ] DELETE 2 doppioni `compositions` (utente — regola sicurezza permette solo a te)
   ```sql
   DELETE FROM compositions WHERE id IN (

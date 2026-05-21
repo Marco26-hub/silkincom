@@ -522,7 +522,7 @@ silkincom/
 │   ├── types/        database.ts (tipi tabelle Supabase)
 │   └── middleware.ts next-intl + refresh sessione Supabase + gate /admin e /account
 ├── messages/         it·en·es·fr·de·pt·nl .json (stringhe UI, 756 chiavi)
-├── supabase/migrations/  011 → 022
+├── supabase/migrations/  011 → 023
 └── scripts/          translate-i18n.mjs · seed-products.ts
 ```
 
@@ -542,9 +542,9 @@ silkincom/
 
 **Junction legacy vuote** (non usate — il catalogo usa FK diretti su `products`): `product_collections` · `product_categories` · `product_materials` · `product_colors`
 
-⚠️ **Sicurezza:** 3 tabelle hanno **RLS disabilitato** (`store_settings`, `compositions`, `product_sizes`) → leggibili/scrivibili con la anon key. Abilitare RLS + policy prima del go-live (vedi `LAUNCH-CHECKLIST.md`). RLS attivo su tutte le altre.
+✅ **Sicurezza RLS:** RLS attivo su tutte le tabelle del catalogo. Migrazione `023_rls_security` (21/05) abilita RLS su `compositions` / `product_sizes` (public SELECT + admin-write) e `store_settings` (admin-only read+write). Advisor Supabase: 0 `rls_disabled_in_public`. **Residuo non-bloccante** (advisor): vista `reorder_alerts` è `SECURITY DEFINER` (ERROR); funzioni `decrement_inventory` / `apply_inventory_movement` eseguibili da `anon` via RPC — valutare REVOKE EXECUTE dopo aver verificato che il checkout usi il service role.
 
-Migrazioni chiave: `014` category/collection FK · `015` composition/size · `016` color FK · `017` product i18n JSONB · `018` home_slides · `019` collections i18n · `020` home_content · `021` static_pages · `022` product_sizes.
+Migrazioni chiave: `014` category/collection FK · `015` composition/size · `016` color FK · `017` product i18n JSONB · `018` home_slides · `019` collections i18n · `020` home_content · `021` static_pages · `022` product_sizes · `023` RLS security.
 
 ### 12.3 Backend — API + lib
 
