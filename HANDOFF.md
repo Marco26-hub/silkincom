@@ -1,7 +1,7 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 20 maggio 2026 (sera) · ultimo commit di riferimento: `987a143`.
+Ultimo aggiornamento: 21 maggio 2026 · ultimo commit di riferimento: `bc3fbd6`.
 
 ---
 
@@ -326,7 +326,38 @@ Commit di riferimento parte 4: `b1ae3f2`.
 
 **Altro:** eyebrow materiale derivato dal blend di composizione (`3f84bc7`); polish premium Magazzino — popover/KPI/tabelle/reason preset (`26db0d4`, `13a72d6`); blog hero images spostate in `/editorial` per evitare il redirect `/journal` (`05d47e8`).
 
-Commit di riferimento parte 5: `093cbad` → **`987a143` (HEAD)**.
+Commit di riferimento parte 5: `093cbad` → `987a143`.
+
+---
+
+### Sessione 21/05 — pre-live hardening, fix go-live, admin UX, traduzioni
+
+**Sicurezza pre-live** (commit `dc0d4f4`, `88cbd4c`): RLS su `store_settings`/`compositions`/`product_sizes`; lockdown EXECUTE inventory RPC → solo `service_role`; `reorder_alerts` `security_invoker` (chiuso leak `cost_price`/`supplier_name`); HSTS in `next.config.js`. Advisor Supabase **0 ERROR**. Migrazioni `023`→`026`.
+
+**Mobile** (commit `4682077`): hero eyebrow rialzato, popup `SalesNotification` ridisegnato compatto, fix wrap announcement bar.
+
+**Descrizione breve prodotto** (commit `c1a1d9c`, migration `027`): colonna `description_short_i18n`; `catalog.ts` legge/risolve; `ProductCard` la mostra; translate route + `ProductEditForm` collegati. `FloatingNav` ridisegnato (cerchi icon-only); footer legale centrato su mobile. **`localeDetection: false`** — fix logo che redirigeva `/` → `/en` per browser non-IT.
+
+**Fix go-live** (commit `1d2b6c9`):
+- **Login cliente** — `signUp emailRedirectTo` puntava a `/account` (non scambiava mai il code) → confermando l'email il cliente restava sloggato. Ora passa da `/auth/callback?next=`. Il callback gestisce anche `token_hash`/`verifyOtp` (link cross-device) e instrada recovery → `/reset-password`. Errore "Email not confirmed" tradotto in 7 lingue.
+- **Mail acquisto** — aggiunta `sendOwnerOrderNotificationEmail`: il negozio riceve una mail a ogni ordine pagato; i fallimenti email finiscono su `orders.admin_notes`.
+- **Composizioni** (migration `028`) — pulite tutte le 41 (`composition` conteneva il dump del testo) + `composition_i18n` riempito in 6 lingue. Fix variante "Riva Azzurra" con `size` NULL (taglia S mancante in vetrina).
+
+**FloatingNav + collezioni** (commit `bd763b3`): il tasto "torna su / indietro" non sparisce più al footer (si aggancia sopra); fix mobile della pagina 2 collezioni che si apriva già scrollata in basso.
+
+**Nomi Bellagio** (migration `029`): tolta la misura dal `name`/`name_i18n` — era doppia (già nel campo `dimensions`).
+
+**Descrizioni pulite + traduzioni** (commit `5d909f2`, `992f748`; migration `030`, `031`):
+- `description_long` era un dump di etichette ("Composizione: … Finitura: …") su 27 prodotti → strippato, resta solo la prosa editoriale. `shortComposition` senza più troncamento/ellissi.
+- `description_long_i18n` riempito a mano (LLM) per **tutti i 41 prodotti** in en/es/fr/de/pt/nl. Generatore riproducibile: `scripts/gen_migration_031.py`.
+
+**Logo header** (commit `65a09f5`): variante `solid` — oro approfondito + ombra embossed; visibile sulla barra crema (prima si vedeva poco). `default` (alone) resta solo sopra l'hero scuro.
+
+**Admin UX** (commit `bc3fbd6`): lista `/admin/prodotti` ordinata per nome (varianti stesso prodotto raggruppate) + filtri categoria/stock; galleria immagini prodotto — sposta (frecce), sostituisci singola foto, scarica, imposta principale (nuovo `PATCH` su `images` route + `display_order`); `catalog.ts` ordina le immagini per `display_order`; Magazzino → Movimenti — ricerca prodotto + filtro tipo.
+
+⚠️ **Modifiche DB di questa sessione** (migration `027`→`031` + pulizie dati darsena/lario/melzi applicate via `execute_sql`) sono **già applicate in produzione** sul project Supabase. I file migration sono nel repo come record.
+
+Commit di riferimento 21/05: `dc0d4f4` → **`bc3fbd6` (HEAD)**.
 
 ---
 
@@ -372,6 +403,11 @@ Commit di riferimento parte 5: `093cbad` → **`987a143` (HEAD)**.
 | Varianti taglie abbigliamento | S/M/L/XL/XXL su lario/melzi/riva, magazzino + checkout variant-aware (migration 022) | **✓ Fatto** (commit `e762a68`) |
 | CMS pagine statiche | `/admin/pagine-statiche` + render DB su la-nostra-storia/atelier (migration 021) | **✓ Fatto** (commit `fc67e1e`) |
 | Admin hero — AI vision suggest | suggest title/subtitle/alt da immagine + model picker + preview live | **✓ Fatto** (commit `d81ffe3`) |
+| Login cliente area personale | `emailRedirectTo` → `/auth/callback`; callback con `verifyOtp` | **✓ Fatto** (commit `1d2b6c9`) |
+| Mail conferma ordine al CLIENTE | Non arriva finché il dominio `silkincom.com` non è verificato su Resend (resend.com/domains, record DNS) **e** `RESEND_DOMAIN_VERIFIED=true` su Vercel. Senza, il mittente è il sandbox `onboarding@resend.dev` che consegna solo all'owner. Verificare anche `RESEND_API_KEY`, `STRIPE_WEBHOOK_SECRET` e il webhook Stripe (`/api/stripe/webhook`, evento `payment_intent.succeeded`). | **Da fare (utente)** |
+| Login Google (OAuth) | Codice OK. Config esterna: Supabase → Auth → Providers → Google (Client ID/Secret); Google Cloud → redirect URI `https://fjudulhxsafjizcmrifw.supabase.co/auth/v1/callback`; Supabase → Auth → URL Configuration → Redirect URLs: aggiungere `https://silkincom.com/auth/callback` + `https://silkincom.com/**` (serve anche per la conferma email registrazione). | **Da fare (utente)** |
+| Stock magazzino | Apparel (lario/melzi/riva tutte le varianti), `tivan`, `bellagio-2/3/4`, `tremezzo-beige` a quota 0 → pubblicati ma non comprabili. Caricare le quantità reali da `/admin/magazzino`. | **Da fare (utente)** |
+| Descrizioni prodotto i18n | `description_long_i18n` riempito a mano per tutti i 41 prodotti (en/es/fr/de/pt/nl) | **✓ Fatto** (migration `031`) |
 
 GEO audit completo con piano 30 giorni: vedi `GEO-AUDIT-REPORT.md` (score finale **66/100**, ~78 proiettato dopo i quick win week-1).
 
@@ -482,7 +518,7 @@ cd /tmp/silkincom && npm run type-check  # 0 errori atteso
 curl -s -o /dev/null -w "%{http_code}\n" https://silkincom.vercel.app/   # 200
 ```
 
-**Commit di riferimento finale 20/05:** `987a143` (HEAD — hero cinematic motion). Vedi §6 parte 5 per il lavoro più recente.
+**Commit di riferimento finale 21/05:** `bc3fbd6` (HEAD — admin UX: sort/filtri prodotti + galleria immagini). Vedi §6 sessione 21/05 per il lavoro più recente.
 
 **Documento operativo go-live:** `LAUNCH-CHECKLIST.md` (runbook con date e ordine cut-over).
 
@@ -522,7 +558,7 @@ silkincom/
 │   ├── types/        database.ts (tipi tabelle Supabase)
 │   └── middleware.ts next-intl + refresh sessione Supabase + gate /admin e /account
 ├── messages/         it·en·es·fr·de·pt·nl .json (stringhe UI, 756 chiavi)
-├── supabase/migrations/  011 → 026
+├── supabase/migrations/  011 → 031
 └── scripts/          translate-i18n.mjs · seed-products.ts
 ```
 
