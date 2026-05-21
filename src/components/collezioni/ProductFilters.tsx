@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Link } from '@/i18n/navigation';
 import { usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
@@ -52,9 +52,24 @@ export function ProductFilters({ products, categories, materials = [], collectio
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const didMountRef = useRef(false);
+
+  // Snap to the top of the results after a page change. Runs post-commit,
+  // so the new page's layout is already in place — this avoids the
+  // smooth-scroll race that left mobile users at the bottom of page 2
+  // (the new, shorter page rendered while the scroll was still animating).
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    resultsRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  }, [page]);
+
   function changePage(next: number) {
+    if (next < 1 || next > totalPages || next === page) return;
     setPage(next);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const filtersPanel = (
@@ -223,7 +238,7 @@ export function ProductFilters({ products, categories, materials = [], collectio
       )}
 
       {/* Results */}
-      <div>
+      <div ref={resultsRef} className="scroll-mt-28">
         {/* Sort and count bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-pearl-grey/60">
           <p className="text-sm text-soft-black/75">
