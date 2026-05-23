@@ -237,7 +237,10 @@ export async function sendNewsletterConfirmationEmail(
   email: string,
   confirmToken: string
 ) {
-  const link = `${APP_URL}/newsletter/confirm?token=${confirmToken}`;
+  // NB: the GET handler lives at /api/newsletter/confirm (it marks the
+  // subscriber confirmed then redirects to /newsletter/confirmed or
+  // /newsletter/expired). Without the /api prefix the click 404s.
+  const link = `${APP_URL}/api/newsletter/confirm?token=${confirmToken}`;
   const inner = `
     <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Un passo per iniziare</p>
     <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 16px 0;">Conferma la sua <em style="color:#D4AF37; font-style:italic;">iscrizione</em></h1>
