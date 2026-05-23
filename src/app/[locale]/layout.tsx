@@ -8,6 +8,7 @@ import { PublicChrome } from '@/components/layout/PublicChrome';
 import { Analytics } from '@/components/analytics/Analytics';
 import { routing } from '@/i18n/routing';
 import { getHomeSection } from '@/data/home-content';
+import { APP_URL } from '@/lib/app-url';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const ogLocale = OG_LOCALE[locale] ?? 'it_IT';
   return {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'),
+  metadataBase: new URL(APP_URL),
   title: {
     default: 'SILKinCOM — Sciarpe in seta e cashmere, Made in Como',
     template: '%s | SILKinCOM',
@@ -60,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     'lino estate Italia',
     'cotone extra lungo',
   ],
-  authors: [{ name: 'SILKinCOM', url: process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com' }],
+  authors: [{ name: 'SILKinCOM', url: APP_URL }],
   creator: 'SILKinCOM',
   publisher: 'SILKinCOM',
   category: 'fashion',

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { localizedAlternates } from '@/i18n/routing';
+import { APP_URL } from '@/lib/app-url';
 
 export async function generateMetadata({
   params,
@@ -15,28 +16,26 @@ export async function generateMetadata({
   };
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
-
 // AboutPage schema strengthens E-E-A-T signals for AI/GEO crawlers
 // and makes the founder attribution explicit.
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
-  '@id': `${BASE_URL}/la-nostra-storia#aboutpage`,
-  url: `${BASE_URL}/la-nostra-storia`,
+  '@id': `${APP_URL}/la-nostra-storia#aboutpage`,
+  url: `${APP_URL}/la-nostra-storia`,
   name: 'La Nostra Storia — SILKinCOM',
   description:
     'Heritage tessile di SILKinCOM nel distretto serico di Como, fondazione, valori e visione di Marco Dibenedetto.',
   mainEntity: {
     '@type': 'Organization',
-    '@id': `${BASE_URL}/#organization`,
+    '@id': `${APP_URL}/#organization`,
     name: 'SILKinCOM',
     foundingLocation: 'Como, Italia',
     founder: {
       '@type': 'Person',
       name: 'Marco Dibenedetto',
       jobTitle: 'Fondatore',
-      worksFor: { '@id': `${BASE_URL}/#organization` },
+      worksFor: { '@id': `${APP_URL}/#organization` },
     },
   },
 };

@@ -13,6 +13,7 @@ import { ArtisanAttribution } from '@/components/product/ArtisanAttribution';
 import { InventoryBadge } from '@/components/product/InventoryBadge';
 import { SizeGuideModal } from '@/components/product/SizeGuideModal';
 import { createServerClient } from '@/lib/supabase/server';
+import { APP_URL } from '@/lib/app-url';
 
 function materialName(slug: string | undefined, locale: string): string {
   if (!slug) return '';
@@ -89,8 +90,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const altDescriptor = [p.name, color, materialLabel].filter(Boolean).join(' ');
   const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
-  const productUrl = `${baseUrl}/prodotto/${p.slug}`;
+  const productUrl = `${APP_URL}/prodotto/${p.slug}`;
 
   // Auth check for review form (does not affect render of product details)
   let isAuthenticated = false;
@@ -121,7 +121,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     color: colorLabel || undefined,
     countryOfOrigin: 'IT',
     category: cat?.name,
-    manufacturer: { '@type': 'Organization', name: 'SILKinCOM', url: baseUrl },
+    manufacturer: { '@type': 'Organization', name: 'SILKinCOM', url: APP_URL },
     offers: {
       '@type': 'Offer',
       url: productUrl,
@@ -136,9 +136,9 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
-      { '@type': 'ListItem', position: 2, name: 'Collezioni', item: `${baseUrl}/collezioni` },
-      ...(cat ? [{ '@type': 'ListItem', position: 3, name: collectionLeafName, item: `${baseUrl}/collezioni/${cat.slug}` }] : []),
+      { '@type': 'ListItem', position: 1, name: 'Home', item: APP_URL },
+      { '@type': 'ListItem', position: 2, name: 'Collezioni', item: `${APP_URL}/collezioni` },
+      ...(cat ? [{ '@type': 'ListItem', position: 3, name: collectionLeafName, item: `${APP_URL}/collezioni/${cat.slug}` }] : []),
       { '@type': 'ListItem', position: cat ? 4 : 3, name: productFullName, item: productUrl },
     ],
   };

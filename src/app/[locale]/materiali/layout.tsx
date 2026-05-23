@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { localizedAlternates } from '@/i18n/routing';
+import { APP_URL } from '@/lib/app-url';
 
 // Server-only layout: the materiali page is 'use client', so metadata +
 // canonical/hreflang alternates have to live here in a server file.
@@ -17,8 +18,6 @@ export async function generateMetadata({
   };
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
-
 const MATERIALS_LIST = [
   { slug: 'seta', name: 'Seta di Como', desc: 'Tradizione comasca dal XV secolo. Fibra proteica luminosa, ipoallergenica, traspirante.' },
   { slug: 'cashmere', name: 'Cashmere Mongolia', desc: 'Sottopelo finissimo 12–16 micron, raccolto a mano, calore senza peso.' },
@@ -30,7 +29,7 @@ const MATERIALS_LIST = [
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  '@id': `${BASE_URL}/materiali#itemlist`,
+  '@id': `${APP_URL}/materiali#itemlist`,
   name: 'Materiali SILKinCOM',
   numberOfItems: MATERIALS_LIST.length,
   itemListElement: MATERIALS_LIST.map((m, i) => ({
@@ -41,7 +40,7 @@ const itemListSchema = {
       name: m.name,
       description: m.desc,
       category: 'Materiale tessile',
-      url: `${BASE_URL}/collezioni/${m.slug}`,
+      url: `${APP_URL}/collezioni/${m.slug}`,
     },
   })),
 };
@@ -50,8 +49,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Materiali', item: `${BASE_URL}/materiali` },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Materiali', item: `${APP_URL}/materiali` },
   ],
 };
 

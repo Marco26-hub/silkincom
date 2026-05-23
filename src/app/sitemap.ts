@@ -3,14 +3,13 @@ import { PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/data/catalog';
 import { getPosts } from '@/data/posts';
 import { routing } from '@/i18n/routing';
 import { createPublicClient } from '@/lib/supabase/server';
-
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+import { APP_URL } from '@/lib/app-url';
 
 function localizedUrl(locale: string, path: string): string {
   const suffix = path === '/' ? '' : path;
   return locale === routing.defaultLocale
-    ? `${BASE_URL}${suffix || '/'}`
-    : `${BASE_URL}/${locale}${suffix}`;
+    ? `${APP_URL}${suffix || '/'}`
+    : `${APP_URL}/${locale}${suffix}`;
 }
 
 function languageAlternates(path: string): Record<string, string> {

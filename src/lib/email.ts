@@ -1,4 +1,8 @@
 import { Resend } from 'resend';
+// Canonical site URL — see src/lib/app-url.ts. Centralised so email links,
+// sitemap, schema and llms.txt all agree even when NEXT_PUBLIC_APP_URL on
+// Vercel still points at a vercel.app preview.
+import { APP_URL } from './app-url';
 
 function e(str: string | number): string {
   return String(str)
@@ -73,8 +77,6 @@ const DOMAIN_VERIFIED = process.env.RESEND_DOMAIN_VERIFIED === 'true';
 const FROM_EMAIL = DOMAIN_VERIFIED
   ? 'SILKinCOM <orders@silkincom.com>'
   : 'SILKinCOM <onboarding@resend.dev>';
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
-
 // Internal inbox that receives a notification on every paid order.
 const OWNER_EMAIL =
   process.env.ORDER_NOTIFICATION_EMAIL || process.env.CONTACT_EMAIL_TO || 'info@silkincom.com';

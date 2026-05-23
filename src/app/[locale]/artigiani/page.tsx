@@ -2,6 +2,7 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { APP_URL } from '@/lib/app-url';
 
 export async function generateMetadata() {
   const t = await getTranslations('artigianiPage');
@@ -45,14 +46,13 @@ export default async function ArtigianiPage() {
     },
   ];
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
   const artisansSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    '@id': `${baseUrl}/artigiani#collectionpage`,
+    '@id': `${APP_URL}/artigiani#collectionpage`,
     name: t('metadata.title'),
     description: t('metadata.description'),
-    url: `${baseUrl}/artigiani`,
+    url: `${APP_URL}/artigiani`,
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: artisans.length,
@@ -63,9 +63,9 @@ export default async function ArtigianiPage() {
           '@type': 'Person',
           name: a.name,
           jobTitle: a.role,
-          worksFor: { '@id': `${baseUrl}/#organization` },
+          worksFor: { '@id': `${APP_URL}/#organization` },
           homeLocation: { '@type': 'Place', name: a.city },
-          image: `${baseUrl}${a.image}`,
+          image: `${APP_URL}${a.image}`,
         },
       })),
     },
@@ -74,8 +74,8 @@ export default async function ArtigianiPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}/` },
-      { '@type': 'ListItem', position: 2, name: 'I Nostri Artigiani', item: `${baseUrl}/artigiani` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'I Nostri Artigiani', item: `${APP_URL}/artigiani` },
     ],
   };
 

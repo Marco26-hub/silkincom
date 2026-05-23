@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 import { Link } from '@/i18n/navigation';
+import { APP_URL } from '@/lib/app-url';
 
 export async function generateMetadata() {
   const locale = await getLocale();
@@ -158,7 +159,6 @@ const TERMS: Term[] = [
 export default async function GlossarioPage() {
   const locale = await getLocale();
   const tn = await getTranslations('nav');
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
   // FAQPage schema using terms as Q/A — boosts AI citability and definition
   // extraction for question-shaped queries ("cos'è il rouletté?", "che cos'è
@@ -186,7 +186,7 @@ export default async function GlossarioPage() {
       '@type': 'DefinedTerm',
       name: t.term,
       description: t.long,
-      inDefinedTermSet: `${baseUrl}/glossario`,
+      inDefinedTermSet: `${APP_URL}/glossario`,
     })),
   };
 

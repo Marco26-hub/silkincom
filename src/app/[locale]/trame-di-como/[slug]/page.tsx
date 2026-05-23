@@ -5,6 +5,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { POST_SLUGS, getPosts, getPost } from '@/data/posts';
 import { localizedAlternates } from '@/i18n/routing';
 import { ArrowUpRight } from 'lucide-react';
+import { APP_URL } from '@/lib/app-url';
 
 // External citation references appended to pillar posts. Strengthens
 // E-E-A-T and gives AI grounding back-links to authoritative sources.
@@ -74,14 +75,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const paragraphs = post.body.split('\n\n').filter(Boolean);
   const others = getPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 3);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
-  const articleUrl = `${baseUrl}/trame-di-como/${post.slug}`;
+  const articleUrl = `${APP_URL}/trame-di-como/${post.slug}`;
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: post.title,
     description: post.description,
-    image: post.image ? [post.image.startsWith('http') ? post.image : `${baseUrl}${post.image}`] : [],
+    image: post.image ? [post.image.startsWith('http') ? post.image : `${APP_URL}${post.image}`] : [],
     datePublished: post.date || undefined,
     dateModified: post.date || undefined,
     author: {
@@ -93,7 +93,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     publisher: {
       '@type': 'Organization',
       name: 'SILKinCOM',
-      logo: { '@type': 'ImageObject', url: `${baseUrl}/logo-official.png` },
+      logo: { '@type': 'ImageObject', url: `${APP_URL}/logo-official.png` },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
     speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', 'article p'] },
@@ -108,7 +108,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         name: post.title,
         description: post.description,
         totalTime: howToConfig.totalTime,
-        image: post.image ? [post.image.startsWith('http') ? post.image : `${baseUrl}${post.image}`] : undefined,
+        image: post.image ? [post.image.startsWith('http') ? post.image : `${APP_URL}${post.image}`] : undefined,
         inLanguage: locale,
         step: howToConfig.steps.map((s, i) => ({
           '@type': 'HowToStep',
@@ -123,8 +123,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}${prefix || '/'}` },
-      { '@type': 'ListItem', position: 2, name: 'Trame di Como', item: `${baseUrl}${prefix}/trame-di-como` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: 'Trame di Como', item: `${APP_URL}${prefix}/trame-di-como` },
       { '@type': 'ListItem', position: 3, name: post.title, item: articleUrl },
     ],
   };

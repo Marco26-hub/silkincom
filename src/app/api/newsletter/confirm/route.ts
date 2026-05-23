@@ -11,16 +11,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { sendWelcomeEmail } from '@/lib/email';
+import { APP_URL } from '@/lib/app-url';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const token = new URL(req.url).searchParams.get('token');
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
   if (!token) {
-    return NextResponse.redirect(`${baseUrl}/newsletter/expired?reason=missing-token`);
+    return NextResponse.redirect(`${APP_URL}/newsletter/expired?reason=missing-token`);
   }
 
   const supabase = createServiceClient();
@@ -31,13 +31,13 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (!sub) {
-    return NextResponse.redirect(`${baseUrl}/newsletter/expired?reason=invalid-token`);
+    return NextResponse.redirect(`${APP_URL}/newsletter/expired?reason=invalid-token`);
   }
   if (sub.is_confirmed) {
-    return NextResponse.redirect(`${baseUrl}/newsletter/confirmed?already=1`);
+    return NextResponse.redirect(`${APP_URL}/newsletter/confirmed?already=1`);
   }
   if (sub.confirm_token_expires_at && new Date(sub.confirm_token_expires_at) < new Date()) {
-    return NextResponse.redirect(`${baseUrl}/newsletter/expired?reason=expired`);
+    return NextResponse.redirect(`${APP_URL}/newsletter/expired?reason=expired`);
   }
 
   // Mark confirmed + clear token
@@ -82,5 +82,5 @@ export async function GET(req: NextRequest) {
     },
   ]);
 
-  return NextResponse.redirect(`${baseUrl}/newsletter/confirmed`);
+  return NextResponse.redirect(`${APP_URL}/newsletter/confirmed`);
 }

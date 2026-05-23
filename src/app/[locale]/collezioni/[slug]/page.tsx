@@ -5,6 +5,7 @@ import { getFeaturedCollections, getFeaturedCollection } from '@/data/collection
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 import { LarioGrouped } from '@/components/collezioni/LarioGrouped';
+import { APP_URL } from '@/lib/app-url';
 
 export function generateStaticParams() {
   return TAXONOMY_SLUGS.map((slug) => ({ slug }));
@@ -36,7 +37,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
   const typeLabel = collection ? t('collection') : material ? t('material') : t('category');
 
   // CollectionPage + ItemList schema — enumerate products for AI/search engines
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+
   const prefix = locale === 'it' ? '' : `/${locale}`;
   const inList = (await getProducts(locale)).filter(
     (p) => p.category === slug || p.material === slug || p.collections?.includes(slug),
@@ -46,7 +47,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
     '@type': 'CollectionPage',
     name: meta.name,
     description: meta.description,
-    url: `${baseUrl}${prefix}/collezioni/${slug}`,
+    url: `${APP_URL}${prefix}/collezioni/${slug}`,
     inLanguage: locale,
     mainEntity: {
       '@type': 'ItemList',
@@ -57,7 +58,7 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
         item: {
           '@type': 'Product',
           name: p.name,
-          url: `${baseUrl}${prefix}/prodotto/${p.slug}`,
+          url: `${APP_URL}${prefix}/prodotto/${p.slug}`,
           image: p.images?.[0],
           offers: { '@type': 'Offer', price: p.price.toFixed(2), priceCurrency: 'EUR' },
         },

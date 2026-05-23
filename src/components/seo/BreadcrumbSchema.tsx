@@ -1,3 +1,4 @@
+import { APP_URL } from '@/lib/app-url';
 /**
  * Reusable JSON-LD BreadcrumbList injector.
  *
@@ -15,7 +16,6 @@
  * - Renders a single <script type="application/ld+json"> — invisible to
  *   users, surfaced to Google + AI crawlers.
  */
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
 export type BreadcrumbItem = {
   name: string;
@@ -28,7 +28,7 @@ export function BreadcrumbSchema({ trail, locale }: { trail: BreadcrumbItem[]; l
     '@type': 'ListItem',
     position: i + 1,
     name: t.name,
-    item: t.path === '/' ? `${BASE_URL}${prefix || '/'}` : `${BASE_URL}${prefix}${t.path}`,
+    item: t.path === '/' ? `${APP_URL}${prefix || '/'}` : `${APP_URL}${prefix}${t.path}`,
   }));
 
   const json = {

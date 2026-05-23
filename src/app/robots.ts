@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
-
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+import { APP_URL } from '@/lib/app-url';
 
 export default function robots(): MetadataRoute.Robots {
   const denied = ['/admin/', '/api/', '/account/', '/checkout/', '/cart/', '/(auth)/'];
@@ -32,7 +31,7 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'Bingbot', allow: '/', disallow: ['/admin/', '/api/'] },
       ...aiBots.map((ua) => ({ userAgent: ua, allow: '/', disallow: ['/admin/', '/api/', '/account/', '/checkout/'] })),
     ],
-    sitemap: `${BASE_URL}/sitemap.xml`,
-    host: BASE_URL,
+    sitemap: `${APP_URL}/sitemap.xml`,
+    host: APP_URL,
   };
 }

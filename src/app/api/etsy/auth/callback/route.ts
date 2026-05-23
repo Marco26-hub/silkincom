@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
+import { APP_URL } from '@/lib/app-url';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -9,11 +10,11 @@ export async function GET(req: NextRequest) {
   const codeVerifier = req.cookies.get('etsy_code_verifier')?.value;
 
   if (!code || !state || state !== storedState || !codeVerifier) {
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/admin/etsy?error=auth_failed`);
+    return NextResponse.redirect(`${APP_URL}/admin/etsy?error=auth_failed`);
   }
 
   const apiKey = process.env.ETSY_API_KEY!;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com'}/api/etsy/auth/callback`;
+  const redirectUri = `${APP_URL}/api/etsy/auth/callback`;
 
   const tokenRes = await fetch('https://api.etsy.com/v3/public/oauth/token', {
     method: 'POST',
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
   const tokens = await tokenRes.json();
   if (!tokenRes.ok) {
     console.error('Etsy token exchange failed:', tokens);
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/admin/etsy?error=token_failed`);
+    return NextResponse.redirect(`${APP_URL}/admin/etsy?error=token_failed`);
   }
 
   const supabase = createServiceClient();
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
     metadata: { token_type: tokens.token_type },
   }, { onConflict: 'provider' });
 
-  const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/admin/etsy?connected=true`);
+  const response = NextResponse.redirect(`${APP_URL}/admin/etsy?connected=true`);
   response.cookies.delete('etsy_oauth_state');
   response.cookies.delete('etsy_code_verifier');
 

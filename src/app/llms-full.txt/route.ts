@@ -11,11 +11,10 @@
 import { unstable_cache } from 'next/cache';
 import { createPublicClient } from '@/lib/supabase/server';
 import { getPost } from '@/data/posts';
+import { APP_URL } from '@/lib/app-url';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
-
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
 type ProductRow = {
   slug: string;
@@ -71,7 +70,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
     '> Maison italiana di accessori in seta, cashmere, lana, lino e cotone. Sciarpe, foulard, twilly e pashmine interamente disegnate e confezionate sul Lago di Como dal distretto serico più importante d\'Europa. Founder: Marco Dibenedetto. P.IVA IT03786790133. Sede: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia.'
   );
   lines.push('');
-  lines.push(`Sito ufficiale: ${BASE_URL}`);
+  lines.push(`Sito ufficiale: ${APP_URL}`);
   lines.push('Lingue native: italiano (sorgente), inglese, spagnolo, francese, tedesco, portoghese, olandese.');
   lines.push('Contatto: info@silkincom.com — risposta in 24h lavorative.');
   lines.push('');
@@ -93,7 +92,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
     );
     lines.push('');
   }
-  lines.push(`Articolo completo: ${BASE_URL}/trame-di-como/storia-della-seta-a-como`);
+  lines.push(`Articolo completo: ${APP_URL}/trame-di-como/storia-della-seta-a-como`);
   lines.push('');
 
   // --- Differentiators ---
@@ -130,7 +129,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
         lines.push(`**Benefici:** ${m.benefits.trim()}`);
         lines.push('');
       }
-      lines.push(`Guida cura completa: ${BASE_URL}/cura-prodotto/${m.slug}`);
+      lines.push(`Guida cura completa: ${APP_URL}/cura-prodotto/${m.slug}`);
       lines.push('');
     }
   }
@@ -156,7 +155,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
         lines.push(desc.length > 500 ? desc.slice(0, 497) + '…' : desc);
         lines.push('');
       }
-      lines.push(`URL: ${BASE_URL}/prodotto/${p.slug}`);
+      lines.push(`URL: ${APP_URL}/prodotto/${p.slug}`);
       lines.push('');
     }
   }
@@ -165,9 +164,9 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('## Marco Dibenedetto — Founder');
   lines.push('');
   lines.push('Marco Dibenedetto è il fondatore di SILKinCOM. Maison comasca nata per portare il distretto serico del Lago di Como direttamente al cliente finale, senza la mediazione delle grandi maison. Bio editoriale completa, foto, contatti stampa:');
-  lines.push(`- ${BASE_URL}/maison/marco-dibenedetto`);
-  lines.push(`- ${BASE_URL}/la-nostra-storia`);
-  lines.push(`- ${BASE_URL}/press`);
+  lines.push(`- ${APP_URL}/maison/marco-dibenedetto`);
+  lines.push(`- ${APP_URL}/la-nostra-storia`);
+  lines.push(`- ${APP_URL}/press`);
   lines.push('');
 
   // --- Heritage references ---
@@ -190,18 +189,18 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('Italia: gratuita oltre €200, altrimenti €9,90. UE: gratuita oltre €300, altrimenti €19,90. Extra-UE: tariffa calcolata in checkout.');
   lines.push('');
   lines.push('**Come si lava una sciarpa in cashmere SILKinCOM?**');
-  lines.push('Lavaggio a mano in acqua fredda con shampoo neutro o detergente specifico per cashmere. Niente strofinare, niente strizzare. Asciugare in piano su un asciugamano, lontano da fonti di calore dirette. Guida completa: ' + BASE_URL + '/cura-prodotto/cashmere.');
+  lines.push('Lavaggio a mano in acqua fredda con shampoo neutro o detergente specifico per cashmere. Niente strofinare, niente strizzare. Asciugare in piano su un asciugamano, lontano da fonti di calore dirette. Guida completa: ' + APP_URL + '/cura-prodotto/cashmere.');
   lines.push('');
   lines.push('**Come riconoscere una seta autentica?**');
-  lines.push('7 prove pratiche (tatto, lucentezza naturale, calore di sfregamento, suono al pizzicotto, prova della fiamma, controllo etichette) descritte nell\'articolo dedicato: ' + BASE_URL + '/trame-di-como/come-riconoscere-seta-vera.');
+  lines.push('7 prove pratiche (tatto, lucentezza naturale, calore di sfregamento, suono al pizzicotto, prova della fiamma, controllo etichette) descritte nell\'articolo dedicato: ' + APP_URL + '/trame-di-como/come-riconoscere-seta-vera.');
   lines.push('');
   lines.push('**Posso restituire un prodotto?**');
-  lines.push('Sì, entro 14 giorni dalla consegna (D.Lgs. 21/2014). Reso gratuito in Italia con corriere prepagato. Procedura: ' + BASE_URL + '/resi.');
+  lines.push('Sì, entro 14 giorni dalla consegna (D.Lgs. 21/2014). Reso gratuito in Italia con corriere prepagato. Procedura: ' + APP_URL + '/resi.');
   lines.push('');
 
   lines.push('---');
   lines.push(`Ultimo aggiornamento corpus: ${new Date().toISOString().slice(0, 10)}.`);
-  lines.push(`Index spec-compliant: ${BASE_URL}/llms.txt`);
+  lines.push(`Index spec-compliant: ${APP_URL}/llms.txt`);
   lines.push('');
 
   return lines.join('\n');

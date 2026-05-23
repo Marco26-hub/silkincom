@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { localizedAlternates } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
+import { APP_URL } from '@/lib/app-url';
 
 const MATERIALS = ['seta', 'cashmere', 'lana', 'lino', 'cotone'] as const;
 type Material = (typeof MATERIALS)[number];
@@ -73,9 +74,8 @@ export default async function CuraMaterialePage({
   const t = await getTranslations('cura');
   const items = t.raw(`${m}Items`) as string[];
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
   const prefix = locale === 'it' ? '' : `/${locale}`;
-  const pageUrl = `${baseUrl}${prefix}/cura-prodotto/${m}`;
+  const pageUrl = `${APP_URL}${prefix}/cura-prodotto/${m}`;
   const howToSchema = {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
@@ -92,8 +92,8 @@ export default async function CuraMaterialePage({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}${prefix || '/'}` },
-      { '@type': 'ListItem', position: 2, name: 'Cura del prodotto', item: `${baseUrl}${prefix}/cura-prodotto` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: 'Cura del prodotto', item: `${APP_URL}${prefix}/cura-prodotto` },
       { '@type': 'ListItem', position: 3, name: info.title, item: pageUrl },
     ],
   };

@@ -16,6 +16,7 @@ import {
   sendAbandonedCartEmail,
   sendReviewRequestEmail,
 } from '@/lib/email';
+import { APP_URL } from '@/lib/app-url';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -123,7 +124,6 @@ export async function GET(req: NextRequest) {
             price: number;
             quantity: number;
           }>) || [];
-          const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
           await sendAbandonedCartEmail(
             job.recipient_email,
             items.map((it) => ({

@@ -12,12 +12,12 @@
  * brand, condition, gtin (when available), product_type, identifier_exists.
  */
 import { createServiceClient } from '@/lib/supabase/server';
+import { APP_URL } from '@/lib/app-url';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
 
 const BRAND = 'SILKinCOM';
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 
 function escapeXml(str: string): string {
   return str
@@ -51,7 +51,7 @@ export async function GET() {
       if (!a.is_primary && b.is_primary) return 1;
       return (a.display_order || 0) - (b.display_order || 0);
     });
-    const primaryImage = sortedImages[0]?.image_url || `${BASE_URL}/og-image.jpg`;
+    const primaryImage = sortedImages[0]?.image_url || `${APP_URL}/og-image.jpg`;
     const additionalImages = sortedImages.slice(1, 11).map((i: any) => i.image_url);
 
     const stock = p.inventory?.[0]?.available_quantity ?? 0;
@@ -64,7 +64,7 @@ export async function GET() {
       <g:id>${escapeXml(p.sku || p.id)}</g:id>
       <g:title>${cdata(`${p.name} — SILKinCOM`)}</g:title>
       <g:description>${cdata(desc)}</g:description>
-      <g:link>${BASE_URL}/prodotto/${escapeXml(p.slug)}</g:link>
+      <g:link>${APP_URL}/prodotto/${escapeXml(p.slug)}</g:link>
       <g:image_link>${escapeXml(primaryImage)}</g:image_link>
       ${additionalImages.map((u: string) => `<g:additional_image_link>${escapeXml(u)}</g:additional_image_link>`).join('\n      ')}
       <g:availability>${availability}</g:availability>
@@ -90,7 +90,7 @@ export async function GET() {
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
     <title>SILKinCOM Product Feed</title>
-    <link>${BASE_URL}</link>
+    <link>${APP_URL}</link>
     <description>Sciarpe, foulard e accessori in seta e cashmere — Made in Como</description>
     ${items}
   </channel>

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import { localizedAlternates } from '@/i18n/routing';
-
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+import { APP_URL } from '@/lib/app-url';
 
 export async function generateMetadata({
   params,
@@ -21,12 +20,12 @@ export async function generateMetadata({
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': `${BASE_URL}/maison/marco-dibenedetto#person`,
+  '@id': `${APP_URL}/maison/marco-dibenedetto#person`,
   name: 'Marco Dibenedetto',
   jobTitle: 'Fondatore',
-  worksFor: { '@id': `${BASE_URL}/#organization` },
-  affiliation: { '@id': `${BASE_URL}/#organization` },
-  url: `${BASE_URL}/maison/marco-dibenedetto`,
+  worksFor: { '@id': `${APP_URL}/#organization` },
+  affiliation: { '@id': `${APP_URL}/#organization` },
+  url: `${APP_URL}/maison/marco-dibenedetto`,
   nationality: { '@type': 'Country', name: 'Italia' },
   alumniOf: {
     '@type': 'EducationalOrganization',
@@ -55,9 +54,9 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Maison', item: `${BASE_URL}/maison/marco-dibenedetto` },
-    { '@type': 'ListItem', position: 3, name: 'Marco Dibenedetto', item: `${BASE_URL}/maison/marco-dibenedetto` },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Maison', item: `${APP_URL}/maison/marco-dibenedetto` },
+    { '@type': 'ListItem', position: 3, name: 'Marco Dibenedetto', item: `${APP_URL}/maison/marco-dibenedetto` },
   ],
 };
 

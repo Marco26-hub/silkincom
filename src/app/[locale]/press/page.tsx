@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import { localizedAlternates } from '@/i18n/routing';
-
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
+import { APP_URL } from '@/lib/app-url';
 
 export async function generateMetadata({
   params,
@@ -21,21 +20,21 @@ export async function generateMetadata({
 const pressSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  '@id': `${BASE_URL}/press#webpage`,
-  url: `${BASE_URL}/press`,
+  '@id': `${APP_URL}/press#webpage`,
+  url: `${APP_URL}/press`,
   name: 'Press Room SILKinCOM',
   description:
     'Materiali stampa e media kit di SILKinCOM. Contatti per giornalisti, immagini ad alta risoluzione, logo brand.',
-  about: { '@id': `${BASE_URL}/#organization` },
-  publisher: { '@id': `${BASE_URL}/#organization` },
+  about: { '@id': `${APP_URL}/#organization` },
+  publisher: { '@id': `${APP_URL}/#organization` },
 };
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Press', item: `${BASE_URL}/press` },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Press', item: `${APP_URL}/press` },
   ],
 };
 
