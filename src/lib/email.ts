@@ -125,22 +125,23 @@ export async function sendB2BNotification(data: B2BInquiry) {
   });
 }
 
-// Client confirmation: short, branded acknowledgment so the prospect knows the
-// request was received and what to expect next.
+// Client confirmation: branded acknowledgment so the prospect knows the
+// request was received and what to expect next. Uses the same luxury editorial
+// shell as the lifecycle emails so the touchpoint matches the Maison voice.
 export async function sendB2BClientConfirmation(clientEmail: string, clientName: string) {
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Maison · Programma B2B</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 24px 0;">Grazie, <em style="color:#D4AF37; font-style:italic;">${e(clientName)}</em>.</h1>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Abbiamo ricevuto la sua richiesta per il programma B2B di SILKinCOM.</p>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Il nostro team le risponderà entro 24 ore lavorative con un listino dedicato e i prossimi passi della collaborazione.</p>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Per richieste urgenti può scriverci a <a href="mailto:b2b@silkincom.com" style="color:#A87F1E; text-decoration:none;">b2b@silkincom.com</a>.</p>
+    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">— La Maison SILKinCOM, Como</p>
+  `;
   return sendEmail({
     from: FROM_EMAIL,
     to: clientEmail,
     subject: 'Abbiamo ricevuto la sua richiesta — SILKinCOM B2B',
-    html: `
-      <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:560px;padding:20px;">
-        <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;color:#1A1A1A;">Grazie, ${e(clientName)}.</h2>
-        <p style="font-size:14px;line-height:1.75;color:#4A4A4A;">Abbiamo ricevuto la sua richiesta per il programma B2B di SILKinCOM.</p>
-        <p style="font-size:14px;line-height:1.75;color:#4A4A4A;">Il nostro team le risponderà entro 24 ore lavorative con un listino dedicato e i prossimi passi.</p>
-        <p style="font-size:14px;line-height:1.75;color:#4A4A4A;">Per richieste urgenti può contattarci direttamente a <a href="mailto:b2b@silkincom.com" style="color:#A87F1E;">b2b@silkincom.com</a>.</p>
-        <p style="font-size:11px;color:#6B6B6B;margin-top:24px;font-style:italic;">— La Maison SILKinCOM, Como</p>
-      </div>
-    `,
+    html: luxuryShell(inner, 'Richiesta B2B ricevuta. Le risponderemo entro 24 ore con un listino dedicato.'),
   });
 }
 
@@ -149,42 +150,28 @@ export async function sendOrderConfirmationEmail(
   orderNumber: string,
   totalAmount: number
 ) {
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Ordine confermato</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 20px 0;">Grazie per il suo <em style="color:#D4AF37; font-style:italic;">ordine</em></h1>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Abbiamo ricevuto il suo ordine e lo stiamo preparando con cura, capo per capo, nel nostro atelier sul Lago di Como.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0; width:100%;">
+      <tr>
+        <td style="background:#F5F0E8; padding:22px 26px; border-left:3px solid #D4AF37;">
+          <p style="margin:0 0 6px 0; font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase;">Numero ordine</p>
+          <p style="margin:0 0 14px 0; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; font-weight:300; color:#1A1A1A; letter-spacing:0.04em;">${e(orderNumber)}</p>
+          <p style="margin:0; font-size:13px; color:#4A4A4A;"><strong style="color:#1A1A1A; font-weight:500;">Totale</strong> &nbsp;·&nbsp; €${e(totalAmount.toFixed(2))}</p>
+        </td>
+      </tr>
+    </table>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Le invieremo una notifica appena il pacco lascerà il nostro atelier.</p>
+    ${luxuryButton(`${APP_URL}/account/ordini`, 'Visualizza ordine')}
+    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
+  `;
   return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
-    subject: `Conferma ordine ${e(orderNumber)} - SILKinCOM`,
-    html: `
-      <!DOCTYPE html>
-      <html lang="it">
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          body { font-family: 'Inter', -apple-system, sans-serif; color: #171717; background: #F7F2EA; padding: 40px 20px; }
-          .container { max-width: 560px; margin: 0 auto; background: #FFFDF8; padding: 40px; }
-          h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 32px; }
-          .order-number { background: #F7F2EA; padding: 16px; margin: 24px 0; }
-          .button { display: inline-block; padding: 14px 28px; background: #171717; color: #FFFDF8; text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px; }
-          .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #D8D5CF; font-size: 12px; color: #A9A6A0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <h1>Grazie per il tuo ordine</h1>
-          <p>Abbiamo ricevuto il tuo ordine e lo stiamo preparando con cura.</p>
-          <div class="order-number">
-            <strong>Numero ordine:</strong> ${e(orderNumber)}<br>
-            <strong>Totale:</strong> €${e(totalAmount.toFixed(2))}
-          </div>
-          <p>Riceverai una notifica appena il tuo ordine sarà spedito.</p>
-          <a href="${APP_URL}/account/ordini" class="button">Visualizza ordine</a>
-          <div class="footer">
-            <p>SILKinCOM — 100% Made in Como</p>
-            <p>Se hai domande, contattaci a info@silkincom.com</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `,
+    subject: `Conferma ordine ${e(orderNumber)} — SILKinCOM`,
+    html: luxuryShell(inner, `Il suo ordine ${orderNumber} è confermato e in lavorazione a Como.`),
   });
 }
 
@@ -221,17 +208,28 @@ export async function sendShippingNotificationEmail(
   trackingNumber: string,
   carrier: string = 'DHL'
 ) {
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">In viaggio · ${e(carrier)}</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 20px 0;">Il suo ordine è <em style="color:#D4AF37; font-style:italic;">partito</em></h1>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Il suo pacco ha lasciato il nostro atelier ed è ora in viaggio verso di lei.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0; width:100%;">
+      <tr>
+        <td style="background:#F5F0E8; padding:22px 26px; border-left:3px solid #D4AF37;">
+          <p style="margin:0 0 6px 0; font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase;">Ordine</p>
+          <p style="margin:0 0 14px 0; font-family:'Cormorant Garamond', Georgia, serif; font-size:22px; font-weight:300; color:#1A1A1A; letter-spacing:0.04em;">${e(orderNumber)}</p>
+          <p style="margin:0 0 6px 0; font-size:12px; color:#4A4A4A;"><strong style="color:#1A1A1A; font-weight:500;">Corriere</strong> &nbsp;·&nbsp; ${e(carrier)}</p>
+          <p style="margin:0; font-size:12px; color:#4A4A4A;"><strong style="color:#1A1A1A; font-weight:500;">Tracking</strong> &nbsp;·&nbsp; ${e(trackingNumber)}</p>
+        </td>
+      </tr>
+    </table>
+    ${luxuryButton(`${APP_URL}/account/ordini`, 'Traccia il pacco')}
+    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Buon arrivo. — La Maison SILKinCOM</p>
+  `;
   return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
-    subject: `Il tuo ordine è in viaggio - ${orderNumber}`,
-    html: `
-      <h1>Il tuo ordine è in viaggio!</h1>
-      <p>Ordine: <strong>${e(orderNumber)}</strong></p>
-      <p>Corriere: <strong>${e(carrier)}</strong></p>
-      <p>Numero tracciamento: <strong>${e(trackingNumber)}</strong></p>
-      <a href="${APP_URL}/account/ordini">Traccia il tuo pacco</a>
-    `,
+    subject: `Il suo ordine è in viaggio — ${orderNumber}`,
+    html: luxuryShell(inner, `Ordine ${orderNumber} spedito da Como con ${carrier}.`),
   });
 }
 
@@ -260,16 +258,26 @@ export async function sendRefundConfirmationEmail(
   orderNumber: string,
   refundAmount: number
 ) {
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Rimborso elaborato</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 20px 0;">Il suo rimborso è <em style="color:#D4AF37; font-style:italic;">in arrivo</em></h1>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Abbiamo elaborato il rimborso per l'ordine <strong style="color:#1A1A1A;">${e(orderNumber)}</strong>.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0; width:100%;">
+      <tr>
+        <td style="background:#F5F0E8; padding:22px 26px; border-left:3px solid #D4AF37;">
+          <p style="margin:0 0 6px 0; font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase;">Importo rimborsato</p>
+          <p style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:28px; font-weight:300; color:#1A1A1A; letter-spacing:0.04em;">€${e(refundAmount.toFixed(2))}</p>
+        </td>
+      </tr>
+    </table>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">L'accredito sulla sua carta avverrà entro 5-10 giorni lavorativi, in funzione dell'istituto bancario.</p>
+    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
+  `;
   return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
-    subject: `Rimborso elaborato - ${orderNumber}`,
-    html: `
-      <h1>Rimborso elaborato</h1>
-      <p>Il rimborso per l'ordine <strong>${e(orderNumber)}</strong> è stato elaborato.</p>
-      <p>Importo rimborsato: <strong>€${e(refundAmount.toFixed(2))}</strong></p>
-      <p>L'accredito sulla tua carta avverrà entro 5-10 giorni lavorativi.</p>
-    `,
+    subject: `Rimborso elaborato — Ordine ${orderNumber}`,
+    html: luxuryShell(inner, `Rimborso di €${refundAmount.toFixed(2)} per l'ordine ${orderNumber} elaborato.`),
   });
 }
 
@@ -280,31 +288,68 @@ export async function sendReturnStatusEmail(
   refundAmount?: number
 ) {
   const subjects: Record<typeof status, string> = {
-    approved: `Reso approvato - Ordine ${orderNumber}`,
-    refunded: `Rimborso elaborato - Ordine ${orderNumber}`,
-    rejected: `Aggiornamento richiesta reso - Ordine ${orderNumber}`,
+    approved: `Reso approvato — Ordine ${orderNumber}`,
+    refunded: `Rimborso elaborato — Ordine ${orderNumber}`,
+    rejected: `Aggiornamento richiesta reso — Ordine ${orderNumber}`,
   };
-  const bodies: Record<typeof status, string> = {
-    approved: `
-      <p>La tua richiesta di reso per l'ordine <strong>${e(orderNumber)}</strong> è stata <strong>approvata</strong>.</p>
-      <p>Riceverai a breve le istruzioni per la restituzione del prodotto.</p>
-    `,
-    refunded: `
-      <p>Il rimborso per l'ordine <strong>${e(orderNumber)}</strong> è stato elaborato.</p>
-      ${refundAmount ? `<p>Importo rimborsato: <strong>€${e(refundAmount.toFixed(2))}</strong></p>` : ''}
-      <p>L'accredito sulla tua carta avverrà entro 5-10 giorni lavorativi.</p>
-    `,
-    rejected: `
-      <p>Purtroppo la tua richiesta di reso per l'ordine <strong>${e(orderNumber)}</strong> non può essere accettata.</p>
-      <p>Per ulteriori informazioni contatta il nostro servizio clienti.</p>
-    `,
+
+  // Per-status copy: eyebrow + headline + body paragraph(s).
+  const variants: Record<typeof status, { eyebrow: string; titlePlain: string; titleAccent: string; body: string; preheader: string }> = {
+    approved: {
+      eyebrow: 'Reso approvato',
+      titlePlain: 'La sua richiesta è stata',
+      titleAccent: 'approvata',
+      body: `
+        <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">La sua richiesta di reso per l'ordine <strong style="color:#1A1A1A;">${e(orderNumber)}</strong> è stata approvata.</p>
+        <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">A breve riceverà le istruzioni per la restituzione del prodotto.</p>
+      `,
+      preheader: `Reso ordine ${orderNumber} approvato.`,
+    },
+    refunded: {
+      eyebrow: 'Rimborso elaborato',
+      titlePlain: 'Il suo rimborso è',
+      titleAccent: 'in arrivo',
+      body: `
+        <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Il rimborso per l'ordine <strong style="color:#1A1A1A;">${e(orderNumber)}</strong> è stato elaborato.</p>
+        ${refundAmount ? `
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0; width:100%;">
+            <tr>
+              <td style="background:#F5F0E8; padding:20px 24px; border-left:3px solid #D4AF37;">
+                <p style="margin:0 0 6px 0; font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase;">Importo rimborsato</p>
+                <p style="margin:0; font-family:'Cormorant Garamond', Georgia, serif; font-size:26px; font-weight:300; color:#1A1A1A;">€${e(refundAmount.toFixed(2))}</p>
+              </td>
+            </tr>
+          </table>
+        ` : ''}
+        <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">L'accredito sulla sua carta avverrà entro 5-10 giorni lavorativi.</p>
+      `,
+      preheader: `Rimborso ordine ${orderNumber} elaborato.`,
+    },
+    rejected: {
+      eyebrow: 'Richiesta reso',
+      titlePlain: 'Un aggiornamento sulla',
+      titleAccent: 'sua richiesta',
+      body: `
+        <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">La sua richiesta di reso per l'ordine <strong style="color:#1A1A1A;">${e(orderNumber)}</strong> non può essere accettata.</p>
+        <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Per maggiori informazioni o per discutere il suo caso, ci scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>. Saremo felici di trovare insieme una soluzione.</p>
+      `,
+      preheader: `Aggiornamento sulla sua richiesta di reso per l'ordine ${orderNumber}.`,
+    },
   };
+
+  const v = variants[status];
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">${v.eyebrow}</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 20px 0;">${v.titlePlain} <em style="color:#D4AF37; font-style:italic;">${v.titleAccent}</em></h1>
+    ${v.body}
+    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">— La Maison SILKinCOM</p>
+  `;
 
   return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
     subject: subjects[status],
-    html: `<p>${bodies[status]}</p><p style="font-size:12px;color:#999;">— SILKinCOM</p>`,
+    html: luxuryShell(inner, v.preheader),
   });
 }
 
