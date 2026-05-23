@@ -24,11 +24,26 @@ export async function GET(req: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const { data: sub } = await supabase
+
+  // Look the subscriber up by token first. We also fall back to a second
+  // query against the historical token column (`confirm_token_used`) so that
+  // a customer who clicks the same link twice — or who clicks an old link
+  // after another browser already confirmed — lands on the friendly
+  // "already confirmed" page instead of "Link non valido".
+  let { data: sub } = await supabase
     .from('newsletter_subscribers')
     .select('id, email, is_confirmed, confirm_token_expires_at')
     .eq('confirm_token', token)
-    .single();
+    .maybeSingle();
+
+  if (!sub) {
+    const { data: usedSub } = await supabase
+      .from('newsletter_subscribers')
+      .select('id, email, is_confirmed, confirm_token_expires_at')
+      .eq('confirm_token_used', token)
+      .maybeSingle();
+    sub = usedSub;
+  }
 
   if (!sub) {
     return NextResponse.redirect(`${APP_URL}/newsletter/expired?reason=invalid-token`);
@@ -40,7 +55,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${APP_URL}/newsletter/expired?reason=expired`);
   }
 
-  // Mark confirmed + clear token
+  // Mark confirmed + move the token aside. We deliberately don't NULL the
+  // active `confirm_token` column without preserving the original value:
+  // moving it to `confirm_token_used` lets a duplicate click (very common —
+  // customers click twice, share the link, open it from a different device)
+  // still resolve to the "already confirmed" branch above instead of
+  // showing the alarming "Link non valido" page.
   await supabase
     .from('newsletter_subscribers')
     .update({
@@ -48,6 +68,7 @@ export async function GET(req: NextRequest) {
       confirmed_at: new Date().toISOString(),
       confirm_token: null,
       confirm_token_expires_at: null,
+      confirm_token_used: token,
     })
     .eq('id', sub.id);
 
