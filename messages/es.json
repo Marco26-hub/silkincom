@@ -84,7 +84,7 @@
       "titleMain": "La elegancia del lago",
       "titleAccent": "tejida en Como.",
       "subtitle": "Bufandas, foulards, twillies y pashminas en pura seda y cachemira. Seis siglos de tradición textil de Como, en manos que aún hoy rematan cada dobladillo a mano.",
-      "cta": "Descubrir la colección",
+      "cta": "Descubrir las colecciones",
       "ctaSecondary": "Nuestra historia",
       "scrollLabel": "Desliza",
       "slideAria": "Ir a la diapositiva {n}"
@@ -644,7 +644,7 @@
     "chapterII": "Capítulo II",
     "essenceTitlePlain": "Nuestra",
     "essenceTitleAccent": "esencia",
-    "essenceP1": "SILKinCOM nace para transformar la herencia textil de Como en accesorios contemporáneos de seda y cachemira. Cada creación une la maestría artesanal a un diseño moderno, con el objetivo de llevar al mundo un lujo auténtico, elegante e intemporal.",
+    "essenceP1": "SILKinCOM nace para transformar la herencia textil de Como en accesorios y prendas contemporáneos de seda, cachemira y algodón. Cada creación une la maestría artesanal a un diseño moderno, con el objetivo de llevar al mundo un lujo auténtico, elegante e intemporal.",
     "essenceP2": "100% Made in Como — desde las materias primas hasta la confección final, cada fase ocurre en el distrito sedero, preservando el saber hacer de una tradición que cuenta siglos de historia.",
     "stat1": "Modelos únicos",
     "stat2": "Made in Como",
@@ -1217,7 +1217,7 @@
       },
       "whiteLabel": {
         "title": "White label & private label",
-        "body": "Cápsulas exclusivas elaboradas bajo su propia marca. Plazos de 4-8 semanas según la complejidad. Mínimo 50 piezas para una personalización completa."
+        "body": "Cápsulas exclusivas elaboradas bajo su propia marca. Plazos de 4-8 semanas según la complejidad. Mínimo 20 piezas para una personalización completa."
       }
     },
     "cta": {
@@ -1225,6 +1225,36 @@
       "title": "Hablemos de su proyecto.",
       "description": "Envíenos una solicitud detallada: tipo de producto, cantidades, plazos y cualquier personalización. Le responderemos en un plazo de 24 h con un catálogo de precios dedicado.",
       "button": "Escriba al programa B2B"
+    },
+    "form": {
+      "nomeLabel": "Nombre y apellidos",
+      "nomePlaceholder": "Juan Pérez",
+      "aziendaLabel": "Empresa",
+      "aziendaPlaceholder": "Hotel Villa d'Este",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "nombre@empresa.com",
+      "telefonoLabel": "Teléfono",
+      "telefonoPlaceholder": "+39 ...",
+      "tipoLabel": "Tipo de solicitud",
+      "tipoOptionDefault": "— Seleccione —",
+      "tipoOptionHospitality": "Hospitality",
+      "tipoOptionGifting": "Corporate gifting",
+      "tipoOptionWhiteLabel": "White label",
+      "tipoOptionOther": "Otro",
+      "volumeLabel": "Volumen previsto",
+      "volumePlaceholder": "Ej. 50 piezas",
+      "messaggioLabel": "Detalles del proyecto",
+      "messaggioPlaceholder": "Cuéntenos plazos, personalización y referencias.",
+      "privacyConsent": "Consiento el tratamiento de mis datos según la <link>política de privacidad</link>.",
+      "submit": "Enviar solicitud",
+      "submitting": "Enviando…",
+      "successEyebrow": "Solicitud recibida",
+      "successTitle": "Gracias. Le responderemos en 24 horas.",
+      "successBody": "Nuestro equipo ha recibido su solicitud y le responderá con un listado dedicado.",
+      "requiredName": "Introduzca su nombre.",
+      "requiredMessage": "Añada algunos detalles sobre el proyecto.",
+      "requiredPrivacy": "Debe aceptar la política de privacidad para enviar.",
+      "invalidEmail": "Correo electrónico no válido."
     }
   },
   "recensioniPage": {
@@ -1335,6 +1365,14 @@
     },
     "checkoutSuccess": {
       "metaTitle": "Pedido confirmado — SILKinCOM"
+    }
+  },
+  "collectionPage": {
+    "groups": {
+      "stretchCotton": "Algodón elástico",
+      "stretchCottonEyebrow": "Ajuste modelador",
+      "pureCotton": "100% algodón",
+      "pureCottonEyebrow": "Fibra natural pura"
     }
   }
 }

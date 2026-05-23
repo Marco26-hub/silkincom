@@ -84,7 +84,7 @@
       "titleMain": "L'élégance du lac",
       "titleAccent": "tissée à Côme.",
       "subtitle": "Écharpes, foulards, twillies et pashminas en pure soie et cachemire. Six siècles de tradition textile à Côme, façonnés par des mains qui ourlent encore chaque pièce à la main.",
-      "cta": "Découvrir la collection",
+      "cta": "Découvrir les collections",
       "ctaSecondary": "Notre histoire",
       "scrollLabel": "Défiler",
       "slideAria": "Aller à la diapositive {n}"
@@ -644,7 +644,7 @@
     "chapterII": "Chapitre II",
     "essenceTitlePlain": "Notre",
     "essenceTitleAccent": "essence",
-    "essenceP1": "SILKinCOM existe pour transformer l'héritage textile de Côme en accessoires contemporains de soie et cachemire. Chaque création unit la maîtrise artisanale à un design moderne, avec l'objectif de porter dans le monde un luxe authentique, élégant et intemporel.",
+    "essenceP1": "SILKinCOM existe pour transformer l'héritage textile de Côme en accessoires et vêtements contemporains de soie, cachemire et coton. Chaque création unit la maîtrise artisanale à un design moderne, avec l'objectif de porter dans le monde un luxe authentique, élégant et intemporel.",
     "essenceP2": "100% Made in Como — des matières premières à la confection finale, chaque étape se déroule dans le district séricicole, préservant le savoir-faire d'une tradition vieille de plusieurs siècles.",
     "stat1": "Modèles uniques",
     "stat2": "Made in Como",
@@ -1217,7 +1217,7 @@
       },
       "whiteLabel": {
         "title": "Marque blanche & marque de distributeur",
-        "body": "Des capsules exclusives façonnées sous votre propre marque. Délais de 4 à 8 semaines selon la complexité. Minimum de 50 pièces pour une personnalisation complète."
+        "body": "Des capsules exclusives façonnées sous votre propre marque. Délais de 4 à 8 semaines selon la complexité. Minimum de 20 pièces pour une personnalisation complète."
       }
     },
     "cta": {
@@ -1225,6 +1225,36 @@
       "title": "Parlons de votre projet.",
       "description": "Adressez-nous une demande détaillée : type de produits, quantités, délais et personnalisation éventuelle. Nous reviendrons vers vous sous 24 h avec un tarif dédié.",
       "button": "Écrire au programme B2B"
+    },
+    "form": {
+      "nomeLabel": "Nom et prénom",
+      "nomePlaceholder": "Jean Dupont",
+      "aziendaLabel": "Entreprise",
+      "aziendaPlaceholder": "Hôtel Villa d'Este",
+      "emailLabel": "Email",
+      "emailPlaceholder": "nom@entreprise.com",
+      "telefonoLabel": "Téléphone",
+      "telefonoPlaceholder": "+39 ...",
+      "tipoLabel": "Type de demande",
+      "tipoOptionDefault": "— Sélectionner —",
+      "tipoOptionHospitality": "Hospitality",
+      "tipoOptionGifting": "Corporate gifting",
+      "tipoOptionWhiteLabel": "White label",
+      "tipoOptionOther": "Autre",
+      "volumeLabel": "Volume prévu",
+      "volumePlaceholder": "Ex. 50 pièces",
+      "messaggioLabel": "Détails du projet",
+      "messaggioPlaceholder": "Indiquez les délais, la personnalisation et les références.",
+      "privacyConsent": "Je consens au traitement de mes données selon la <link>politique de confidentialité</link>.",
+      "submit": "Envoyer la demande",
+      "submitting": "Envoi en cours…",
+      "successEyebrow": "Demande reçue",
+      "successTitle": "Merci. Nous vous répondrons sous 24 heures.",
+      "successBody": "Notre équipe a reçu votre demande et vous reviendra avec un tarif dédié.",
+      "requiredName": "Veuillez saisir votre nom.",
+      "requiredMessage": "Ajoutez quelques détails sur le projet.",
+      "requiredPrivacy": "Vous devez accepter la politique de confidentialité.",
+      "invalidEmail": "Email non valide."
     }
   },
   "recensioniPage": {
@@ -1335,6 +1365,14 @@
     },
     "checkoutSuccess": {
       "metaTitle": "Commande confirmée — SILKinCOM"
+    }
+  },
+  "collectionPage": {
+    "groups": {
+      "stretchCotton": "Coton extensible",
+      "stretchCottonEyebrow": "Coupe ajustée",
+      "pureCotton": "100% coton",
+      "pureCottonEyebrow": "Fibre naturelle pure"
     }
   }
 }

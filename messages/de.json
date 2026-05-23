@@ -84,7 +84,7 @@
       "titleMain": "Eleganz vom See,",
       "titleAccent": "gewebt in Como.",
       "subtitle": "Schals, Foulards, Twillies und Pashminas aus reiner Seide und Kaschmir. Sechs Jahrhunderte Como-Textiltradition, in Händen, die jeden Saum noch heute von Hand veredeln.",
-      "cta": "Kollektion entdecken",
+      "cta": "Kollektionen entdecken",
       "ctaSecondary": "Unsere Geschichte",
       "scrollLabel": "Scrollen",
       "slideAria": "Zu Folie {n} gehen"
@@ -644,7 +644,7 @@
     "chapterII": "Kapitel II",
     "essenceTitlePlain": "Unsere",
     "essenceTitleAccent": "Essenz",
-    "essenceP1": "SILKinCOM existiert, um das Como-Textilerbe in zeitgenössische Seiden- und Kaschmir-Accessoires zu verwandeln. Jede Kreation verbindet handwerkliche Meisterschaft mit modernem Design — mit dem Ziel, der Welt einen authentischen, eleganten und zeitlosen Luxus zu bringen.",
+    "essenceP1": "SILKinCOM existiert, um das Como-Textilerbe in zeitgenössische Accessoires und Kleidungsstücke aus Seide, Kaschmir und Baumwolle zu verwandeln. Jede Kreation verbindet handwerkliche Meisterschaft mit modernem Design — mit dem Ziel, der Welt einen authentischen, eleganten und zeitlosen Luxus zu bringen.",
     "essenceP2": "100% Made in Como — von den Rohstoffen bis zur Endverarbeitung findet jede Phase im Seidenviertel statt und bewahrt das Know-how einer jahrhundertealten Tradition.",
     "stat1": "Einzigartige Modelle",
     "stat2": "Made in Como",
@@ -1217,7 +1217,7 @@
       },
       "whiteLabel": {
         "title": "White Label & Private Label",
-        "body": "Exklusive Capsules, gefertigt unter Ihrer eigenen Marke. Lieferzeiten von 4-8 Wochen je nach Komplexität. Mindestens 50 Stück für eine vollständige Individualisierung."
+        "body": "Exklusive Capsules, gefertigt unter Ihrer eigenen Marke. Lieferzeiten von 4-8 Wochen je nach Komplexität. Mindestens 20 Stück für eine vollständige Individualisierung."
       }
     },
     "cta": {
@@ -1225,6 +1225,36 @@
       "title": "Sprechen wir über Ihr Projekt.",
       "description": "Senden Sie uns eine detaillierte Anfrage: Produktart, Mengen, Zeitrahmen und etwaige Individualisierungen. Wir melden uns innerhalb von 24 Stunden mit einer eigenen Preisliste bei Ihnen.",
       "button": "An das B2B-Programm schreiben"
+    },
+    "form": {
+      "nomeLabel": "Vor- und Nachname",
+      "nomePlaceholder": "Max Mustermann",
+      "aziendaLabel": "Unternehmen",
+      "aziendaPlaceholder": "Hotel Villa d'Este",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "name@firma.com",
+      "telefonoLabel": "Telefon",
+      "telefonoPlaceholder": "+39 ...",
+      "tipoLabel": "Art der Anfrage",
+      "tipoOptionDefault": "— Auswählen —",
+      "tipoOptionHospitality": "Hospitality",
+      "tipoOptionGifting": "Corporate Gifting",
+      "tipoOptionWhiteLabel": "White Label",
+      "tipoOptionOther": "Sonstiges",
+      "volumeLabel": "Erwartetes Volumen",
+      "volumePlaceholder": "z. B. 50 Stück",
+      "messaggioLabel": "Projektdetails",
+      "messaggioPlaceholder": "Zeitrahmen, Individualisierung und Referenzen.",
+      "privacyConsent": "Ich willige in die Verarbeitung meiner Daten gemäß <link>Datenschutzerklärung</link> ein.",
+      "submit": "Anfrage senden",
+      "submitting": "Senden…",
+      "successEyebrow": "Anfrage erhalten",
+      "successTitle": "Danke. Wir melden uns innerhalb von 24 Stunden.",
+      "successBody": "Unser Team hat Ihre Anfrage erhalten und meldet sich mit einer individuellen Preisliste.",
+      "requiredName": "Bitte geben Sie Ihren Namen ein.",
+      "requiredMessage": "Bitte fügen Sie einige Details zum Projekt hinzu.",
+      "requiredPrivacy": "Sie müssen die Datenschutzerklärung akzeptieren.",
+      "invalidEmail": "Ungültige E-Mail."
     }
   },
   "recensioniPage": {
@@ -1335,6 +1365,14 @@
     },
     "checkoutSuccess": {
       "metaTitle": "Bestellung bestätigt — SILKinCOM"
+    }
+  },
+  "collectionPage": {
+    "groups": {
+      "stretchCotton": "Stretch-Baumwolle",
+      "stretchCottonEyebrow": "Figurbetonte Passform",
+      "pureCotton": "100% Baumwolle",
+      "pureCottonEyebrow": "Reine Naturfaser"
     }
   }
 }

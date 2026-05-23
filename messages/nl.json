@@ -84,7 +84,7 @@
       "titleMain": "De elegantie van het meer,",
       "titleAccent": "geweven in Como.",
       "subtitle": "Sjaals, foulards, twillies en pashminas in pure zijde en kasjmier. Zes eeuwen Como-textieltraditie, in handen die nog steeds elke zoom met de hand afwerken.",
-      "cta": "Ontdek de collectie",
+      "cta": "Ontdek de collecties",
       "ctaSecondary": "Ons verhaal",
       "scrollLabel": "Scrollen",
       "slideAria": "Ga naar slide {n}"
@@ -644,7 +644,7 @@
     "chapterII": "Hoofdstuk II",
     "essenceTitlePlain": "Onze",
     "essenceTitleAccent": "essentie",
-    "essenceP1": "SILKinCOM bestaat om het textielerfgoed van Como te transformeren tot hedendaagse zijden en kasjmieren accessoires. Elke creatie verenigt ambachtelijk meesterschap met modern design, met als doel een authentieke, elegante en tijdloze luxe naar de wereld te brengen.",
+    "essenceP1": "SILKinCOM bestaat om het textielerfgoed van Como te transformeren tot hedendaagse accessoires en kledingstukken in zijde, kasjmier en katoen. Elke creatie verenigt ambachtelijk meesterschap met modern design, met als doel een authentieke, elegante en tijdloze luxe naar de wereld te brengen.",
     "essenceP2": "100% Made in Como — van grondstof tot eindafwerking vindt elke fase plaats binnen het zijdedistrict, met behoud van de kennis van een traditie die eeuwen omvat.",
     "stat1": "Unieke ontwerpen",
     "stat2": "Made in Como",
@@ -1217,7 +1217,7 @@
       },
       "whiteLabel": {
         "title": "White label & private label",
-        "body": "Exclusieve capsules vervaardigd onder uw eigen merk. Levertijden van 4-8 weken afhankelijk van de complexiteit. Minimaal 50 stuks voor volledige personalisatie."
+        "body": "Exclusieve capsules vervaardigd onder uw eigen merk. Levertijden van 4-8 weken afhankelijk van de complexiteit. Minimaal 20 stuks voor volledige personalisatie."
       }
     },
     "cta": {
@@ -1225,6 +1225,36 @@
       "title": "Laten we over uw project praten.",
       "description": "Stuur ons een gedetailleerde aanvraag: type product, aantallen, planning en eventuele personalisatie. Wij nemen binnen 24 uur contact met u op met een speciale prijslijst.",
       "button": "Schrijf naar het B2B-programma"
+    },
+    "form": {
+      "nomeLabel": "Voor- en achternaam",
+      "nomePlaceholder": "Jan Jansen",
+      "aziendaLabel": "Bedrijf",
+      "aziendaPlaceholder": "Villa d'Este Hotel",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "naam@bedrijf.com",
+      "telefonoLabel": "Telefoon",
+      "telefonoPlaceholder": "+39 ...",
+      "tipoLabel": "Type aanvraag",
+      "tipoOptionDefault": "— Kies —",
+      "tipoOptionHospitality": "Hospitality",
+      "tipoOptionGifting": "Corporate gifting",
+      "tipoOptionWhiteLabel": "White label",
+      "tipoOptionOther": "Anders",
+      "volumeLabel": "Verwacht volume",
+      "volumePlaceholder": "Bijv. 50 stuks",
+      "messaggioLabel": "Projectdetails",
+      "messaggioPlaceholder": "Vertel ons over planning, personalisatie en referenties.",
+      "privacyConsent": "Ik geef toestemming voor de verwerking van mijn gegevens conform de <link>privacyverklaring</link>.",
+      "submit": "Aanvraag verzenden",
+      "submitting": "Verzenden…",
+      "successEyebrow": "Aanvraag ontvangen",
+      "successTitle": "Bedankt. We reageren binnen 24 uur.",
+      "successBody": "Ons team heeft uw aanvraag ontvangen en stuurt u een toegewezen prijslijst.",
+      "requiredName": "Vul uw naam in.",
+      "requiredMessage": "Voeg enkele details over het project toe.",
+      "requiredPrivacy": "U moet akkoord gaan met de privacyverklaring om te verzenden.",
+      "invalidEmail": "Ongeldig e-mailadres."
     }
   },
   "recensioniPage": {
@@ -1335,6 +1365,14 @@
     },
     "checkoutSuccess": {
       "metaTitle": "Bestelling bevestigd — SILKinCOM"
+    }
+  },
+  "collectionPage": {
+    "groups": {
+      "stretchCotton": "Stretch katoen",
+      "stretchCottonEyebrow": "Modellerende pasvorm",
+      "pureCotton": "100% katoen",
+      "pureCottonEyebrow": "Pure natuurlijke vezel"
     }
   }
 }

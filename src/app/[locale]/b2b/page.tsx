@@ -1,7 +1,7 @@
-import { Link } from '@/i18n/navigation';
-import { ArrowRight, Hotel, Gift, Briefcase } from 'lucide-react';
+import { Hotel, Gift, Briefcase } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
+import { B2BForm } from '@/components/b2b/B2BForm';
 
 export async function generateMetadata() {
   const t = await getTranslations('b2bPage');
@@ -77,9 +77,9 @@ export default async function B2BPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-soft-black text-warm-white text-center">
-        <div className="max-w-2xl mx-auto px-6">
+      {/* CTA + Form */}
+      <section className="py-24 bg-soft-black text-warm-white">
+        <div className="max-w-3xl mx-auto px-6 text-center mb-12">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
             {t('cta.eyebrow')}
           </span>
@@ -87,16 +87,12 @@ export default async function B2BPage() {
           <h2 className="font-display font-light text-3xl md:text-4xl mb-6">
             {t('cta.title')}
           </h2>
-          <p className="text-sm font-light text-warm-white/70 mb-10 leading-relaxed">
+          <p className="text-sm font-light text-warm-white/70 leading-relaxed">
             {t('cta.description')}
           </p>
-          <Link
-            href="mailto:b2b@silkincom.com?subject=Richiesta%20Listino%20B2B"
-            className="inline-flex items-center gap-3 px-12 py-5 bg-gold-primary text-soft-black text-[10px] uppercase tracking-[0.4em] hover:bg-warm-white transition-all duration-500 group"
-          >
-            {t('cta.button')}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+        </div>
+        <div className="px-6">
+          <B2BForm />
         </div>
       </section>
     </>

@@ -84,7 +84,7 @@
       "titleMain": "A elegância do lago",
       "titleAccent": "tecida em Como.",
       "subtitle": "Lenços, foulards, twillies e pashminas em pura seda e caxemira. Seis séculos de tradição têxtil de Como, em mãos que ainda hoje rematam cada bainha à mão.",
-      "cta": "Descobrir a coleção",
+      "cta": "Descobrir as coleções",
       "ctaSecondary": "A nossa história",
       "scrollLabel": "Deslizar",
       "slideAria": "Ir para o slide {n}"
@@ -644,7 +644,7 @@
     "chapterII": "Capítulo II",
     "essenceTitlePlain": "A nossa",
     "essenceTitleAccent": "essência",
-    "essenceP1": "A SILKinCOM nasce para transformar a herança têxtil de Como em acessórios contemporâneos de seda e caxemira. Cada criação une a mestria artesanal a um design moderno, com o objetivo de levar ao mundo um luxo autêntico, elegante e intemporal.",
+    "essenceP1": "A SILKinCOM nasce para transformar a herança têxtil de Como em acessórios e peças de vestuário contemporâneos de seda, caxemira e algodão. Cada criação une a mestria artesanal a um design moderno, com o objetivo de levar ao mundo um luxo autêntico, elegante e intemporal.",
     "essenceP2": "100% Made in Como — desde as matérias-primas à confeção final, cada fase acontece no distrito sericícola, preservando o saber-fazer de uma tradição com séculos de história.",
     "stat1": "Modelos únicos",
     "stat2": "Made in Como",
@@ -1217,7 +1217,7 @@
       },
       "whiteLabel": {
         "title": "White label & private label",
-        "body": "Capsule colections exclusivas confecionadas com a sua própria marca. Prazos de 4-8 semanas consoante a complexidade. Mínimo de 50 peças para personalização completa."
+        "body": "Capsule colections exclusivas confecionadas com a sua própria marca. Prazos de 4-8 semanas consoante a complexidade. Mínimo de 20 peças para personalização completa."
       }
     },
     "cta": {
@@ -1225,6 +1225,36 @@
       "title": "Falemos do seu projeto.",
       "description": "Envie-nos um pedido detalhado: tipo de produto, quantidades, prazos e eventual personalização. Responder-lhe-emos no prazo de 24h com um catálogo de preços dedicado.",
       "button": "Escreva ao programa B2B"
+    },
+    "form": {
+      "nomeLabel": "Nome e apelido",
+      "nomePlaceholder": "João Silva",
+      "aziendaLabel": "Empresa",
+      "aziendaPlaceholder": "Hotel Villa d'Este",
+      "emailLabel": "Email",
+      "emailPlaceholder": "nome@empresa.com",
+      "telefonoLabel": "Telefone",
+      "telefonoPlaceholder": "+39 ...",
+      "tipoLabel": "Tipo de pedido",
+      "tipoOptionDefault": "— Selecionar —",
+      "tipoOptionHospitality": "Hospitality",
+      "tipoOptionGifting": "Corporate gifting",
+      "tipoOptionWhiteLabel": "White label",
+      "tipoOptionOther": "Outro",
+      "volumeLabel": "Volume previsto",
+      "volumePlaceholder": "Ex. 50 peças",
+      "messaggioLabel": "Detalhes do projeto",
+      "messaggioPlaceholder": "Indique prazos, personalização e referências.",
+      "privacyConsent": "Concordo com o tratamento dos meus dados segundo a <link>política de privacidade</link>.",
+      "submit": "Enviar pedido",
+      "submitting": "A enviar…",
+      "successEyebrow": "Pedido recebido",
+      "successTitle": "Obrigado. Responderemos em 24 horas.",
+      "successBody": "A nossa equipa recebeu o seu pedido e responderá com um tabelário dedicado.",
+      "requiredName": "Por favor introduza o seu nome.",
+      "requiredMessage": "Adicione alguns detalhes sobre o projeto.",
+      "requiredPrivacy": "Tem de aceitar a política de privacidade para enviar.",
+      "invalidEmail": "Email inválido."
     }
   },
   "recensioniPage": {
@@ -1335,6 +1365,14 @@
     },
     "checkoutSuccess": {
       "metaTitle": "Encomenda confirmada — SILKinCOM"
+    }
+  },
+  "collectionPage": {
+    "groups": {
+      "stretchCotton": "Algodão elástico",
+      "stretchCottonEyebrow": "Caimento modelador",
+      "pureCotton": "100% algodão",
+      "pureCottonEyebrow": "Fibra natural pura"
     }
   }
 }

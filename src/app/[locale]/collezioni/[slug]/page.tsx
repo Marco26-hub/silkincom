@@ -4,6 +4,7 @@ import { TAXONOMY_SLUGS, getCategories, getMaterials, getProducts } from '@/data
 import { getFeaturedCollections, getFeaturedCollection } from '@/data/collections-db';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
+import { LarioGrouped } from '@/components/collezioni/LarioGrouped';
 
 export function generateStaticParams() {
   return TAXONOMY_SLUGS.map((slug) => ({ slug }));
@@ -82,14 +83,18 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
       </section>
 
       <section className="py-16 bg-warm-white">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-          <ProductFilters
-            products={await getProducts(locale)}
-            categories={getCategories(locale)}
-            materials={getMaterials(locale)}
-            collections={await getFeaturedCollections(locale)}
-          />
-        </div>
+        {slug === 'lario' ? (
+          <LarioGrouped products={inList} />
+        ) : (
+          <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+            <ProductFilters
+              products={await getProducts(locale)}
+              categories={getCategories(locale)}
+              materials={getMaterials(locale)}
+              collections={await getFeaturedCollections(locale)}
+            />
+          </div>
+        )}
       </section>
     </>
   );

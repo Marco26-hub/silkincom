@@ -27,6 +27,44 @@ function getResend() {
   return _resend;
 }
 
+// Centralised send wrapper. The Resend SDK returns `{ data, error }` rather than
+// throwing on rejection — without this wrapper, every call site silently swallows
+// validation errors (sandbox restriction, invalid API key, suppressed recipient,
+// unverified domain). Here we promote `result.error` to a thrown Error so upstream
+// `.catch()` actually fires, and we best-effort log the failure into the
+// `error_logs` table so the admin can see deliverability problems instead of
+// guessing.
+type ResendSendArgs = Parameters<Resend['emails']['send']>[0];
+
+async function sendEmail(opts: ResendSendArgs) {
+  const result = await getResend().emails.send(opts);
+  if (result.error) {
+    const recipient = Array.isArray(opts.to) ? opts.to.join(',') : opts.to;
+    const context = {
+      recipient,
+      subject: opts.subject,
+      from: opts.from,
+      resend_error: result.error,
+    };
+    // Fire-and-forget DB log. Dynamic import keeps the Supabase server client
+    // out of edge bundles when email.ts is statically analysed.
+    try {
+      const { createServiceClient } = await import('@/lib/supabase/server');
+      const sb = createServiceClient();
+      await sb.from('error_logs').insert({
+        level: 'error',
+        message: `Resend send failed: ${result.error.name ?? 'unknown'}`,
+        context,
+      });
+    } catch {
+      // Logging failure must never block the throw — the upstream caller still
+      // gets the original error.
+    }
+    throw new Error(`Resend send failed: ${JSON.stringify(result.error)}`);
+  }
+  return result;
+}
+
 // FROM addresses. When custom domain `silkincom.com` is verified on Resend
 // (https://resend.com/domains), set RESEND_DOMAIN_VERIFIED=true in env to use
 // branded addresses. Otherwise falls back to Resend's sandbox `onboarding@resend.dev`
@@ -41,12 +79,77 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://silkincom.com';
 const OWNER_EMAIL =
   process.env.ORDER_NOTIFICATION_EMAIL || process.env.CONTACT_EMAIL_TO || 'info@silkincom.com';
 
+// Inbox that receives B2B enquiries. `b2b@silkincom.com` is the public-facing
+// alias but the actual Gmail mailbox is `silkincom.business@gmail.com`. Override
+// with B2B_NOTIFICATION_EMAIL once the silkincom.com MX is configured.
+const B2B_EMAIL =
+  process.env.B2B_NOTIFICATION_EMAIL || 'silkincom.business@gmail.com';
+
+export type B2BInquiry = {
+  nome: string;
+  azienda?: string | null;
+  email: string;
+  telefono?: string | null;
+  tipo?: string | null; // hospitality / gifting / white-label / altro
+  volume?: string | null;
+  messaggio: string;
+};
+
+// Owner notification: full B2B request payload, replyTo set to the client so the
+// reply lands directly in their inbox.
+export async function sendB2BNotification(data: B2BInquiry) {
+  const tipoLabel = data.tipo ? `<p><strong>Tipologia:</strong> ${e(data.tipo)}</p>` : '';
+  const volumeLabel = data.volume ? `<p><strong>Volume previsto:</strong> ${e(data.volume)}</p>` : '';
+  const aziendaLabel = data.azienda ? `<p><strong>Azienda:</strong> ${e(data.azienda)}</p>` : '';
+  const telefonoLabel = data.telefono ? `<p><strong>Telefono:</strong> ${e(data.telefono)}</p>` : '';
+
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: B2B_EMAIL,
+    replyTo: data.email,
+    subject: `Nuova richiesta B2B — ${data.nome}${data.azienda ? ` (${data.azienda})` : ''}`,
+    html: `
+      <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:560px;">
+        <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;color:#1A1A1A;">Nuova richiesta B2B</h2>
+        <p><strong>Nome:</strong> ${e(data.nome)}</p>
+        ${aziendaLabel}
+        <p><strong>Email:</strong> <a href="mailto:${e(data.email)}">${e(data.email)}</a></p>
+        ${telefonoLabel}
+        ${tipoLabel}
+        ${volumeLabel}
+        <p><strong>Messaggio:</strong></p>
+        <p style="white-space:pre-wrap;background:#FAF7F2;padding:12px;border-left:3px solid #D4AF37;">${e(data.messaggio)}</p>
+        <p style="font-size:11px;color:#6B6B6B;margin-top:24px;">Rispondi direttamente a questa email per replicare al cliente.</p>
+      </div>
+    `,
+  });
+}
+
+// Client confirmation: short, branded acknowledgment so the prospect knows the
+// request was received and what to expect next.
+export async function sendB2BClientConfirmation(clientEmail: string, clientName: string) {
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: clientEmail,
+    subject: 'Abbiamo ricevuto la sua richiesta — SILKinCOM B2B',
+    html: `
+      <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:560px;padding:20px;">
+        <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;color:#1A1A1A;">Grazie, ${e(clientName)}.</h2>
+        <p style="font-size:14px;line-height:1.75;color:#4A4A4A;">Abbiamo ricevuto la sua richiesta per il programma B2B di SILKinCOM.</p>
+        <p style="font-size:14px;line-height:1.75;color:#4A4A4A;">Il nostro team le risponderà entro 24 ore lavorative con un listino dedicato e i prossimi passi.</p>
+        <p style="font-size:14px;line-height:1.75;color:#4A4A4A;">Per richieste urgenti può contattarci direttamente a <a href="mailto:b2b@silkincom.com" style="color:#A87F1E;">b2b@silkincom.com</a>.</p>
+        <p style="font-size:11px;color:#6B6B6B;margin-top:24px;font-style:italic;">— La Maison SILKinCOM, Como</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendOrderConfirmationEmail(
   customerEmail: string,
   orderNumber: string,
   totalAmount: number
 ) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
     subject: `Conferma ordine ${e(orderNumber)} - SILKinCOM`,
@@ -92,7 +195,7 @@ export async function sendOwnerOrderNotificationEmail(
   totalAmount: number,
   customerEmail: string
 ) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM_EMAIL,
     to: OWNER_EMAIL,
     replyTo: customerEmail,
@@ -118,7 +221,7 @@ export async function sendShippingNotificationEmail(
   trackingNumber: string,
   carrier: string = 'DHL'
 ) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
     subject: `Il tuo ordine è in viaggio - ${orderNumber}`,
@@ -144,7 +247,7 @@ export async function sendNewsletterConfirmationEmail(
     ${luxuryButton(link, 'Conferma iscrizione')}
     <p style="font-size:11px; color:#A9A6A0; line-height:1.7; margin-top:24px;">Il link è valido per 7 giorni. Se non ha richiesto lei l'iscrizione, può ignorare questa email.</p>
   `;
-  return getResend().emails.send({
+  return sendEmail({
     from: NEWSLETTER_FROM,
     to: email,
     subject: 'Conferma la sua iscrizione — SILKinCOM',
@@ -157,7 +260,7 @@ export async function sendRefundConfirmationEmail(
   orderNumber: string,
   refundAmount: number
 ) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
     subject: `Rimborso elaborato - ${orderNumber}`,
@@ -197,7 +300,7 @@ export async function sendReturnStatusEmail(
     `,
   };
 
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM_EMAIL,
     to: customerEmail,
     subject: subjects[status],
@@ -267,7 +370,7 @@ export async function sendWelcomeEmail(email: string) {
     ${luxuryButton(`${APP_URL}/collezioni`, 'Esplora le collezioni')}
     <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">— La Maison SILKinCOM</p>
   `;
-  return getResend().emails.send({
+  return sendEmail({
     from: NEWSLETTER_FROM,
     to: email,
     subject: 'Benvenuta in Maison SILKinCOM',
@@ -285,7 +388,7 @@ export async function sendHeritageEmail(email: string) {
     ${luxuryButton(`${APP_URL}/la-nostra-storia`, 'Scopri la nostra storia')}
     <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Tra qualche giorno, un piccolo gesto di benvenuto.</p>
   `;
-  return getResend().emails.send({
+  return sendEmail({
     from: NEWSLETTER_FROM,
     to: email,
     subject: 'Sei secoli di seta — il distretto di Como',
@@ -309,7 +412,7 @@ export async function sendFirstPurchaseDiscountEmail(email: string, code: string
     <p style="font-size:13px; line-height:1.7; color:#6B6B6B; margin:16px 0;">Valido 14 giorni dalla ricezione di questa email, su tutti i prodotti della collezione. Da inserire al checkout.</p>
     ${luxuryButton(`${APP_URL}/collezioni`, 'Inizia ora')}
   `;
-  return getResend().emails.send({
+  return sendEmail({
     from: NEWSLETTER_FROM,
     to: email,
     subject: 'Il suo benvenuto: −10% sul primo ordine',
@@ -350,7 +453,7 @@ export async function sendReviewRequestEmail(
     <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">${itemsHtml}</table>
     <p style="font-size:12px; line-height:1.7; color:#A9A6A0; margin-top:24px; font-style:italic;">Grazie del tempo. — La Maison SILKinCOM</p>
   `;
-  return getResend().emails.send({
+  return sendEmail({
     from: NEWSLETTER_FROM,
     to: email,
     subject: 'La sua opinione su SILKinCOM',
@@ -388,7 +491,7 @@ export async function sendAbandonedCartEmail(
     ${luxuryButton(resumeUrl || `${APP_URL}/cart`, 'Riprendi acquisto')}
     <p style="font-size:12px; line-height:1.7; color:#A9A6A0; margin-top:24px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
   `;
-  return getResend().emails.send({
+  return sendEmail({
     from: NEWSLETTER_FROM,
     to: email,
     subject: 'Il suo carrello la attende — SILKinCOM',
@@ -421,7 +524,7 @@ export async function sendContactNotification(data: {
     <p style="font-size:11px;color:#6B6B6B;margin-top:24px;">Rispondi direttamente a questa email per replicare al cliente.</p>
   `;
   try {
-    await getResend().emails.send({
+    await sendEmail({
       from: FROM_EMAIL,
       to,
       replyTo: data.email,

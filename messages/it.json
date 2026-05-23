@@ -84,7 +84,7 @@
       "titleMain": "L'eleganza del lago",
       "titleAccent": "tessuta a Como.",
       "subtitle": "Sciarpe, foulard, twilly e pashmine in pura seta e cashmere. Sei secoli di tradizione tessile comasca, in mani che ancora oggi rifiniscono ogni orlo a mano.",
-      "cta": "Scopri la collezione",
+      "cta": "Scopri le collezioni",
       "ctaSecondary": "La nostra storia",
       "scrollLabel": "Scorri",
       "slideAria": "Vai a slide {n}"
@@ -644,7 +644,7 @@
     "chapterII": "Capitolo II",
     "essenceTitlePlain": "La nostra",
     "essenceTitleAccent": "essenza",
-    "essenceP1": "SILKinCOM nasce per trasformare l'eredità tessile comasca in accessori contemporanei di seta e cashmere. Ogni creazione unisce la maestria artigiana a un design moderno, con l'obiettivo di portare nel mondo un lusso autentico, elegante e senza tempo.",
+    "essenceP1": "SILKinCOM nasce per trasformare l'eredità tessile comasca in accessori e capi contemporanei di seta, cashmere e cotone. Ogni creazione unisce la maestria artigiana a un design moderno, con l'obiettivo di portare nel mondo un lusso autentico, elegante e senza tempo.",
     "essenceP2": "100% Made in Como — dalle materie prime alla confezione finale, ogni fase avviene nel distretto serico, preservando il know-how di una tradizione che conta secoli di storia.",
     "stat1": "Modelli unici",
     "stat2": "Made in Como",
@@ -1217,7 +1217,7 @@
       },
       "whiteLabel": {
         "title": "White label & private label",
-        "body": "Capsule esclusive realizzate sul vostro brand. Tempi 4-8 settimane in base alla complessità. Minimo 50 pezzi per personalizzazione completa."
+        "body": "Capsule esclusive realizzate sul vostro brand. Tempi 4-8 settimane in base alla complessità. Minimo 20 pezzi per personalizzazione completa."
       }
     },
     "cta": {
@@ -1225,6 +1225,36 @@
       "title": "Parliamo del vostro progetto.",
       "description": "Inviateci una richiesta dettagliata: tipo di prodotti, quantità, tempistiche, eventuale personalizzazione. Vi ricontatteremo entro 24h con listino dedicato.",
       "button": "Scrivi al programma B2B"
+    },
+    "form": {
+      "nomeLabel": "Nome e cognome",
+      "nomePlaceholder": "Mario Rossi",
+      "aziendaLabel": "Azienda",
+      "aziendaPlaceholder": "Hotel Villa d'Este",
+      "emailLabel": "Email",
+      "emailPlaceholder": "nome@azienda.com",
+      "telefonoLabel": "Telefono",
+      "telefonoPlaceholder": "+39 ...",
+      "tipoLabel": "Tipologia richiesta",
+      "tipoOptionDefault": "— Seleziona —",
+      "tipoOptionHospitality": "Hospitality",
+      "tipoOptionGifting": "Corporate gifting",
+      "tipoOptionWhiteLabel": "White label",
+      "tipoOptionOther": "Altro",
+      "volumeLabel": "Volume previsto",
+      "volumePlaceholder": "Es. 50 pezzi",
+      "messaggioLabel": "Dettagli del progetto",
+      "messaggioPlaceholder": "Raccontateci tempistiche, eventuale personalizzazione e referenze.",
+      "privacyConsent": "Acconsento al trattamento dei miei dati secondo la <link>privacy policy</link>.",
+      "submit": "Invia richiesta",
+      "submitting": "Invio in corso…",
+      "successEyebrow": "Richiesta ricevuta",
+      "successTitle": "Grazie. La ricontattiamo entro 24 ore.",
+      "successBody": "Il nostro team ha ricevuto la sua richiesta e tornerà da lei con un listino dedicato.",
+      "requiredName": "Inserisca il suo nome.",
+      "requiredMessage": "Aggiunga qualche dettaglio sul progetto.",
+      "requiredPrivacy": "Per inviare deve accettare la privacy policy.",
+      "invalidEmail": "Email non valida."
     }
   },
   "recensioniPage": {
@@ -1335,6 +1365,14 @@
     },
     "checkoutSuccess": {
       "metaTitle": "Ordine confermato — SILKinCOM"
+    }
+  },
+  "collectionPage": {
+    "groups": {
+      "stretchCotton": "Cotone elasticizzato",
+      "stretchCottonEyebrow": "Vestibilità modellante",
+      "pureCotton": "100% cotone",
+      "pureCottonEyebrow": "Fibra naturale"
     }
   }
 }
