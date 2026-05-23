@@ -10,8 +10,8 @@ Ultimo aggiornamento: 21 maggio 2026 · ultimo commit di riferimento: `bc3fbd6`.
 **SILKinCOM** — e-commerce luxury di accessori in seta, cashmere, lana, lino e cotone. Made in Como. Fondatore: **Marco Dibenedetto** (impresa individuale, P.IVA `03786790133`, sede Via Giuseppe Verdi 2/B, 22072 Cermenate CO).
 
 - **Repo GitHub:** `Marco26-hub/silkincom` — branch `main`. Push su main → deploy automatico Vercel.
-- **Deploy attuale:** `https://silkincom.vercel.app` (dominio preview Vercel).
-- **Dominio target produzione:** `silkincom.com` — oggi ospita ancora il **vecchio sito Wix**. Migrazione del Next.js sul dominio reale = da fare (vedi §8).
+- **Deploy attuale:** `https://www.silkincom.com` (migrazione DNS da Wix → Vercel completata 23/05). Apex `silkincom.com` → 307 → `www.silkincom.com`. `silkincom.vercel.app` resta attivo come URL preview, ma il sito di produzione è ora sul dominio reale.
+- **Dominio target produzione:** ✓ silkincom.com / www.silkincom.com (live su Vercel).
 - Esiste un sito Wix originale (`silkincom.com`) da cui è stato fatto lo scraping del catalogo. Il repo è la **ricostruzione Next.js**.
 
 ---
@@ -371,8 +371,9 @@ Commit di riferimento 21/05: `dc0d4f4` → **`bc3fbd6` (HEAD)**.
 | Dati prodotti sporchi | `darsena-bianco` refuso "cavallo→cappellino" + intro narrativa per `darsena-blu`/`darsena-verde` | **✓ Fatto** (UPDATE DB) |
 | ISR cache catalogo | `unstable_cache` 60s + `revalidateCatalog` on-demand | **✓ Fatto** |
 | Bellagio prezzo/dimensioni | Risolto con Arch A | **✓ Fatto** |
-| Dominio | Migrare il Next.js da `silkincom.vercel.app` a `silkincom.com` | **Da fare** ven 22/05 (§8) |
+| Dominio | Migrare il Next.js da `silkincom.vercel.app` a `silkincom.com` | **✓ Fatto** 23/05 — DNS cut-over completato, sito Next.js live su `www.silkincom.com`. |
 | Codice pre-cutover | URL hardcoded `silkincom.vercel.app` → `silkincom.com` in 13 file | **✓ Fatto** (commit `c7920f6`) |
+| Vercel env post-cutover | `NEXT_PUBLIC_APP_URL` su Vercel deve essere `https://www.silkincom.com` (non più `silkincom.vercel.app`), altrimenti i link in email (newsletter confirm, ordini, B2B) puntano al preview e/o Gmail filtra in Promozioni per mismatch sending-domain | **Da fare (utente)** |
 | Brand Authority off-site | Wikidata, Wikipedia, press release | In corso (utente) |
 | Wikidata | Entità SILKinCOM da creare. Sbloccato dopo autoconfirmed (4 giorni). | Bloccato 4gg |
 | Founder/E-E-A-T | Pagina `/maison/marco-dibenedetto` + Person schema + byline blog + ContactPoint + press kit | **✓ Fatto** (commit `22c9a17`) |
@@ -477,7 +478,7 @@ cat HANDOFF.md                 # leggi questo file (sezione §6 = lavoro recente
 
 **Identificatori chiave:**
 - Repo: `Marco26-hub/silkincom` branch `main`
-- Deploy: `https://silkincom.vercel.app` (cut-over → `silkincom.com` previsto ven 22/05)
+- Deploy: `https://www.silkincom.com` (DNS cut-over completato 23/05). `silkincom.vercel.app` rimane attivo come URL preview Vercel.
 - Supabase: project ref `fjudulhxsafjizcmrifw`, MCP via `mcp__b1038748-...__execute_sql`
 - Founder + sede: Marco Dibenedetto, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), P.IVA IT03786790133
 
@@ -515,7 +516,8 @@ cat HANDOFF.md                 # leggi questo file (sezione §6 = lavoro recente
 **Test smoke rapido pre-cambio:**
 ```bash
 cd /tmp/silkincom && npm run type-check  # 0 errori atteso
-curl -s -o /dev/null -w "%{http_code}\n" https://silkincom.vercel.app/   # 200
+curl -s -o /dev/null -w "%{http_code}\n" https://www.silkincom.com/   # 200 (prod)
+curl -s -o /dev/null -w "%{http_code}\n" https://silkincom.vercel.app/   # 200 (preview)
 ```
 
 **Commit di riferimento finale 21/05:** `bc3fbd6` (HEAD — admin UX: sort/filtri prodotti + galleria immagini). Vedi §6 sessione 21/05 per il lavoro più recente.
