@@ -128,10 +128,15 @@ function categoryOf(slug: string): string {
 }
 
 function collectionsOf(category: string): string[] {
+  // Some categories deliberately appear in multiple seasonal collections.
+  // Twilly Como (silk neck pieces) are positioned as a year-round signature
+  // — they belong to the Iconica capsule AND the Spring/Summer drop.
+  // Darsena (lightweight caps) sits in the same bucket. Both surface twice
+  // in the storefront so customers find them from either entry point.
   const collections: string[] = [];
   if (['twilly-como', 'darsena'].includes(category)) collections.push('iconica');
   if (['bellagio', 'cernobbio', 'tremezzo', 'varenna'].includes(category)) collections.push('inverno');
-  if (['darsena', 'lario', 'melzi', 'riva', 'tivan'].includes(category)) collections.push('primavera');
+  if (['twilly-como', 'darsena', 'lario', 'melzi', 'riva', 'tivan'].includes(category)) collections.push('primavera');
   return collections;
 }
 
