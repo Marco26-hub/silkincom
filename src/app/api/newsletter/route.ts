@@ -54,10 +54,18 @@ export async function POST(req: NextRequest) {
 
     // For new subscribers: send confirmation email (double opt-in).
     // Welcome + lifecycle scheduling moved to /api/newsletter/confirm after token verification.
+    //
+    // IMPORTANT: must `await` — Vercel serverless freezes the function as soon
+    // as the response is returned, cancelling any in-flight HTTP request
+    // (including the Resend POST /emails call). We swallow the rejection here
+    // because the row is already saved and the wrapper has already logged the
+    // failure into `error_logs`.
     if (!isDuplicate) {
-      sendNewsletterConfirmationEmail(email, confirmToken).catch((e) =>
-        console.error('Confirmation email failed:', e)
-      );
+      try {
+        await sendNewsletterConfirmationEmail(email, confirmToken);
+      } catch (e) {
+        console.error('Confirmation email failed:', e);
+      }
     }
 
     return NextResponse.json(

@@ -51,8 +51,17 @@ export async function GET(req: NextRequest) {
     })
     .eq('id', sub.id);
 
-  // Now send welcome + schedule lifecycle (heritage +3d, discount +7d)
-  sendWelcomeEmail(sub.email).catch((e) => console.error('Welcome email failed:', e));
+  // Now send welcome + schedule lifecycle (heritage +3d, discount +7d).
+  //
+  // IMPORTANT: must `await` — Vercel serverless freezes the function the moment
+  // a response is returned, cancelling any in-flight HTTP request (including
+  // the Resend POST /emails call). Without awaiting, the welcome mail would
+  // sporadically never leave even though `error_logs` stays empty.
+  try {
+    await sendWelcomeEmail(sub.email);
+  } catch (e) {
+    console.error('Welcome email failed:', e);
+  }
 
   const now = Date.now();
   const day = 24 * 60 * 60 * 1000;

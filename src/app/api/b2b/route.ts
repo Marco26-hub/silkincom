@@ -70,8 +70,15 @@ export async function POST(req: NextRequest) {
 
     // Send the owner notification + the client confirmation. The wrapper in
     // `sendEmail` now promotes Resend errors to thrown exceptions and logs them
-    // to `error_logs`, so a failed send no longer disappears silently. We still
-    // don't fail the user-facing request — the row is already saved.
+    // to `error_logs`, so a failed send no longer disappears silently.
+    //
+    // IMPORTANT: we must `await` these sends instead of firing them and
+    // forgetting. Vercel serverless functions freeze the execution context the
+    // moment the response is returned — any in-flight HTTP request (including
+    // the Resend POST /emails call) gets cancelled, so the mail never leaves.
+    // We still don't fail the user-facing request: if a send rejects we
+    // swallow the error here (it has already been written to `error_logs` by
+    // the wrapper) and return 201, because the contact row is already saved.
     const payload: B2BInquiry = {
       nome,
       azienda,
@@ -82,12 +89,16 @@ export async function POST(req: NextRequest) {
       messaggio,
     };
 
-    sendB2BNotification(payload).catch((err) =>
-      console.error('B2B owner notification failed:', err)
-    );
-    sendB2BClientConfirmation(email, nome).catch((err) =>
-      console.error('B2B client confirmation failed:', err)
-    );
+    const [ownerResult, clientResult] = await Promise.allSettled([
+      sendB2BNotification(payload),
+      sendB2BClientConfirmation(email, nome),
+    ]);
+    if (ownerResult.status === 'rejected') {
+      console.error('B2B owner notification failed:', ownerResult.reason);
+    }
+    if (clientResult.status === 'rejected') {
+      console.error('B2B client confirmation failed:', clientResult.reason);
+    }
 
     return NextResponse.json(
       { success: true, message: 'Richiesta ricevuta. La ricontatteremo entro 24 ore.' },
