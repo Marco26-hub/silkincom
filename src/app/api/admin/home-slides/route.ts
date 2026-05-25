@@ -4,6 +4,7 @@ import { requireAdminApi, forbidden } from '@/lib/admin-api';
 import { revalidateHomeSlides } from '@/lib/revalidate';
 import { logAdminAction } from '@/lib/audit';
 import { translateToAllLocales, buildI18nMap } from '@/lib/translate';
+import { optimiseUpload } from '@/lib/image-optimize';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -39,14 +40,13 @@ export async function POST(req: NextRequest) {
   if (!file) return NextResponse.json({ error: 'File richiesto' }, { status: 400 });
   if (!titleIt) return NextResponse.json({ error: 'Titolo italiano richiesto' }, { status: 400 });
 
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-  const storagePath = `${crypto.randomUUID()}.${ext}`;
+  const optimised = await optimiseUpload(file);
+  const storagePath = `${crypto.randomUUID()}.${optimised.ext}`;
 
   const supabase = createServiceClient();
-  const arrayBuffer = await file.arrayBuffer();
   const { error: uploadError } = await supabase.storage
     .from(BUCKET)
-    .upload(storagePath, arrayBuffer, { contentType: file.type, upsert: false });
+    .upload(storagePath, optimised.buffer, { contentType: optimised.contentType, upsert: false });
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { revalidateCatalog } from '@/lib/revalidate';
+import { optimiseUpload } from '@/lib/image-optimize';
+
+export const runtime = 'nodejs';
 
 async function checkAdmin() {
   const supabase = await createServerClient();
@@ -39,15 +42,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   if (!file) return NextResponse.json({ error: 'File richiesto' }, { status: 400 });
 
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-  const path = `${id}/${Date.now()}.${ext}`;
+  const optimised = await optimiseUpload(file);
+  const path = `${id}/${Date.now()}.${optimised.ext}`;
 
   const supabase = createServiceClient();
 
-  const arrayBuffer = await file.arrayBuffer();
   const { error: uploadError } = await supabase.storage
     .from('product-images')
-    .upload(path, arrayBuffer, { contentType: file.type, upsert: false });
+    .upload(path, optimised.buffer, { contentType: optimised.contentType, upsert: false });
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 
