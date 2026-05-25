@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 import { useCart } from '@/store/cart';
 import { WishlistButton } from './WishlistButton';
+import { SizeGuideModal } from './SizeGuideModal';
 import type { ProductVariant } from '@/data/catalog-meta';
 
 type Props = {
@@ -65,21 +66,15 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
     <div className="flex flex-col gap-5">
       {hasSizes ? (
         <div>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3 gap-3">
             <p className="text-[10px] uppercase tracking-[0.3em] text-soft-black">
               {t('size.label')}
             </p>
-            <button
-              type="button"
-              className="text-[10px] uppercase tracking-[0.25em] text-soft-grey hover:text-gold-primary border-b border-soft-grey/40 hover:border-gold-primary transition-colors pb-0.5"
-              onClick={() => {
-                // Future: open size guide modal — for now scroll to size guide link
-                const el = document.getElementById('size-guide-anchor');
-                el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }}
-            >
-              {t('size.guide')}
-            </button>
+            {/* Apparel-specific size guide. Opens the modal directly instead
+                of scrolling to an in-page anchor — the previous scroll-to
+                approach failed on mobile (no anchor in viewport, and the
+                target modal showed scarf formats, not S/M/L/XL/XXL). */}
+            <SizeGuideModal mode="apparel" />
           </div>
           <div className="grid grid-cols-5 gap-2">
             {variants.map((v) => {

@@ -1310,6 +1310,13 @@
         "name": "Stola",
         "usage": "Spiaggia, cerimonie"
       }
+    },
+    "apparel": {
+      "heading": "Guida taglie abbigliamento",
+      "colSize": "Taglia",
+      "colBust": "Busto",
+      "colLength": "Lunghezza",
+      "note": "Le misure si riferiscono al capo finito. Se sei tra due taglie, scegli quella superiore per una vestibilità più morbida."
     }
   },
   "returnForm": {

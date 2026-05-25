@@ -1310,6 +1310,13 @@
         "name": "Stola",
         "usage": "Strand, Feierlichkeiten"
       }
+    },
+    "apparel": {
+      "heading": "Größentabelle Bekleidung",
+      "colSize": "Größe",
+      "colBust": "Brust",
+      "colLength": "Länge",
+      "note": "Die Maße beziehen sich auf das fertige Kleidungsstück. Bei Größen zwischen zwei Werten wählen Sie die größere für einen weicheren Sitz."
     }
   },
   "returnForm": {

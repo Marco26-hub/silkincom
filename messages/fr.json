@@ -1310,6 +1310,13 @@
         "name": "Étole",
         "usage": "Plage, cérémonies"
       }
+    },
+    "apparel": {
+      "heading": "Guide des tailles vêtements",
+      "colSize": "Taille",
+      "colBust": "Poitrine",
+      "colLength": "Longueur",
+      "note": "Les mesures se réfèrent au vêtement fini. Entre deux tailles, choisissez la plus grande pour une coupe plus souple."
     }
   },
   "returnForm": {

@@ -1310,6 +1310,13 @@
         "name": "Estola",
         "usage": "Playa, ceremonias"
       }
+    },
+    "apparel": {
+      "heading": "Guía de tallas de ropa",
+      "colSize": "Talla",
+      "colBust": "Pecho",
+      "colLength": "Largo",
+      "note": "Las medidas se refieren a la prenda terminada. Si estás entre dos tallas, elige la mayor para un ajuste más holgado."
     }
   },
   "returnForm": {

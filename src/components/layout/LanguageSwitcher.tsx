@@ -73,7 +73,10 @@ export function LanguageSwitcher({ variant = 'default' }: { variant?: 'default' 
         <ul
           role="listbox"
           aria-label={t('selectLanguage')}
-          className="absolute right-0 mt-2 w-56 bg-warm-white border border-pearl-grey shadow-lg z-50 py-1"
+          // z-[100] so the dropdown floats above the mobile drawer (which uses
+          // z-50) and any other overlays. max-w prevents it overflowing the
+          // viewport when the switcher sits near the right edge on phones.
+          className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-2rem)] bg-warm-white border border-pearl-grey shadow-lg z-[100] py-1"
         >
           {LOCALES.map((loc) => {
             const label = LOCALE_LABELS[loc];

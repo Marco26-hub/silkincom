@@ -1310,6 +1310,13 @@
         "name": "Estola",
         "usage": "Praia, cerimônias"
       }
+    },
+    "apparel": {
+      "heading": "Guia de tamanhos de vestuário",
+      "colSize": "Tamanho",
+      "colBust": "Busto",
+      "colLength": "Comprimento",
+      "note": "As medidas referem-se à peça acabada. Se estiver entre dois tamanhos, escolha o maior para um caimento mais relaxado."
     }
   },
   "returnForm": {

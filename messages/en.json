@@ -1310,6 +1310,13 @@
         "name": "Stole",
         "usage": "Beach, ceremonies"
       }
+    },
+    "apparel": {
+      "heading": "Apparel size guide",
+      "colSize": "Size",
+      "colBust": "Bust",
+      "colLength": "Length",
+      "note": "Measurements refer to the finished garment. If between sizes, pick the larger one for a softer fit."
     }
   },
   "returnForm": {

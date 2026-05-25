@@ -1310,6 +1310,13 @@
         "name": "Stola",
         "usage": "Strand, ceremonies"
       }
+    },
+    "apparel": {
+      "heading": "Maattabel kleding",
+      "colSize": "Maat",
+      "colBust": "Borst",
+      "colLength": "Lengte",
+      "note": "De maten verwijzen naar het afgewerkte kledingstuk. Tussen twee maten? Kies de grotere voor een soepelere pasvorm."
     }
   },
   "returnForm": {
