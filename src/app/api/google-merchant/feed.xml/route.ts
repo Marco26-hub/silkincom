@@ -115,7 +115,7 @@ export async function GET(req: NextRequest) {
   }).join('');
 
   const channelDesc = lang === 'en'
-    ? 'Scarves, foulards and silk & cashmere accessories — Made in Como'
+    ? 'Scarves, foulards and silk &amp; cashmere accessories — Made in Como'
     : 'Sciarpe, foulard e accessori in seta e cashmere — Made in Como';
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
