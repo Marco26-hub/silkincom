@@ -35,15 +35,24 @@ function cdata(text: string): string {
 export async function GET() {
   const supabase = createServiceClient();
 
-  const { data: products } = await supabase
+  // NB: the inventory column is `quantity_available` (not `available_quantity`).
+  // The previous typo silently returned an empty result set from PostgREST,
+  // which is why Google Merchant Center was fetching an empty feed and the
+  // product URLs it still indexed pointed at the old Wix product pages
+  // (since the new ones never reached Google).
+  const { data: products, error } = await supabase
     .from('products')
     .select(`
       id, slug, name, sku, price, compare_at_price, currency,
       description_short, description_long, composition,
       product_images(image_url, is_primary, display_order),
-      inventory(available_quantity)
+      inventory(quantity_available)
     `)
     .eq('status', 'published');
+
+  if (error) {
+    console.error('google-merchant feed query failed:', error);
+  }
 
   const items = (products || []).map((p: any) => {
     const sortedImages = (p.product_images || []).sort((a: any, b: any) => {
@@ -54,7 +63,12 @@ export async function GET() {
     const primaryImage = sortedImages[0]?.image_url || `${APP_URL}/og-image.jpg`;
     const additionalImages = sortedImages.slice(1, 11).map((i: any) => i.image_url);
 
-    const stock = p.inventory?.[0]?.available_quantity ?? 0;
+    // Total stock across all variants of the product (apparel ships in S–XXL
+    // so a product is "in stock" if any size has quantity).
+    const stock = (p.inventory || []).reduce(
+      (sum: number, row: any) => sum + (row?.quantity_available ?? 0),
+      0,
+    );
     const availability = stock > 0 ? 'in_stock' : 'out_of_stock';
 
     const desc = p.description_long || p.description_short || `${p.name} — Made in Como`;
