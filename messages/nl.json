@@ -584,7 +584,8 @@
   },
   "languageSwitcher": {
     "label": "Taal",
-    "selectLanguage": "Taal kiezen"
+    "selectLanguage": "Taal kiezen",
+    "close": "Sluiten"
   },
   "announcement": {
     "messages": [

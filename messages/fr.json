@@ -584,7 +584,8 @@
   },
   "languageSwitcher": {
     "label": "Langue",
-    "selectLanguage": "Choisir la langue"
+    "selectLanguage": "Choisir la langue",
+    "close": "Fermer"
   },
   "announcement": {
     "messages": [
