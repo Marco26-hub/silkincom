@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { requireAdminApi, forbidden } from '@/lib/admin-api';
 import { logAdminAction } from '@/lib/audit';
+import { optimiseUpload } from '@/lib/image-optimize';
+
+// Image MIME prefixes get auto-resized + JPG-encoded; everything else
+// (PDF, video, doc) flows through untouched.
+const IMAGE_MIME = /^image\//i;
 
 export const runtime = 'nodejs';
 
@@ -30,15 +35,28 @@ export async function POST(req: NextRequest) {
 
   if (!file) return NextResponse.json({ error: 'File richiesto' }, { status: 400 });
 
+  // Images go through the shared sharp pipeline (resize + JPG re-encode at
+  // quality 85). Non-image uploads (PDF, video, …) are stored untouched.
+  const isImage = IMAGE_MIME.test(file.type);
+  const optimised = isImage ? await optimiseUpload(file) : null;
+
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const path = `${Date.now()}-${safeName}`;
+  const finalName = optimised
+    ? `${safeName.replace(/\.[^.]+$/, '')}.${optimised.ext}`
+    : safeName;
+  const path = `${Date.now()}-${finalName}`;
+
+  const uploadBody: Buffer | ArrayBuffer = optimised
+    ? optimised.buffer
+    : await file.arrayBuffer();
+  const uploadContentType = optimised ? optimised.contentType : file.type;
+  const finalSize = optimised ? optimised.buffer.byteLength : file.size;
 
   const supabase = createServiceClient();
 
-  const arrayBuffer = await file.arrayBuffer();
   const { error: uploadError } = await supabase.storage
     .from('media')
-    .upload(path, arrayBuffer, { contentType: file.type, upsert: false });
+    .upload(path, uploadBody, { contentType: uploadContentType, upsert: false });
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 
@@ -50,8 +68,8 @@ export async function POST(req: NextRequest) {
       filename: file.name,
       storage_path: path,
       url: publicUrl,
-      mime_type: file.type,
-      size_bytes: file.size,
+      mime_type: uploadContentType,
+      size_bytes: finalSize,
       uploaded_by: auth.userId,
       alt_text: altText,
     })
