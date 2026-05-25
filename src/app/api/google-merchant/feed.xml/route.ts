@@ -1,16 +1,19 @@
 /**
  * Google Merchant Center product feed (RSS 2.0 + Google namespace).
  *
- * Endpoint: /api/google-merchant/feed.xml
+ * Endpoint: /api/google-merchant/feed.xml          → Italian (default)
+ *           /api/google-merchant/feed.xml?lang=en  → English
  *
  * Setup:
  * 1. Merchant Center → Products → Add data source → Scheduled fetch
- * 2. URL: https://silkincom.com/api/google-merchant/feed.xml
+ * 2. IT: https://www.silkincom.com/api/google-merchant/feed.xml
+ *    EN: https://www.silkincom.com/api/google-merchant/feed.xml?lang=en
  * 3. Frequency: Daily
  *
  * Includes: id, title, description, link, image_link, price, availability,
  * brand, condition, gtin (when available), product_type, identifier_exists.
  */
+import { NextRequest } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
 
@@ -32,7 +35,8 @@ function cdata(text: string): string {
   return `<![CDATA[${(text || '').replace(/]]>/g, ']]]]><![CDATA[>')}]]>`;
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const lang = req.nextUrl.searchParams.get('lang') === 'en' ? 'en' : 'it';
   const supabase = createServiceClient();
 
   // NB: the inventory column is `quantity_available` (not `available_quantity`).
@@ -45,6 +49,7 @@ export async function GET() {
     .select(`
       id, slug, name, sku, price, compare_at_price, currency,
       description_short, description_long, composition,
+      name_i18n, description_short_i18n, description_long_i18n,
       product_images(image_url, is_primary, display_order),
       inventory(quantity_available)
     `)
@@ -71,12 +76,21 @@ export async function GET() {
     );
     const availability = stock > 0 ? 'in_stock' : 'out_of_stock';
 
-    const desc = p.description_long || p.description_short || `${p.name} — Made in Como`;
+    // Resolve localised fields: prefer i18n value for requested lang, fallback to base field.
+    const title = (lang === 'en'
+      ? p.name_i18n?.en
+      : p.name_i18n?.it) || p.name;
+    const desc = (lang === 'en'
+      ? (p.description_long_i18n?.en || p.description_short_i18n?.en)
+      : (p.description_long_i18n?.it || p.description_short_i18n?.it))
+      || p.description_long
+      || p.description_short
+      || `${title} — Made in Como`;
 
     return `
     <item>
       <g:id>${escapeXml(p.sku || p.id)}</g:id>
-      <g:title>${cdata(`${p.name} — SILKinCOM`)}</g:title>
+      <g:title>${cdata(`${title} — SILKinCOM`)}</g:title>
       <g:description>${cdata(desc)}</g:description>
       <g:link>${APP_URL}/prodotto/${escapeXml(p.slug)}</g:link>
       <g:image_link>${escapeXml(primaryImage)}</g:image_link>
@@ -100,12 +114,16 @@ export async function GET() {
     </item>`;
   }).join('');
 
+  const channelDesc = lang === 'en'
+    ? 'Scarves, foulards and silk & cashmere accessories — Made in Como'
+    : 'Sciarpe, foulard e accessori in seta e cashmere — Made in Como';
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
     <title>SILKinCOM Product Feed</title>
     <link>${APP_URL}</link>
-    <description>Sciarpe, foulard e accessori in seta e cashmere — Made in Como</description>
+    <description>${channelDesc}</description>
     ${items}
   </channel>
 </rss>`;
