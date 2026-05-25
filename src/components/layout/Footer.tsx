@@ -168,7 +168,7 @@ export function Footer() {
               </a>
             </div>
             <div className="mt-7">
-              <LanguageSwitcher />
+              <LanguageSwitcher placement="top" />
             </div>
           </div>
         </div>

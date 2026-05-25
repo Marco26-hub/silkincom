@@ -6,7 +6,13 @@ import { useRouter, usePathname } from '@/i18n/navigation';
 import { Globe, Check, ChevronDown, X } from 'lucide-react';
 import { LOCALES, LOCALE_LABELS, type Locale } from '@/i18n/routing';
 
-export function LanguageSwitcher({ variant = 'default' }: { variant?: 'default' | 'minimal' }) {
+export function LanguageSwitcher({
+  variant = 'default',
+  placement = 'bottom',
+}: {
+  variant?: 'default' | 'minimal';
+  placement?: 'bottom' | 'top';
+}) {
   const currentLocale = useLocale() as Locale;
   const t = useTranslations('languageSwitcher');
   const router = useRouter();
@@ -169,7 +175,11 @@ export function LanguageSwitcher({ variant = 'default' }: { variant?: 'default' 
         <ul
           role="listbox"
           aria-label={t('selectLanguage')}
-          className="hidden sm:block absolute right-0 mt-3 w-64 max-w-[calc(100vw-2rem)] bg-warm-white border border-pearl-grey/70 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.25)] z-[100] py-2"
+          className={`hidden sm:block absolute right-0 w-64 max-w-[calc(100vw-2rem)] bg-warm-white border border-pearl-grey/70 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.25)] z-[100] py-2 ${
+            placement === 'top'
+              ? 'bottom-full mb-3 animate-[fadeInUp_220ms_cubic-bezier(0.21,0.47,0.32,0.98)] origin-bottom-right'
+              : 'mt-3 animate-[fadeInDown_220ms_cubic-bezier(0.21,0.47,0.32,0.98)] origin-top-right'
+          }`}
         >
           <li className="px-5 pb-2 mb-1 border-b border-pearl-grey/60">
             <p className="text-[9px] uppercase tracking-[0.5em] text-gold-primary">
