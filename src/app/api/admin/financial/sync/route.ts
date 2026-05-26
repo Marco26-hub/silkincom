@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { syncStripeFinancial } from '@/lib/financial/sync-stripe';
 import { syncEtsyFinancial } from '@/lib/financial/sync-etsy';
+import { syncGoogleAdsFinancial } from '@/lib/financial/sync-google-ads';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
@@ -40,12 +41,13 @@ export async function POST(req: NextRequest) {
   const source = (new URL(req.url).searchParams.get('source') || 'all') as
     | 'stripe'
     | 'etsy'
+    | 'google_ads'
     | 'all';
   const supabase = createServiceClient();
 
   const results: Array<Record<string, unknown>> = [];
 
-  async function runOne(name: 'stripe' | 'etsy', fn: () => Promise<unknown>) {
+  async function runOne(name: 'stripe' | 'etsy' | 'google_ads', fn: () => Promise<unknown>) {
     const { data: logRow } = await supabase
       .from('financial_sync_log')
       .insert({ source: name, triggered_by: 'manual' })
@@ -91,6 +93,9 @@ export async function POST(req: NextRequest) {
   }
   if (source === 'etsy' || source === 'all') {
     await runOne('etsy', () => syncEtsyFinancial(supabase));
+  }
+  if (source === 'google_ads' || source === 'all') {
+    await runOne('google_ads', () => syncGoogleAdsFinancial(supabase));
   }
 
   return NextResponse.json({ ok: true, results });

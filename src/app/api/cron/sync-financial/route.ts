@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { syncStripeFinancial } from '@/lib/financial/sync-stripe';
 import { syncEtsyFinancial } from '@/lib/financial/sync-etsy';
+import { syncGoogleAdsFinancial } from '@/lib/financial/sync-google-ads';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
   const supabase = createServiceClient();
   const out: Record<string, unknown> = {};
 
-  async function runOne(name: 'stripe' | 'etsy', fn: () => Promise<unknown>) {
+  async function runOne(name: 'stripe' | 'etsy' | 'google_ads', fn: () => Promise<unknown>) {
     const { data: logRow } = await supabase
       .from('financial_sync_log')
       .insert({ source: name, triggered_by: 'cron' })
@@ -72,6 +73,7 @@ export async function GET(req: NextRequest) {
 
   await runOne('stripe', () => syncStripeFinancial(supabase));
   await runOne('etsy', () => syncEtsyFinancial(supabase));
+  await runOne('google_ads', () => syncGoogleAdsFinancial(supabase));
 
   return NextResponse.json({ ok: true, results: out });
 }

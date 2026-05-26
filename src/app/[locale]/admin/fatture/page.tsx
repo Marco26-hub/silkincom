@@ -31,7 +31,7 @@ import {
 
 type Row = {
   id: string;
-  source: 'stripe' | 'etsy';
+  source: 'stripe' | 'etsy' | 'google_ads';
   type: string;
   external_id: string;
   invoice_number: string | null;
@@ -85,7 +85,7 @@ function monthLabel(m: string): string {
 
 export default function AdminFattureePage() {
   const [month, setMonth] = useState<string>(currentMonth());
-  const [source, setSource] = useState<'all' | 'stripe' | 'etsy'>('all');
+  const [source, setSource] = useState<'all' | 'stripe' | 'etsy' | 'google_ads'>('all');
   const [type, setType] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [data, setData] = useState<RecordsResponse | null>(null);
@@ -202,7 +202,7 @@ export default function AdminFattureePage() {
           <select
             value={source}
             onChange={(e) => {
-              setSource(e.target.value as 'all' | 'stripe' | 'etsy');
+              setSource(e.target.value as 'all' | 'stripe' | 'etsy' | 'google_ads');
               setPage(1);
             }}
             className="border border-pearl-grey bg-white px-3 py-2 text-sm"
@@ -210,6 +210,7 @@ export default function AdminFattureePage() {
             <option value="all">Tutti</option>
             <option value="stripe">Stripe (sito)</option>
             <option value="etsy">Etsy</option>
+            <option value="google_ads">Google Ads (spese)</option>
           </select>
         </Field>
         <Field label="Tipo">
@@ -243,19 +244,37 @@ export default function AdminFattureePage() {
 
       {/* Channel breakdown */}
       {totals && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {(['stripe', 'etsy'] as const).map((s) => (
-            <div key={s} className="border border-pearl-grey bg-white p-5">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-soft-grey">
-                  {s === 'stripe' ? 'Sito (Stripe)' : 'Etsy'}
-                </span>
-                <span className="text-xs text-soft-grey">{data?.total ?? 0} righe</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {(['stripe', 'etsy', 'google_ads'] as const).map((s) => {
+            const label =
+              s === 'stripe' ? 'Sito (Stripe)' : s === 'etsy' ? 'Etsy' : 'Google Ads (spesa)';
+            const isCost = s === 'google_ads';
+            return (
+              <div
+                key={s}
+                className={`border p-5 ${
+                  isCost ? 'border-red-200 bg-red-50/30' : 'border-pearl-grey bg-white'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span
+                    className={`text-[10px] uppercase tracking-[0.3em] ${
+                      isCost ? 'text-red-600' : 'text-soft-grey'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </div>
+                <p className={`font-display text-3xl ${isCost ? 'text-red-700' : ''}`}>
+                  {isCost ? '−' : ''}
+                  {fmt(Math.abs(totals.bySource[s] ?? 0))}
+                </p>
+                <p className="text-xs text-soft-grey mt-1">
+                  {isCost ? 'spesa pubblicità del mese' : 'netto del mese'}
+                </p>
               </div>
-              <p className="font-display text-3xl">{fmt(totals.bySource[s] ?? 0)}</p>
-              <p className="text-xs text-soft-grey mt-1">netto del mese</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -293,10 +312,14 @@ export default function AdminFattureePage() {
                 <td className="px-5 py-2">
                   <span
                     className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${
-                      r.source === 'stripe' ? 'bg-soft-black text-warm-white' : 'bg-[#F1641E]/15 text-[#F1641E]'
+                      r.source === 'stripe'
+                        ? 'bg-soft-black text-warm-white'
+                        : r.source === 'etsy'
+                        ? 'bg-[#F1641E]/15 text-[#F1641E]'
+                        : 'bg-[#4285F4]/15 text-[#1a73e8]'
                     }`}
                   >
-                    {r.source}
+                    {r.source === 'google_ads' ? 'g.ads' : r.source}
                   </span>
                 </td>
                 <td className="px-5 py-2 capitalize text-soft-grey">{r.type}</td>
