@@ -1,3 +1,6 @@
+// @ts-nocheck — Deno Edge runtime, not Node. tsconfig excludes this folder
+// but we keep the pragma as belt-and-braces so Next.js's bundled
+// type-check step never has a reason to touch these jsr:/npm: imports.
 // Re-compress every product image whose storage object exceeds `minKB`.
 // Uses two SQL RPCs (compress_candidates, compress_remaining) defined in
 // migration 036 so we don't have to reach into the `storage` schema from

@@ -1,3 +1,4 @@
+// @ts-nocheck — Deno Edge runtime, not Node.
 // One-shot migration: downloads any product image still hosted on Wix CDN,
 // re-uploads it to the project's Supabase Storage bucket, and rewrites the
 // product_images.image_url row. Run repeatedly in batches via
