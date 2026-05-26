@@ -28,6 +28,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { gadsFetch, getCustomerId } from '@/lib/google-ads/client';
+import { logSyncError } from '@/lib/financial/log-error';
 
 export type SyncResult = {
   source: 'google_ads';
@@ -193,7 +194,9 @@ export async function syncGoogleAdsFinancial(
   try {
     billingSetups = await listBillingSetups(customerId);
   } catch (e) {
-    result.errors.push(`billing_setups: ${(e as Error).message}`);
+    const msg = (e as Error).message;
+    result.errors.push(`billing_setups: ${msg}`);
+    await logSyncError(supabase, { source: 'google_ads', operation: 'billing_setups', message: msg });
   }
 
   const rows: FinancialRow[] = [];
@@ -210,8 +213,17 @@ export async function syncGoogleAdsFinancial(
         }
       } catch (e) {
         // 404s for months without invoices are normal — surface only real errors.
+        // The previous substring `includes('404')` was too loose; match the
+        // exact HTTP status from gadsFetch's "google-ads 404 …" prefix.
         const msg = (e as Error).message;
-        if (!msg.includes('404')) result.errors.push(`${m.year}-${m.monthEnum}: ${msg}`);
+        if (/^google-ads 404 /.test(msg)) continue;
+        result.errors.push(`${m.year}-${m.monthEnum}: ${msg}`);
+        await logSyncError(supabase, {
+          source: 'google_ads',
+          operation: 'invoices.list',
+          message: msg,
+          context: { year: m.year, month: m.monthEnum, setupId },
+        });
       }
     }
   }
@@ -224,24 +236,23 @@ export async function syncGoogleAdsFinancial(
       .upsert(chunk, { onConflict: 'source,external_id,type', ignoreDuplicates: false });
     if (error) {
       result.errors.push(`upsert ${i / CHUNK}: ${error.message}`);
+      await logSyncError(supabase, { source: 'google_ads', operation: 'upsert', message: error.message });
     } else {
       result.synced += chunk.length;
     }
   }
 
-  if (result.synced > 0 || result.errors.length === 0) {
-    await supabase
-      .from('financial_sync_state')
-      .update({
-        last_synced_at: new Date().toISOString(),
-        last_status: result.errors.length ? 'partial' : 'ok',
-        last_error: result.errors.length ? result.errors.join(' | ').slice(0, 500) : null,
-        total_records: rows.length,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('source', 'google_ads');
+  // Only advance the cursor when clean — see sync-stripe for rationale.
+  const patch: Record<string, unknown> = {
+    last_status: result.errors.length ? 'partial' : 'ok',
+    last_error: result.errors.length ? result.errors.join(' | ').slice(0, 500) : null,
+    total_records: rows.length,
+    updated_at: new Date().toISOString(),
+  };
+  if (result.errors.length === 0) {
+    patch.last_synced_at = new Date().toISOString();
   }
-
+  await supabase.from('financial_sync_state').update(patch).eq('source', 'google_ads');
   result.durationMs = Date.now() - start;
   return result;
 }

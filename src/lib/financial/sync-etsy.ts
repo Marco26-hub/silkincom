@@ -23,6 +23,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { etsyFetch, getShopId } from '@/lib/etsy/client';
+import { logSyncError } from '@/lib/financial/log-error';
 
 export type SyncResult = {
   source: 'etsy';
@@ -198,10 +199,17 @@ export async function syncEtsyFinancial(
       for (const r of receipts) rows.push(receiptToRow(r));
       if (receipts.length < limit) break;
       offset += limit;
-      if (offset >= 1000) break; // safety
+      if (offset >= 1000) {
+        const msg = 'safety cap reached: more than 1000 receipts in window';
+        result.errors.push(`receipts: ${msg}`);
+        await logSyncError(supabase, { source: 'etsy', operation: 'receipts', message: msg });
+        break;
+      }
     }
   } catch (e) {
-    result.errors.push(`receipts: ${(e as Error).message}`);
+    const msg = (e as Error).message;
+    result.errors.push(`receipts: ${msg}`);
+    await logSyncError(supabase, { source: 'etsy', operation: 'receipts', message: msg });
   }
 
   try {
@@ -215,10 +223,17 @@ export async function syncEtsyFinancial(
       for (const e of entries) rows.push(ledgerEntryToRow(e));
       if (entries.length < limit) break;
       offset += limit;
-      if (offset >= 2000) break;
+      if (offset >= 2000) {
+        const msg = 'safety cap reached: more than 2000 ledger entries in window';
+        result.errors.push(`ledger: ${msg}`);
+        await logSyncError(supabase, { source: 'etsy', operation: 'ledger', message: msg });
+        break;
+      }
     }
   } catch (e) {
-    result.errors.push(`ledger: ${(e as Error).message}`);
+    const msg = (e as Error).message;
+    result.errors.push(`ledger: ${msg}`);
+    await logSyncError(supabase, { source: 'etsy', operation: 'ledger', message: msg });
   }
 
   const CHUNK = 50;
@@ -229,23 +244,24 @@ export async function syncEtsyFinancial(
       .upsert(chunk, { onConflict: 'source,external_id,type', ignoreDuplicates: false });
     if (error) {
       result.errors.push(`upsert ${i / CHUNK}: ${error.message}`);
+      await logSyncError(supabase, { source: 'etsy', operation: 'upsert', message: error.message });
     } else {
       result.synced += chunk.length;
     }
   }
 
-  if (result.synced > 0 || result.errors.length === 0) {
-    await supabase
-      .from('financial_sync_state')
-      .update({
-        last_synced_at: new Date().toISOString(),
-        last_status: result.errors.length ? 'partial' : 'ok',
-        last_error: result.errors.length ? result.errors.join(' | ').slice(0, 500) : null,
-        total_records: rows.length,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('source', 'etsy');
+  // See sync-stripe.ts for rationale: only advance the cursor when the run
+  // was fully clean, otherwise we'd silently drop the unfetched tail.
+  const patch: Record<string, unknown> = {
+    last_status: result.errors.length ? 'partial' : 'ok',
+    last_error: result.errors.length ? result.errors.join(' | ').slice(0, 500) : null,
+    total_records: rows.length,
+    updated_at: new Date().toISOString(),
+  };
+  if (result.errors.length === 0) {
+    patch.last_synced_at = new Date().toISOString();
   }
+  await supabase.from('financial_sync_state').update(patch).eq('source', 'etsy');
 
   result.durationMs = Date.now() - start;
   return result;

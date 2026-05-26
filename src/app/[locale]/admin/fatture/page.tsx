@@ -60,6 +60,13 @@ type Totals = {
   byType: Record<string, number>;
 };
 
+type SyncState = {
+  source: string;
+  last_synced_at: string | null;
+  last_status: string | null;
+  last_error: string | null;
+};
+
 type RecordsResponse = {
   month: string;
   source: string;
@@ -69,6 +76,7 @@ type RecordsResponse = {
   page: number;
   perPage: number;
   totals: Totals;
+  syncStates: SyncState[];
 };
 
 const fmt = (v: number, cur = 'EUR') =>
@@ -90,16 +98,28 @@ export default function AdminFattureePage() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<RecordsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [syncErrors, setSyncErrors] = useState<Array<{ source: string; errors: string[] }>>([]);
 
   async function load() {
     setLoading(true);
-    const params = new URLSearchParams({ month, source, type, page: String(page), perPage: '50' });
-    const res = await fetch(`/api/admin/financial/records?${params.toString()}`);
-    const json = (await res.json()) as RecordsResponse;
-    setData(json);
-    setLoading(false);
+    setLoadError(null);
+    try {
+      const params = new URLSearchParams({ month, source, type, page: String(page), perPage: '50' });
+      const res = await fetch(`/api/admin/financial/records?${params.toString()}`);
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || `HTTP ${res.status}`);
+      }
+      const json = (await res.json()) as RecordsResponse;
+      setData(json);
+    } catch (e) {
+      setLoadError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -109,6 +129,7 @@ export default function AdminFattureePage() {
   async function runSync() {
     setSyncing(true);
     setSyncMsg(null);
+    setSyncErrors([]);
     try {
       const res = await fetch('/api/admin/financial/sync?source=all', { method: 'POST' });
       const json = await res.json();
@@ -119,6 +140,9 @@ export default function AdminFattureePage() {
             .map((r) => `${r.source}: ${r.synced} record${r.errors.length ? ` (${r.errors.length} errori)` : ''}`)
             .join(' · '),
         );
+        // Surface the actual error strings — the previous version only
+        // counted them, leaving admins to dig through network logs.
+        setSyncErrors(ok.filter((r) => r.errors.length > 0).map((r) => ({ source: r.source, errors: r.errors })));
       } else {
         setSyncMsg(json.error || 'Errore sync');
       }
@@ -178,6 +202,29 @@ export default function AdminFattureePage() {
 
       {syncMsg && (
         <div className="border border-pearl-grey bg-ivory px-4 py-2 text-xs text-soft-black">{syncMsg}</div>
+      )}
+
+      {syncErrors.length > 0 && (
+        <details className="border border-red-200 bg-red-50/50 px-4 py-2 text-xs text-red-800">
+          <summary className="cursor-pointer font-medium">
+            Dettagli errori sync ({syncErrors.reduce((n, r) => n + r.errors.length, 0)})
+          </summary>
+          <ul className="mt-2 space-y-1 list-disc list-inside">
+            {syncErrors.flatMap((r) =>
+              r.errors.map((e, i) => (
+                <li key={`${r.source}-${i}`}>
+                  <span className="uppercase tracking-[0.15em] text-[10px]">{r.source}</span> · {e}
+                </li>
+              )),
+            )}
+          </ul>
+        </details>
+      )}
+
+      {loadError && (
+        <div className="border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-700">
+          Errore caricamento dati: {loadError}
+        </div>
       )}
 
       {/* Filters */}
@@ -249,6 +296,18 @@ export default function AdminFattureePage() {
             const label =
               s === 'stripe' ? 'Sito (Stripe)' : s === 'etsy' ? 'Etsy' : 'Google Ads (spesa)';
             const isCost = s === 'google_ads';
+            const state = data?.syncStates?.find((st) => st.source === s);
+            const lastSyncedAt = state?.last_synced_at
+              ? new Date(state.last_synced_at).toLocaleString('it-IT', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : 'mai';
+            const isStale =
+              state?.last_synced_at &&
+              Date.now() - new Date(state.last_synced_at).getTime() > 36 * 60 * 60 * 1000;
             return (
               <div
                 key={s}
@@ -264,6 +323,9 @@ export default function AdminFattureePage() {
                   >
                     {label}
                   </span>
+                  {state?.last_status === 'partial' && (
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-amber-600">parziale</span>
+                  )}
                 </div>
                 <p className={`font-display text-3xl ${isCost ? 'text-red-700' : ''}`}>
                   {isCost ? '−' : ''}
@@ -272,6 +334,15 @@ export default function AdminFattureePage() {
                 <p className="text-xs text-soft-grey mt-1">
                   {isCost ? 'spesa pubblicità del mese' : 'netto del mese'}
                 </p>
+                <p className={`text-[10px] mt-2 ${isStale ? 'text-amber-600' : 'text-soft-grey/70'}`}>
+                  Ultimo sync: {lastSyncedAt}
+                  {isStale && ' · obsoleto'}
+                </p>
+                {state?.last_error && (
+                  <p className="text-[10px] text-red-600 mt-1 truncate" title={state.last_error}>
+                    ⚠ {state.last_error.slice(0, 80)}
+                  </p>
+                )}
               </div>
             );
           })}

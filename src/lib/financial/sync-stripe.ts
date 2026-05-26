@@ -23,6 +23,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getStripe } from '@/lib/stripe';
+import { logSyncError } from '@/lib/financial/log-error';
 import type Stripe from 'stripe';
 
 export type SyncResult = {
@@ -179,7 +180,9 @@ export async function syncStripeFinancial(
       rows.push(chargeToRow(c));
     }
   } catch (e) {
-    result.errors.push(`charges: ${(e as Error).message}`);
+    const msg = (e as Error).message;
+    result.errors.push(`charges: ${msg}`);
+    await logSyncError(supabase, { source: 'stripe', operation: 'charges.list', message: msg });
   }
 
   try {
@@ -193,7 +196,9 @@ export async function syncStripeFinancial(
       rows.push(invoiceToRow(inv));
     }
   } catch (e) {
-    result.errors.push(`invoices: ${(e as Error).message}`);
+    const msg = (e as Error).message;
+    result.errors.push(`invoices: ${msg}`);
+    await logSyncError(supabase, { source: 'stripe', operation: 'invoices.list', message: msg });
   }
 
   try {
@@ -204,7 +209,9 @@ export async function syncStripeFinancial(
       rows.push(refundToRow(r));
     }
   } catch (e) {
-    result.errors.push(`refunds: ${(e as Error).message}`);
+    const msg = (e as Error).message;
+    result.errors.push(`refunds: ${msg}`);
+    await logSyncError(supabase, { source: 'stripe', operation: 'refunds.list', message: msg });
   }
 
   // Upsert in chunks (Supabase REST has a payload size ceiling).
@@ -216,25 +223,27 @@ export async function syncStripeFinancial(
       .upsert(chunk, { onConflict: 'source,external_id,type', ignoreDuplicates: false });
     if (error) {
       result.errors.push(`upsert chunk ${i / CHUNK}: ${error.message}`);
+      await logSyncError(supabase, { source: 'stripe', operation: 'upsert', message: error.message });
     } else {
       result.synced += chunk.length;
     }
   }
 
-  // Checkpoint forward only when at least one row arrived; if Stripe is quiet
-  // we leave the cursor alone so we don't miss anything.
-  if (result.synced > 0 || result.errors.length === 0) {
-    await supabase
-      .from('financial_sync_state')
-      .update({
-        last_synced_at: new Date().toISOString(),
-        last_status: result.errors.length ? 'partial' : 'ok',
-        last_error: result.errors.length ? result.errors.join(' | ').slice(0, 500) : null,
-        total_records: rows.length,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('source', 'stripe');
+  // Only advance the cursor when the run was clean. The previous condition
+  // (`synced > 0 OR errors.length === 0`) silently lost rows: if Stripe
+  // returned 100 charges + an invoice error, charges would commit, the
+  // cursor would move past the invoice window, and the failed invoices
+  // never came back. We'd rather retry the whole window than orphan rows.
+  const patch: Record<string, unknown> = {
+    last_status: result.errors.length ? 'partial' : 'ok',
+    last_error: result.errors.length ? result.errors.join(' | ').slice(0, 500) : null,
+    total_records: rows.length,
+    updated_at: new Date().toISOString(),
+  };
+  if (result.errors.length === 0) {
+    patch.last_synced_at = new Date().toISOString();
   }
+  await supabase.from('financial_sync_state').update(patch).eq('source', 'stripe');
 
   result.durationMs = Date.now() - start;
   return result;

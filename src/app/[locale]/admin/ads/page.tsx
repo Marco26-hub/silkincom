@@ -97,15 +97,27 @@ export default function AdminAdsPage() {
   const [range, setRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [data, setData] = useState<Overview | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [syncErrors, setSyncErrors] = useState<string[]>([]);
 
   async function load() {
     setLoading(true);
-    const res = await fetch(`/api/admin/ads/overview?range=${range}`);
-    const json = (await res.json()) as Overview;
-    setData(json);
-    setLoading(false);
+    setLoadError(null);
+    try {
+      const res = await fetch(`/api/admin/ads/overview?range=${range}`);
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || `HTTP ${res.status}`);
+      }
+      const json = (await res.json()) as Overview;
+      setData(json);
+    } catch (e) {
+      setLoadError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -115,6 +127,7 @@ export default function AdminAdsPage() {
   async function runSync() {
     setSyncing(true);
     setSyncMsg(null);
+    setSyncErrors([]);
     try {
       const res = await fetch('/api/admin/ads/sync', { method: 'POST' });
       const json = await res.json();
@@ -122,6 +135,7 @@ export default function AdminAdsPage() {
         setSyncMsg(
           `Aggiornato — ${json.synced} righe sincronizzate${json.errors?.length ? ` (${json.errors.length} avvisi)` : ''}`,
         );
+        if (Array.isArray(json.errors)) setSyncErrors(json.errors);
         await load();
       } else {
         setSyncMsg(json.error || 'Errore di sincronizzazione');
@@ -166,6 +180,23 @@ export default function AdminAdsPage() {
 
       {syncMsg && (
         <div className="border border-pearl-grey bg-ivory px-4 py-2 text-xs text-soft-black">{syncMsg}</div>
+      )}
+
+      {syncErrors.length > 0 && (
+        <details className="border border-red-200 bg-red-50/50 px-4 py-2 text-xs text-red-800">
+          <summary className="cursor-pointer font-medium">Dettagli avvisi sync ({syncErrors.length})</summary>
+          <ul className="mt-2 space-y-1 list-disc list-inside">
+            {syncErrors.map((e, i) => (
+              <li key={i}>{e}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      {loadError && (
+        <div className="border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-700">
+          Errore caricamento dati: {loadError}
+        </div>
       )}
 
       {/* Connection state */}

@@ -96,6 +96,11 @@ export async function GET(req: NextRequest) {
     },
   );
 
+  // Sync state per-source so the UI can show "last synced at" + last error.
+  const { data: syncStates } = await supabase
+    .from('financial_sync_state')
+    .select('source, last_synced_at, last_status, last_error');
+
   return NextResponse.json({
     month,
     source,
@@ -105,5 +110,6 @@ export async function GET(req: NextRequest) {
     total: count ?? 0,
     rows: rows ?? [],
     totals,
+    syncStates: syncStates ?? [],
   });
 }

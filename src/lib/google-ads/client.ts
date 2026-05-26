@@ -54,6 +54,7 @@ async function loadIntegration(): Promise<IntegrationRow | null> {
 
 async function refreshAccessToken(refreshToken: string): Promise<{
   access_token: string;
+  refresh_token?: string;
   expires_in: number;
 }> {
   const clientId = envOrThrow('GOOGLE_ADS_CLIENT_ID');
@@ -68,32 +69,67 @@ async function refreshAccessToken(refreshToken: string): Promise<{
       refresh_token: refreshToken,
     }),
   });
-  const json = (await res.json()) as { access_token?: string; expires_in?: number; error?: string };
+  const json = (await res.json()) as {
+    access_token?: string;
+    refresh_token?: string;
+    expires_in?: number;
+    error?: string;
+    error_description?: string;
+  };
   if (!res.ok || !json.access_token) {
-    throw new Error(`google-ads token refresh failed: ${json.error ?? res.statusText}`);
+    // Mark the integration disconnected so /admin/ads can surface the
+    // problem instead of every subsequent call quietly 500-ing. Best-effort —
+    // the actual error still bubbles up.
+    try {
+      const sb = createServiceClient();
+      await sb
+        .from('integrations')
+        .update({
+          access_token: '',
+          metadata: { last_refresh_error: json.error_description ?? json.error ?? res.statusText },
+        })
+        .eq('provider', 'google_ads');
+      await sb.from('error_logs').insert({
+        level: 'error',
+        message: `google-ads token refresh failed: ${json.error ?? res.statusText}`,
+        context: { source: 'google_ads', operation: 'refresh', detail: json },
+      });
+    } catch {
+      // never let logging itself break the refresh path
+    }
+    throw new Error(`google-ads token refresh failed: ${json.error_description ?? json.error ?? res.statusText}`);
   }
-  return { access_token: json.access_token, expires_in: json.expires_in ?? 3600 };
+  return {
+    access_token: json.access_token,
+    refresh_token: json.refresh_token, // Google sometimes rotates this — persist it.
+    expires_in: json.expires_in ?? 3600,
+  };
 }
 
-async function persistTokens(access_token: string, expires_in: number): Promise<void> {
+async function persistTokens(opts: {
+  access_token: string;
+  expires_in: number;
+  refresh_token?: string;
+}): Promise<void> {
   const supabase = createServiceClient();
-  await supabase
-    .from('integrations')
-    .update({
-      access_token,
-      expires_at: new Date(Date.now() + (expires_in - 60) * 1000).toISOString(),
-    })
-    .eq('provider', 'google_ads');
+  const patch: Record<string, unknown> = {
+    access_token: opts.access_token,
+    expires_at: new Date(Date.now() + (opts.expires_in - 60) * 1000).toISOString(),
+  };
+  // Only overwrite refresh_token when Google actually rotated it. Dropping a
+  // missing field would null out the column and lock us out of the account.
+  if (opts.refresh_token) patch.refresh_token = opts.refresh_token;
+  await supabase.from('integrations').update(patch).eq('provider', 'google_ads');
 }
 
 async function getAccessToken(): Promise<string> {
   const row = await loadIntegration();
-  if (!row) throw new Error('google_ads non connesso');
+  if (!row || !row.refresh_token) throw new Error('google_ads non connesso');
   const stillValid =
     row.expires_at && new Date(row.expires_at).getTime() > Date.now() + 30 * 1000;
-  if (stillValid) return row.access_token;
+  if (stillValid && row.access_token) return row.access_token;
   const refreshed = await refreshAccessToken(row.refresh_token);
-  await persistTokens(refreshed.access_token, refreshed.expires_in);
+  await persistTokens(refreshed);
   return refreshed.access_token;
 }
 

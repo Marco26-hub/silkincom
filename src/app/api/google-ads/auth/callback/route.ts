@@ -12,7 +12,15 @@ export async function GET(req: NextRequest) {
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
   const storedState = req.cookies.get('gads_oauth_state')?.value;
+  const oauthError = url.searchParams.get('error');
+  const oauthDesc = url.searchParams.get('error_description');
 
+  if (oauthError) {
+    const r = oauthError === 'access_denied' ? 'access_denied' : `provider_error:${oauthError}`;
+    return NextResponse.redirect(
+      `${APP_URL}/admin/fatture?error=${encodeURIComponent(r)}${oauthDesc ? `&reason=${encodeURIComponent(oauthDesc)}` : ''}`,
+    );
+  }
   if (!code || !state || state !== storedState) {
     return NextResponse.redirect(`${APP_URL}/admin/fatture?error=google_ads_auth_failed`);
   }

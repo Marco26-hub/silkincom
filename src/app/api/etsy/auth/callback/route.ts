@@ -9,6 +9,17 @@ export async function GET(req: NextRequest) {
   const storedState = req.cookies.get('etsy_oauth_state')?.value;
   const codeVerifier = req.cookies.get('etsy_code_verifier')?.value;
 
+  // Surface Etsy-side denial / config errors specifically — the previous
+  // catch-all "auth_failed" hid the difference between "user pressed cancel"
+  // and "we sent the wrong state".
+  const oauthError = searchParams.get('error');
+  const oauthDesc = searchParams.get('error_description');
+  if (oauthError) {
+    const r = oauthError === 'access_denied' ? 'access_denied' : `provider_error:${oauthError}`;
+    return NextResponse.redirect(
+      `${APP_URL}/admin/etsy?error=${encodeURIComponent(r)}${oauthDesc ? `&reason=${encodeURIComponent(oauthDesc)}` : ''}`,
+    );
+  }
   if (!code || !state || state !== storedState || !codeVerifier) {
     return NextResponse.redirect(`${APP_URL}/admin/etsy?error=auth_failed`);
   }
