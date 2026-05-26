@@ -9,6 +9,10 @@
     {
       "path": "/api/cron/sync-financial",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/sync-ads",
+      "schedule": "30 3 * * *"
     }
   ],
   "headers": [

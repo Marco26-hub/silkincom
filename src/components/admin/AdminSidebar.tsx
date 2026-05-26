@@ -20,6 +20,7 @@ import {
   Mail,
   CreditCard,
   Receipt,
+  Megaphone,
   FolderTree,
   Image as ImageIcon,
   ClipboardList,
@@ -70,6 +71,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: '/admin/coupon', label: 'Coupon', icon: Tag, roles: ADMIN },
       { href: '/admin/recensioni', label: 'Recensioni', icon: Star, roles: EDITOR },
+      { href: '/admin/ads', label: 'Pubblicità', icon: Megaphone, roles: ADMIN },
     ],
   },
   {
