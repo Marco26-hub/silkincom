@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Scarf",
+      "twilly": "Twilly",
+      "cap": "Cap",
+      "tshirt": "T-shirt",
+      "shorts": "Shorts",
+      "shirt": "Shirt",
+      "beachTowel": "Beach Towel"
+    },
     "size": {
       "label": "Size",
       "guide": "Size guide",

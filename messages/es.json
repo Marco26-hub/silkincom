@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Bufanda",
+      "twilly": "Twilly",
+      "cap": "Gorra",
+      "tshirt": "Camiseta",
+      "shorts": "Bermudas",
+      "shirt": "Camisa",
+      "beachTowel": "Toalla de playa"
+    },
     "size": {
       "label": "Talla",
       "guide": "Guía de tallas",

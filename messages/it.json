@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Sciarpa",
+      "twilly": "Twilly",
+      "cap": "Cappellino",
+      "tshirt": "T-shirt",
+      "shorts": "Bermuda",
+      "shirt": "Camicia",
+      "beachTowel": "Telo mare"
+    },
     "size": {
       "label": "Taglia",
       "guide": "Guida alle taglie",

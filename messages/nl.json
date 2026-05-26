@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Sjaal",
+      "twilly": "Twilly",
+      "cap": "Pet",
+      "tshirt": "T-shirt",
+      "shorts": "Bermuda",
+      "shirt": "Overhemd",
+      "beachTowel": "Strandlaken"
+    },
     "size": {
       "label": "Maat",
       "guide": "Maattabel",

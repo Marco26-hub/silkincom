@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Schal",
+      "twilly": "Twilly",
+      "cap": "Cap",
+      "tshirt": "T-Shirt",
+      "shorts": "Bermuda",
+      "shirt": "Hemd",
+      "beachTowel": "Strandtuch"
+    },
     "size": {
       "label": "Größe",
       "guide": "Größentabelle",

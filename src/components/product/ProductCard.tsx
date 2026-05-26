@@ -7,6 +7,23 @@ import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { getMaterials, type Product } from '@/data/catalog-meta';
 
+// Each storefront category maps to a product TYPE shown as the secondary
+// eyebrow above the product name (e.g. "T-shirt", "Cappellino"). Keeps the
+// shopper oriented when the brand-named categories (Lario, Darsena, Bellagio,
+// …) don't immediately read as garment types.
+const CATEGORY_TYPE: Record<string, string> = {
+  bellagio: 'pashmina',
+  cernobbio: 'scarf',
+  tremezzo: 'scarf',
+  varenna: 'scarf',
+  'twilly-como': 'twilly',
+  darsena: 'cap',
+  lario: 'tshirt',
+  melzi: 'shorts',
+  riva: 'shirt',
+  tivan: 'beachTowel',
+};
+
 function formatPrice(n: number) {
   return new Intl.NumberFormat('it-IT', {
     style: 'currency',
@@ -62,6 +79,10 @@ export function ProductCard({ product }: { product: Product }) {
   const materialLabel = taxonomyName
     ? deriveMaterialEyebrow(product.composition || '', taxonomyName)
     : '';
+  const typeKey = CATEGORY_TYPE[product.category];
+  // i18n keys live under product.types.* — fall back to '' (no badge) if the
+  // category doesn't map to a known type so we don't render an empty chip.
+  const typeLabel = typeKey ? t(`types.${typeKey}`) : '';
   return (
     <article className="group relative">
       <Link href={`/prodotto/${product.slug}`} className="block">
@@ -142,12 +163,22 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Text block — premium hierarchy */}
         <div className="px-1">
-          {materialLabel && (
-            <div className="flex items-center gap-2 mb-2">
+          {(typeLabel || materialLabel) && (
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span className="block w-3 h-px bg-gold-dark" />
-              <span className="text-[10px] uppercase tracking-[0.4em] text-gold-dark font-semibold">
-                {materialLabel}
-              </span>
+              {typeLabel && (
+                <span className="text-[10px] uppercase tracking-[0.4em] text-gold-dark font-semibold">
+                  {typeLabel}
+                </span>
+              )}
+              {typeLabel && materialLabel && (
+                <span className="text-[10px] text-soft-black/30">·</span>
+              )}
+              {materialLabel && (
+                <span className="text-[10px] uppercase tracking-[0.4em] text-soft-black/55 font-light">
+                  {materialLabel}
+                </span>
+              )}
             </div>
           )}
           <h3 className="font-display text-lg md:text-[22px] font-normal leading-[1.15] text-soft-black group-hover:text-gold-dark transition-colors duration-500">

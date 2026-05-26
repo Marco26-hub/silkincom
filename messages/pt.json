@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Cachecol",
+      "twilly": "Twilly",
+      "cap": "Boné",
+      "tshirt": "T-shirt",
+      "shorts": "Bermuda",
+      "shirt": "Camisa",
+      "beachTowel": "Toalha de praia"
+    },
     "size": {
       "label": "Tamanho",
       "guide": "Guia de tamanhos",

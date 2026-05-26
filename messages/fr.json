@@ -312,6 +312,16 @@
     }
   },
   "product": {
+    "types": {
+      "pashmina": "Pashmina",
+      "scarf": "Écharpe",
+      "twilly": "Twilly",
+      "cap": "Casquette",
+      "tshirt": "T-shirt",
+      "shorts": "Bermuda",
+      "shirt": "Chemise",
+      "beachTowel": "Serviette de plage"
+    },
     "size": {
       "label": "Taille",
       "guide": "Guide des tailles",
