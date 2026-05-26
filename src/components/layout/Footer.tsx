@@ -168,7 +168,9 @@ export function Footer() {
               </a>
             </div>
             <div className="mt-7">
-              <LanguageSwitcher placement="top" />
+              {/* placement='auto' (default) auto-detects viewport space.
+                  In the footer there's no room below → dropdown opens upward. */}
+              <LanguageSwitcher />
             </div>
           </div>
         </div>

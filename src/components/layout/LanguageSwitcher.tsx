@@ -8,18 +8,51 @@ import { LOCALES, LOCALE_LABELS, type Locale } from '@/i18n/routing';
 
 export function LanguageSwitcher({
   variant = 'default',
-  placement = 'bottom',
+  placement = 'auto',
 }: {
   variant?: 'default' | 'minimal';
-  placement?: 'bottom' | 'top';
+  /**
+   * `auto` (default) — auto-detect based on viewport space (uses up to 320px
+   *   below button; flips to top if not enough room). Robust everywhere.
+   * `top` / `bottom` — force direction (e.g. legacy / explicit overrides).
+   */
+  placement?: 'auto' | 'bottom' | 'top';
 }) {
   const currentLocale = useLocale() as Locale;
   const t = useTranslations('languageSwitcher');
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [resolvedPlacement, setResolvedPlacement] = useState<'top' | 'bottom'>(
+    placement === 'top' ? 'top' : 'bottom',
+  );
   const [pending, startTransition] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  // Auto-detect direction whenever the menu opens. We measure the button's
+  // distance from the viewport bottom — if a typical dropdown (~320px) wouldn't
+  // fit below, we flip to open upward. This keeps the menu visible whether the
+  // trigger lives in the header (plenty of space below) or the footer (clipped
+  // against the page edge).
+  useEffect(() => {
+    if (!open || placement !== 'auto' || !btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const DROPDOWN_HEIGHT = 320;
+    if (spaceBelow < DROPDOWN_HEIGHT && spaceAbove > spaceBelow) {
+      setResolvedPlacement('top');
+    } else {
+      setResolvedPlacement('bottom');
+    }
+  }, [open, placement]);
+
+  // Keep explicit placement in sync if caller passes 'top' or 'bottom'.
+  useEffect(() => {
+    if (placement === 'top') setResolvedPlacement('top');
+    else if (placement === 'bottom') setResolvedPlacement('bottom');
+  }, [placement]);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -65,6 +98,7 @@ export function LanguageSwitcher({
   return (
     <div ref={ref} className="relative">
       <button
+        ref={btnRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
@@ -176,7 +210,7 @@ export function LanguageSwitcher({
           role="listbox"
           aria-label={t('selectLanguage')}
           className={`hidden sm:block absolute right-0 w-64 max-w-[calc(100vw-2rem)] bg-warm-white border border-pearl-grey/70 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.25)] z-[100] py-2 ${
-            placement === 'top'
+            resolvedPlacement === 'top'
               ? 'bottom-full mb-3 animate-[fadeInUp_220ms_cubic-bezier(0.21,0.47,0.32,0.98)] origin-bottom-right'
               : 'mt-3 animate-[fadeInDown_220ms_cubic-bezier(0.21,0.47,0.32,0.98)] origin-top-right'
           }`}
