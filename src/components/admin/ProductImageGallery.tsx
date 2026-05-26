@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Upload, Trash2, Star, ArrowLeft, ArrowRight, RefreshCw, Download } from 'lucide-react';
 import Image from 'next/image';
+import { downscaleImage } from '@/lib/client-image-downscale';
 
 type ProductImage = {
   id: string;
@@ -35,14 +36,35 @@ export function ProductImageGallery({ productId }: { productId: string }) {
     setUploading(true);
     setError(null);
 
-    for (const file of Array.from(files)) {
+    // Vercel serverless functions cap inbound request bodies at ~4.5 MB. Hi-res
+    // phone/DSLR/Photoshop exports routinely exceed that and were getting
+    // rejected with a 413 the UI silently swallowed (resulting in the
+    // "uploaded photo disappeared" bug). Downscale client-side first.
+    for (const original of Array.from(files)) {
+      let file: File;
+      try {
+        file = await downscaleImage(original, { maxDimension: 2400, quality: 0.92 });
+      } catch {
+        file = original;
+      }
+
       const fd = new FormData();
       fd.append('file', file);
       fd.append('alt_text', file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '));
-      const res = await fetch(`/api/admin/products/${productId}/images`, { method: 'POST', body: fd });
+      let res: Response;
+      try {
+        res = await fetch(`/api/admin/products/${productId}/images`, { method: 'POST', body: fd });
+      } catch {
+        setError('Errore di rete durante il caricamento');
+        continue;
+      }
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error || 'Upload fallito');
+        if (res.status === 413) {
+          setError(`File troppo grande (${(file.size / 1024 / 1024).toFixed(1)} MB). Massimo 4.5 MB dopo ottimizzazione.`);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          setError(data.error || `Upload fallito (HTTP ${res.status})`);
+        }
       }
     }
     if (fileRef.current) fileRef.current.value = '';
@@ -100,18 +122,28 @@ export function ProductImageGallery({ productId }: { productId: string }) {
   }
 
   async function doReplace(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const original = e.target.files?.[0];
     const targetId = replaceTargetId.current;
-    if (!file || !targetId) return;
+    if (!original || !targetId) return;
     setBusy(true);
     setError(null);
+    let file: File;
+    try {
+      file = await downscaleImage(original, { maxDimension: 2400, quality: 0.92 });
+    } catch {
+      file = original;
+    }
     const fd = new FormData();
     fd.append('file', file);
     fd.append('replaceId', targetId);
     const res = await fetch(`/api/admin/products/${productId}/images`, { method: 'POST', body: fd });
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error || 'Sostituzione fallita');
+      if (res.status === 413) {
+        setError(`File troppo grande (${(file.size / 1024 / 1024).toFixed(1)} MB). Massimo 4.5 MB.`);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || 'Sostituzione fallita');
+      }
     }
     if (replaceRef.current) replaceRef.current.value = '';
     replaceTargetId.current = null;

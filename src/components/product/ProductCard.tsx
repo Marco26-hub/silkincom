@@ -79,10 +79,13 @@ export function ProductCard({ product }: { product: Product }) {
   const materialLabel = taxonomyName
     ? deriveMaterialEyebrow(product.composition || '', taxonomyName)
     : '';
-  const typeKey = CATEGORY_TYPE[product.category];
+  // Per-product override (admin-set) wins over the category-derived default.
+  // Empty string / null / undefined → fall back to the category map.
+  const typeKey = product.productType?.trim() || CATEGORY_TYPE[product.category] || '';
   // i18n keys live under product.types.* — fall back to '' (no badge) if the
-  // category doesn't map to a known type so we don't render an empty chip.
-  const typeLabel = typeKey ? t(`types.${typeKey}`) : '';
+  // type doesn't map to a known key so we don't render an empty chip.
+  const KNOWN_TYPES = ['pashmina', 'scarf', 'twilly', 'cap', 'tshirt', 'shorts', 'shirt', 'beachTowel'];
+  const typeLabel = typeKey && KNOWN_TYPES.includes(typeKey) ? t(`types.${typeKey}`) : '';
   return (
     <article className="group relative">
       <Link href={`/prodotto/${product.slug}`} className="block">

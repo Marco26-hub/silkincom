@@ -62,6 +62,11 @@ export type Product = {
   collections: string[];
   material: Material;
   group?: ProductGroup;
+  // Optional override for the type eyebrow shown on cards. When null/empty
+  // we fall back to the category-derived default (lario→tshirt, darsena→cap,
+  // …). Admin sets this per-product from /admin/prodotti/[id] when the
+  // default mapping doesn't read right.
+  productType?: string | null;
   // Size variants — populated for apparel categories (lario, melzi, riva,
   // tivan). Empty array for accessories (scarves, foulards). Sorted in
   // canonical XS→XXXL order.

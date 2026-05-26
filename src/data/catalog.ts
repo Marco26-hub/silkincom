@@ -38,6 +38,7 @@ type DBProduct = {
   description_short: string;
   composition: string;
   dimensions: string;
+  product_type: string | null;
   name_i18n: I18nMap;
   description_long_i18n: I18nMap;
   description_short_i18n: I18nMap;
@@ -59,7 +60,7 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
   const { data: products, error } = await supabase
     .from('products')
     .select(
-      `id, slug, name, sku, price, description_long, description_short, composition, dimensions,
+      `id, slug, name, sku, price, description_long, description_short, composition, dimensions, product_type,
        name_i18n, description_long_i18n, description_short_i18n, composition_i18n,
        product_images(image_url, display_order),
        product_categories(
@@ -146,6 +147,7 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     collections: meta.collections,
     material: meta.material,
     group: meta.group,
+    productType: dbProduct.product_type,
     variants,
   };
 }

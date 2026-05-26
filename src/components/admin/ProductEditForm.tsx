@@ -67,6 +67,9 @@ export function ProductEditForm({
     composition_id: product.composition_id ?? '',
     size_id: product.size_id ?? '',
     color_id: product.color_id ?? '',
+    // Storefront "type" eyebrow override (Cappellino, T-shirt, Sciarpa, …).
+    // Empty string = auto, the storefront derives from category.
+    product_type: product.product_type ?? '',
   });
   const [saving, setSaving] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -108,6 +111,7 @@ export function ProductEditForm({
         composition_id: form.composition_id || null,
         size_id: form.size_id || null,
         color_id: form.color_id || null,
+        product_type: form.product_type || null,
       }),
     });
     const data = await res.json();
@@ -282,6 +286,30 @@ export function ProductEditForm({
             )}
           </Field>
         </div>
+
+        {/* Storefront type eyebrow shown on every ProductCard. Defaults to the
+            category-derived label when left on "Automatico"; admins switch the
+            value to override (e.g. mark a one-off Lario piece as a hoodie). */}
+        <Field
+          label="Tipologia (etichetta vetrina)"
+          hint="Mostrata come occhiello sopra il nome del prodotto (es. CAPPELLINO · COTONE). Lascia su «Automatico» per usare quella derivata dalla categoria."
+        >
+          <select
+            value={form.product_type}
+            onChange={(e) => setField('product_type', e.target.value)}
+            className={inputCls + ' bg-white'}
+          >
+            <option value="">Automatico (dalla categoria)</option>
+            <option value="pashmina">Pashmina</option>
+            <option value="scarf">Sciarpa</option>
+            <option value="twilly">Twilly</option>
+            <option value="cap">Cappellino</option>
+            <option value="tshirt">T-shirt</option>
+            <option value="shorts">Bermuda</option>
+            <option value="shirt">Camicia</option>
+            <option value="beachTowel">Telo mare</option>
+          </select>
+        </Field>
 
         <Field label="Descrizione breve">
           <input value={form.description_short} onChange={(e) => setField('description_short', e.target.value)} className={inputCls} />
@@ -795,11 +823,12 @@ function InlineColorCreate({
 
 const inputCls = 'w-full border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black';
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div>
       <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">{label}</label>
       {children}
+      {hint && <p className="mt-1.5 text-[11px] text-soft-grey/80 leading-relaxed">{hint}</p>}
     </div>
   );
 }
