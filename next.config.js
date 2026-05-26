@@ -5,6 +5,18 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    // Vercel's image optimizer is gated behind a per-plan monthly quota
+    // (source images transformed). We hit HTTP 402 in production, which
+    // returns "Payment Required" for every <Image>, blanking out the entire
+    // storefront. Disable Vercel optimization and serve the bytes Supabase
+    // Storage already holds — they're pre-optimised by the migration +
+    // compression pass (JPG q78, longest side ≤ 1600 px, avg ~137 KB).
+    //
+    // Trade-off: we lose automatic AVIF/WebP delivery and on-the-fly resizing
+    // for different viewports. Acceptable while we plan a permanent fix
+    // (either upgrading the Vercel plan, or self-hosting a small Cloudflare
+    // Worker image proxy).
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     qualities: [60, 75, 85, 90, 92, 95],
     minimumCacheTTL: 86400,
