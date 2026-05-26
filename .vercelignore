@@ -1,0 +1,10 @@
+# Files committed to the repo but not relevant to the Vercel build. Mostly
+# Deno Edge Function sources that run in the Supabase cloud (deployed via the
+# Supabase MCP, not via Vercel) and standalone Node scripts used for one-off
+# maintenance. Listing them here removes them from the build context so
+# Next.js's bundled type-check never has a reason to walk their jsr:/npm:
+# imports.
+
+supabase/functions
+supabase/migrations
+scripts
