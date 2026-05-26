@@ -114,18 +114,31 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     return source;
   }
 
-  // Only expose variants with an actual size attribute (apparel). Legacy
-  // variants without a size aren't surfaced on the storefront — they exist
-  // for admin/SKU tracking only.
+  // Expose every apparel variant on the storefront. The previous version
+  // silently dropped rows with size === null, but most of the time that's
+  // a data-entry slip rather than a deliberate decision — the SKU already
+  // encodes the size (e.g. "riva-1-xxl"). When the column is missing we
+  // try to recover it from the trailing SKU token before giving up; that
+  // way an admin who forgets the `size` field doesn't see the size selector
+  // vanish without warning.
+  const SIZE_TOKENS = new Set(['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']);
+  function deriveSizeFromSku(sku: string | null | undefined): Size | null {
+    if (!sku) return null;
+    const tail = sku.split('-').pop()?.toUpperCase();
+    return tail && SIZE_TOKENS.has(tail) ? (tail as Size) : null;
+  }
   const variants: ProductVariant[] = (dbProduct.product_variants ?? [])
-    .filter((v) => v.size !== null && v.size !== undefined)
-    .map((v) => ({
-      id: v.id,
-      sku: v.variant_sku,
-      size: v.size as Size,
-      priceOverride: v.price_override,
-      available: v.inventory?.[0]?.quantity_available ?? 0,
-    }))
+    .map((v) => {
+      const size = v.size ?? deriveSizeFromSku(v.variant_sku);
+      return size ? {
+        id: v.id,
+        sku: v.variant_sku,
+        size: size as Size,
+        priceOverride: v.price_override,
+        available: v.inventory?.[0]?.quantity_available ?? 0,
+      } : null;
+    })
+    .filter((v): v is ProductVariant => v !== null)
     .sort((a, b) => (SIZE_ORDER[a.size] ?? 99) - (SIZE_ORDER[b.size] ?? 99));
 
   return {
