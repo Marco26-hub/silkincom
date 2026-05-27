@@ -307,7 +307,7 @@ export function ProductEditForm({
             <option value="tshirt">T-shirt</option>
             <option value="shorts">Bermuda</option>
             <option value="shirt">Camicia</option>
-            <option value="beachTowel">Telo mare</option>
+            <option value="beachTowel">Telo Lago</option>
           </select>
         </Field>
 
