@@ -17,7 +17,7 @@ import sharp from 'sharp';
 export type OptimisedUpload = {
   buffer: Buffer;
   contentType: string;
-  ext: 'jpg' | 'gif';
+  ext: 'jpg' | 'webp' | 'gif';
 };
 
 export type OptimiseOptions = {
