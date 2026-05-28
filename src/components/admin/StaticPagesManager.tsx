@@ -4,8 +4,9 @@ import { useState, useRef, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
-  Save, X, Loader2, Plus, Trash2, ArrowUp, ArrowDown, ImageIcon,
+  Save, X, Loader2, Plus, Trash2, ArrowUp, ArrowDown, ImageIcon, Download,
 } from 'lucide-react';
+import { downloadAdminImage } from '@/lib/download-admin-image';
 
 type I18nMap = Record<string, string>;
 
@@ -441,6 +442,15 @@ function ImageField({ label, url, onUpload, onClear, uploading }: { label: strin
           <button type="button" onClick={onUpload} disabled={uploading} className="text-xs px-3 py-1.5 border border-pearl-grey hover:border-soft-black disabled:opacity-50">
             {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Carica/sostituisci'}
           </button>
+          {url ? (
+            <button
+              type="button"
+              onClick={() => downloadAdminImage({ url, title: label })}
+              className="text-xs px-3 py-1.5 border border-pearl-grey hover:border-soft-black inline-flex items-center gap-1"
+            >
+              <Download className="w-3 h-3" /> Scarica
+            </button>
+          ) : null}
           {url ? <button type="button" onClick={onClear} className="text-xs px-3 py-1.5 text-red-700 hover:underline">Rimuovi</button> : null}
         </div>
       </div>
@@ -487,6 +497,16 @@ function GalleryEditor({ images, onChange, onUpload, uploading }: { images: Arra
         {images.map((img, i) => (
           <div key={i} className="relative aspect-square border border-pearl-grey bg-soft-black/5 group">
             {img.url ? <Image src={img.url} alt="" fill sizes="120px" className="object-cover" unoptimized /> : null}
+            {img.url ? (
+              <button
+                type="button"
+                onClick={() => downloadAdminImage({ url: img.url, title: img.caption_i18n?.it || `gallery-${i + 1}` })}
+                className="absolute top-1 left-1 bg-warm-white text-soft-black p-1 opacity-0 group-hover:opacity-100"
+                title="Scarica originale"
+              >
+                <Download className="w-3 h-3" />
+              </button>
+            ) : null}
             <button type="button" onClick={() => onChange(images.filter((_, j) => j !== i))} className="absolute top-1 right-1 bg-warm-white text-red-700 p-1 opacity-0 group-hover:opacity-100">
               <Trash2 className="w-3 h-3" />
             </button>

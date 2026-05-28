@@ -3,7 +3,8 @@
 import { useState, useRef, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
-import { Save, X, Loader2, Upload, Trash2, Plus, ImageIcon } from 'lucide-react';
+import { Save, X, Loader2, Upload, Trash2, Plus, ImageIcon, Download } from 'lucide-react';
+import { downloadAdminImage } from '@/lib/download-admin-image';
 
 type I18nMap = Record<string, string>;
 
@@ -214,6 +215,14 @@ function SectionEditor({ section, meta, onError, onReload }: { section: Section;
                       }}
                     />
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => downloadAdminImage({ url: img.url, storagePath: img.storage_path, title: img.alt_i18n?.it || meta.title })}
+                    className="p-2 bg-warm-white text-soft-black hover:bg-gold-primary hover:text-warm-white"
+                    title="Scarica originale"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
                   <button
                     type="button"
                     onClick={() => removeImage(i)}

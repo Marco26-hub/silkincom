@@ -6,8 +6,9 @@ import Image from 'next/image';
 import {
   ArrowUp, ArrowDown, Pencil, Trash2, Eye, EyeOff,
   Upload, Languages, Save, X, Plus, Loader2, ImageIcon, Sparkles,
-  Monitor, Tablet, Smartphone, ZoomIn, ZoomOut,
+  Monitor, Tablet, Smartphone, ZoomIn, ZoomOut, Download,
 } from 'lucide-react';
+import { downloadAdminImage } from '@/lib/download-admin-image';
 
 type I18nMap = Record<string, string>;
 
@@ -601,6 +602,13 @@ function SlideRow(props: {
           </IconButton>
           <IconButton title="Cambia foto" onClick={() => fileRef.current?.click()} disabled={busy}>
             <ImageIcon className="w-4 h-4" />
+          </IconButton>
+          <IconButton
+            title="Scarica foto originale"
+            onClick={() => downloadAdminImage({ url: slide.image_url, storagePath: slide.storage_path, title: slide.title_i18n?.it })}
+            disabled={busy || !slide.image_url}
+          >
+            <Download className="w-4 h-4" />
           </IconButton>
           <IconButton title="Traduci" onClick={props.onTranslate} disabled={busy}><Languages className="w-4 h-4" /></IconButton>
           <IconButton title="Modifica testi" onClick={props.onEdit} disabled={busy}><Pencil className="w-4 h-4" /></IconButton>

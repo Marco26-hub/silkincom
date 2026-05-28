@@ -3,7 +3,8 @@
 import { useState, useRef, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
-import { Save, X, Loader2, ImageIcon, Pencil, Eye, EyeOff } from 'lucide-react';
+import { Save, X, Loader2, ImageIcon, Pencil, Eye, EyeOff, Download } from 'lucide-react';
+import { downloadAdminImage } from '@/lib/download-admin-image';
 
 type I18nMap = Record<string, string>;
 
@@ -159,6 +160,15 @@ function MaterialRow({
           <button type="button" title="Cambia foto" onClick={() => fileRef.current?.click()} disabled={busy}
             className="p-2 hover:bg-pearl-grey/40 disabled:opacity-30">
             <ImageIcon className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            title="Scarica foto originale"
+            onClick={() => downloadAdminImage({ url: m.image_url || '', storagePath: m.storage_path, title: m.name_i18n?.it })}
+            disabled={busy || !m.image_url}
+            className="p-2 hover:bg-pearl-grey/40 disabled:opacity-30"
+          >
+            <Download className="w-4 h-4" />
           </button>
           <button type="button" title="Modifica testi" onClick={onEdit} disabled={busy}
             className="p-2 hover:bg-pearl-grey/40 disabled:opacity-30">

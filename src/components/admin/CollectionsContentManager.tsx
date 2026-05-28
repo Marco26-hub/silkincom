@@ -4,8 +4,9 @@ import { useState, useRef, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
-  Pencil, Save, X, Languages, Loader2, Upload, Eye, EyeOff, ImageIcon,
+  Pencil, Save, X, Languages, Loader2, Upload, Eye, EyeOff, ImageIcon, Download,
 } from 'lucide-react';
+import { downloadAdminImage } from '@/lib/download-admin-image';
 
 type I18nMap = Record<string, string>;
 
@@ -201,6 +202,13 @@ function CollectionRow({
                   </IconButton>
                   <IconButton title="Cambia foto" onClick={() => fileRef.current?.click()} disabled={busy}>
                     <ImageIcon className="w-4 h-4" />
+                  </IconButton>
+                  <IconButton
+                    title="Scarica foto originale"
+                    onClick={() => downloadAdminImage({ url: c.image_url || '', storagePath: c.storage_path, title: c.name_i18n?.it || c.slug })}
+                    disabled={busy || !c.image_url}
+                  >
+                    <Download className="w-4 h-4" />
                   </IconButton>
                   <IconButton title="Traduci" onClick={onTranslate} disabled={busy}>
                     <Languages className="w-4 h-4" />
