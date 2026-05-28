@@ -84,27 +84,35 @@ export async function downscaleImage(
   ctx.drawImage(bitmap, 0, 0, targetW, targetH);
   bitmap.close();
 
+  // Prefer WebP — ~30% smaller than JPG at equivalent quality. Fall back
+  // to JPG only if the browser refuses to encode WebP (very old Safari).
+  const wantsWebp = canvas instanceof OffscreenCanvas
+    ? true
+    : (canvas as HTMLCanvasElement).toDataURL('image/webp').startsWith('data:image/webp');
+  const mime = wantsWebp ? 'image/webp' : 'image/jpeg';
+  const ext = wantsWebp ? 'webp' : 'jpg';
+
   let blob: Blob;
   if (canvas instanceof OffscreenCanvas) {
-    blob = await canvas.convertToBlob({ type: 'image/jpeg', quality });
+    blob = await canvas.convertToBlob({ type: mime, quality });
   } else {
     blob = await new Promise<Blob>((resolve, reject) => {
       (canvas as HTMLCanvasElement).toBlob(
         (b) => (b ? resolve(b) : reject(new Error('canvas.toBlob returned null'))),
-        'image/jpeg',
+        mime,
         quality,
       );
     });
   }
 
   // If the canvas pass somehow produced a larger file (rare, but possible for
-  // already-compressed source JPGs), keep the original — pointless to upload
+  // already-compressed source images), keep the original — pointless to upload
   // a worse version.
   if (blob.size >= file.size) return file;
 
   const baseName = file.name.replace(/\.[^.]+$/, '') || 'image';
-  return new File([blob], `${baseName}.jpg`, {
-    type: 'image/jpeg',
+  return new File([blob], `${baseName}.${ext}`, {
+    type: mime,
     lastModified: Date.now(),
   });
 }

@@ -47,8 +47,8 @@ export async function optimiseUpload(
       fit: 'inside',
       withoutEnlargement: true,
     })
-    .jpeg({ quality, mozjpeg: true, progressive: true })
+    .webp({ quality, effort: 5 })
     .toBuffer();
 
-  return { buffer: out, contentType: 'image/jpeg', ext: 'jpg' };
+  return { buffer: out, contentType: 'image/webp', ext: 'webp' };
 }
