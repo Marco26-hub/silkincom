@@ -53,3 +53,6 @@ Thumbs.db
 
 # Local Netlify folder
 .netlify
+
+# Social marketing assets — kept local only (carousels, briefs, exports)
+social/
