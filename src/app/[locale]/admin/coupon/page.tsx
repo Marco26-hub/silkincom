@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
-import { createBrowserClient } from '@/lib/supabase/client';
 
 type Coupon = {
   id: string;
@@ -34,12 +33,9 @@ export default function AdminCouponsPage() {
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    const supabase = createBrowserClient();
-    const { data } = await supabase
-      .from('coupons')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setCoupons((data as Coupon[]) || []);
+    const res = await fetch('/api/admin/coupons');
+    const data = await res.json();
+    setCoupons((data.coupons as Coupon[]) || []);
     setLoading(false);
   }
 
