@@ -435,8 +435,14 @@
       "payment": "Pagamento",
       "review": "Confirmação"
     },
+    "sections": {
+      "contact": "Dados de contacto",
+      "shipping": "Morada de envio"
+    },
     "fields": {
       "name": "Nome",
+      "firstName": "Nome",
+      "lastName": "Apelido",
       "email": "E-mail",
       "fullName": "Nome do destinatário",
       "address": "Morada",
@@ -474,6 +480,11 @@
       "CH": "Suíça",
       "DE": "Alemanha",
       "FR": "França",
+      "ES": "Espanha",
+      "NL": "Países Baixos",
+      "PT": "Portugal",
+      "BE": "Bélgica",
+      "AT": "Áustria",
       "GB": "Reino Unido",
       "US": "Estados Unidos"
     }

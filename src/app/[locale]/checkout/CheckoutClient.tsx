@@ -112,7 +112,8 @@ export function CheckoutClient() {
   const [apiError, setApiError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
-    customer_name: '',
+    first_name: '',
+    last_name: '',
     customer_email: '',
     address: {
       full_name: '',
@@ -152,6 +153,12 @@ export function CheckoutClient() {
     setLoading(true);
     setApiError(null);
 
+    const customerName = `${form.first_name.trim()} ${form.last_name.trim()}`.trim();
+    const shippingAddress: ShippingAddress = {
+      ...form.address,
+      full_name: customerName,
+    };
+
     try {
       const res = await fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
@@ -166,8 +173,8 @@ export function CheckoutClient() {
             ...(i.size ? { size: i.size } : {}),
           })),
           customer_email: form.customer_email,
-          customer_name: form.customer_name,
-          shipping_address: form.address,
+          customer_name: customerName,
+          shipping_address: shippingAddress,
           ...(coupon ? { coupon_code: coupon.code } : {}),
         }),
       });
@@ -231,98 +238,125 @@ export function CheckoutClient() {
             </h1>
 
             {step === 'info' && (
-              <form onSubmit={handleInfoSubmit} className="space-y-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.name')} *</label>
-                    <input
-                      required
-                      value={form.customer_name}
-                      onChange={(e) => setField('customer_name', e.target.value)}
-                      className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
-                      placeholder="Mario Rossi"
-                    />
+              <form onSubmit={handleInfoSubmit} className="space-y-8">
+                <section className="space-y-5">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-pearl-grey/60 pb-2">
+                    {t('sections.contact')}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.firstName')} *</label>
+                      <input
+                        required
+                        autoComplete="given-name"
+                        value={form.first_name}
+                        onChange={(e) => setField('first_name', e.target.value)}
+                        className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                        placeholder="Mario"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.lastName')} *</label>
+                      <input
+                        required
+                        autoComplete="family-name"
+                        value={form.last_name}
+                        onChange={(e) => setField('last_name', e.target.value)}
+                        className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                        placeholder="Rossi"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.email')} *</label>
-                    <input
-                      required
-                      type="email"
-                      value={form.customer_email}
-                      onChange={(e) => setField('customer_email', e.target.value)}
-                      className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
-                      placeholder="mario@esempio.com"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.email')} *</label>
+                      <input
+                        required
+                        type="email"
+                        autoComplete="email"
+                        value={form.customer_email}
+                        onChange={(e) => setField('customer_email', e.target.value)}
+                        className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                        placeholder="mario@esempio.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.phone')}</label>
+                      <input
+                        type="tel"
+                        autoComplete="tel"
+                        value={form.address.phone}
+                        onChange={(e) => setAddress('phone', e.target.value)}
+                        className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                        placeholder="+39 333 000 0000"
+                      />
+                    </div>
                   </div>
-                </div>
+                </section>
 
-                <div>
-                  <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.fullName')} *</label>
-                  <input
-                    required
-                    value={form.address.full_name}
-                    onChange={(e) => setAddress('full_name', e.target.value)}
-                    className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.address')} *</label>
-                  <input
-                    required
-                    value={form.address.street_address}
-                    onChange={(e) => setAddress('street_address', e.target.value)}
-                    className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
-                    placeholder="Via Roma 1"
-                  />
-                </div>
-
-                <div className="grid grid-cols-[1fr_140px_120px] gap-4">
+                <section className="space-y-5">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-pearl-grey/60 pb-2">
+                    {t('sections.shipping')}
+                  </p>
                   <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.city')} *</label>
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.address')} *</label>
                     <input
                       required
-                      value={form.address.city}
-                      onChange={(e) => setAddress('city', e.target.value)}
+                      autoComplete="street-address"
+                      value={form.address.street_address}
+                      onChange={(e) => setAddress('street_address', e.target.value)}
                       className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                      placeholder="Via Roma 1"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.postalCode')} *</label>
-                    <input
-                      required
-                      value={form.address.postal_code}
-                      onChange={(e) => setAddress('postal_code', e.target.value)}
-                      className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
-                    />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.city')} *</label>
+                      <input
+                        required
+                        autoComplete="address-level2"
+                        value={form.address.city}
+                        onChange={(e) => setAddress('city', e.target.value)}
+                        className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                        placeholder="Como"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.postalCode')} *</label>
+                      <input
+                        required
+                        autoComplete="postal-code"
+                        value={form.address.postal_code}
+                        onChange={(e) => setAddress('postal_code', e.target.value)}
+                        className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
+                        placeholder="22100"
+                      />
+                    </div>
                   </div>
+
                   <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.country')}</label>
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.country')} *</label>
                     <select
                       value={form.address.country}
                       onChange={(e) => setAddress('country', e.target.value)}
+                      autoComplete="country"
                       className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors bg-white"
                     >
                       <option value="IT">{t('countries.IT')}</option>
                       <option value="CH">{t('countries.CH')}</option>
                       <option value="DE">{t('countries.DE')}</option>
                       <option value="FR">{t('countries.FR')}</option>
+                      <option value="ES">{t('countries.ES')}</option>
+                      <option value="NL">{t('countries.NL')}</option>
+                      <option value="PT">{t('countries.PT')}</option>
+                      <option value="BE">{t('countries.BE')}</option>
+                      <option value="AT">{t('countries.AT')}</option>
                       <option value="GB">{t('countries.GB')}</option>
                       <option value="US">{t('countries.US')}</option>
                     </select>
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.phone')}</label>
-                  <input
-                    type="tel"
-                    value={form.address.phone}
-                    onChange={(e) => setAddress('phone', e.target.value)}
-                    className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
-                    placeholder="+39 333 000 0000"
-                  />
-                </div>
+                </section>
 
                 {apiError && (
                   <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-4 py-3">

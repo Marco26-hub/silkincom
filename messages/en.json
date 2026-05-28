@@ -435,8 +435,14 @@
       "payment": "Payment",
       "review": "Confirmation"
     },
+    "sections": {
+      "contact": "Contact details",
+      "shipping": "Shipping address"
+    },
     "fields": {
       "name": "Name",
+      "firstName": "First name",
+      "lastName": "Last name",
       "email": "Email",
       "fullName": "Recipient name",
       "address": "Address",
@@ -474,6 +480,11 @@
       "CH": "Switzerland",
       "DE": "Germany",
       "FR": "France",
+      "ES": "Spain",
+      "NL": "Netherlands",
+      "PT": "Portugal",
+      "BE": "Belgium",
+      "AT": "Austria",
       "GB": "United Kingdom",
       "US": "United States"
     }

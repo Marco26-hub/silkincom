@@ -435,8 +435,14 @@
       "payment": "Betaling",
       "review": "Bevestiging"
     },
+    "sections": {
+      "contact": "Contactgegevens",
+      "shipping": "Verzendadres"
+    },
     "fields": {
       "name": "Naam",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
       "email": "E-mail",
       "fullName": "Naam ontvanger",
       "address": "Adres",
@@ -474,6 +480,11 @@
       "CH": "Zwitserland",
       "DE": "Duitsland",
       "FR": "Frankrijk",
+      "ES": "Spanje",
+      "NL": "Nederland",
+      "PT": "Portugal",
+      "BE": "België",
+      "AT": "Oostenrijk",
       "GB": "Verenigd Koninkrijk",
       "US": "Verenigde Staten"
     }
