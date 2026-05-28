@@ -33,9 +33,20 @@ export default function AdminCouponsPage() {
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    const res = await fetch('/api/admin/coupons');
-    const data = await res.json();
-    setCoupons((data.coupons as Coupon[]) || []);
+    try {
+      const res = await fetch('/api/admin/coupons');
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || `Errore caricamento (${res.status})`);
+        setCoupons([]);
+      } else {
+        setCoupons((data.coupons as Coupon[]) || []);
+        setError(null);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Errore di rete');
+      setCoupons([]);
+    }
     setLoading(false);
   }
 
@@ -110,17 +121,39 @@ export default function AdminCouponsPage() {
   }
 
   async function toggle(c: Coupon) {
-    await fetch(`/api/admin/coupons/${c.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_active: !c.is_active }),
-    });
+    try {
+      const res = await fetch(`/api/admin/coupons/${c.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !c.is_active }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || `Errore toggle (${res.status})`);
+        return;
+      }
+      setError(null);
+    } catch (err: any) {
+      setError(err?.message || 'Errore di rete');
+      return;
+    }
     load();
   }
 
   async function remove(c: Coupon) {
     if (!confirm(`Eliminare coupon ${c.code}?`)) return;
-    await fetch(`/api/admin/coupons/${c.id}`, { method: 'DELETE' });
+    try {
+      const res = await fetch(`/api/admin/coupons/${c.id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || `Eliminazione fallita (${res.status}). Suggerimento: se il coupon ha già redemptions, disattivalo invece.`);
+        return;
+      }
+      setError(null);
+    } catch (err: any) {
+      setError(err?.message || 'Errore di rete');
+      return;
+    }
     load();
   }
 
@@ -128,6 +161,12 @@ export default function AdminCouponsPage() {
 
   return (
     <div className="space-y-6 max-w-[1400px]">
+      {error && !showForm && (
+        <div className="border border-red-200 bg-red-50 text-red-800 text-sm px-4 py-3 flex items-start justify-between gap-4">
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="text-red-700 hover:text-red-900 text-xs uppercase tracking-[0.15em]">Chiudi</button>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-4xl mb-1">Coupon</h1>
