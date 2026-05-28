@@ -135,6 +135,7 @@ export async function POST(req: NextRequest) {
             coupon_id: couponId,
             order_id: orderId,
             customer_id: (order as { customer_id?: string }).customer_id || null,
+            customer_email: (order.customer_email || '').toLowerCase() || null,
           });
         } catch (couponErr) {
           console.error('Coupon redemption insert failed:', couponErr);

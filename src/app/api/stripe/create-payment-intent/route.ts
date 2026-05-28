@@ -136,6 +136,7 @@ export async function POST(req: NextRequest) {
     const shipping_cost = computeShipping(subtotal);
 
     // Server-side coupon validation (don't trust client-supplied discount)
+    const normalizedEmail = customer_email.trim().toLowerCase();
     let discount_amount = 0;
     let validated_coupon_id: string | null = null;
     if (coupon_code && coupon_code.trim()) {
@@ -150,7 +151,38 @@ export async function POST(req: NextRequest) {
         const fromOk = !coupon.valid_from || new Date(coupon.valid_from) <= now;
         const untilOk = !coupon.valid_until || new Date(coupon.valid_until) >= now;
         const minOk = !coupon.minimum_order_amount || subtotal >= Number(coupon.minimum_order_amount);
-        if (fromOk && untilOk && minOk) {
+
+        let perCustomerOk = true;
+        if (coupon.max_uses_per_customer && coupon.max_uses_per_customer > 0) {
+          const cap = Number(coupon.max_uses_per_customer);
+          if (customerId) {
+            const { count } = await supabase
+              .from('coupon_redemptions')
+              .select('id', { count: 'exact', head: true })
+              .eq('coupon_id', coupon.id)
+              .eq('customer_id', customerId);
+            if ((count || 0) >= cap) perCustomerOk = false;
+          }
+          if (perCustomerOk) {
+            const { count } = await supabase
+              .from('coupon_redemptions')
+              .select('id', { count: 'exact', head: true })
+              .eq('coupon_id', coupon.id)
+              .eq('customer_email', normalizedEmail);
+            if ((count || 0) >= cap) perCustomerOk = false;
+          }
+        }
+
+        let globalOk = true;
+        if (coupon.max_uses && coupon.max_uses > 0) {
+          const { count } = await supabase
+            .from('coupon_redemptions')
+            .select('id', { count: 'exact', head: true })
+            .eq('coupon_id', coupon.id);
+          if ((count || 0) >= coupon.max_uses) globalOk = false;
+        }
+
+        if (fromOk && untilOk && minOk && perCustomerOk && globalOk) {
           const dv = Number(coupon.discount_value);
           if (coupon.discount_type === 'percentage' || coupon.discount_type === 'percent') {
             discount_amount = Math.round(subtotal * dv) / 100;
@@ -175,7 +207,7 @@ export async function POST(req: NextRequest) {
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
-        customer_email: customer_email.trim().toLowerCase(),
+        customer_email: normalizedEmail,
         ...(customerId ? { customer_id: customerId } : {}),
         status: 'pending',
         subtotal,
@@ -221,7 +253,7 @@ export async function POST(req: NextRequest) {
     // Schedule abandoned-cart email at +24h. Cron will skip if order status changed.
     const abandonAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
     await supabase.from('email_lifecycle_jobs').insert({
-      recipient_email: customer_email.trim().toLowerCase(),
+      recipient_email: normalizedEmail,
       email_type: 'abandoned_cart',
       scheduled_at: abandonAt,
       status: 'pending',

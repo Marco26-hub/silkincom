@@ -28,6 +28,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const code = (body?.code || '').toString().trim().toUpperCase();
     const subtotal = Number(body?.subtotal);
+    const emailRaw = (body?.email || '').toString().trim().toLowerCase();
+    const email = emailRaw && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailRaw) ? emailRaw : null;
 
     if (!code) {
       return NextResponse.json({ valid: false, message: 'Inserisci un codice' }, { status: 400 });
@@ -74,17 +76,34 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Per-customer usage cap
+    // Per-customer usage cap — checked against user_id (if authenticated) OR email
     if (coupon.max_uses_per_customer && coupon.max_uses_per_customer > 0) {
       const auth = await createServerClient();
       const { data: { user } } = await auth.auth.getUser();
+      const cap = coupon.max_uses_per_customer;
+      const checkEmail = email || user?.email?.toLowerCase() || null;
+
       if (user) {
         const { count } = await supabase
           .from('coupon_redemptions')
           .select('id', { count: 'exact', head: true })
           .eq('coupon_id', coupon.id)
           .eq('customer_id', user.id);
-        if ((count || 0) >= coupon.max_uses_per_customer) {
+        if ((count || 0) >= cap) {
+          return NextResponse.json({
+            valid: false,
+            message: 'Codice già utilizzato il massimo delle volte',
+          });
+        }
+      }
+
+      if (checkEmail) {
+        const { count } = await supabase
+          .from('coupon_redemptions')
+          .select('id', { count: 'exact', head: true })
+          .eq('coupon_id', coupon.id)
+          .eq('customer_email', checkEmail);
+        if ((count || 0) >= cap) {
           return NextResponse.json({
             valid: false,
             message: 'Codice già utilizzato il massimo delle volte',
