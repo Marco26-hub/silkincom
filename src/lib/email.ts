@@ -514,7 +514,8 @@ export async function sendReviewRequestEmail(
 export async function sendAbandonedCartEmail(
   email: string,
   items: AbandonedItem[],
-  resumeUrl?: string
+  resumeUrl?: string,
+  couponCode?: string
 ) {
   const itemsHtml = items.slice(0, 4).map((it) => `
     <tr>
@@ -533,11 +534,26 @@ export async function sendAbandonedCartEmail(
     </tr>
   `).join('');
 
+  const couponHtml = couponCode ? `
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
+      <tr>
+        <td style="background:#FAF7F2; border:1px solid #D4AF37; padding:20px 24px; text-align:center;">
+          <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 10px 0;">Offerta esclusiva</p>
+          <p style="font-family:'Cormorant Garamond', Georgia, serif; font-size:22px; font-weight:300; color:#1A1A1A; margin:0 0 10px 0;">25% di sconto sul suo ordine</p>
+          <p style="font-size:11px; color:#6B6B6B; margin:0 0 14px 0;">Utilizzi il codice al momento del pagamento</p>
+          <div style="display:inline-block; background:#1A1A1A; color:#D4AF37; font-family:'Courier New', monospace; font-size:20px; letter-spacing:0.15em; padding:10px 28px;">${e(couponCode)}</div>
+          <p style="font-size:10px; color:#A9A6A0; margin:12px 0 0 0; font-style:italic;">Valido per un solo utilizzo</p>
+        </td>
+      </tr>
+    </table>
+  ` : '';
+
   const inner = `
     <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Il suo carrello la attende</p>
     <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 16px 0;">Riprenda <em style="color:#D4AF37; font-style:italic;">dove ha lasciato</em></h1>
     <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Ha selezionato pezzi della nostra Maison ma non ha completato l'acquisto. I suoi articoli sono ancora disponibili — riprenda quando preferisce.</p>
     <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">${itemsHtml}</table>
+    ${couponHtml}
     ${luxuryButton(resumeUrl || `${APP_URL}/cart`, 'Riprendi acquisto')}
     <p style="font-size:12px; line-height:1.7; color:#A9A6A0; margin-top:24px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
   `;

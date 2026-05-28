@@ -132,7 +132,8 @@ export async function GET(req: NextRequest) {
               quantity: Number(it.quantity) || 1,
               href: it.slug ? `${APP_URL}/prodotto/${it.slug}` : undefined,
             })),
-            `${APP_URL}/cart`
+            `${APP_URL}/cart`,
+            'CART25'
           );
           result = { sent: true };
           break;
