@@ -408,7 +408,25 @@
     "checkout": "Naar afrekenen",
     "continueShopping": "Verder winkelen",
     "remove": "Verwijderen",
-    "summary": "Overzicht"
+    "summary": "Overzicht",
+    "coupon": {
+      "label": "Kortingscode",
+      "placeholder": "BV. CART25",
+      "apply": "Toepassen",
+      "remove": "Code verwijderen",
+      "networkError": "Netwerkfout",
+      "invalid": "Ongeldige code",
+      "empty": "Voer een code in",
+      "subtotalInvalid": "Ongeldig subtotaal",
+      "inactive": "Code niet actief",
+      "notYet": "Code nog niet geldig",
+      "expired": "Code verlopen",
+      "minOrder": "Minimumbestelling €{amount} om deze code te gebruiken",
+      "exhausted": "Code uitgeput",
+      "maxUses": "Code is al maximaal gebruikt",
+      "applied": "Korting toegepast: −€{amount}",
+      "validateError": "Validatiefout"
+    }
   },
   "checkout": {
     "title": "Afrekenen",

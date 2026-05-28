@@ -408,7 +408,25 @@
     "checkout": "Zur Kasse",
     "continueShopping": "Weiter einkaufen",
     "remove": "Entfernen",
-    "summary": "Übersicht"
+    "summary": "Übersicht",
+    "coupon": {
+      "label": "Rabattcode",
+      "placeholder": "Z.B. CART25",
+      "apply": "Anwenden",
+      "remove": "Code entfernen",
+      "networkError": "Netzwerkfehler",
+      "invalid": "Ungültiger Code",
+      "empty": "Code eingeben",
+      "subtotalInvalid": "Ungültige Zwischensumme",
+      "inactive": "Code nicht aktiv",
+      "notYet": "Code noch nicht gültig",
+      "expired": "Code abgelaufen",
+      "minOrder": "Mindestbestellwert €{amount} für diesen Code",
+      "exhausted": "Code aufgebraucht",
+      "maxUses": "Code bereits maximal verwendet",
+      "applied": "Rabatt angewendet: −€{amount}",
+      "validateError": "Validierungsfehler"
+    }
   },
   "checkout": {
     "title": "Kasse",

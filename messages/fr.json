@@ -408,7 +408,25 @@
     "checkout": "Procéder au paiement",
     "continueShopping": "Continuer mes achats",
     "remove": "Retirer",
-    "summary": "Récapitulatif"
+    "summary": "Récapitulatif",
+    "coupon": {
+      "label": "Code promo",
+      "placeholder": "EX. CART25",
+      "apply": "Appliquer",
+      "remove": "Retirer le code",
+      "networkError": "Erreur réseau",
+      "invalid": "Code invalide",
+      "empty": "Saisissez un code",
+      "subtotalInvalid": "Sous-total invalide",
+      "inactive": "Code inactif",
+      "notYet": "Code pas encore valable",
+      "expired": "Code expiré",
+      "minOrder": "Commande minimum €{amount} pour utiliser ce code",
+      "exhausted": "Code épuisé",
+      "maxUses": "Code déjà utilisé le maximum de fois",
+      "applied": "Remise appliquée : −€{amount}",
+      "validateError": "Erreur de validation"
+    }
   },
   "checkout": {
     "title": "Paiement",

@@ -5,15 +5,17 @@ import { X, Minus, Plus, ShoppingBag, Tag } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useCart } from '@/store/cart';
 import { FREE_SHIPPING_THRESHOLD } from '@/config/shipping';
 import { formatPrice } from '@/lib/utils';
 
 export function CartDrawer() {
   const t = useTranslations('cart');
+  const tc2 = useTranslations('cart.coupon');
   const tn = useTranslations('nav');
   const tc = useTranslations('common');
+  const locale = useLocale();
   const { items, isOpen, closeCart, removeItem, updateQty, total, count, coupon, applyCoupon, removeCoupon } = useCart();
 
   const [couponInput, setCouponInput] = useState('');
@@ -38,7 +40,7 @@ export function CartDrawer() {
       const res = await fetch('/api/coupons/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponInput.trim(), subtotal: total() }),
+        body: JSON.stringify({ code: couponInput.trim(), subtotal: total(), locale }),
       });
       const data = await res.json();
       if (data.valid) {
@@ -51,10 +53,10 @@ export function CartDrawer() {
         setCouponMsg({ type: 'success', text: data.message });
         setCouponInput('');
       } else {
-        setCouponMsg({ type: 'error', text: data.message || 'Codice non valido' });
+        setCouponMsg({ type: 'error', text: data.message || tc2('invalid') });
       }
     } catch {
-      setCouponMsg({ type: 'error', text: 'Errore di rete' });
+      setCouponMsg({ type: 'error', text: tc2('networkError') });
     } finally {
       setCouponLoading(false);
     }
@@ -188,7 +190,7 @@ export function CartDrawer() {
                       {coupon.code}
                       <button
                         onClick={() => { removeCoupon(); setCouponMsg(null); }}
-                        aria-label="Rimuovi coupon"
+                        aria-label={tc2('remove')}
                         className="text-soft-black/50 hover:text-soft-black ml-1"
                       >
                         <X className="w-3 h-3" />
@@ -199,14 +201,14 @@ export function CartDrawer() {
                 ) : (
                   <form onSubmit={handleApplyCoupon}>
                     <label className="block text-[10px] uppercase tracking-[0.25em] text-soft-black/60 mb-2">
-                      Codice sconto
+                      {tc2('label')}
                     </label>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={couponInput}
                         onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                        placeholder="ES. CART25"
+                        placeholder={tc2('placeholder')}
                         autoComplete="off"
                         autoCapitalize="characters"
                         className="flex-1 px-3 py-2.5 border border-pearl-grey bg-warm-white text-xs uppercase tracking-[0.15em] focus:outline-none focus:border-gold-primary min-h-[44px]"
@@ -216,7 +218,7 @@ export function CartDrawer() {
                         disabled={couponLoading || !couponInput.trim()}
                         className="px-4 py-2.5 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.25em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50 min-h-[44px]"
                       >
-                        {couponLoading ? '…' : 'Applica'}
+                        {couponLoading ? '…' : tc2('apply')}
                       </button>
                     </div>
                   </form>

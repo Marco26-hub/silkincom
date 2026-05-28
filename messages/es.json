@@ -408,7 +408,25 @@
     "checkout": "Ir al pago",
     "continueShopping": "Seguir comprando",
     "remove": "Quitar",
-    "summary": "Resumen"
+    "summary": "Resumen",
+    "coupon": {
+      "label": "Código de descuento",
+      "placeholder": "EJ. CART25",
+      "apply": "Aplicar",
+      "remove": "Quitar cupón",
+      "networkError": "Error de red",
+      "invalid": "Código no válido",
+      "empty": "Introduce un código",
+      "subtotalInvalid": "Subtotal no válido",
+      "inactive": "Código no activo",
+      "notYet": "Código aún no válido",
+      "expired": "Código caducado",
+      "minOrder": "Pedido mínimo €{amount} para usar este código",
+      "exhausted": "Código agotado",
+      "maxUses": "Código ya utilizado el máximo de veces",
+      "applied": "Descuento aplicado: −€{amount}",
+      "validateError": "Error de validación"
+    }
   },
   "checkout": {
     "title": "Pago",

@@ -408,7 +408,25 @@
     "checkout": "Avançar para o pagamento",
     "continueShopping": "Continuar a comprar",
     "remove": "Remover",
-    "summary": "Resumo"
+    "summary": "Resumo",
+    "coupon": {
+      "label": "Código de desconto",
+      "placeholder": "EX. CART25",
+      "apply": "Aplicar",
+      "remove": "Remover cupão",
+      "networkError": "Erro de rede",
+      "invalid": "Código inválido",
+      "empty": "Insira um código",
+      "subtotalInvalid": "Subtotal inválido",
+      "inactive": "Código inativo",
+      "notYet": "Código ainda não válido",
+      "expired": "Código expirado",
+      "minOrder": "Pedido mínimo €{amount} para usar este código",
+      "exhausted": "Código esgotado",
+      "maxUses": "Código já utilizado o máximo de vezes",
+      "applied": "Desconto aplicado: −€{amount}",
+      "validateError": "Erro de validação"
+    }
   },
   "checkout": {
     "title": "Pagamento",

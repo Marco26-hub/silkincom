@@ -408,7 +408,25 @@
     "checkout": "Proceed to checkout",
     "continueShopping": "Continue shopping",
     "remove": "Remove",
-    "summary": "Summary"
+    "summary": "Summary",
+    "coupon": {
+      "label": "Discount code",
+      "placeholder": "E.G. CART25",
+      "apply": "Apply",
+      "remove": "Remove coupon",
+      "networkError": "Network error",
+      "invalid": "Invalid code",
+      "empty": "Enter a code",
+      "subtotalInvalid": "Invalid subtotal",
+      "inactive": "Code not active",
+      "notYet": "Code not yet valid",
+      "expired": "Code expired",
+      "minOrder": "Minimum order €{amount} to use this code",
+      "exhausted": "Code exhausted",
+      "maxUses": "Code already used the maximum number of times",
+      "applied": "Discount applied: −€{amount}",
+      "validateError": "Validation error"
+    }
   },
   "checkout": {
     "title": "Checkout",

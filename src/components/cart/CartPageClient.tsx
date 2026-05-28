@@ -5,14 +5,16 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { Minus, Plus, ShoppingBag, Trash2, Tag, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_COST, computeShipping } from '@/config/shipping';
 
 export function CartPageClient() {
   const t = useTranslations('cart');
+  const tc = useTranslations('cart.coupon');
   const tn = useTranslations('nav');
+  const locale = useLocale();
   const { items, removeItem, updateQty, total, count, coupon, applyCoupon, removeCoupon } = useCart();
   const router = useRouter();
   const [couponInput, setCouponInput] = useState('');
@@ -28,7 +30,7 @@ export function CartPageClient() {
       const res = await fetch('/api/coupons/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponInput.trim(), subtotal: total() }),
+        body: JSON.stringify({ code: couponInput.trim(), subtotal: total(), locale }),
       });
       const data = await res.json();
       if (data.valid) {
@@ -41,10 +43,10 @@ export function CartPageClient() {
         setCouponMsg({ type: 'success', text: data.message });
         setCouponInput('');
       } else {
-        setCouponMsg({ type: 'error', text: data.message || 'Codice non valido' });
+        setCouponMsg({ type: 'error', text: data.message || tc('invalid') });
       }
     } catch {
-      setCouponMsg({ type: 'error', text: 'Errore di rete' });
+      setCouponMsg({ type: 'error', text: tc('networkError') });
     } finally {
       setCouponLoading(false);
     }
@@ -140,7 +142,7 @@ export function CartPageClient() {
                     {coupon.code}
                     <button
                       onClick={() => { removeCoupon(); setCouponMsg(null); }}
-                      aria-label="Rimuovi coupon"
+                      aria-label={tc('remove')}
                       className="text-soft-black/40 hover:text-soft-black"
                     >
                       <X className="w-3 h-3" />
@@ -166,14 +168,14 @@ export function CartPageClient() {
               {!coupon && (
                 <form onSubmit={handleApplyCoupon} className="pt-2">
                   <label className="block text-[10px] uppercase tracking-[0.25em] text-soft-black/60 mb-2">
-                    Codice sconto
+                    {tc('label')}
                   </label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                      placeholder="ES. BENVENUTA10"
+                      placeholder={tc('placeholder')}
                       className="flex-1 px-3 py-2.5 border border-pearl-grey bg-warm-white text-xs uppercase tracking-[0.15em] focus:outline-none focus:border-gold-primary"
                     />
                     <button
@@ -181,7 +183,7 @@ export function CartPageClient() {
                       disabled={couponLoading || !couponInput.trim()}
                       className="px-4 py-2.5 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.25em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50"
                     >
-                      {couponLoading ? '…' : 'Applica'}
+                      {couponLoading ? '…' : tc('apply')}
                     </button>
                   </div>
                 </form>

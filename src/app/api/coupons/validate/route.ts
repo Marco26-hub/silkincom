@@ -2,14 +2,16 @@
  * Validate a coupon code against current cart subtotal.
  *
  * POST /api/coupons/validate
- *   body: { code: string, subtotal: number }
+ *   body: { code: string, subtotal: number, email?: string, locale?: string }
  *   response: { valid, discount_type, discount_value, discount_amount, message, code? }
  *
  * - Checks code exists, is_active, within validity window
  * - Checks minimum_order_amount
  * - Checks max_uses (global)
- * - Checks max_uses_per_customer (if authenticated)
+ * - Checks max_uses_per_customer against authenticated user_id AND/or email
  * - Computes discount_amount in EUR (capped at subtotal)
+ *
+ * Messages are translated server-side using `locale` from body (default 'it').
  *
  * Does NOT redeem — redemption happens at order completion.
  */
@@ -20,22 +22,138 @@ import { rateLimit } from '@/lib/rate-limit';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+type MsgKey =
+  | 'empty'
+  | 'subtotalInvalid'
+  | 'invalid'
+  | 'inactive'
+  | 'notYet'
+  | 'expired'
+  | 'minOrder'
+  | 'exhausted'
+  | 'maxUses'
+  | 'applied'
+  | 'validateError';
+
+const MSG: Record<string, Record<MsgKey, string>> = {
+  it: {
+    empty: 'Inserisci un codice',
+    subtotalInvalid: 'Subtotale non valido',
+    invalid: 'Codice non valido',
+    inactive: 'Codice non attivo',
+    notYet: 'Codice non ancora valido',
+    expired: 'Codice scaduto',
+    minOrder: 'Minimo ordine €{amount} per usare questo codice',
+    exhausted: 'Codice esaurito',
+    maxUses: 'Codice già utilizzato il massimo delle volte',
+    applied: 'Sconto applicato: −€{amount}',
+    validateError: 'Errore validazione',
+  },
+  en: {
+    empty: 'Enter a code',
+    subtotalInvalid: 'Invalid subtotal',
+    invalid: 'Invalid code',
+    inactive: 'Code not active',
+    notYet: 'Code not yet valid',
+    expired: 'Code expired',
+    minOrder: 'Minimum order €{amount} to use this code',
+    exhausted: 'Code exhausted',
+    maxUses: 'Code already used the maximum number of times',
+    applied: 'Discount applied: −€{amount}',
+    validateError: 'Validation error',
+  },
+  es: {
+    empty: 'Introduce un código',
+    subtotalInvalid: 'Subtotal no válido',
+    invalid: 'Código no válido',
+    inactive: 'Código no activo',
+    notYet: 'Código aún no válido',
+    expired: 'Código caducado',
+    minOrder: 'Pedido mínimo €{amount} para usar este código',
+    exhausted: 'Código agotado',
+    maxUses: 'Código ya utilizado el máximo de veces',
+    applied: 'Descuento aplicado: −€{amount}',
+    validateError: 'Error de validación',
+  },
+  fr: {
+    empty: 'Saisissez un code',
+    subtotalInvalid: 'Sous-total invalide',
+    invalid: 'Code invalide',
+    inactive: 'Code inactif',
+    notYet: 'Code pas encore valable',
+    expired: 'Code expiré',
+    minOrder: 'Commande minimum €{amount} pour utiliser ce code',
+    exhausted: 'Code épuisé',
+    maxUses: 'Code déjà utilisé le maximum de fois',
+    applied: 'Remise appliquée : −€{amount}',
+    validateError: 'Erreur de validation',
+  },
+  de: {
+    empty: 'Code eingeben',
+    subtotalInvalid: 'Ungültige Zwischensumme',
+    invalid: 'Ungültiger Code',
+    inactive: 'Code nicht aktiv',
+    notYet: 'Code noch nicht gültig',
+    expired: 'Code abgelaufen',
+    minOrder: 'Mindestbestellwert €{amount} für diesen Code',
+    exhausted: 'Code aufgebraucht',
+    maxUses: 'Code bereits maximal verwendet',
+    applied: 'Rabatt angewendet: −€{amount}',
+    validateError: 'Validierungsfehler',
+  },
+  pt: {
+    empty: 'Insira um código',
+    subtotalInvalid: 'Subtotal inválido',
+    invalid: 'Código inválido',
+    inactive: 'Código inativo',
+    notYet: 'Código ainda não válido',
+    expired: 'Código expirado',
+    minOrder: 'Pedido mínimo €{amount} para usar este código',
+    exhausted: 'Código esgotado',
+    maxUses: 'Código já utilizado o máximo de vezes',
+    applied: 'Desconto aplicado: −€{amount}',
+    validateError: 'Erro de validação',
+  },
+  nl: {
+    empty: 'Voer een code in',
+    subtotalInvalid: 'Ongeldig subtotaal',
+    invalid: 'Ongeldige code',
+    inactive: 'Code niet actief',
+    notYet: 'Code nog niet geldig',
+    expired: 'Code verlopen',
+    minOrder: 'Minimumbestelling €{amount} om deze code te gebruiken',
+    exhausted: 'Code uitgeput',
+    maxUses: 'Code is al maximaal gebruikt',
+    applied: 'Korting toegepast: −€{amount}',
+    validateError: 'Validatiefout',
+  },
+};
+
+function tr(locale: string, key: MsgKey, params: Record<string, string | number> = {}): string {
+  const dict = MSG[locale] || MSG.it;
+  let s = dict[key];
+  for (const [k, v] of Object.entries(params)) s = s.replace(`{${k}}`, String(v));
+  return s;
+}
+
 export async function POST(req: NextRequest) {
   const limited = rateLimit(req, 20, 60_000);
   if (limited) return limited;
 
+  const body = await req.json().catch(() => ({}));
+  const locale = (body?.locale || 'it').toString().slice(0, 2).toLowerCase();
+
   try {
-    const body = await req.json();
     const code = (body?.code || '').toString().trim().toUpperCase();
     const subtotal = Number(body?.subtotal);
     const emailRaw = (body?.email || '').toString().trim().toLowerCase();
     const email = emailRaw && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailRaw) ? emailRaw : null;
 
     if (!code) {
-      return NextResponse.json({ valid: false, message: 'Inserisci un codice' }, { status: 400 });
+      return NextResponse.json({ valid: false, message: tr(locale, 'empty') }, { status: 400 });
     }
     if (!Number.isFinite(subtotal) || subtotal <= 0) {
-      return NextResponse.json({ valid: false, message: 'Subtotale non valido' }, { status: 400 });
+      return NextResponse.json({ valid: false, message: tr(locale, 'subtotalInvalid') }, { status: 400 });
     }
 
     const supabase = createServiceClient();
@@ -46,37 +164,35 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (!coupon) {
-      return NextResponse.json({ valid: false, message: 'Codice non valido' });
+      return NextResponse.json({ valid: false, message: tr(locale, 'invalid') });
     }
     if (!coupon.is_active) {
-      return NextResponse.json({ valid: false, message: 'Codice non attivo' });
+      return NextResponse.json({ valid: false, message: tr(locale, 'inactive') });
     }
     const now = new Date();
     if (coupon.valid_from && new Date(coupon.valid_from) > now) {
-      return NextResponse.json({ valid: false, message: 'Codice non ancora valido' });
+      return NextResponse.json({ valid: false, message: tr(locale, 'notYet') });
     }
     if (coupon.valid_until && new Date(coupon.valid_until) < now) {
-      return NextResponse.json({ valid: false, message: 'Codice scaduto' });
+      return NextResponse.json({ valid: false, message: tr(locale, 'expired') });
     }
     if (coupon.minimum_order_amount && subtotal < Number(coupon.minimum_order_amount)) {
       return NextResponse.json({
         valid: false,
-        message: `Minimo ordine €${Number(coupon.minimum_order_amount).toFixed(0)} per usare questo codice`,
+        message: tr(locale, 'minOrder', { amount: Number(coupon.minimum_order_amount).toFixed(0) }),
       });
     }
 
-    // Global usage cap
     if (coupon.max_uses && coupon.max_uses > 0) {
       const { count } = await supabase
         .from('coupon_redemptions')
         .select('id', { count: 'exact', head: true })
         .eq('coupon_id', coupon.id);
       if ((count || 0) >= coupon.max_uses) {
-        return NextResponse.json({ valid: false, message: 'Codice esaurito' });
+        return NextResponse.json({ valid: false, message: tr(locale, 'exhausted') });
       }
     }
 
-    // Per-customer usage cap — checked against user_id (if authenticated) OR email
     if (coupon.max_uses_per_customer && coupon.max_uses_per_customer > 0) {
       const auth = await createServerClient();
       const { data: { user } } = await auth.auth.getUser();
@@ -90,10 +206,7 @@ export async function POST(req: NextRequest) {
           .eq('coupon_id', coupon.id)
           .eq('customer_id', user.id);
         if ((count || 0) >= cap) {
-          return NextResponse.json({
-            valid: false,
-            message: 'Codice già utilizzato il massimo delle volte',
-          });
+          return NextResponse.json({ valid: false, message: tr(locale, 'maxUses') });
         }
       }
 
@@ -104,10 +217,7 @@ export async function POST(req: NextRequest) {
           .eq('coupon_id', coupon.id)
           .eq('customer_email', checkEmail);
         if ((count || 0) >= cap) {
-          return NextResponse.json({
-            valid: false,
-            message: 'Codice già utilizzato il massimo delle volte',
-          });
+          return NextResponse.json({ valid: false, message: tr(locale, 'maxUses') });
         }
       }
     }
@@ -128,10 +238,10 @@ export async function POST(req: NextRequest) {
       discount_type: coupon.discount_type,
       discount_value: discountValue,
       discount_amount,
-      message: `Sconto applicato: −€${discount_amount.toFixed(2)}`,
+      message: tr(locale, 'applied', { amount: discount_amount.toFixed(2) }),
     });
   } catch (err) {
     console.error('Coupon validate error:', err);
-    return NextResponse.json({ valid: false, message: 'Errore validazione' }, { status: 500 });
+    return NextResponse.json({ valid: false, message: tr(locale, 'validateError') }, { status: 500 });
   }
 }
