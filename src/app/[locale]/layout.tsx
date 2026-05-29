@@ -119,12 +119,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'LocalBusiness'],
-  '@id': 'https://silkincom.com/#organization',
+  '@id': `${APP_URL}/#organization`,
   name: 'SILKinCOM',
   alternateName: 'SILK in COM',
-  url: 'https://silkincom.com',
-  logo: 'https://silkincom.com/logo-official.png',
-  image: 'https://silkincom.com/og-image.jpg',
+  url: APP_URL,
+  logo: `${APP_URL}/logo-official.png`,
+  image: `${APP_URL}/og-image.jpg`,
   description:
     'SILKinCOM produce sciarpe, foulard, twilly e pashmine in pura seta e cashmere, interamente disegnate e confezionate a Como, capitale italiana del tessile di lusso.',
   foundingLocation: 'Como, Italia',
@@ -149,7 +149,7 @@ const organizationSchema = {
     '@type': 'Person',
     name: 'Marco Dibenedetto',
     jobTitle: 'Fondatore',
-    url: 'https://silkincom.com/maison/marco-dibenedetto',
+    url: `${APP_URL}/maison/marco-dibenedetto`,
   },
   contactPoint: [
     {
@@ -173,14 +173,14 @@ const organizationSchema = {
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': 'https://silkincom.com/#website',
-  url: 'https://silkincom.com',
+  '@id': `${APP_URL}/#website`,
+  url: APP_URL,
   name: 'SILKinCOM',
   inLanguage: 'it-IT',
-  publisher: { '@id': 'https://silkincom.com/#organization' },
+  publisher: { '@id': `${APP_URL}/#organization` },
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://silkincom.com/collezioni?q={search_term_string}',
+    target: `${APP_URL}/collezioni?q={search_term_string}`,
     'query-input': 'required name=search_term_string',
   },
 };

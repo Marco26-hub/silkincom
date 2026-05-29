@@ -22,6 +22,13 @@ type Term = {
 
 const TERMS: Term[] = [
   {
+    term: 'Seta di Como',
+    short:
+      'La seta lavorata nel distretto serico della provincia di Como, principale polo serico d\'Europa dal XV secolo.',
+    long:
+      'Con "seta di Como" si indica la seta lavorata nel distretto serico della provincia di Como, in Lombardia, il principale polo serico d\'Europa fin dal XV secolo, quando Ludovico Sforza promosse la coltivazione del gelso sulle colline lariane. Oggi il distretto comasco è l\'unica filiera dell\'emisfero occidentale in cui tutte le fasi — filatura, torcitura, tintura, stampa, tessitura e confezione — sono concentrate nel raggio di pochi chilometri. Vi hanno prodotto le maison del lusso mondiale (Hermès dagli anni Trenta, oltre a Gucci, Dior, Chanel) attraverso manifatture storiche come Mantero (1902) e Ratti (1945). SILKinCOM nasce in questo distretto e confeziona foulard, sciarpe e pashmine interamente a Como, dalla materia prima all\'orlo cucito a mano.',
+  },
+  {
     term: 'Rouletté (orlo cucito a mano)',
     short:
       'La rifinitura tradizionale del foulard di seta: il bordo viene arrotolato a mano con un punto invisibile.',
