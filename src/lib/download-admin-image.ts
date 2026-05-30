@@ -27,26 +27,58 @@ function slugify(input: string): string {
     .slice(0, 60);
 }
 
+function resolveFilename(opts: DownloadOptions, blobType?: string): string {
+  if (opts.filename) return opts.filename;
+  if (opts.storagePath) {
+    const last = opts.storagePath.split('/').pop();
+    if (last) return last;
+  }
+  const titleSlug = slugify(opts.title || 'image');
+  const ext = ((blobType ?? 'image/jpeg').split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+  return `${titleSlug || 'image'}.${ext}`;
+}
+
 export async function downloadAdminImage(opts: DownloadOptions): Promise<void> {
   if (!opts.url) return;
+
+  // Try a same-origin fetch first. Supabase Storage URLs work this way and
+  // we get the blob without leaving the page. For cross-origin sources
+  // (Wix CDN, Pinterest, …) the fetch fails the CORS preflight and we fall
+  // back to the server-side proxy at /api/admin/download-image, which
+  // streams the bytes back without CORS in the way.
   try {
-    const res = await fetch(opts.url);
+    const res = await fetch(opts.url, { mode: 'cors' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    if (blob.size === 0) throw new Error('empty body');
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = resolveFilename(opts, blob.type);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    return;
+  } catch {
+    // Fall through to the server-side proxy.
+  }
+
+  // Server-side proxy — admin auth happens inside the route handler.
+  const filename = resolveFilename(opts);
+  const proxyUrl =
+    `/api/admin/download-image?url=${encodeURIComponent(opts.url)}` +
+    `&filename=${encodeURIComponent(filename)}`;
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => ({}));
+      throw new Error(errJson.error || `proxy HTTP ${res.status}`);
+    }
     const blob = await res.blob();
     const objectUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = objectUrl;
-
-    let filename = opts.filename || '';
-    if (!filename && opts.storagePath) {
-      filename = opts.storagePath.split('/').pop() || '';
-    }
-    if (!filename) {
-      const titleSlug = slugify(opts.title || 'image');
-      const ext = (blob.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
-      filename = `${titleSlug || 'image'}.${ext}`;
-    }
-
     a.download = filename;
     document.body.appendChild(a);
     a.click();
