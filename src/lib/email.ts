@@ -433,7 +433,7 @@ export async function sendHeritageEmail(email: string) {
     <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Capitolo I · Heritage</p>
     <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 24px 0;">Sei secoli di seta sul Lago di Como</h1>
     <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Nel 1400 le prime filande comasche iniziavano a tessere la fibra che avrebbe reso il Lago di Como il distretto serico più importante d'Europa.</p>
-    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Oggi la zona produce oltre il 70% della seta italiana. Ogni telaio porta con sé generazioni di mestiere — e ogni capo SILKinCOM nasce da queste mani.</p>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Oggi la zona produce oltre il 70% della seta. Ogni telaio porta con sé generazioni di mestiere — e ogni capo SILKinCOM nasce da queste mani.</p>
     <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">La nostra missione è semplice: portare quel patrimonio direttamente al suo guardaroba, senza intermediari.</p>
     ${luxuryButton(`${APP_URL}/la-nostra-storia`, 'Scopri la nostra storia')}
     <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Tra qualche giorno, un piccolo gesto di benvenuto.</p>
