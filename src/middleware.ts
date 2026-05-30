@@ -20,6 +20,27 @@ function stripLocale(pathname: string): { locale: string | null; rest: string } 
 }
 
 export async function middleware(request: NextRequest) {
+  // 0. Short branded UTM links for social bios + captions (e.g. silkincom.com/ig).
+  //    Resolved here, before next-intl, so the bare "/ig" path isn't swallowed by
+  //    locale routing. 302 (temporary) keeps campaign attribution out of caches.
+  //    Captions stay clean while every visit is attributed; set each platform's
+  //    link-in-bio to the matching path. Pinterest already carries UTM on its links.
+  const utmShortlinks: Record<string, string> = {
+    '/ig': 'instagram',
+    '/tt': 'tiktok',
+    '/fb': 'facebook',
+    '/pin': 'pinterest',
+  };
+  const shortlinkSource = utmShortlinks[request.nextUrl.pathname];
+  if (shortlinkSource) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
+    url.search = '';
+    url.searchParams.set('utm_source', shortlinkSource);
+    url.searchParams.set('utm_medium', 'social');
+    return NextResponse.redirect(url);
+  }
+
   // 1. Run next-intl first: handles locale detection, redirects and rewrites.
   //    This runs on every matched route.
   const response = handleI18nRouting(request);
