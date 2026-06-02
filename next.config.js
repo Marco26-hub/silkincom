@@ -26,6 +26,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'static.wixstatic.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'images.pexels.com' },
+      { protocol: 'https', hostname: '**.etsystatic.com' },
     ],
   },
   async headers() {
@@ -45,7 +46,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://connect.facebook.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://static.wixstatic.com https://*.supabase.co https://images.unsplash.com https://images.pexels.com https://www.google-analytics.com https://www.facebook.com",
+              "img-src 'self' data: blob: https://static.wixstatic.com https://*.supabase.co https://*.etsystatic.com https://images.unsplash.com https://images.pexels.com https://www.google-analytics.com https://www.facebook.com",
               "connect-src 'self' https://*.supabase.co https://api.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://connect.facebook.net",
               "frame-src https://js.stripe.com https://hooks.stripe.com https://www.facebook.com",
               "object-src 'none'",
