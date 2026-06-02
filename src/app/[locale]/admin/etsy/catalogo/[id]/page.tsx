@@ -10,7 +10,10 @@ import {
   Tag, Package, Star,
 } from 'lucide-react';
 
-type Lang = 'en' | 'it';
+// 'primary' = the listing's own/master language on Etsy (Italian for this shop).
+// 'en'      = the English TRANSLATION (Etsy translations endpoint). English is
+//             NOT the master here, so it lives as a translation, not the listing.
+type Lang = 'primary' | 'en';
 type ViewMode = 'read' | 'write';
 
 type ListingRow = {
@@ -32,20 +35,16 @@ type ListingRow = {
   raw: Record<string, any> | null;
 };
 
-type Translation = {
-  title?: string;
-  description?: string;
-  tags?: string[];
-};
+type Translation = { title?: string; description?: string; tags?: string[] };
 
 type FormData = {
-  en: {
+  primary: {
     title: string; description: string; price: string; currency: string;
     quantity: string; state: string; tags: string; materials: string;
     sku: string; taxonomy_id: string; who_made: string;
     when_made: string; is_supply: boolean;
   };
-  it: { title: string; description: string; tags: string };
+  en: { title: string; description: string; tags: string };
 };
 
 const WHO_MADE_OPTIONS = [
@@ -64,6 +63,11 @@ const STATE_OPTIONS = [
   { value: 'inactive', label: 'Inattivo' },
   { value: 'draft', label: 'Bozza' },
 ];
+
+const LANG_NAMES: Record<string, string> = {
+  it: 'Italiano', en: 'English', es: 'Español', fr: 'Français',
+  de: 'Deutsch', pt: 'Português', nl: 'Nederlands',
+};
 
 function statePill(s: string | null) {
   const t = (s || '').toLowerCase();
@@ -85,7 +89,6 @@ function fmtPrice(v: number | null, cur: string | null) {
 function inputCls(extra = '') {
   return `w-full border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black bg-white ${extra}`;
 }
-
 function labelCls() {
   return 'block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1 font-medium';
 }
@@ -93,14 +96,13 @@ function labelCls() {
 // ─── READ VIEW ──────────────────────────────────────────────────────────────
 
 function EtsyListingScreen({
-  listing, translationIT,
-}: { listing: ListingRow; translationIT: Translation }) {
+  listing, translationEN, primaryLabel,
+}: { listing: ListingRow; translationEN: Translation; primaryLabel: string }) {
   const [activeImg, setActiveImg] = useState(0);
   const imgs = listing.image_urls ?? [];
 
   return (
     <div className="bg-white border border-pearl-grey">
-      {/* Etsy-style topbar */}
       <div className="border-b border-pearl-grey bg-[#F1641E]/5 px-5 py-2 flex items-center gap-2">
         <Store className="w-4 h-4 text-[#F1641E]" />
         <span className="text-xs text-[#F1641E] font-medium tracking-wide">ETSY — ANTEPRIMA LISTING</span>
@@ -114,26 +116,16 @@ function EtsyListingScreen({
       </div>
 
       <div className="flex flex-col md:flex-row gap-0">
-        {/* Left: images */}
         <div className="md:w-[55%] border-r border-pearl-grey p-4 space-y-3">
-          {/* Main image */}
           <div className="relative aspect-square bg-pearl-grey/20 border border-pearl-grey/60 overflow-hidden">
             {imgs[activeImg] ? (
-              <Image
-                src={imgs[activeImg]}
-                alt=""
-                fill
-                sizes="500px"
-                className="object-contain"
-                unoptimized
-              />
+              <Image src={imgs[activeImg]} alt="" fill sizes="500px" className="object-contain" unoptimized />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-soft-grey/40">
                 <Package className="w-16 h-16" />
               </div>
             )}
           </div>
-          {/* Thumbnails */}
           {imgs.length > 1 && (
             <div className="flex gap-2 flex-wrap">
               {imgs.slice(0, 10).map((src, i) => (
@@ -149,9 +141,7 @@ function EtsyListingScreen({
           )}
         </div>
 
-        {/* Right: info */}
         <div className="md:w-[45%] p-6 space-y-5">
-          {/* Shop + state */}
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-[#F1641E] font-medium">SilkInCom</span>
             <span className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${statePill(listing.state)}`}>
@@ -159,78 +149,54 @@ function EtsyListingScreen({
             </span>
           </div>
 
-          {/* Title EN */}
           <div>
-            <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-1">Title (EN)</p>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-1">Titolo · {primaryLabel} (principale)</p>
             <h2 className="text-lg font-medium leading-snug">
               {listing.title || <span className="text-soft-grey italic">—</span>}
             </h2>
           </div>
 
-          {/* Title IT (translation) */}
-          {translationIT.title && (
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-1">Titolo (IT)</p>
-              <h3 className="text-base text-soft-grey/80 leading-snug">{translationIT.title}</h3>
-            </div>
-          )}
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-1">Title · English (traduzione)</p>
+            {translationEN.title
+              ? <h3 className="text-base text-soft-grey/80 leading-snug">{translationEN.title}</h3>
+              : <p className="text-xs text-amber-600 italic">Nessuna traduzione inglese su Etsy — da aggiungere</p>}
+          </div>
 
-          {/* Price + qty */}
           <div className="flex items-baseline gap-4">
             <span className="text-2xl font-display">{fmtPrice(listing.price, listing.currency)}</span>
             <span className="text-xs text-soft-grey">Qtà: {listing.quantity ?? 0}</span>
           </div>
 
-          {/* Etsy stars mockup */}
           <div className="flex items-center gap-1.5">
-            {[1,2,3,4,5].map(i => (
-              <Star key={i} className={`w-3.5 h-3.5 ${i <= 5 ? 'text-[#F1641E] fill-[#F1641E]' : 'text-pearl-grey'}`} />
-            ))}
+            {[1,2,3,4,5].map(i => <Star key={i} className="w-3.5 h-3.5 text-[#F1641E] fill-[#F1641E]" />)}
             <span className="text-xs text-soft-grey ml-1">dati reali su etsy.com</span>
           </div>
 
-          {/* Stats */}
           <div className="flex gap-4 border-t border-b border-pearl-grey/60 py-3">
-            <div className="flex items-center gap-1.5 text-xs text-soft-grey">
-              <Eye className="w-3.5 h-3.5" /> {listing.views ?? 0} viste
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-soft-grey">
-              <Heart className="w-3.5 h-3.5" /> {listing.num_favorers ?? 0} preferiti
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-soft-grey">
-              <BarChart2 className="w-3.5 h-3.5" /> ID {listing.listing_id}
-            </div>
+            <div className="flex items-center gap-1.5 text-xs text-soft-grey"><Eye className="w-3.5 h-3.5" /> {listing.views ?? 0} viste</div>
+            <div className="flex items-center gap-1.5 text-xs text-soft-grey"><Heart className="w-3.5 h-3.5" /> {listing.num_favorers ?? 0} preferiti</div>
+            <div className="flex items-center gap-1.5 text-xs text-soft-grey"><BarChart2 className="w-3.5 h-3.5" /> ID {listing.listing_id}</div>
           </div>
 
-          {/* Tags EN */}
           {(listing.tags ?? []).length > 0 && (
             <div>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-2 flex items-center gap-1">
-                <Tag className="w-3 h-3" /> Tags EN ({(listing.tags ?? []).length}/13)
-              </p>
+              <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-2 flex items-center gap-1"><Tag className="w-3 h-3" /> Tags · {primaryLabel} ({(listing.tags ?? []).length}/13)</p>
               <div className="flex flex-wrap gap-1.5">
-                {(listing.tags ?? []).map((tag) => (
-                  <span key={tag} className="px-2 py-0.5 bg-ivory border border-pearl-grey/60 text-[11px] text-soft-grey">{tag}</span>
-                ))}
+                {(listing.tags ?? []).map((tag) => <span key={tag} className="px-2 py-0.5 bg-ivory border border-pearl-grey/60 text-[11px] text-soft-grey">{tag}</span>)}
               </div>
             </div>
           )}
 
-          {/* Tags IT */}
-          {(translationIT.tags ?? []).length > 0 && (
+          {(translationEN.tags ?? []).length > 0 && (
             <div>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-2 flex items-center gap-1">
-                <Tag className="w-3 h-3" /> Tags IT ({(translationIT.tags ?? []).length}/13)
-              </p>
+              <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-2 flex items-center gap-1"><Tag className="w-3 h-3" /> Tags · EN ({(translationEN.tags ?? []).length}/13)</p>
               <div className="flex flex-wrap gap-1.5">
-                {(translationIT.tags ?? []).map((tag) => (
-                  <span key={tag} className="px-2 py-0.5 bg-blue-50 border border-blue-100 text-[11px] text-soft-grey">{tag}</span>
-                ))}
+                {(translationEN.tags ?? []).map((tag) => <span key={tag} className="px-2 py-0.5 bg-blue-50 border border-blue-100 text-[11px] text-soft-grey">{tag}</span>)}
               </div>
             </div>
           )}
 
-          {/* Materials */}
           {(listing.materials ?? []).length > 0 && (
             <div>
               <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-1">Materiali</p>
@@ -238,40 +204,26 @@ function EtsyListingScreen({
             </div>
           )}
 
-          {/* SKU + taxonomy */}
           <div className="grid grid-cols-2 gap-3 text-xs">
-            {listing.sku && (
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-0.5">SKU</p>
-                <p className="font-mono">{listing.sku}</p>
-              </div>
-            )}
-            {listing.taxonomy_id && (
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-0.5">Taxonomy</p>
-                <p className="font-mono">{listing.taxonomy_id}</p>
-              </div>
-            )}
+            {listing.sku && (<div><p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-0.5">SKU</p><p className="font-mono">{listing.sku}</p></div>)}
+            {listing.taxonomy_id && (<div><p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-0.5">Taxonomy</p><p className="font-mono">{listing.taxonomy_id}</p></div>)}
           </div>
         </div>
       </div>
 
-      {/* Description */}
       <div className="border-t border-pearl-grey p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-3">Descrizione EN</p>
+          <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-3">Descrizione · {primaryLabel} (principale)</p>
           <div className="text-sm text-soft-grey/90 whitespace-pre-line leading-relaxed max-h-64 overflow-y-auto">
             {listing.description || <span className="italic">—</span>}
           </div>
         </div>
-        {translationIT.description && (
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-3">Descrizione IT</p>
-            <div className="text-sm text-soft-grey/90 whitespace-pre-line leading-relaxed max-h-64 overflow-y-auto">
-              {translationIT.description}
-            </div>
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.15em] text-soft-grey mb-3">Description · English (traduzione)</p>
+          <div className="text-sm text-soft-grey/90 whitespace-pre-line leading-relaxed max-h-64 overflow-y-auto">
+            {translationEN.description || <span className="italic text-amber-600">Nessuna traduzione inglese — da aggiungere</span>}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -283,32 +235,34 @@ export default function EtsyListingDetailPage() {
   const { id } = useParams<{ id: string }>();
 
   const [listing, setListing] = useState<ListingRow | null>(null);
-  const [translationIT, setTranslationIT] = useState<Translation>({});
+  const [translationEN, setTranslationEN] = useState<Translation>({});
+  const [primaryLang, setPrimaryLang] = useState<string>('it');
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('read');
-  const [lang, setLang] = useState<Lang>('en');
+  const [lang, setLang] = useState<Lang>('primary');
   const [saving, setSaving] = useState<Lang | null>(null);
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [form, setForm] = useState<FormData>({
-    en: {
+    primary: {
       title: '', description: '', price: '', currency: 'EUR',
       quantity: '', state: 'active', tags: '', materials: '',
       sku: '', taxonomy_id: '', who_made: 'i_did',
       when_made: 'made_to_order', is_supply: false,
     },
-    it: { title: '', description: '', tags: '' },
+    en: { title: '', description: '', tags: '' },
   });
 
   const load = useCallback(async () => {
     try {
       const res = await fetch(`/api/etsy/listing/${id}`);
-      const data = await res.json() as { listing: ListingRow; translation: Translation };
+      const data = await res.json() as { listing: ListingRow; translation: Translation; primaryLanguage?: string };
       setListing(data.listing);
-      setTranslationIT(data.translation ?? {});
+      setTranslationEN(data.translation ?? {});
+      setPrimaryLang(data.primaryLanguage ?? 'it');
       const l = data.listing;
       const t = data.translation ?? {};
       setForm({
-        en: {
+        primary: {
           title: l.title ?? '',
           description: l.description ?? '',
           price: l.price != null ? String(l.price) : '',
@@ -323,7 +277,7 @@ export default function EtsyListingDetailPage() {
           when_made: l.raw?.when_made ?? 'made_to_order',
           is_supply: l.raw?.is_supply ?? false,
         },
-        it: {
+        en: {
           title: t.title ?? '',
           description: t.description ?? '',
           tags: (t.tags ?? []).join(', '),
@@ -338,39 +292,42 @@ export default function EtsyListingDetailPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  function setP<K extends keyof FormData['primary']>(k: K, v: FormData['primary'][K]) {
+    setForm(f => ({ ...f, primary: { ...f.primary, [k]: v } }));
+  }
   function setEN<K extends keyof FormData['en']>(k: K, v: FormData['en'][K]) {
     setForm(f => ({ ...f, en: { ...f.en, [k]: v } }));
   }
-  function setIT<K extends keyof FormData['it']>(k: K, v: FormData['it'][K]) {
-    setForm(f => ({ ...f, it: { ...f.it, [k]: v } }));
-  }
 
-  async function save(l: Lang) {
-    setSaving(l);
+  async function save(which: Lang) {
+    setSaving(which);
     setMsg(null);
     try {
+      let langParam: string | undefined;
       let fields: Record<string, unknown>;
-      if (l === 'en') {
+      if (which === 'primary') {
+        langParam = undefined;
+        fields = {
+          title: form.primary.title,
+          description: form.primary.description,
+          price: parseFloat(form.primary.price) || 0,
+          quantity: parseInt(form.primary.quantity, 10) || 0,
+          state: form.primary.state,
+          tags: form.primary.tags.split(',').map(t => t.trim()).filter(Boolean).slice(0, 13),
+          materials: form.primary.materials.split(',').map(t => t.trim()).filter(Boolean),
+          sku: form.primary.sku || undefined,
+          taxonomy_id: form.primary.taxonomy_id ? parseInt(form.primary.taxonomy_id, 10) : undefined,
+          who_made: form.primary.who_made,
+          when_made: form.primary.when_made,
+          is_supply: form.primary.is_supply,
+        };
+      } else {
+        langParam = 'en';
         fields = {
           title: form.en.title,
           description: form.en.description,
-          price: parseFloat(form.en.price) || 0,
-          quantity: parseInt(form.en.quantity, 10) || 0,
-          state: form.en.state,
-          tags: form.en.tags.split(',').map(t => t.trim()).filter(Boolean).slice(0, 13),
-          materials: form.en.materials.split(',').map(t => t.trim()).filter(Boolean),
-          sku: form.en.sku || undefined,
-          taxonomy_id: form.en.taxonomy_id ? parseInt(form.en.taxonomy_id, 10) : undefined,
-          who_made: form.en.who_made,
-          when_made: form.en.when_made,
-          is_supply: form.en.is_supply,
-        };
-      } else {
-        fields = {
-          title: form.it.title || undefined,
-          description: form.it.description || undefined,
-          tags: form.it.tags
-            ? form.it.tags.split(',').map(t => t.trim()).filter(Boolean).slice(0, 13)
+          tags: form.en.tags
+            ? form.en.tags.split(',').map(t => t.trim()).filter(Boolean).slice(0, 13)
             : undefined,
         };
       }
@@ -378,12 +335,11 @@ export default function EtsyListingDetailPage() {
       const res = await fetch(`/api/etsy/listing/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lang: l === 'it' ? 'it' : undefined, fields }),
+        body: JSON.stringify({ lang: langParam, fields }),
       });
       const data = await res.json();
       if (data.ok) {
-        setMsg({ type: 'ok', text: `Sincronizzato su Etsy (${l.toUpperCase()}).` });
-        // Reload to show updated read view
+        setMsg({ type: 'ok', text: which === 'primary' ? 'Listing principale sincronizzato su Etsy.' : 'Traduzione inglese sincronizzata su Etsy.' });
         await load();
         setViewMode('read');
       } else {
@@ -413,40 +369,31 @@ export default function EtsyListingDetailPage() {
     );
   }
 
+  const primaryLabel = LANG_NAMES[primaryLang] ?? primaryLang.toUpperCase();
+
   return (
     <div className="space-y-5 max-w-[1000px]">
-      {/* Breadcrumb */}
       <Link href="/admin/etsy/catalogo?mode=write" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-soft-grey hover:text-soft-black">
         <ArrowLeft className="w-3.5 h-3.5" /> Catalogo Etsy
       </Link>
 
-      {/* Header + R/W switch */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2 min-w-0">
           <Store className="w-5 h-5 text-[#F1641E] shrink-0" />
           <p className="text-sm text-soft-grey truncate">#{listing.listing_id}</p>
         </div>
 
-        {/* Read / Write toggle */}
         <div className="flex items-center border border-pearl-grey bg-white overflow-hidden text-[10px] uppercase tracking-[0.2em]">
           <button
             onClick={() => setViewMode('read')}
-            className={`flex items-center gap-1.5 px-4 py-2 transition-colors ${
-              viewMode === 'read'
-                ? 'bg-soft-black text-warm-white'
-                : 'text-soft-grey hover:text-soft-black'
-            }`}
+            className={`flex items-center gap-1.5 px-4 py-2 transition-colors ${viewMode === 'read' ? 'bg-soft-black text-warm-white' : 'text-soft-grey hover:text-soft-black'}`}
           >
             <Eye className="w-3 h-3" /> Read
           </button>
           <div className="w-px h-full bg-pearl-grey" />
           <button
             onClick={() => setViewMode('write')}
-            className={`flex items-center gap-1.5 px-4 py-2 transition-colors ${
-              viewMode === 'write'
-                ? 'bg-[#F1641E] text-white'
-                : 'text-soft-grey hover:text-soft-black'
-            }`}
+            className={`flex items-center gap-1.5 px-4 py-2 transition-colors ${viewMode === 'write' ? 'bg-[#F1641E] text-white' : 'text-soft-grey hover:text-soft-black'}`}
           >
             <Pencil className="w-3 h-3" /> Write
           </button>
@@ -460,154 +407,112 @@ export default function EtsyListingDetailPage() {
         </div>
       )}
 
-      {/* ── READ MODE ── */}
       {viewMode === 'read' && (
-        <EtsyListingScreen listing={listing} translationIT={translationIT} />
+        <EtsyListingScreen listing={listing} translationEN={translationEN} primaryLabel={primaryLabel} />
       )}
 
-      {/* ── WRITE MODE ── */}
       {viewMode === 'write' && (
         <div className="space-y-5">
-          {/* Language tabs */}
           <div className="border-b border-pearl-grey flex gap-0">
-            {(['en', 'it'] as Lang[]).map(l => (
+            {(['primary', 'en'] as Lang[]).map(l => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`flex items-center gap-2 px-6 py-2.5 text-[11px] uppercase tracking-[0.2em] font-medium border-b-2 -mb-px transition-colors ${
-                  lang === l
-                    ? 'border-soft-black text-soft-black'
-                    : 'border-transparent text-soft-grey hover:text-soft-black'
-                }`}
+                className={`flex items-center gap-2 px-6 py-2.5 text-[11px] uppercase tracking-[0.2em] font-medium border-b-2 -mb-px transition-colors ${lang === l ? 'border-soft-black text-soft-black' : 'border-transparent text-soft-grey hover:text-soft-black'}`}
               >
-                {l === 'en' ? '🇬🇧 English' : '🇮🇹 Italiano'}
+                {l === 'primary' ? `🇮🇹 ${primaryLabel} (principale)` : '🇬🇧 English'}
               </button>
             ))}
           </div>
 
-          {/* EN fields */}
-          {lang === 'en' && (
+          {/* PRIMARY (master) fields */}
+          {lang === 'primary' && (
             <div className="space-y-5">
               <p className="text-xs text-soft-grey bg-ivory border border-pearl-grey/60 px-4 py-2">
-                Modifica il listing principale (lingua default Etsy). Tutti i campi vengono sincronizzati su Etsy.
+                Lingua principale del listing ({primaryLabel}). Tutti i campi (prezzo, qty, stato, tag, materiali…) si modificano qui e vanno su Etsy.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="md:col-span-2">
-                  <label className={labelCls()}>Title (EN) — {form.en.title.length}/140</label>
-                  <input type="text" value={form.en.title} onChange={e => setEN('title', e.target.value)} className={inputCls()} maxLength={140} />
+                  <label className={labelCls()}>Titolo — {form.primary.title.length}/140</label>
+                  <input type="text" value={form.primary.title} onChange={e => setP('title', e.target.value)} className={inputCls()} maxLength={140} />
                 </div>
-
                 <div className="md:col-span-2">
-                  <label className={labelCls()}>Description (EN) — {form.en.description.length}/4000</label>
-                  <textarea value={form.en.description} onChange={e => setEN('description', e.target.value)} rows={8} className={inputCls('resize-y')} maxLength={4000} />
+                  <label className={labelCls()}>Descrizione — {form.primary.description.length}/4000</label>
+                  <textarea value={form.primary.description} onChange={e => setP('description', e.target.value)} rows={8} className={inputCls('resize-y')} maxLength={4000} />
                 </div>
-
                 <div>
                   <label className={labelCls()}>Prezzo</label>
                   <div className="flex gap-2">
-                    <input type="number" step="0.01" min="0" value={form.en.price} onChange={e => setEN('price', e.target.value)} className={inputCls('flex-1')} />
-                    <select value={form.en.currency} onChange={e => setEN('currency', e.target.value)} className={inputCls('w-24')}>
+                    <input type="number" step="0.01" min="0" value={form.primary.price} onChange={e => setP('price', e.target.value)} className={inputCls('flex-1')} />
+                    <select value={form.primary.currency} onChange={e => setP('currency', e.target.value)} className={inputCls('w-24')}>
                       {['EUR', 'USD', 'GBP'].map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                 </div>
-
-                <div>
-                  <label className={labelCls()}>Quantità</label>
-                  <input type="number" min="0" value={form.en.quantity} onChange={e => setEN('quantity', e.target.value)} className={inputCls()} />
-                </div>
-
+                <div><label className={labelCls()}>Quantità</label><input type="number" min="0" value={form.primary.quantity} onChange={e => setP('quantity', e.target.value)} className={inputCls()} /></div>
                 <div>
                   <label className={labelCls()}>Stato</label>
-                  <select value={form.en.state} onChange={e => setEN('state', e.target.value)} className={inputCls()}>
+                  <select value={form.primary.state} onChange={e => setP('state', e.target.value)} className={inputCls()}>
                     {STATE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
                 </div>
-
-                <div>
-                  <label className={labelCls()}>SKU</label>
-                  <input type="text" value={form.en.sku} onChange={e => setEN('sku', e.target.value)} className={inputCls()} />
-                </div>
-
+                <div><label className={labelCls()}>SKU</label><input type="text" value={form.primary.sku} onChange={e => setP('sku', e.target.value)} className={inputCls()} /></div>
                 <div className="md:col-span-2">
-                  <label className={labelCls()}>
-                    Tags EN — {form.en.tags.split(',').filter(t => t.trim()).length}/13
-                  </label>
-                  <input type="text" value={form.en.tags} onChange={e => setEN('tags', e.target.value)} placeholder="silk scarf, luxury gift, handmade, ..." className={inputCls()} />
+                  <label className={labelCls()}>Tags — {form.primary.tags.split(',').filter(t => t.trim()).length}/13</label>
+                  <input type="text" value={form.primary.tags} onChange={e => setP('tags', e.target.value)} className={inputCls()} />
                 </div>
-
-                <div className="md:col-span-2">
-                  <label className={labelCls()}>Materials (separati da virgola)</label>
-                  <input type="text" value={form.en.materials} onChange={e => setEN('materials', e.target.value)} placeholder="silk, cashmere, ..." className={inputCls()} />
-                </div>
-
-                <div>
-                  <label className={labelCls()}>Taxonomy ID</label>
-                  <input type="number" value={form.en.taxonomy_id} onChange={e => setEN('taxonomy_id', e.target.value)} className={inputCls()} />
-                </div>
-
+                <div className="md:col-span-2"><label className={labelCls()}>Materials (virgola)</label><input type="text" value={form.primary.materials} onChange={e => setP('materials', e.target.value)} className={inputCls()} /></div>
+                <div><label className={labelCls()}>Taxonomy ID</label><input type="number" value={form.primary.taxonomy_id} onChange={e => setP('taxonomy_id', e.target.value)} className={inputCls()} /></div>
                 <div>
                   <label className={labelCls()}>Who Made</label>
-                  <select value={form.en.who_made} onChange={e => setEN('who_made', e.target.value)} className={inputCls()}>
+                  <select value={form.primary.who_made} onChange={e => setP('who_made', e.target.value)} className={inputCls()}>
                     {WHO_MADE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
                 </div>
-
                 <div>
                   <label className={labelCls()}>When Made</label>
-                  <select value={form.en.when_made} onChange={e => setEN('when_made', e.target.value)} className={inputCls()}>
+                  <select value={form.primary.when_made} onChange={e => setP('when_made', e.target.value)} className={inputCls()}>
                     {WHEN_MADE_OPTIONS.map(v => <option key={v} value={v}>{v}</option>)}
                   </select>
                 </div>
-
                 <div className="flex items-center gap-3 pt-4">
-                  <input id="is_supply" type="checkbox" checked={form.en.is_supply} onChange={e => setEN('is_supply', e.target.checked)} className="w-4 h-4 accent-soft-black" />
+                  <input id="is_supply" type="checkbox" checked={form.primary.is_supply} onChange={e => setP('is_supply', e.target.checked)} className="w-4 h-4 accent-soft-black" />
                   <label htmlFor="is_supply" className="text-sm">È un supply/materiale (non handmade)</label>
                 </div>
               </div>
 
               <div className="flex justify-end pt-2">
-                <button onClick={() => save('en')} disabled={saving !== null} className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#F1641E] text-white text-[10px] uppercase tracking-[0.2em] hover:bg-[#d4551a] transition-colors disabled:opacity-40">
-                  {saving === 'en'
-                    ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sincronizzo su Etsy…</>
-                    : <><Save className="w-3.5 h-3.5" /> Sincronizza EN → Etsy</>
-                  }
+                <button onClick={() => save('primary')} disabled={saving !== null} className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#F1641E] text-white text-[10px] uppercase tracking-[0.2em] hover:bg-[#d4551a] transition-colors disabled:opacity-40">
+                  {saving === 'primary' ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sincronizzo…</> : <><Save className="w-3.5 h-3.5" /> Sincronizza principale → Etsy</>}
                 </button>
               </div>
             </div>
           )}
 
-          {/* IT fields */}
-          {lang === 'it' && (
+          {/* ENGLISH translation fields */}
+          {lang === 'en' && (
             <div className="space-y-5">
               <p className="text-xs text-soft-grey bg-ivory border border-pearl-grey/60 px-4 py-2">
-                Traduzione italiana: title, description, tags. Gli altri campi (prezzo, qty, stato…) si modificano solo da EN.
+                Traduzione <strong>inglese</strong> (title, description, tags). Si aggiunge come traduzione Etsy `en` — non sovrascrive il listing principale {primaryLabel}.
               </p>
 
               <div>
-                <label className={labelCls()}>Titolo IT — {form.it.title.length}/140</label>
-                <input type="text" value={form.it.title} onChange={e => setIT('title', e.target.value)} className={inputCls()} maxLength={140} />
+                <label className={labelCls()}>Title (EN) — {form.en.title.length}/140</label>
+                <input type="text" value={form.en.title} onChange={e => setEN('title', e.target.value)} className={inputCls()} maxLength={140} />
               </div>
-
               <div>
-                <label className={labelCls()}>Descrizione IT — {form.it.description.length}/4000</label>
-                <textarea value={form.it.description} onChange={e => setIT('description', e.target.value)} rows={10} className={inputCls('resize-y')} maxLength={4000} />
+                <label className={labelCls()}>Description (EN) — {form.en.description.length}/4000</label>
+                <textarea value={form.en.description} onChange={e => setEN('description', e.target.value)} rows={10} className={inputCls('resize-y')} maxLength={4000} />
               </div>
-
               <div>
-                <label className={labelCls()}>
-                  Tags IT — {form.it.tags.split(',').filter(t => t.trim()).length}/13
-                </label>
-                <input type="text" value={form.it.tags} onChange={e => setIT('tags', e.target.value)} placeholder="foulard di seta, regalo lusso, fatto a mano, ..." className={inputCls()} />
+                <label className={labelCls()}>Tags EN — {form.en.tags.split(',').filter(t => t.trim()).length}/13</label>
+                <input type="text" value={form.en.tags} onChange={e => setEN('tags', e.target.value)} placeholder="silk scarf, luxury gift, handmade, ..." className={inputCls()} />
               </div>
 
               <div className="flex justify-end pt-2">
-                <button onClick={() => save('it')} disabled={saving !== null} className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#F1641E] text-white text-[10px] uppercase tracking-[0.2em] hover:bg-[#d4551a] transition-colors disabled:opacity-40">
-                  {saving === 'it'
-                    ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sincronizzo su Etsy…</>
-                    : <><Save className="w-3.5 h-3.5" /> Sincronizza IT → Etsy</>
-                  }
+                <button onClick={() => save('en')} disabled={saving !== null} className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#F1641E] text-white text-[10px] uppercase tracking-[0.2em] hover:bg-[#d4551a] transition-colors disabled:opacity-40">
+                  {saving === 'en' ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sincronizzo…</> : <><Save className="w-3.5 h-3.5" /> Sincronizza EN → Etsy</>}
                 </button>
               </div>
             </div>
