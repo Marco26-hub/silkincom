@@ -104,8 +104,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
   },
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-    apple: '/apple-icon.svg',
+    // Official Lake Como mark (gold on soft-black) extracted from the
+    // brand logo. .ico carries 16/32/48 for browser tabs; icon.png is the
+    // hi-res modern fallback; apple-icon.png is the iOS home-screen tile.
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: '/apple-icon.png',
   },
   verification: {
     other: {
