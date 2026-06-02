@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   CalendarDays, Plus, Trash2, Check, Circle, SkipForward, Loader2,
-  Info, ChevronDown, ChevronUp,
+  Info, ChevronDown, ChevronUp, Sparkles,
 } from 'lucide-react';
 
 type Item = {
@@ -48,6 +48,47 @@ export default function PianoEditorialePage() {
   const [saving, setSaving] = useState(false);
   const [showStrategy, setShowStrategy] = useState(true);
   const [msg, setMsg] = useState<string | null>(null);
+
+  // AI generation
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const [gen, setGen] = useState({
+    startDate: todayISO,
+    days: 14,
+    channels: ['instagram', 'facebook', 'tiktok', 'pinterest'] as string[],
+    goal: '',
+  });
+  const [generating, setGenerating] = useState(false);
+  const [genMsg, setGenMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+
+  function toggleGenChannel(c: string) {
+    setGen((g) => ({
+      ...g,
+      channels: g.channels.includes(c) ? g.channels.filter((x) => x !== c) : [...g.channels, c],
+    }));
+  }
+
+  async function generate() {
+    setGenerating(true);
+    setGenMsg(null);
+    try {
+      const res = await fetch('/api/admin/content-plan/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(gen),
+      });
+      const d = await res.json();
+      if (d.ok) {
+        setGenMsg({ type: 'ok', text: `${d.inserted} contenuti generati e aggiunti al calendario.` });
+        await load();
+      } else {
+        setGenMsg({ type: 'err', text: d.error || 'Errore generazione' });
+      }
+    } catch (e) {
+      setGenMsg({ type: 'err', text: (e as Error).message });
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   const load = useCallback(async () => {
     try {
@@ -143,9 +184,56 @@ export default function PianoEditorialePage() {
         )}
       </div>
 
+      {/* AI generation */}
+      <div className="border border-gold-primary/40 bg-gold-primary/5 p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-gold-dark" />
+          <h2 className="text-sm font-medium">Genera con AI</h2>
+          <span className="text-xs text-soft-grey">— calendario completo, strategia social media manager senior</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1">Data inizio</label>
+            <input type="date" value={gen.startDate} onChange={(e) => setGen({ ...gen, startDate: e.target.value })} className="w-full border border-pearl-grey px-3 py-2 text-sm bg-white" />
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1">Durata</label>
+            <select value={gen.days} onChange={(e) => setGen({ ...gen, days: Number(e.target.value) })} className="w-full border border-pearl-grey px-3 py-2 text-sm bg-white">
+              <option value={7}>1 settimana</option>
+              <option value={14}>2 settimane</option>
+              <option value={30}>1 mese</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1">Obiettivo (opz.)</label>
+            <input type="text" value={gen.goal} onChange={(e) => setGen({ ...gen, goal: e.target.value })} placeholder="es. lancio capsule cashmere, regali Natale" className="w-full border border-pearl-grey px-3 py-2 text-sm bg-white" />
+          </div>
+        </div>
+        <div>
+          <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">Canali</label>
+          <div className="flex flex-wrap gap-2">
+            {['instagram', 'facebook', 'tiktok', 'pinterest', 'threads', 'youtube', 'email'].map((c) => {
+              const on = gen.channels.includes(c);
+              return (
+                <button key={c} type="button" onClick={() => toggleGenChannel(c)} className={`px-3 py-1 text-xs border transition-colors ${on ? 'border-soft-black bg-soft-black text-warm-white' : 'border-pearl-grey text-soft-grey hover:border-soft-black'}`}>
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        {genMsg && (
+          <p className={`text-xs ${genMsg.type === 'ok' ? 'text-green-700' : 'text-red-700'}`}>{genMsg.text}</p>
+        )}
+        <button onClick={generate} disabled={generating || gen.channels.length === 0} className="inline-flex items-center gap-2 px-6 py-2 bg-gold-primary text-soft-black text-[10px] uppercase tracking-[0.2em] hover:bg-gold-dark hover:text-warm-white transition-colors disabled:opacity-40">
+          {generating ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Genero il piano…</> : <><Sparkles className="w-3.5 h-3.5" /> Genera calendario</>}
+        </button>
+        <p className="text-[11px] text-soft-grey">Aggiunge i post generati al calendario sotto (stato “planned”). Puoi modificarli o eliminarli singolarmente.</p>
+      </div>
+
       {/* Add form */}
       <form onSubmit={add} className="border border-pearl-grey bg-white p-5 space-y-3">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-soft-grey font-medium">Nuova voce</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-soft-grey font-medium">Nuova voce (manuale)</p>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <input type="date" required value={form.scheduled_date} onChange={e => setForm({ ...form, scheduled_date: e.target.value })} className="border border-pearl-grey px-3 py-2 text-sm bg-white" />
           <select value={form.channel} onChange={e => setForm({ ...form, channel: e.target.value })} className="border border-pearl-grey px-3 py-2 text-sm bg-white">
