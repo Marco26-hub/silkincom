@@ -4,10 +4,11 @@ import { useState, useTransition } from 'react';
 import { useRouter, Link } from '@/i18n/navigation';
 import {
   Package, AlertTriangle, XCircle, Activity, RotateCcw, Truck,
-  ArrowDownCircle, ArrowUpCircle, Download, Search,
+  ArrowDownCircle, ArrowUpCircle, Download, Search, Tag,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InventoryAdjustForm } from '@/components/admin/InventoryAdjustForm';
+import { ProductCostForm } from '@/components/admin/ProductCostForm';
 import { QuickStockModal } from '@/components/admin/QuickStockModal';
 
 type Kpis = {
@@ -15,6 +16,7 @@ type Kpis = {
   unitsAvailable: number;
   unitsReserved: number;
   value: number;
+  costValue: number;
   lowStock: number;
   outStock: number;
   movementsToday: number;
@@ -35,7 +37,7 @@ type InventoryRow = {
   reorder_quantity: number | null;
   supplier_name: string | null;
   supplier_sku: string | null;
-  products: { name: string; slug: string; sku: string; status: string; price: number } | null;
+  products: { name: string; slug: string; sku: string; status: string; price: number; cost_price: number | null; purchase_vat_rate: number | null } | null;
   product_variants: { id: string; variant_sku: string; size: string | null } | null;
 };
 
@@ -84,6 +86,9 @@ const TABS = [
 
 function eur(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+}
+function eur2(n: number) {
+  return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(n);
 }
 function num(n: number) {
   return new Intl.NumberFormat('it-IT').format(n);
@@ -163,9 +168,10 @@ export function WarehouseDashboard({
       </div>
 
       {/* KPI strip */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
         <KpiCard label="Prodotti" value={num(kpis.products)} icon={Package} />
-        <KpiCard label="Valore magazzino" value={eur(kpis.value)} icon={Package} accent />
+        <KpiCard label="Valore a vendita" value={eur(kpis.value)} icon={Package} accent />
+        <KpiCard label="Valore a costo" value={eur(kpis.costValue)} icon={Tag} />
         <KpiCard label="Scorta bassa" value={num(kpis.lowStock)} icon={AlertTriangle} tone={kpis.lowStock > 0 ? 'amber' : 'neutral'} />
         <KpiCard label="Esauriti" value={num(kpis.outStock)} icon={XCircle} tone={kpis.outStock > 0 ? 'red' : 'neutral'} />
         <KpiCard label="Movimenti oggi" value={num(kpis.movementsToday)} icon={Activity} />
@@ -368,6 +374,7 @@ function GiacenzeTab({
               <th className="px-5 py-3.5 font-medium text-right">Totale</th>
               <th className="px-5 py-3.5 font-medium text-right">Soglia</th>
               <th className="px-5 py-3.5 font-medium">Fornitore</th>
+              <th className="px-5 py-3.5 font-medium text-right">Costo / Margine</th>
               <th className="px-5 py-3.5 font-medium text-right">Azione</th>
             </tr>
           </thead>
@@ -379,6 +386,12 @@ function GiacenzeTab({
               const isFirstOfGroup = !prev || prev.product_id !== r.product_id;
               const sku = r.product_variants?.variant_sku ?? r.products?.sku ?? '';
               const isVariant = r.variant_id !== null;
+              // Cost/margin are product-level attributes — shown on the parent
+              // row only. Margin compares net cost to net sell price (sell is
+              // stored VAT-inclusive at 22%).
+              const cost = r.products?.cost_price ?? null;
+              const sellNet = (r.products?.price ?? 0) / 1.22;
+              const marginPct = cost != null && sellNet > 0 ? ((sellNet - cost) / sellNet) * 100 : null;
               // Aggregate per-size availability for the parent row of an
               // apparel product so the user sees S:N · M:N · L:N · XL:N · XXL:N
               // without scrolling through every variant row.
@@ -454,6 +467,35 @@ function GiacenzeTab({
                   <td className="px-5 py-3.5 text-right text-soft-grey tabular-nums">{r.quantity_total}</td>
                   <td className="px-5 py-3.5 text-right text-soft-grey tabular-nums">{r.reorder_threshold ?? '–'}</td>
                   <td className="px-5 py-3.5 text-xs text-soft-grey">{r.supplier_name ?? '—'}</td>
+                  <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                    {isFirstOfGroup ? (
+                      <div className="flex items-center justify-end gap-2.5">
+                        <div className="text-right leading-tight">
+                          {cost != null ? (
+                            <>
+                              <span className="block tabular-nums text-soft-black text-xs">{eur2(cost)}</span>
+                              {marginPct != null ? (
+                                <span className={`block text-[10px] tabular-nums ${marginPct >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+                                  {marginPct >= 0 ? '+' : ''}{marginPct.toFixed(0)}% mrg
+                                </span>
+                              ) : null}
+                            </>
+                          ) : (
+                            <span className="text-[10px] uppercase tracking-wider text-soft-grey/50">n/d</span>
+                          )}
+                        </div>
+                        <ProductCostForm
+                          productId={r.product_id}
+                          productName={r.products?.name ?? undefined}
+                          currentCost={cost}
+                          currentVat={r.products?.purchase_vat_rate ?? 22}
+                          sellPrice={r.products?.price ?? 0}
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-soft-grey/40 text-xs">—</span>
+                    )}
+                  </td>
                   <td className="px-5 py-3.5 text-right">
                     <InventoryAdjustForm
                       productId={r.product_id}
@@ -469,7 +511,7 @@ function GiacenzeTab({
             })}
             {!rows.length ? (
               <tr>
-                <td colSpan={9} className="px-5 py-16">
+                <td colSpan={10} className="px-5 py-16">
                   <EmptyState icon={Package} title="Nessun prodotto in giacenza" hint="Aggiungi prodotti dal catalogo o esegui un carico rapido per popolare le scorte." />
                 </td>
               </tr>

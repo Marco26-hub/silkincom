@@ -22,7 +22,7 @@ export default async function AdminWarehousePage({
       `id, product_id, variant_id, quantity_total, quantity_available, quantity_reserved,
        warehouse_location, last_restocked_at, reorder_threshold, reorder_quantity,
        supplier_name, supplier_sku,
-       products(name, slug, sku, status, price),
+       products(name, slug, sku, status, price, cost_price, purchase_vat_rate),
        product_variants(id, variant_sku, size)`
     )
     .limit(300);
@@ -48,7 +48,7 @@ export default async function AdminWarehousePage({
     reorder_quantity: number | null;
     supplier_name: string | null;
     supplier_sku: string | null;
-    products: { name: string; slug: string; sku: string; status: string; price: number } | null;
+    products: { name: string; slug: string; sku: string; status: string; price: number; cost_price: number | null; purchase_vat_rate: number | null } | null;
     product_variants: { id: string; variant_sku: string; size: string | null } | null;
   };
   const inventory = ((rawInventory ?? []) as unknown as RawInv[]).slice().sort((a, b) => {
@@ -69,22 +69,25 @@ export default async function AdminWarehousePage({
   // ---------- KPI totals (all inventory, ignore filter) ----------
   const { data: kpiRows } = await supabase
     .from('inventory')
-    .select('quantity_available, quantity_reserved, quantity_total, products(price)');
+    .select('quantity_available, quantity_reserved, quantity_total, products(price, cost_price)');
 
-  type KpiRow = { quantity_available: number; quantity_reserved: number; quantity_total: number; products: { price: number | null } | null };
+  type KpiRow = { quantity_available: number; quantity_reserved: number; quantity_total: number; products: { price: number | null; cost_price: number | null } | null };
   const kpis = (kpiRows ?? []).reduce(
     (acc, r) => {
       const row = r as unknown as KpiRow;
       const price = row.products?.price ?? 0;
+      const cost = row.products?.cost_price ?? 0;
+      const qty = row.quantity_available ?? 0;
       acc.products += 1;
-      acc.unitsAvailable += row.quantity_available ?? 0;
+      acc.unitsAvailable += qty;
       acc.unitsReserved += row.quantity_reserved ?? 0;
-      acc.value += (row.quantity_available ?? 0) * Number(price ?? 0);
+      acc.value += qty * Number(price ?? 0);
+      acc.costValue += qty * Number(cost ?? 0);
       if (row.quantity_available === 0) acc.outStock += 1;
       else if ((row.quantity_available ?? 0) < 5) acc.lowStock += 1;
       return acc;
     },
-    { products: 0, unitsAvailable: 0, unitsReserved: 0, value: 0, lowStock: 0, outStock: 0 }
+    { products: 0, unitsAvailable: 0, unitsReserved: 0, value: 0, costValue: 0, lowStock: 0, outStock: 0 }
   );
 
   // ---------- Today movements + open returns + open POs ----------
