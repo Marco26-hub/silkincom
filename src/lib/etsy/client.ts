@@ -19,10 +19,15 @@ export type EtsyTokens = {
 };
 
 function getConfig() {
+  // .trim() is critical: a stray trailing space/newline in the Vercel env var
+  // survives into the `x-api-key` header and Etsy rejects it with
+  // "403 Shared secret is required in x-api-key header" — even though the SAME
+  // value works for OAuth (query-string parsing tolerates the whitespace).
+  // A space passes fetch's header validation but fails on Etsy's side.
   return {
-    apiKey: process.env.ETSY_API_KEY || '',
-    sharedSecret: process.env.ETSY_SHARED_SECRET || '',
-    shopId: process.env.ETSY_SHOP_ID || '',
+    apiKey: (process.env.ETSY_API_KEY || '').trim(),
+    sharedSecret: (process.env.ETSY_SHARED_SECRET || '').trim(),
+    shopId: (process.env.ETSY_SHOP_ID || '').trim(),
     redirectUri: `${APP_URL}/api/etsy/auth/callback`,
   };
 }
