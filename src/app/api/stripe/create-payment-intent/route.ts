@@ -209,6 +209,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Importo troppo basso' }, { status: 400 });
     }
 
+    // Silent debug for the hand-delivery shipping path. Fire-and-forget into
+    // error_logs (level 'info') so the admin can confirm the flow on
+    // /admin/errors without Vercel log access. Never blocks checkout, never
+    // surfaces to the customer. `shipping_zeroed` flags the expected outcome:
+    // hand delivery must always end at €0 shipping.
+    if (delivery_method === 'hand_delivery') {
+      void supabase
+        .from('error_logs')
+        .insert({
+          level: 'info',
+          message: `[delivery-debug] hand_delivery · sub €${subtotal.toFixed(2)} · ship €${shipping_cost.toFixed(2)} · tot €${total_amount.toFixed(2)}`,
+          url: '/api/stripe/create-payment-intent',
+          context: {
+            delivery_method,
+            subtotal,
+            shipping_cost,
+            discount_amount,
+            total_amount,
+            coupon_code: coupon_code?.trim().toUpperCase() || null,
+            shipping_zeroed: shipping_cost === 0,
+          },
+        })
+        .then(() => {}, () => {});
+    }
+
     // Create pending order with shipping address saved as JSONB
     const { data: order, error: orderError } = await supabase
       .from('orders')

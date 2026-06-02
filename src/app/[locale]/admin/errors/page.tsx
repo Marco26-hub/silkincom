@@ -14,6 +14,7 @@ type LogRow = {
   stack: string | null;
   url: string | null;
   user_agent: string | null;
+  context: Record<string, unknown> | null;
   created_at: string;
 };
 
@@ -27,7 +28,7 @@ export default async function AdminErrorsPage() {
   const supabase = createServiceClient();
   const { data } = await supabase
     .from('error_logs')
-    .select('id, level, message, stack, url, user_agent, created_at')
+    .select('id, level, message, stack, url, user_agent, context, created_at')
     .order('created_at', { ascending: false })
     .limit(100);
 
@@ -74,6 +75,14 @@ export default async function AdminErrorsPage() {
                   <p className="text-soft-black/60">
                     <strong>UA:</strong> {log.user_agent}
                   </p>
+                )}
+                {log.context && Object.keys(log.context).length > 0 && (
+                  <div>
+                    <strong>Context:</strong>
+                    <pre className="mt-1 bg-ivory p-3 overflow-x-auto text-[10px] leading-relaxed font-mono whitespace-pre-wrap">
+                      {JSON.stringify(log.context, null, 2)}
+                    </pre>
+                  </div>
                 )}
                 {log.stack && (
                   <pre className="bg-ivory p-3 overflow-x-auto text-[10px] leading-relaxed font-mono whitespace-pre-wrap">
