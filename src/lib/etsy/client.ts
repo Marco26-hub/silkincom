@@ -166,10 +166,15 @@ export async function etsyFetch<T = any>(
   const cfg = getConfig();
   const token = await getValidToken();
 
+  // Etsy v3 requires the x-api-key header in the format `keystring:shared_secret`
+  // (see developers.etsy.com/documentation/reference → Authentication → api_key).
+  // Sending the keystring alone returns 403 "Shared secret is required in
+  // x-api-key header". Fall back to keystring-only if the secret isn't set.
+  const apiKeyHeader = cfg.sharedSecret ? `${cfg.apiKey}:${cfg.sharedSecret}` : cfg.apiKey;
   const res = await fetch(`${BASE}${path}`, {
     ...options,
     headers: {
-      'x-api-key': cfg.apiKey,
+      'x-api-key': apiKeyHeader,
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
       ...(options.headers || {}),
