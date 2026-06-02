@@ -1,17 +1,38 @@
 'use client';
 
+/**
+ * Admin /etsy — Etsy as a SEPARATE read-only mirror.
+ *
+ * Default action is PULL (download Etsy listings + orders into the etsy_*
+ * mirror tables — never touches site products/orders/inventory). The PUSH
+ * actions (write the site catalogue / stock onto Etsy) live in a separate
+ * "Modifica su Etsy" card and require an explicit confirmation, because they
+ * can overwrite or duplicate the existing Etsy listings.
+ */
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Store, Package, ShoppingBag, Boxes, RefreshCw, Link2, CheckCircle, AlertCircle } from 'lucide-react';
-import { createBrowserClient } from '@/lib/supabase/client';
+import { Link } from '@/i18n/navigation';
+import {
+  Store, Download, ShoppingBag, Boxes, Package, RefreshCw, Link2,
+  CheckCircle, ExternalLink, ArrowRight, AlertTriangle,
+} from 'lucide-react';
 
 type SyncLog = {
   id: string;
-  sync_type: string;
-  synced_count: number;
-  skipped_count: number;
-  errors: string[];
+  action: string;
+  product_count: number | null;
+  error_message: string | null;
   created_at: string;
+};
+
+type Status = {
+  connected: boolean;
+  connectedAt: string | null;
+  shopId: string | null;
+  listingsCount: number;
+  ordersCount: number;
+  lastPullAt: string | null;
+  logs: SyncLog[];
 };
 
 export default function AdminEtsyPage() {
@@ -19,68 +40,93 @@ export default function AdminEtsyPage() {
   const justConnected = params.get('connected') === 'true';
   const authError = params.get('error');
 
-  const [connected, setConnected] = useState(false);
+  const [status, setStatus] = useState<Status | null>(null);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<any>(null);
-  const [logs, setLogs] = useState<SyncLog[]>([]);
-  const [mappingCount, setMappingCount] = useState(0);
+  const [pulling, setPulling] = useState(false);
+  const [pushing, setPushing] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
 
-  async function checkConnection() {
-    // Read connection state via the server (service client) — the integrations
-    // row holds OAuth tokens and is correctly hidden from the browser by RLS,
-    // so a direct browser query always returned "not connected".
+  async function load() {
     try {
       const res = await fetch('/api/etsy/status');
-      const data = await res.json();
-      setConnected(!!data.connected);
-      setMappingCount(data.mappingCount || 0);
-      setLogs((data.logs as SyncLog[]) || []);
+      setStatus(await res.json());
     } catch {
-      setConnected(false);
+      setStatus(null);
     } finally {
       setLoading(false);
     }
   }
+  useEffect(() => { load(); }, []);
 
-  useEffect(() => { checkConnection(); }, []);
-
-  async function runSync(type: 'products' | 'orders' | 'inventory') {
-    setSyncing(type);
-    setLastResult(null);
+  async function pull() {
+    setPulling(true);
+    setMsg(null);
     try {
-      const res = await fetch(`/api/etsy/sync-${type}`, { method: 'POST' });
+      const res = await fetch('/api/etsy/pull?what=all', { method: 'POST' });
       const data = await res.json();
-      setLastResult({ type, ...data });
-
-      const supabase = createBrowserClient();
-      await supabase.from('etsy_sync_log').insert({
-        sync_type: type,
-        synced_count: data.synced || 0,
-        skipped_count: data.skipped || 0,
-        errors: data.errors || [],
-      });
-
-      checkConnection();
-    } catch (err: any) {
-      setLastResult({ type, error: err.message });
+      if (data.ok) {
+        const l = data.pull_listings?.synced ?? 0;
+        const o = data.pull_orders?.synced ?? 0;
+        const errs = [...(data.pull_listings?.errors ?? []), ...(data.pull_orders?.errors ?? [])];
+        setMsg({
+          type: errs.length ? 'err' : 'ok',
+          text: `Scaricati ${l} listing e ${o} ordini da Etsy${errs.length ? ` — ${errs.length} avvisi` : ''}.`,
+        });
+      } else {
+        setMsg({ type: 'err', text: data.error || 'Errore download' });
+      }
+    } catch (e) {
+      setMsg({ type: 'err', text: (e as Error).message });
+    } finally {
+      setPulling(false);
+      load();
     }
-    setSyncing(null);
   }
 
+  async function push(kind: 'products' | 'inventory') {
+    const label = kind === 'products' ? 'i LISTING' : 'lo STOCK';
+    if (!confirm(
+      `Stai per MODIFICARE ${label} su Etsy con i dati del sito.\n\n` +
+      `Questo può sovrascrivere o duplicare le inserzioni esistenti su Etsy. ` +
+      `Procedere solo se sei sicuro.\n\nContinuare?`,
+    )) return;
+    setPushing(kind);
+    setMsg(null);
+    try {
+      const res = await fetch(`/api/etsy/sync-${kind}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: true }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMsg({ type: 'ok', text: `Push ${kind}: ${data.synced ?? 0} aggiornati, ${data.skipped ?? 0} saltati.` });
+      } else {
+        setMsg({ type: 'err', text: data.error || `Errore push ${kind}` });
+      }
+    } catch (e) {
+      setMsg({ type: 'err', text: (e as Error).message });
+    } finally {
+      setPushing(null);
+      load();
+    }
+  }
+
+  const connected = !!status?.connected;
+
   return (
-    <div className="space-y-6 max-w-[1000px]">
+    <div className="space-y-6 max-w-[1100px]">
       <div className="flex items-center gap-3">
         <Store className="w-6 h-6 text-[#F1641E]" />
         <div>
           <h1 className="font-display text-4xl">Etsy</h1>
-          <p className="text-soft-grey text-sm">Integrazione marketplace</p>
+          <p className="text-soft-grey text-sm">Mirror sola lettura — separato dal catalogo del sito</p>
         </div>
       </div>
 
       {authError && (
         <div className="bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-          Connessione fallita: {authError}
+          Connessione: {authError}{params.get('reason') ? ` — ${params.get('reason')}` : ''}
         </div>
       )}
       {justConnected && (
@@ -88,101 +134,126 @@ export default function AdminEtsyPage() {
           <CheckCircle className="w-4 h-4" /> Etsy connesso con successo!
         </div>
       )}
+      {msg && (
+        <div className={`border px-4 py-3 text-sm ${msg.type === 'ok' ? 'border-green-200 bg-green-50 text-green-800' : 'border-red-200 bg-red-50 text-red-700'}`}>
+          {msg.text}
+        </div>
+      )}
 
+      {/* Connection */}
       <div className="border border-pearl-grey bg-white p-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500' : 'bg-gray-300'}`} />
-            <span className="text-sm font-medium">{connected ? 'Connesso' : 'Non connesso'}</span>
+            <span className="text-sm font-medium">{connected ? 'Connesso' : loading ? 'Verifica…' : 'Non connesso'}</span>
+            {connected && status?.shopId && (
+              <span className="text-xs text-soft-grey">· shop {status.shopId}</span>
+            )}
           </div>
           {!connected && !loading && (
-            <a
-              href="/api/etsy/auth"
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#F1641E] text-white text-[10px] uppercase tracking-[0.2em] hover:bg-[#d4551a] transition-colors"
-            >
+            <a href="/api/etsy/auth" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#F1641E] text-white text-[10px] uppercase tracking-[0.2em] hover:bg-[#d4551a] transition-colors">
               <Link2 className="w-3.5 h-3.5" /> Connetti Etsy
             </a>
           )}
+          {connected && (
+            <button
+              onClick={pull}
+              disabled={pulling}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-40"
+            >
+              <Download className={`w-3.5 h-3.5 ${pulling ? 'animate-pulse' : ''}`} />
+              {pulling ? 'Scarico da Etsy…' : 'Scarica da Etsy'}
+            </button>
+          )}
         </div>
         {connected && (
-          <p className="mt-2 text-xs text-soft-grey">{mappingCount} prodotti mappati su Etsy</p>
+          <p className="mt-3 text-xs text-soft-grey">
+            {status?.listingsCount ?? 0} inserzioni · {status?.ordersCount ?? 0} ordini nel mirror ·
+            ultimo download: {status?.lastPullAt ? new Date(status.lastPullAt).toLocaleString('it-IT') : 'mai'}
+          </p>
         )}
       </div>
 
       {connected && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <SyncCard
-              icon={Package}
-              title="Prodotti"
-              desc="Push catalogo → Etsy"
-              syncing={syncing === 'products'}
-              disabled={!!syncing}
-              onSync={() => runSync('products')}
-            />
-            <SyncCard
-              icon={ShoppingBag}
-              title="Ordini"
-              desc="Pull ordini Etsy → admin"
-              syncing={syncing === 'orders'}
-              disabled={!!syncing}
-              onSync={() => runSync('orders')}
-            />
-            <SyncCard
-              icon={Boxes}
-              title="Inventario"
-              desc="Sync stock → Etsy"
-              syncing={syncing === 'inventory'}
-              disabled={!!syncing}
-              onSync={() => runSync('inventory')}
-            />
+          {/* Read-only mirror sections */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Link href="/admin/etsy/catalogo" className="border border-pearl-grey bg-white p-5 hover:border-soft-black transition-colors group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-gold-primary" />
+                  <span className="text-sm font-medium">Catalogo Etsy</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-soft-grey group-hover:text-soft-black group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <p className="font-display text-3xl mt-3">{status?.listingsCount ?? 0}</p>
+              <p className="text-xs text-soft-grey mt-1">inserzioni Etsy (sola lettura)</p>
+            </Link>
+            <Link href="/admin/etsy/ordini" className="border border-pearl-grey bg-white p-5 hover:border-soft-black transition-colors group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-gold-primary" />
+                  <span className="text-sm font-medium">Ordini Etsy</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-soft-grey group-hover:text-soft-black group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <p className="font-display text-3xl mt-3">{status?.ordersCount ?? 0}</p>
+              <p className="text-xs text-soft-grey mt-1">ordini Etsy (sola lettura)</p>
+            </Link>
           </div>
 
-          {lastResult && (
-            <div className={`border px-4 py-3 text-sm ${lastResult.error ? 'border-red-200 bg-red-50 text-red-700' : 'border-green-200 bg-green-50 text-green-800'}`}>
-              {lastResult.error ? (
-                <p>Errore: {lastResult.error}</p>
-              ) : (
-                <>
-                  <p><strong>{lastResult.type}</strong>: {lastResult.synced} sincronizzati, {lastResult.skipped} saltati</p>
-                  {lastResult.errors?.length > 0 && (
-                    <ul className="mt-1 text-xs text-red-600 list-disc list-inside">
-                      {lastResult.errors.map((e: string, i: number) => <li key={i}>{e}</li>)}
-                    </ul>
-                  )}
-                </>
-              )}
+          {/* PUSH — gated behind confirmation */}
+          <div className="border border-amber-200 bg-amber-50/40 p-5">
+            <div className="flex items-center gap-2 mb-1">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <h3 className="text-sm font-medium text-amber-900">Modifica su Etsy (avanzato)</h3>
             </div>
-          )}
+            <p className="text-xs text-amber-800 mb-4 max-w-[640px]">
+              Queste azioni scrivono i dati del SITO sulle inserzioni Etsy. Possono
+              sovrascrivere o duplicare i listing esistenti — usare solo con cognizione.
+              Ogni azione chiede conferma.
+            </p>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={() => push('products')}
+                disabled={!!pushing}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-amber-400 text-amber-900 text-[10px] uppercase tracking-[0.2em] hover:bg-amber-100 transition-colors disabled:opacity-40"
+              >
+                <Package className="w-3.5 h-3.5" />
+                {pushing === 'products' ? 'Invio…' : 'Push catalogo → Etsy'}
+              </button>
+              <button
+                onClick={() => push('inventory')}
+                disabled={!!pushing}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-amber-400 text-amber-900 text-[10px] uppercase tracking-[0.2em] hover:bg-amber-100 transition-colors disabled:opacity-40"
+              >
+                <Boxes className="w-3.5 h-3.5" />
+                {pushing === 'inventory' ? 'Invio…' : 'Push stock → Etsy'}
+              </button>
+            </div>
+          </div>
 
-          {logs.length > 0 && (
+          {/* Sync log */}
+          {(status?.logs.length ?? 0) > 0 && (
             <div className="border border-pearl-grey bg-white overflow-x-auto">
               <div className="px-5 py-3 border-b border-pearl-grey bg-warm-white">
-                <h3 className="text-[10px] uppercase tracking-[0.2em] text-soft-grey font-medium">Storico sincronizzazioni</h3>
+                <h3 className="text-[10px] uppercase tracking-[0.2em] text-soft-grey font-medium">Storico operazioni</h3>
               </div>
               <table className="w-full text-sm">
                 <thead className="border-b border-pearl-grey">
                   <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-                    <th className="px-5 py-2 font-medium">Tipo</th>
-                    <th className="px-5 py-2 font-medium text-right">Sync</th>
-                    <th className="px-5 py-2 font-medium text-right">Skip</th>
-                    <th className="px-5 py-2 font-medium text-right">Errori</th>
+                    <th className="px-5 py-2 font-medium">Azione</th>
+                    <th className="px-5 py-2 font-medium text-right">Record</th>
+                    <th className="px-5 py-2 font-medium">Errore</th>
                     <th className="px-5 py-2 font-medium">Data</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-pearl-grey/60">
-                  {logs.map((l) => (
+                  {status!.logs.map((l) => (
                     <tr key={l.id}>
-                      <td className="px-5 py-2 capitalize">{l.sync_type}</td>
-                      <td className="px-5 py-2 text-right text-green-700">{l.synced_count}</td>
-                      <td className="px-5 py-2 text-right text-soft-grey">{l.skipped_count}</td>
-                      <td className="px-5 py-2 text-right">
-                        {l.errors?.length > 0 ? (
-                          <span className="text-red-600">{l.errors.length}</span>
-                        ) : (
-                          <span className="text-soft-grey">0</span>
-                        )}
-                      </td>
+                      <td className="px-5 py-2">{l.action}</td>
+                      <td className="px-5 py-2 text-right text-green-700">{l.product_count ?? 0}</td>
+                      <td className="px-5 py-2 text-xs text-red-600 max-w-[300px] truncate">{l.error_message || '—'}</td>
                       <td className="px-5 py-2 text-xs text-soft-grey">{new Date(l.created_at).toLocaleString('it-IT')}</td>
                     </tr>
                   ))}
@@ -194,36 +265,18 @@ export default function AdminEtsyPage() {
       )}
 
       <div className="bg-ivory border border-pearl-grey/60 p-4 text-xs text-soft-grey space-y-1">
-        <p><strong>Setup:</strong></p>
-        <ol className="list-decimal list-inside space-y-0.5 ml-2">
-          <li>Registra app su developers.etsy.com</li>
-          <li>Aggiungi env vars: ETSY_API_KEY, ETSY_SHARED_SECRET, ETSY_SHOP_ID</li>
-          <li>Clicca "Connetti Etsy" sopra per autorizzare</li>
-          <li>Sincronizza prodotti, ordini e inventario</li>
-        </ol>
+        <p>
+          <strong>Mirror separato:</strong> "Scarica da Etsy" copia inserzioni e ordini
+          nelle tabelle Etsy dedicate, senza mai toccare prodotti, ordini o magazzino del sito.
+          I due cataloghi restano indipendenti.
+        </p>
+        <p className="flex items-center gap-1">
+          <ExternalLink className="w-3 h-3" />
+          <a href="https://www.etsy.com/your/shops/me/dashboard" target="_blank" rel="noopener noreferrer" className="hover:text-gold-primary">
+            Apri dashboard Etsy
+          </a>
+        </p>
       </div>
-    </div>
-  );
-}
-
-function SyncCard({ icon: Icon, title, desc, syncing, disabled, onSync }: {
-  icon: any; title: string; desc: string; syncing: boolean; disabled: boolean; onSync: () => void;
-}) {
-  return (
-    <div className="border border-pearl-grey bg-white p-5 flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <Icon className="w-4 h-4 text-gold-primary" />
-        <span className="text-sm font-medium">{title}</span>
-      </div>
-      <p className="text-xs text-soft-grey">{desc}</p>
-      <button
-        onClick={onSync}
-        disabled={disabled}
-        className="mt-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-40"
-      >
-        <RefreshCw className={`w-3 h-3 ${syncing ? 'animate-spin' : ''}`} />
-        {syncing ? 'Sincronizzazione...' : 'Sincronizza'}
-      </button>
     </div>
   );
 }

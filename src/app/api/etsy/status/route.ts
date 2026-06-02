@@ -33,21 +33,23 @@ export async function GET() {
     .eq('provider', 'etsy')
     .maybeSingle();
 
-  const { count: mappingCount } = await supabase
-    .from('etsy_product_map')
-    .select('id', { count: 'exact', head: true });
-
-  const { data: logs } = await supabase
-    .from('etsy_sync_log')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(10);
+  const [{ count: mappingCount }, { count: listingsCount }, { count: ordersCount }, { data: lastListing }, { data: logs }] =
+    await Promise.all([
+      supabase.from('etsy_product_map').select('id', { count: 'exact', head: true }),
+      supabase.from('etsy_listings').select('listing_id', { count: 'exact', head: true }),
+      supabase.from('etsy_orders').select('receipt_id', { count: 'exact', head: true }),
+      supabase.from('etsy_listings').select('last_synced_at').order('last_synced_at', { ascending: false }).limit(1).maybeSingle(),
+      supabase.from('etsy_sync_log').select('*').order('created_at', { ascending: false }).limit(10),
+    ]);
 
   return NextResponse.json({
     connected: !!integration,
     connectedAt: integration?.connected_at ?? null,
     shopId: (integration?.metadata as { shop_id?: string } | null)?.shop_id ?? null,
     mappingCount: mappingCount ?? 0,
+    listingsCount: listingsCount ?? 0,
+    ordersCount: ordersCount ?? 0,
+    lastPullAt: lastListing?.last_synced_at ?? null,
     logs: logs ?? [],
   });
 }
