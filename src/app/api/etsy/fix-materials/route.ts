@@ -35,8 +35,13 @@ async function requireAdmin() {
  * tell — we never push a guessed material that could be wrong.
  */
 function deriveMaterials(title: string): string[] {
-  const t = title.toLowerCase();
-  const has = (...k: string[]) => k.some((w) => t.includes(w));
+  // Strip the brand name BEFORE matching: "SILKinCOM" contains the substring
+  // "silk", which previously mis-tagged every branded cotton/linen item as
+  // Silk. Match on WORD BOUNDARIES too, so "cappellino" (cap) never matches
+  // "lino" (linen) and similar substring traps.
+  const t = title.toLowerCase().replace(/silk\s*in\s*com/g, ' ');
+  const has = (...k: string[]) =>
+    k.some((w) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(t));
 
   if (has('cashmere', 'pashmina')) return ['Cashmere'];
   if (has('twilly', 'foulard', 'seta', 'silk')) return ['Silk'];
@@ -48,7 +53,7 @@ function deriveMaterials(title: string): string[] {
   // Trucker caps = cotton front + polyester mesh.
   if (has('trucker', 'mesh', 'rete')) return ['Cotton', 'Polyester'];
   // Plain caps / tees / towels = cotton.
-  if (has('cap', 'hat', 'cappellino', 'berretto', 't-shirt', 'tshirt', 'maglia', 'telo', 'towel')) {
+  if (has('cap', 'hat', 'cappellino', 'berretto', 'cappello', 't-shirt', 'tshirt', 'maglia', 'telo', 'towel')) {
     return ['Cotton'];
   }
   return [];
