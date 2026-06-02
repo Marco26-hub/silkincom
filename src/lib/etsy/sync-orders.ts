@@ -6,11 +6,11 @@
  * - Maps SKU → product_id for order_items
  * - Decrements inventory
  */
-import { etsyFetch, getShopId } from './client';
+import { etsyFetch, resolveShopId } from './client';
 import type { EtsyReceipt, SyncResult } from './types';
 
 export async function syncOrdersFromEtsy(supabase: any): Promise<SyncResult> {
-  const shopId = getShopId();
+  const shopId = await resolveShopId();
   const result: SyncResult = { synced: 0, errors: [], skipped: 0 };
 
   const data = await etsyFetch<{ results: EtsyReceipt[] }>(
@@ -119,7 +119,7 @@ export async function pushTrackingToEtsy(
   trackingNumber: string,
   carrier: string
 ): Promise<void> {
-  const shopId = getShopId();
+  const shopId = await resolveShopId();
 
   const { data: order } = await supabase
     .from('orders')

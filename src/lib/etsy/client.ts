@@ -92,7 +92,12 @@ async function getValidToken(): Promise<string> {
 
   if (!data) throw new Error('Etsy non connesso. Vai su /admin/etsy per collegare.');
 
-  if (Date.now() > (data.expires_at - 60_000)) {
+  // expires_at is stored as a timestamptz STRING — must parse to epoch ms
+  // before comparing with Date.now(). The previous numeric comparison
+  // produced NaN and silently skipped refresh, so the token went stale after
+  // an hour and every sync started failing with 401.
+  const expiresMs = new Date(data.expires_at).getTime();
+  if (Number.isFinite(expiresMs) && Date.now() > expiresMs - 60_000) {
     const tokens = await refreshTokens(data.refresh_token);
     await supabase
       .from('integrations')
@@ -106,6 +111,47 @@ async function getValidToken(): Promise<string> {
   }
 
   return data.access_token;
+}
+
+/**
+ * Resolve the numeric Etsy shop id, deriving it from the OAuth token the
+ * first time and caching it in integrations.metadata so we never need the
+ * ETSY_SHOP_ID env var. Etsy access tokens are prefixed "<user_id>.<token>",
+ * so we read the user id straight off the token, then ask Etsy for that
+ * user's shop.
+ */
+export async function resolveShopId(): Promise<string> {
+  // Explicit env override wins (useful for tests / multi-shop).
+  const envId = process.env.ETSY_SHOP_ID;
+  if (envId) return envId;
+
+  const { createServiceClient } = await import('@/lib/supabase/server');
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from('integrations')
+    .select('access_token, metadata')
+    .eq('provider', 'etsy')
+    .single();
+  if (!data) throw new Error('Etsy non connesso.');
+
+  const cached = (data.metadata as { shop_id?: string } | null)?.shop_id;
+  if (cached) return cached;
+
+  // Derive user id from the token prefix, fetch the shop, cache it.
+  const userId = String(data.access_token).split('.')[0];
+  const shops = await etsyFetch<{ shop_id: number } | { results: { shop_id: number }[] }>(
+    `/application/users/${userId}/shops`,
+  );
+  const shopId = String(
+    'shop_id' in shops ? shops.shop_id : shops.results?.[0]?.shop_id ?? '',
+  );
+  if (!shopId) throw new Error('Impossibile determinare lo shop Etsy dal token.');
+
+  await supabase
+    .from('integrations')
+    .update({ metadata: { ...(data.metadata as object ?? {}), shop_id: shopId } })
+    .eq('provider', 'etsy');
+  return shopId;
 }
 
 export async function etsyFetch<T = any>(

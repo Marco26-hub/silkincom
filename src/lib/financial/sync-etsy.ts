@@ -22,7 +22,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { etsyFetch, getShopId } from '@/lib/etsy/client';
+import { etsyFetch, resolveShopId } from '@/lib/etsy/client';
 import { logSyncError } from '@/lib/financial/log-error';
 
 export type SyncResult = {
@@ -170,7 +170,7 @@ export async function syncEtsyFinancial(
 
   let shopId: string;
   try {
-    shopId = getShopId();
+    shopId = await resolveShopId();
   } catch (e) {
     result.errors.push((e as Error).message);
     result.durationMs = Date.now() - start;

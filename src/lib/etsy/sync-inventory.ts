@@ -5,11 +5,11 @@
  * - Updates Etsy listing quantity to match
  * - Source of truth: SILKinCOM DB (our inventory → Etsy)
  */
-import { etsyFetch, getShopId } from './client';
+import { etsyFetch, resolveShopId } from './client';
 import type { SyncResult } from './types';
 
 export async function syncInventoryToEtsy(supabase: any): Promise<SyncResult> {
-  const shopId = getShopId();
+  const shopId = await resolveShopId();
   const result: SyncResult = { synced: 0, errors: [], skipped: 0 };
 
   const { data: mappings } = await supabase

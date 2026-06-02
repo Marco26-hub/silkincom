@@ -27,27 +27,20 @@ export default function AdminEtsyPage() {
   const [mappingCount, setMappingCount] = useState(0);
 
   async function checkConnection() {
-    const supabase = createBrowserClient();
-    const { data } = await supabase
-      .from('integrations')
-      .select('provider, connected_at')
-      .eq('provider', 'etsy')
-      .maybeSingle();
-    setConnected(!!data);
-
-    const { count } = await supabase
-      .from('etsy_product_map')
-      .select('id', { count: 'exact', head: true });
-    setMappingCount(count || 0);
-
-    const { data: syncLogs } = await supabase
-      .from('etsy_sync_log')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(10);
-    setLogs((syncLogs as SyncLog[]) || []);
-
-    setLoading(false);
+    // Read connection state via the server (service client) — the integrations
+    // row holds OAuth tokens and is correctly hidden from the browser by RLS,
+    // so a direct browser query always returned "not connected".
+    try {
+      const res = await fetch('/api/etsy/status');
+      const data = await res.json();
+      setConnected(!!data.connected);
+      setMappingCount(data.mappingCount || 0);
+      setLogs((data.logs as SyncLog[]) || []);
+    } catch {
+      setConnected(false);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { checkConnection(); }, []);

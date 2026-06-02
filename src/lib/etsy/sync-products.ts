@@ -5,7 +5,7 @@
  * - Updates existing listings when product data changes
  * - Maps via etsy_listing_id stored in products table (or integrations_map)
  */
-import { etsyFetch, getShopId } from './client';
+import { etsyFetch, resolveShopId } from './client';
 import type { SyncResult } from './types';
 
 type Product = {
@@ -60,7 +60,7 @@ function buildListingPayload(p: Product) {
 }
 
 export async function syncProductsToEtsy(supabase: any): Promise<SyncResult> {
-  const shopId = getShopId();
+  const shopId = await resolveShopId();
   const result: SyncResult = { synced: 0, errors: [], skipped: 0 };
 
   const { data: products } = await supabase
@@ -110,7 +110,7 @@ export async function syncProductsToEtsy(supabase: any): Promise<SyncResult> {
 }
 
 export async function syncProductImagesToEtsy(supabase: any, productId: string): Promise<void> {
-  const shopId = getShopId();
+  const shopId = await resolveShopId();
 
   const { data: mapping } = await supabase
     .from('etsy_product_map')
