@@ -31,6 +31,8 @@ type Account = {
   username?: string;
 };
 
+type Funnel = { visits: number; productViews: number; addToCart: number; purchases: number; revenue: number };
+
 type Data = {
   configured: boolean;
   error?: string;
@@ -44,6 +46,7 @@ type Data = {
   scheduled?: Post[];
   published?: Post[];
   failed?: Post[];
+  siteSocial?: { days: number; byPlatform: Record<string, Funnel>; totals: Funnel };
 };
 
 const PLATFORM_LABEL: Record<Platform, string> = {
@@ -119,7 +122,7 @@ export default function AdminSocialPage() {
           <Share2 className="w-6 h-6 text-gold-primary" />
           <div>
             <h1 className="font-display text-4xl">Social</h1>
-            <p className="text-soft-grey text-sm">Attività di pubblicazione via Blotato — programmati, pubblicati, falliti</p>
+            <p className="text-soft-grey text-sm">Analytics social (traffico e vendite per piattaforma) + pubblicazione via Blotato</p>
           </div>
         </div>
         <button
@@ -133,9 +136,12 @@ export default function AdminSocialPage() {
 
       {loading && (
         <div className="flex items-center gap-2 text-soft-grey py-16">
-          <Loader2 className="w-4 h-4 animate-spin" /> Carico da Blotato…
+          <Loader2 className="w-4 h-4 animate-spin" /> Carico…
         </div>
       )}
+
+      {/* Integrated social analytics — site performance per platform (always shown) */}
+      {!loading && data?.siteSocial && <SiteSocialSection s={data.siteSocial} />}
 
       {/* Not configured */}
       {!loading && data && !data.configured && (
@@ -229,6 +235,63 @@ export default function AdminSocialPage() {
             engagement (follower, like, reach). Per quelle servono le API native delle piattaforme.
           </p>
         </>
+      )}
+    </div>
+  );
+}
+
+function eur(n: number) {
+  return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(n);
+}
+
+function SiteSocialSection({ s }: { s: { days: number; byPlatform: Record<string, Funnel>; totals: Funnel } }) {
+  const rows = Object.entries(s.byPlatform).sort((a, b) => b[1].visits - a[1].visits);
+  return (
+    <div className="border border-gold-primary/40 bg-ivory/30 overflow-x-auto">
+      <div className="px-5 py-3 border-b border-pearl-grey bg-warm-white flex items-center justify-between gap-3 flex-wrap">
+        <h3 className="text-[10px] uppercase tracking-[0.25em] text-soft-black font-medium">Performance social → sito · ultimi {s.days} giorni</h3>
+        <span className="text-[10px] text-soft-grey">traffico e vendite attribuiti dal referrer</span>
+      </div>
+      {rows.length === 0 ? (
+        <p className="px-5 py-8 text-center text-soft-grey text-sm">
+          Nessuna visita da social negli ultimi {s.days} giorni. Appena i post portano traffico comparirà qui per
+          piattaforma: visite → prodotti visti → carrello → acquisti → fatturato.
+        </p>
+      ) : (
+        <table className="w-full text-sm">
+          <thead className="border-b border-pearl-grey">
+            <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+              <th className="px-4 py-2 font-medium">Piattaforma</th>
+              <th className="px-4 py-2 font-medium text-right">Visite</th>
+              <th className="px-4 py-2 font-medium text-right">Prodotti</th>
+              <th className="px-4 py-2 font-medium text-right">Carrello</th>
+              <th className="px-4 py-2 font-medium text-right">Acquisti</th>
+              <th className="px-4 py-2 font-medium text-right">Fatturato</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-pearl-grey/60">
+            {rows.map(([p, f]) => (
+              <tr key={p} className="hover:bg-ivory/50">
+                <td className="px-4 py-2.5"><PlatformBadge p={p as Platform} /></td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{f.visits}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-soft-grey">{f.productViews}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-soft-grey">{f.addToCart}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{f.purchases}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums font-medium">{f.revenue > 0 ? eur(f.revenue) : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot className="border-t-2 border-soft-black/80">
+            <tr className="font-medium">
+              <td className="px-4 py-2.5">Totale social</td>
+              <td className="px-4 py-2.5 text-right tabular-nums">{s.totals.visits}</td>
+              <td className="px-4 py-2.5 text-right tabular-nums">{s.totals.productViews}</td>
+              <td className="px-4 py-2.5 text-right tabular-nums">{s.totals.addToCart}</td>
+              <td className="px-4 py-2.5 text-right tabular-nums">{s.totals.purchases}</td>
+              <td className="px-4 py-2.5 text-right tabular-nums">{s.totals.revenue > 0 ? eur(s.totals.revenue) : '—'}</td>
+            </tr>
+          </tfoot>
+        </table>
       )}
     </div>
   );
