@@ -20,19 +20,43 @@ export default async function AdminOverview() {
     { data: orders7d },
     { count: pendingCount },
     { count: toShipCount },
-    { data: lowStock },
+    { data: invRows },
     { data: recentOrders },
   ] = await Promise.all([
     supabase.from('orders').select('total_amount').gte('created_at', startToday).eq('payment_status', 'succeeded'),
     supabase.from('orders').select('total_amount').gte('created_at', start7d).eq('payment_status', 'succeeded'),
     supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'paid'),
-    supabase.from('inventory').select('product_id, quantity_available, products(name, slug)').lt('quantity_available', 5).limit(10),
+    // All inventory rows + product status — we aggregate per product below so a
+    // multi-variant product (e.g. sizes) shows its TRUE total, not one row, and
+    // archived/duplicate products are excluded.
+    supabase.from('inventory').select('product_id, quantity_available, products(name, slug, status)'),
     supabase.from('orders').select('id, order_number, customer_email, total_amount, status, created_at').order('created_at', { ascending: false }).limit(8),
   ]);
 
   const revenueToday = (ordersToday ?? []).reduce((sum, o) => sum + Number(o.total_amount), 0);
   const revenue7d = (orders7d ?? []).reduce((sum, o) => sum + Number(o.total_amount), 0);
+
+  // Low stock: sum available across all inventory rows of each PUBLISHED product,
+  // then keep those under the threshold. Aggregating fixes two bugs — variant
+  // rows were shown individually (a product with M=1,L=1 looked like "0"), and
+  // archived duplicates polluted the list.
+  const LOW_STOCK_THRESHOLD = 5;
+  const stockByProduct = new Map<string, { name: string; qty: number }>();
+  for (const r of (invRows ?? []) as any[]) {
+    // Supabase types the joined relation as array; at runtime it's the related
+    // row (object) for a to-one FK — handle either shape.
+    const prod = Array.isArray(r.products) ? r.products[0] : r.products;
+    if (!prod || prod.status !== 'published') continue;
+    const cur = stockByProduct.get(r.product_id) ?? { name: prod.name as string, qty: 0 };
+    cur.qty += (r.quantity_available as number) ?? 0;
+    stockByProduct.set(r.product_id, cur);
+  }
+  const lowStock = [...stockByProduct.entries()]
+    .map(([product_id, v]) => ({ product_id, name: v.name, qty: v.qty }))
+    .filter((v) => v.qty < LOW_STOCK_THRESHOLD)
+    .sort((a, b) => a.qty - b.qty)
+    .slice(0, 10);
 
   return (
     <div className="space-y-8 max-w-[1400px]">
@@ -80,13 +104,13 @@ export default async function AdminOverview() {
             <Link href="/admin/magazzino" className="text-xs text-gold-primary hover:underline">Magazzino</Link>
           </header>
           <div className="divide-y divide-pearl-grey/60">
-            {(lowStock ?? []).map((row: any) => (
+            {lowStock.map((row) => (
               <div key={row.product_id} className="px-6 py-3 flex justify-between items-center">
-                <span className="text-sm truncate">{row.products?.name ?? '—'}</span>
-                <span className="text-sm font-medium text-amber-600">{row.quantity_available}</span>
+                <span className="text-sm truncate">{row.name || '—'}</span>
+                <span className={`text-sm font-medium ${row.qty === 0 ? 'text-red-600' : 'text-amber-600'}`}>{row.qty}</span>
               </div>
             ))}
-            {!lowStock?.length && <p className="px-6 py-8 text-sm text-soft-grey text-center">Tutti i prodotti hanno scorta sufficiente</p>}
+            {!lowStock.length && <p className="px-6 py-8 text-sm text-soft-grey text-center">Tutti i prodotti hanno scorta sufficiente</p>}
           </div>
         </section>
       </div>
