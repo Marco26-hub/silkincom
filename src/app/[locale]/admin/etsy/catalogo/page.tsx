@@ -2,6 +2,7 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowLeft, ExternalLink, Store, Pencil } from 'lucide-react';
 import { createServiceClient } from '@/lib/supabase/server';
+import { EtsyFixMaterialsButton } from '@/components/admin/EtsyFixMaterialsButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,11 +47,12 @@ export default async function AdminEtsyCatalogoPage({
   const supabase = createServiceClient();
   const { data: listings } = await supabase
     .from('etsy_listings')
-    .select('listing_id, title, state, url, price, currency, quantity, views, num_favorers, image_urls')
+    .select('listing_id, title, state, url, price, currency, quantity, views, num_favorers, image_urls, materials')
     .order('views', { ascending: false })
     .limit(500);
 
-  const rows = (listings ?? []) as EtsyListing[];
+  const rows = (listings ?? []) as (EtsyListing & { materials: string[] | null })[];
+  const missingMaterials = rows.filter((l) => !l.materials || l.materials.length === 0).length;
 
   return (
     <div className="space-y-6 max-w-[1400px]">
@@ -88,9 +90,12 @@ export default async function AdminEtsyCatalogoPage({
       </div>
 
       {isWrite && (
-        <div className="border border-amber-200 bg-amber-50/40 px-4 py-3 text-xs text-amber-800 flex items-center gap-2">
-          <Pencil className="w-3.5 h-3.5 shrink-0 text-amber-600" />
-          Modalità scrittura attiva — clicca <strong>Modifica</strong> su qualsiasi inserzione per aggiornare i campi su Etsy (EN + IT).
+        <div className="border border-amber-200 bg-amber-50/40 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+          <span className="text-xs text-amber-800 flex items-center gap-2">
+            <Pencil className="w-3.5 h-3.5 shrink-0 text-amber-600" />
+            Modalità scrittura attiva — clicca <strong>Modifica</strong> su un'inserzione per aggiornare i campi su Etsy (EN + IT).
+          </span>
+          <EtsyFixMaterialsButton count={missingMaterials} />
         </div>
       )}
 
