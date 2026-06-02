@@ -17,7 +17,16 @@ export type AdCopy = {
 };
 
 const OPENROUTER_BASE = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'anthropic/claude-3.5-sonnet';
+// Ordered fallback — the old 'anthropic/claude-3.5-sonnet' slug now 404s on
+// OpenRouter ("No endpoints found"). Try current Anthropic slugs first, then
+// always-available cross-vendor models.
+const MODELS = [
+  'anthropic/claude-sonnet-4.5',
+  'anthropic/claude-3.7-sonnet',
+  'anthropic/claude-sonnet-latest',
+  'openai/gpt-4o',
+  'google/gemini-2.0-flash-001',
+];
 
 const SYSTEM = `You are the senior copywriter for SILKinCOM — a luxury silk &
 cashmere atelier in Como, Italy. Tradition: silk weaving since 1400, made in
@@ -83,27 +92,36 @@ export async function generateAdCopy(
     `Generate the JSON now. No markdown, no commentary, no code fences.`,
   ].join('\n');
 
-  const res = await fetch(OPENROUTER_BASE, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://www.silkincom.com',
-      'X-Title': 'SILKinCOM Ad Copy',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: 'system', content: SYSTEM },
-        { role: 'user', content: user },
-      ],
-      temperature: 0.7,
-      response_format: { type: 'json_object' },
-    }),
-  });
-  if (!res.ok) throw new Error(`openrouter ${res.status}: ${(await res.text()).slice(0, 300)}`);
-  const json = (await res.json()) as { choices: Array<{ message: { content: string } }> };
-  const content = json.choices?.[0]?.message?.content ?? '{}';
+  let content = '{}';
+  let lastErr = '';
+  for (const model of MODELS) {
+    const res = await fetch(OPENROUTER_BASE, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://www.silkincom.com',
+        'X-Title': 'SILKinCOM Ad Copy',
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: SYSTEM },
+          { role: 'user', content: user },
+        ],
+        temperature: 0.7,
+        response_format: { type: 'json_object' },
+      }),
+    });
+    if (res.ok) {
+      const json = (await res.json()) as { choices: Array<{ message: { content: string } }> };
+      content = json.choices?.[0]?.message?.content ?? '{}';
+      if (content && content !== '{}') break;
+    } else {
+      lastErr = `${model} → ${res.status}: ${(await res.text()).slice(0, 160)}`;
+    }
+  }
+  if (!content || content === '{}') throw new Error(`openrouter: nessun modello disponibile (${lastErr})`);
 
   let parsed: Partial<AdCopy>;
   try {
