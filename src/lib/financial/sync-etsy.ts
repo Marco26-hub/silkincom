@@ -213,11 +213,16 @@ export async function syncEtsyFinancial(
   }
 
   try {
+    // Etsy's ledger-entries endpoint requires BOTH min_created and max_created
+    // (unlike receipts, where max_created is optional). Omitting max_created
+    // returned "400 Missing input parameter: [max_created]" and the whole Etsy
+    // fee/commission ledger never synced.
+    const nowSec = Math.floor(Date.now() / 1000);
     let offset = 0;
     const limit = 100;
     while (true) {
       const page = await etsyFetch<{ results: EtsyLedgerEntry[]; count: number }>(
-        `/application/shops/${shopId}/payment-account/ledger-entries?min_created=${since}&limit=${limit}&offset=${offset}`,
+        `/application/shops/${shopId}/payment-account/ledger-entries?min_created=${since}&max_created=${nowSec}&limit=${limit}&offset=${offset}`,
       );
       const entries = page.results ?? [];
       for (const e of entries) rows.push(ledgerEntryToRow(e));
