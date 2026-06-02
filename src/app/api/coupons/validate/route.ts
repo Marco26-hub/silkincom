@@ -33,6 +33,7 @@ type MsgKey =
   | 'exhausted'
   | 'maxUses'
   | 'applied'
+  | 'freeShipping'
   | 'validateError';
 
 const MSG: Record<string, Record<MsgKey, string>> = {
@@ -47,6 +48,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Codice esaurito',
     maxUses: 'Codice già utilizzato il massimo delle volte',
     applied: 'Sconto applicato: −€{amount}',
+    freeShipping: 'Spedizione gratuita applicata',
     validateError: 'Errore validazione',
   },
   en: {
@@ -60,6 +62,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Code exhausted',
     maxUses: 'Code already used the maximum number of times',
     applied: 'Discount applied: −€{amount}',
+    freeShipping: 'Free shipping applied',
     validateError: 'Validation error',
   },
   es: {
@@ -73,6 +76,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Código agotado',
     maxUses: 'Código ya utilizado el máximo de veces',
     applied: 'Descuento aplicado: −€{amount}',
+    freeShipping: 'Envío gratis aplicado',
     validateError: 'Error de validación',
   },
   fr: {
@@ -86,6 +90,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Code épuisé',
     maxUses: 'Code déjà utilisé le maximum de fois',
     applied: 'Remise appliquée : −€{amount}',
+    freeShipping: 'Livraison gratuite appliquée',
     validateError: 'Erreur de validation',
   },
   de: {
@@ -99,6 +104,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Code aufgebraucht',
     maxUses: 'Code bereits maximal verwendet',
     applied: 'Rabatt angewendet: −€{amount}',
+    freeShipping: 'Kostenloser Versand angewendet',
     validateError: 'Validierungsfehler',
   },
   pt: {
@@ -112,6 +118,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Código esgotado',
     maxUses: 'Código já utilizado o máximo de vezes',
     applied: 'Desconto aplicado: −€{amount}',
+    freeShipping: 'Envio grátis aplicado',
     validateError: 'Erro de validação',
   },
   nl: {
@@ -125,6 +132,7 @@ const MSG: Record<string, Record<MsgKey, string>> = {
     exhausted: 'Code uitgeput',
     maxUses: 'Code is al maximaal gebruikt',
     applied: 'Korting toegepast: −€{amount}',
+    freeShipping: 'Gratis verzending toegepast',
     validateError: 'Validatiefout',
   },
 };
@@ -223,12 +231,16 @@ export async function POST(req: NextRequest) {
     }
 
     const discountValue = Number(coupon.discount_value);
+    const isFreeShipping = coupon.discount_type === 'free_shipping';
     let discount_amount = 0;
     if (coupon.discount_type === 'percentage' || coupon.discount_type === 'percent') {
       discount_amount = Math.round(subtotal * discountValue) / 100;
     } else if (coupon.discount_type === 'fixed' || coupon.discount_type === 'fixed_amount') {
       discount_amount = discountValue;
     }
+    // free_shipping leaves discount_amount at 0 — the saving is the waived
+    // shipping cost, applied at checkout (cart UI + payment-intent), not a
+    // line-item subtotal discount.
     discount_amount = Math.min(discount_amount, subtotal);
     discount_amount = Math.round(discount_amount * 100) / 100;
 
@@ -238,7 +250,9 @@ export async function POST(req: NextRequest) {
       discount_type: coupon.discount_type,
       discount_value: discountValue,
       discount_amount,
-      message: tr(locale, 'applied', { amount: discount_amount.toFixed(2) }),
+      message: isFreeShipping
+        ? tr(locale, 'freeShipping')
+        : tr(locale, 'applied', { amount: discount_amount.toFixed(2) }),
     });
   } catch (err) {
     console.error('Coupon validate error:', err);

@@ -196,7 +196,7 @@ export function CartDrawer() {
                         <X className="w-3 h-3" />
                       </button>
                     </span>
-                    <span>−{formatPrice(discount)}</span>
+                    <span>{coupon.discount_type === 'free_shipping' ? t('shippingFree') : `−${formatPrice(discount)}`}</span>
                   </div>
                 ) : (
                   <form onSubmit={handleApplyCoupon}>

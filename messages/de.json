@@ -487,6 +487,12 @@
       "AT": "Österreich",
       "GB": "Vereinigtes Königreich",
       "US": "Vereinigte Staaten"
+    },
+    "delivery": {
+      "title": "Liefermethode",
+      "standard": "Standardversand",
+      "handDelivery": "Persönliche Übergabe",
+      "handDeliveryNote": "Persönliche Übergabe — keine Versandkosten"
     }
   },
   "account": {

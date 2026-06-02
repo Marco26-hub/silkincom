@@ -487,6 +487,12 @@
       "AT": "Oostenrijk",
       "GB": "Verenigd Koninkrijk",
       "US": "Verenigde Staten"
+    },
+    "delivery": {
+      "title": "Bezorgmethode",
+      "standard": "Standaardverzending",
+      "handDelivery": "Persoonlijke overhandiging",
+      "handDeliveryNote": "Persoonlijke overhandiging — geen verzendkosten"
     }
   },
   "account": {

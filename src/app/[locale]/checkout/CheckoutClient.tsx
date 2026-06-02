@@ -110,6 +110,7 @@ export function CheckoutClient() {
   const [initData, setInitData] = useState<InitData | null>(null);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<'standard' | 'hand_delivery'>('standard');
 
   const [form, setForm] = useState({
     first_name: '',
@@ -136,7 +137,10 @@ export function CheckoutClient() {
   }, [items, initData, router]);
 
   const subtotal = total();
-  const shipping = computeShipping(subtotal);
+  // Shipping is waived for hand delivery (in-person) or a free_shipping coupon;
+  // otherwise the subtotal threshold decides (computeShipping).
+  const freeShipping = deliveryMethod === 'hand_delivery' || coupon?.discount_type === 'free_shipping';
+  const shipping = freeShipping ? 0 : computeShipping(subtotal);
   const discountAmount = coupon?.discount_amount ?? 0;
   const grandTotal = Math.max(subtotal - discountAmount, 0) + shipping;
 
@@ -175,6 +179,7 @@ export function CheckoutClient() {
           customer_email: form.customer_email,
           customer_name: customerName,
           shipping_address: shippingAddress,
+          delivery_method: deliveryMethod,
           ...(coupon ? { coupon_code: coupon.code } : {}),
         }),
       });
@@ -296,6 +301,33 @@ export function CheckoutClient() {
 
                 <section className="space-y-5">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-pearl-grey/60 pb-2">
+                    {t('delivery.title')}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {(['standard', 'hand_delivery'] as const).map((m) => {
+                      const active = deliveryMethod === m;
+                      return (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setDeliveryMethod(m)}
+                          className={`text-left border px-4 py-3 transition-colors ${active ? 'border-soft-black bg-ivory' : 'border-pearl-grey hover:border-soft-black/50'}`}
+                        >
+                          <span className="flex items-center gap-2 text-sm font-light">
+                            <span className={`inline-block w-3.5 h-3.5 rounded-full border ${active ? 'border-soft-black' : 'border-pearl-grey'} flex items-center justify-center`}>
+                              {active && <span className="w-1.5 h-1.5 rounded-full bg-soft-black" />}
+                            </span>
+                            {m === 'standard' ? t('delivery.standard') : t('delivery.handDelivery')}
+                          </span>
+                          {m === 'hand_delivery' && (
+                            <span className="block mt-1 ml-[22px] text-[11px] text-soft-grey">{t('delivery.handDeliveryNote')}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-pearl-grey/60 pb-2 pt-2">
                     {t('sections.shipping')}
                   </p>
                   <div>
@@ -417,7 +449,7 @@ export function CheckoutClient() {
               {coupon && (
                 <div className="flex justify-between text-sm text-gold-dark">
                   <span>Coupon {coupon.code}</span>
-                  <span>−{formatPrice(coupon.discount_amount)}</span>
+                  <span>{coupon.discount_type === 'free_shipping' ? tcart('shippingFree') : `−${formatPrice(coupon.discount_amount)}`}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm text-soft-grey">

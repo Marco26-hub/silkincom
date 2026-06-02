@@ -56,6 +56,10 @@ export function CartPageClient() {
     useCart.persist.rehydrate();
   }, []);
 
+  // Shipping is free above the threshold OR when a free_shipping coupon applies.
+  const freeShipping = total() >= FREE_SHIPPING_THRESHOLD || coupon?.discount_type === 'free_shipping';
+  const shippingCost = freeShipping ? 0 : computeShipping(total());
+
   return (
     <section className="pt-40 pb-24 bg-warm-white min-h-[70vh]">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
@@ -148,18 +152,18 @@ export function CartPageClient() {
                       <X className="w-3 h-3" />
                     </button>
                   </span>
-                  <span>−{formatPrice(coupon.discount_amount)}</span>
+                  <span>{coupon.discount_type === 'free_shipping' ? t('shippingFree') : `−${formatPrice(coupon.discount_amount)}`}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
                 <span>{t('shipping')}</span>
-                <span>{total() >= FREE_SHIPPING_THRESHOLD ? t('shippingFree') : formatPrice(STANDARD_SHIPPING_COST)}</span>
+                <span>{freeShipping ? t('shippingFree') : formatPrice(STANDARD_SHIPPING_COST)}</span>
               </div>
               <div className="border-t border-pearl-grey pt-3 flex justify-between font-medium">
                 <span>{t('total')}</span>
                 <span>
                   {formatPrice(
-                    Math.max(total() - (coupon?.discount_amount ?? 0), 0) + computeShipping(total())
+                    Math.max(total() - (coupon?.discount_amount ?? 0), 0) + shippingCost
                   )}
                 </span>
               </div>

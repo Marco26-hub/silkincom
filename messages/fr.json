@@ -487,6 +487,12 @@
       "AT": "Autriche",
       "GB": "Royaume-Uni",
       "US": "États-Unis"
+    },
+    "delivery": {
+      "title": "Mode de livraison",
+      "standard": "Livraison standard",
+      "handDelivery": "Remise en main propre",
+      "handDeliveryNote": "Remise en main propre — sans frais de livraison"
     }
   },
   "account": {

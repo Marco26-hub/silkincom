@@ -19,6 +19,7 @@ const paymentIntentSchema = z.object({
   customer_email: z.string().email().max(254),
   customer_name: z.string().min(1).max(200),
   coupon_code: z.string().max(50).optional(),
+  delivery_method: z.enum(['standard', 'hand_delivery']).optional().default('standard'),
   shipping_address: z.object({
     full_name: z.string().min(1).max(200),
     street_address: z.string().min(1).max(500),
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const { items, customer_email, customer_name, shipping_address, coupon_code } = parsed.data;
+    const { items, customer_email, customer_name, shipping_address, coupon_code, delivery_method } = parsed.data;
 
     const supabase = createServiceClient();
 
@@ -133,7 +134,10 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    const shipping_cost = computeShipping(subtotal);
+    // Base shipping from subtotal threshold. Hand delivery is always free
+    // (in-person, no carrier). A valid free_shipping coupon also zeroes it
+    // (handled in the coupon block below).
+    let shipping_cost = delivery_method === 'hand_delivery' ? 0 : computeShipping(subtotal);
 
     // Server-side coupon validation (don't trust client-supplied discount)
     const normalizedEmail = customer_email.trim().toLowerCase();
@@ -188,6 +192,8 @@ export async function POST(req: NextRequest) {
             discount_amount = Math.round(subtotal * dv) / 100;
           } else if (coupon.discount_type === 'fixed' || coupon.discount_type === 'fixed_amount') {
             discount_amount = dv;
+          } else if (coupon.discount_type === 'free_shipping') {
+            shipping_cost = 0;
           }
           discount_amount = Math.min(discount_amount, subtotal);
           discount_amount = Math.round(discount_amount * 100) / 100;
@@ -216,6 +222,7 @@ export async function POST(req: NextRequest) {
         discount_amount,
         total_amount,
         currency: 'EUR',
+        delivery_method,
         payment_status: 'pending',
         shipping_address: {
           full_name: shipping_address.full_name,

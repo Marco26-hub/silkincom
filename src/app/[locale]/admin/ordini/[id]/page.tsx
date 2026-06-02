@@ -79,7 +79,12 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
                 <span>{formatPrice(Number(order.subtotal))}</span>
               </div>
               <div className="flex justify-between text-soft-grey">
-                <span>Spedizione</span>
+                <span className="flex items-center gap-2">
+                  Spedizione
+                  {order.delivery_method === 'hand_delivery' && (
+                    <span className="inline-block px-1.5 py-0.5 text-[9px] uppercase tracking-[0.15em] bg-gold-primary/15 text-gold-dark">Consegna a mano</span>
+                  )}
+                </span>
                 <span>{Number(order.shipping_cost) === 0 ? 'Gratuita' : formatPrice(Number(order.shipping_cost))}</span>
               </div>
               {Number(order.discount_amount) > 0 && (

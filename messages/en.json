@@ -487,6 +487,12 @@
       "AT": "Austria",
       "GB": "United Kingdom",
       "US": "United States"
+    },
+    "delivery": {
+      "title": "Delivery method",
+      "standard": "Standard shipping",
+      "handDelivery": "Hand delivery",
+      "handDeliveryNote": "Hand delivery — no shipping cost"
     }
   },
   "account": {

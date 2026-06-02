@@ -186,12 +186,30 @@ export default function AdminCouponsPage() {
             <Inp label="Codice" value={form.code || ''} onChange={(v) => setForm({ ...form, code: v })} required />
             <div>
               <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">Tipo sconto</label>
-              <select value={form.discount_type} onChange={(e) => setForm({ ...form, discount_type: e.target.value })} className={cls + ' bg-white'}>
+              <select
+                value={form.discount_type}
+                onChange={(e) => {
+                  const dt = e.target.value;
+                  // free_shipping carries no monetary value — force 0 so the
+                  // NOT NULL discount_value column is satisfied and the Valore
+                  // field can be hidden.
+                  setForm({ ...form, discount_type: dt, ...(dt === 'free_shipping' ? { discount_value: 0 } : {}) });
+                }}
+                className={cls + ' bg-white'}
+              >
                 <option value="percentage">Percentuale (%)</option>
                 <option value="fixed_amount">Fisso (€)</option>
+                <option value="free_shipping">Spedizione gratis</option>
               </select>
             </div>
-            <Inp label="Valore" type="number" step="0.01" value={form.discount_value ?? ''} onChange={(v) => setForm({ ...form, discount_value: Number(v) })} required />
+            {form.discount_type === 'free_shipping' ? (
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">Valore</label>
+                <p className="px-3 py-2.5 text-sm text-soft-grey border border-pearl-grey/60 bg-ivory">Spedizione azzerata al checkout</p>
+              </div>
+            ) : (
+              <Inp label="Valore" type="number" step="0.01" value={form.discount_value ?? ''} onChange={(v) => setForm({ ...form, discount_value: Number(v) })} required />
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Inp label="Valido dal" type="date" value={form.valid_from || ''} onChange={(v) => setForm({ ...form, valid_from: v })} />
@@ -237,8 +255,8 @@ export default function AdminCouponsPage() {
             ) : coupons.map((c) => (
               <tr key={c.id} className="hover:bg-ivory/50">
                 <td className="px-5 py-3 font-mono font-medium">{c.code}</td>
-                <td className="px-5 py-3 text-xs">{c.discount_type === 'percentage' ? '%' : '€'}</td>
-                <td className="px-5 py-3 text-right">{c.discount_type === 'percentage' ? `${c.discount_value}%` : `€${c.discount_value}`}</td>
+                <td className="px-5 py-3 text-xs">{c.discount_type === 'percentage' ? '%' : c.discount_type === 'free_shipping' ? 'Sped.' : '€'}</td>
+                <td className="px-5 py-3 text-right">{c.discount_type === 'percentage' ? `${c.discount_value}%` : c.discount_type === 'free_shipping' ? 'Gratis' : `€${c.discount_value}`}</td>
                 <td className="px-5 py-3 text-xs">
                   {c.valid_from ? new Date(c.valid_from).toLocaleDateString('it-IT') : '—'}
                   {' → '}

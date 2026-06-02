@@ -157,6 +157,7 @@ export interface Order {
   total_amount: number;
   currency: string;
   shipping_method: string | null;
+  delivery_method: 'standard' | 'hand_delivery';
   shipping_address_id: string | null;
   tracking_number: string | null;
   shipped_at: string | null;
