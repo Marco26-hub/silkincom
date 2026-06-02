@@ -77,23 +77,40 @@ export async function GET(req: NextRequest) {
   const totals = (totalsRows ?? []).reduce(
     (acc, r) => {
       const net = Number(r.net_amount);
-      acc.gross += Number(r.gross_amount);
+      const gross = Number(r.gross_amount);
+      acc.gross += gross;
       acc.fees += Number(r.fee_amount);
       acc.tax += Number(r.tax_amount);
       acc.shipping += Number(r.shipping_amount);
+
+      // Etsy has no sales here, so it is pure cost — but its ledger lists the
+      // fee accruals (prolist/listing/renew, negative) AND the monthly
+      // billing_payment (positive) that settles them. The billing_payment is
+      // the Etsy invoice the owner actually pays by company card, so THAT is
+      // the real cash expense. Counting the fee accruals too would double-count
+      // (the payment already covers them), so they stay in the movements table
+      // but are excluded from the totals.
+      if (r.source === 'etsy') {
+        if (r.type === 'payout') {
+          const paid = Math.abs(net);
+          acc.expense += paid;
+          acc.net -= paid;
+          acc.bySource[r.source] = (acc.bySource[r.source] ?? 0) - paid;
+        }
+        // Etsy fees: itemisation only — skipped from the income/expense totals.
+        return acc;
+      }
+
+      // Stripe / everything else: income if positive, expense if negative.
       acc.net += net;
-      // Direction split by the sign of the net amount — this is what lets the
-      // UI read as ENTRATE vs USCITE instead of one confusing signed sum.
-      // Income = money in (Stripe sales, net of platform fee). Expense =
-      // money out (Etsy commissions + ads, Google Ads, refunds).
       if (net >= 0) {
         acc.income += net;
-        acc.grossSales += Number(r.gross_amount);
+        acc.grossSales += gross;
       } else {
         acc.expense += -net;
       }
       acc.bySource[r.source] = (acc.bySource[r.source] ?? 0) + net;
-      acc.byType[r.type] = (acc.byType[r.type] ?? 0) + Number(r.gross_amount);
+      acc.byType[r.type] = (acc.byType[r.type] ?? 0) + gross;
       return acc;
     },
     {
