@@ -26,6 +26,7 @@ import {
   TrendingDown,
   Scale,
 } from 'lucide-react';
+import { QuarterlyReportPanel } from '@/components/admin/QuarterlyReportPanel';
 
 type Row = {
   id: string;
@@ -387,6 +388,9 @@ export default function AdminFattureePage() {
           </div>
         </div>
       )}
+
+      {/* Quarterly report for the accountant — download or email with CSV */}
+      <QuarterlyReportPanel />
 
       {/* Table */}
       <div className="border border-pearl-grey bg-white overflow-x-auto">

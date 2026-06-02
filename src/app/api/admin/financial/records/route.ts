@@ -11,6 +11,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
+import { computeTotals } from '@/lib/financial/summary';
 
 export const runtime = 'nodejs';
 
@@ -74,58 +75,7 @@ export async function GET(req: NextRequest) {
   if (type !== 'all') totalsQ.eq('type', type);
   const { data: totalsRows } = await totalsQ;
 
-  const totals = (totalsRows ?? []).reduce(
-    (acc, r) => {
-      const net = Number(r.net_amount);
-      const gross = Number(r.gross_amount);
-      acc.gross += gross;
-      acc.fees += Number(r.fee_amount);
-      acc.tax += Number(r.tax_amount);
-      acc.shipping += Number(r.shipping_amount);
-
-      // Etsy has no sales here, so it is pure cost — but its ledger lists the
-      // fee accruals (prolist/listing/renew, negative) AND the monthly
-      // billing_payment (positive) that settles them. The billing_payment is
-      // the Etsy invoice the owner actually pays by company card, so THAT is
-      // the real cash expense. Counting the fee accruals too would double-count
-      // (the payment already covers them), so they stay in the movements table
-      // but are excluded from the totals.
-      if (r.source === 'etsy') {
-        if (r.type === 'payout') {
-          const paid = Math.abs(net);
-          acc.expense += paid;
-          acc.net -= paid;
-          acc.bySource[r.source] = (acc.bySource[r.source] ?? 0) - paid;
-        }
-        // Etsy fees: itemisation only — skipped from the income/expense totals.
-        return acc;
-      }
-
-      // Stripe / everything else: income if positive, expense if negative.
-      acc.net += net;
-      if (net >= 0) {
-        acc.income += net;
-        acc.grossSales += gross;
-      } else {
-        acc.expense += -net;
-      }
-      acc.bySource[r.source] = (acc.bySource[r.source] ?? 0) + net;
-      acc.byType[r.type] = (acc.byType[r.type] ?? 0) + gross;
-      return acc;
-    },
-    {
-      gross: 0,
-      fees: 0,
-      tax: 0,
-      shipping: 0,
-      net: 0,
-      income: 0,
-      expense: 0,
-      grossSales: 0,
-      bySource: {} as Record<string, number>,
-      byType: {} as Record<string, number>,
-    },
-  );
+  const totals = computeTotals(totalsRows ?? []);
 
   // Sync state per-source so the UI can show "last synced at" + last error.
   const { data: syncStates } = await supabase

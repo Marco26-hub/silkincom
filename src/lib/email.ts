@@ -601,3 +601,68 @@ export async function sendContactNotification(data: {
     console.error('sendContactNotification error:', err);
   }
 }
+
+// Accounting report for the commercialista: a clean entrate/uscite/saldo
+// summary in the body + the full per-transaction detail attached as CSV.
+export async function sendFinancialReport(opts: {
+  to: string;
+  periodLabel: string;
+  totals: { income: number; expense: number; net: number; grossSales: number; bySource: Record<string, number> };
+  count: number;
+  csv: string;
+  csvFilename: string;
+  replyTo?: string;
+}): Promise<void> {
+  const eur = (n: number) => '€' + n.toFixed(2);
+  const { totals } = opts;
+  const channelRows = Object.entries(totals.bySource)
+    .map(([s, v]) => `
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #eee;">${e(s.toUpperCase())}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #eee;text-align:right;color:${v < 0 ? '#b91c1c' : '#15803d'};">${v < 0 ? '−' : '+'}${eur(Math.abs(v))}</td>
+      </tr>`).join('');
+
+  const html = `
+    <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:640px;">
+      <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;color:#1A1A1A;margin:0 0 4px;">SILKinCOM — Report contabile</h2>
+      <p style="color:#6B6B6B;font-size:13px;margin:0 0 20px;">Periodo: <strong style="color:#1A1A1A;">${e(opts.periodLabel)}</strong> · ${opts.count} movimenti</p>
+
+      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin:0 0 18px;">
+        <tr>
+          <td style="padding:10px 14px;background:#F5F0E8;border-left:3px solid #15803d;">
+            <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#A87F1E;">Entrate (vendite)</div>
+            <div style="font-size:22px;color:#15803d;">${eur(totals.income)}</div>
+          </td>
+          <td style="width:12px;"></td>
+          <td style="padding:10px 14px;background:#F5F0E8;border-left:3px solid #b91c1c;">
+            <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#A87F1E;">Spese totali</div>
+            <div style="font-size:22px;color:#b91c1c;">−${eur(totals.expense)}</div>
+          </td>
+          <td style="width:12px;"></td>
+          <td style="padding:10px 14px;background:#1A1A1A;">
+            <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#D4AF37;">Saldo</div>
+            <div style="font-size:22px;color:#FFFDF8;">${totals.net < 0 ? '−' : ''}${eur(Math.abs(totals.net))}</div>
+          </td>
+        </tr>
+      </table>
+
+      <p style="font-size:12px;color:#6B6B6B;margin:0 0 6px;">Vendite lorde (imponibile + IVA): <strong>${eur(totals.grossSales)}</strong></p>
+
+      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:13px;margin:14px 0;">
+        <thead><tr><th style="text-align:left;padding:6px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;border-bottom:1px solid #ddd;">Canale</th><th style="text-align:right;padding:6px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#888;border-bottom:1px solid #ddd;">Netto periodo</th></tr></thead>
+        <tbody>${channelRows || '<tr><td colspan="2" style="padding:10px;color:#aaa;">Nessun movimento</td></tr>'}</tbody>
+      </table>
+
+      <p style="font-size:13px;line-height:1.7;color:#4A4A4A;">In allegato il dettaglio completo dei movimenti (Etsy + Stripe) in formato CSV, apribile con Excel: data, canale, cliente, imponibile, IVA, fee, totale, netto, link fattura.</p>
+      <p style="font-size:11px;color:#A9A6A0;margin-top:24px;">SILKinCOM · P.IVA 03786790133 · report generato automaticamente dall'amministrazione.</p>
+    </div>`;
+
+  await sendEmail({
+    from: FROM_EMAIL,
+    to: opts.to,
+    replyTo: opts.replyTo,
+    subject: `SILKinCOM — Report contabile ${opts.periodLabel}`,
+    html,
+    attachments: [{ filename: opts.csvFilename, content: Buffer.from(opts.csv, 'utf-8') }],
+  });
+}
