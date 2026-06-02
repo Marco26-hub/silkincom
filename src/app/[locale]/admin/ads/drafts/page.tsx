@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Sparkles, Trash2, Plus, Save, Eye, Loader2 } from 'lucide-react';
+import { Sparkles, Trash2, Plus, Save, Eye, Loader2, Info, AlertTriangle } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { createBrowserClient } from '@/lib/supabase/client';
 
@@ -156,7 +156,7 @@ export default function AdDraftsPage() {
           <Sparkles className="w-6 h-6 text-gold-primary" />
           <div>
             <h1 className="font-display text-4xl">Bozze pubblicità</h1>
-            <p className="text-soft-grey text-sm">Editor copy AI · Pronto per Google Ads</p>
+            <p className="text-soft-grey text-sm">Crea annunci Google Ads con copy scritta dall'AI — pronti da rivedere e pubblicare</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -179,6 +179,42 @@ export default function AdDraftsPage() {
       {msg && (
         <div className="border border-pearl-grey bg-ivory px-4 py-2 text-xs text-soft-black">{msg}</div>
       )}
+
+      {/* Spiegazione del flusso — leggibile */}
+      <div className="border border-pearl-grey bg-ivory/50 p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <Info className="w-4 h-4 text-gold-dark" />
+          <h2 className="text-sm font-medium">Come funziona</h2>
+        </div>
+        <p className="text-sm text-soft-grey leading-relaxed max-w-[820px]">
+          Qui crei le bozze degli <strong>annunci a pagamento Google Ads</strong> (ricerca sponsorizzata).
+          L'AI scrive titoli, descrizioni e parole chiave già ottimizzati per le ricerche dei clienti —
+          tu li rivedi e pubblichi.
+        </p>
+        <ol className="text-sm text-soft-grey space-y-1.5 list-decimal list-inside max-w-[820px]">
+          <li><strong>Nuova bozza</strong> → scegli uno o più prodotti dal catalogo</li>
+          <li><strong>Genera copy con AI</strong> → 15 titoli (max 30 caratteri), 4 descrizioni (max 90), 20 keyword. Tutto modificabile a mano</li>
+          <li>Imposta <strong>budget giornaliero</strong>, target ROAS e URL di destinazione</li>
+          <li><strong>Pubblica su Google</strong> → crea la campagna nel tuo account Google Ads</li>
+        </ol>
+        <div className="border-t border-pearl-grey/60 pt-3 space-y-2 text-xs text-soft-grey max-w-[820px]">
+          <p>
+            <strong className="text-soft-black">SEO, GEO e "virale" sono cose diverse:</strong>{' '}
+            Google Ads porta traffico <em>a pagamento</em> (non organico, non virale) — la copy è ricca di
+            keyword per intercettare chi cerca. La visibilità organica (SEO/GEO) si lavora su sito ed Etsy;
+            il "virale" sui social (sezione <strong>Social</strong> / Blotato). Questa pagina = solo annunci a pagamento.
+          </p>
+          <p className="flex items-start gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+            <span>
+              <strong className="text-amber-700">Pubblicazione su Google non ancora attiva.</strong>{' '}
+              Serve collegare Google Ads (OAuth + developer token). Finché non è connesso, le bozze restano
+              qui pronte: le copi a mano in Google Ads, oppure le pubblichi in un clic appena colleghiamo l'account.
+              Nessun audit/punteggio automatico al momento — la copy è già ottimizzata in generazione.
+            </span>
+          </p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6">
         {/* Drafts list */}
