@@ -1,9 +1,9 @@
 /**
  * AI editorial-plan generator — writes a multi-channel content calendar for
- * SILKinCOM following a senior social-media-manager strategy. Via OpenRouter.
- *
- * Output is a list of planned posts (date offset + channel + format + ready
- * caption/hook/hashtags/CTA) that the caller inserts into `content_plan`.
+ * SILKinCOM following the user's MASTER editorial plan
+ * (social/PIANO-EDITORIALE-MASTER.md): pillar rotation %, the CEST timing
+ * matrix, per-channel cadence, GEO-in-row-1-2, fixed hashtag rules (IG ≤5),
+ * one material per post, CTA "Scopri in bio · silkincom.com". Via OpenRouter.
  *
  * Env: OPENROUTER_API_KEY.
  */
@@ -19,60 +19,68 @@ const MODELS = [
 
 export const PLAN_CHANNELS = ['instagram', 'facebook', 'tiktok', 'pinterest', 'threads', 'youtube', 'email'] as const;
 
-const SYSTEM = `You are a SENIOR social media manager & content strategist for
-SILKinCOM — a luxury silk & cashmere atelier in Como, Italy (serica tradition
-since 1400, Made in Como, Lake Como heritage). You plan editorial calendars
-that build brand desire AND drive sales to the site/Etsy.
+// Encodes social/PIANO-EDITORIALE-MASTER.md (score 100). Keep in sync if that
+// doc changes.
+const SYSTEM = `Sei il social media manager senior di SILKinCOM — maison luxury
+di seta e cashmere, Como, tradizione serica dal 1400, storytelling Lago di Como.
+Pianifichi il calendario editoriale seguendo ALLA LETTERA il Piano Editoriale
+MASTER del brand (sotto). Mercato primario IT, fuso CEST.
 
-VOICE: editorial, restrained, cultivated. Italian heritage luxury. Never
-hype/clichés ("the best", "amazing", "high quality"). Concrete sensory cues:
-pura seta, cashmere, telaio, orlo a mano, jacquard, onde del Lago di Como.
+VOICE: editoriale, sobria, colta. Lusso heritage italiano. MAI cliché ("il
+migliore", "qualità top"). Cue concreti: pura seta, cashmere, telaio, orlo a
+mano, jacquard, onde del Lago di Como.
 
-STRATEGY (apply it):
-- 5 content pillars, ROTATE them (≈80% value / 20% hard-promo):
-  1) Heritage & mestiere (telaio, Como città della seta, lavorazione)
-  2) Prodotto hero (sciarpe cashmere · foulard/twilly seta · pashmina — i veri
-     bestseller; apparel = secondario)
-  3) Lifestyle Lago di Como (luoghi, luce, stagione, styling)
-  4) Gifting (regalo lui/lei, occasioni)
-  5) Dietro le quinte / storia del brand
-- PLATFORM-NATIVE format & hook:
-  · instagram → reel (movimento/texture) | post editoriale | story (sondaggio/restock/link)
-  · tiktok → reel con hook nei primi 2 sec + heritage/story
-  · pinterest → pin verticale keyword-rich, sempre link prodotto
-  · facebook → post editoriale + link
-  · threads → conversazionale, niente hashtag
-  · youtube → short (titolo + #Shorts)
-  · email → newsletter (oggetto + corpo breve)
-- Ogni post: HOOK forte (prima riga ferma lo scroll), valore/storia, soft CTA
-  (link sito o Etsy). HASHTAG: Instagram MAX 5, mirati (no #love generici);
-  TikTok 3-5; Pinterest 2-4 keyword; Threads 0.
-- Cadenza realistica e bilanciata sui giorni; non tutto promo, non tutto stesso canale.
-- Lingua: ITALIANO (brand IT). Caption pronta da pubblicare.
+PILLAR & ROTAZIONE (rispetta le percentuali):
+- Heritage 20% · BTS (dietro le quinte) 15% · Prodotto 25% · Lifestyle Lago 25% · Educational 15%
+- UN materiale per post (seta / cotone / lino / cashmere). Niente materiali misti nello stesso post.
 
-OUTPUT: STRICT JSON, no markdown:
+MATRICE ORARI CEST (posta nei PICCHI, sui giorni forti):
+- Instagram Reel: Mar–Ven, 18:00–21:00 (picco 19:00)
+- Instagram Carosello: Mar–Gio, 11:00–13:00 o 19:00–20:30
+- Instagram Story: tutti i giorni, 8:00–9:00 / 12:30–13:30 / 19:00–22:00 (sequenza 3-5)
+- Facebook: Mar–Ven, 13:00–15:00 o 19:00–21:00
+- TikTok: Mar/Gio/Ven, 19:00–23:00 (o 7:00–9:00)
+- Pinterest: Ven–Dom, 14:00–16:00 o 20:00–23:00
+- Threads: Lun–Ven, 8:00–10:00 o 18:00–21:00 (conversazionale, 0 hashtag)
+- YouTube Shorts: Mer–Dom, 12:00–15:00 o 17:00–21:00
+Anti-collisione: stesso contenuto su più canali = sfalsa 30–90 min. Max 1 post principale per canale al giorno (le story sono a parte).
+
+CADENZA/SETT per canale: Instagram 6–7 (2 reel, 2 carosello, 2 feed, story quotidiane) · Facebook 4–5 (mirror dei migliori IG) · TikTok 4–7 · Pinterest 7–15 (volume, pin nuovi) · Threads 7–14 · YouTube Shorts 3–4.
+
+REGOLE COPY:
+- GEO/keyword nella RIGA 1-2 della caption (es. "Made in Como", "seta di Como", "Lago di Como").
+- HOOK forte in apertura (ferma lo scroll); reel/short hook nei primi 2-3s.
+- HASHTAG set fissi per piattaforma: Instagram MAX 5 mirati · TikTok 3-5 (#FYP ok) · Pinterest 2-4 keyword · Threads 0 · YouTube #Shorts + 2-3.
+- CTA coerente: "Scopri in bio · silkincom.com" (link non cliccabile nei post IG/FB/TikTok/Threads; Pinterest e Story hanno link nativo).
+- Caption in ITALIANO, pronta da pubblicare.
+
+OUTPUT: SOLO JSON, nessun markdown:
 {
   "items": [
     {
-      "day": integer,            // 0-based offset dal giorno di inizio
-      "channel": one of [instagram, facebook, tiktok, pinterest, threads, youtube, email],
-      "action_type": one of [post, reel, story, pin, article, email],
-      "pillar": short label (es. "Heritage", "Prodotto", "Lifestyle", "Gifting", "BTS"),
-      "title": short internal label (cosa è, max 60 char),
-      "hook": opening line (1 riga, forte),
-      "caption": full ready-to-post caption in Italian,
-      "hashtags": string[],      // rispetta i limiti per canale (IG max 5)
-      "cta": short call to action,
-      "product_slug": string|null // slug prodotto se il post ne spinge uno specifico
+      "day": int,                // offset 0-based dal giorno di inizio
+      "time": "HH:MM",           // orario CEST dalla matrice, sul picco
+      "channel": instagram|facebook|tiktok|pinterest|threads|youtube|email,
+      "action_type": post|reel|story|pin|article|email,
+      "pillar": "Heritage"|"BTS"|"Prodotto"|"Lifestyle Lago"|"Educational",
+      "material": "seta"|"cotone"|"lino"|"cashmere"|null,
+      "title": label interna breve (cosa è, max 60 char),
+      "hook": prima riga forte,
+      "caption": caption ITA completa (GEO in riga 1-2),
+      "hashtags": string[],      // rispetta i limiti per canale
+      "cta": "Scopri in bio · silkincom.com" o variante,
+      "product_slug": slug reale o null
     }
   ]
 }`;
 
 export type GeneratedItem = {
   day: number;
+  time?: string;
   channel: string;
   action_type: string;
   pillar?: string;
+  material?: string | null;
   title: string;
   hook?: string;
   caption?: string;
@@ -81,22 +89,30 @@ export type GeneratedItem = {
   product_slug?: string | null;
 };
 
+const WEEKDAYS = ['lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato', 'domenica'];
+
 export async function generateContentPlan(opts: {
   days: number;
   channels: string[];
   goal?: string;
-  productBrief?: string; // newline list of "name (type)" for grounding
+  productBrief?: string;
+  startWeekday?: number; // 0=Mon … 6=Sun
 }): Promise<GeneratedItem[]> {
   if (!process.env.OPENROUTER_API_KEY) throw new Error('OPENROUTER_API_KEY non configurato');
 
+  const startDow = typeof opts.startWeekday === 'number'
+    ? `Il giorno 0 è ${WEEKDAYS[opts.startWeekday] ?? '?'} — calcola gli altri giorni di conseguenza e posiziona ogni post sui GIORNI FORTI della piattaforma (vedi matrice).`
+    : '';
+
   const user = [
-    `Crea un piano editoriale di ${opts.days} giorni.`,
-    `Canali da usare: ${opts.channels.join(', ')}.`,
-    opts.goal ? `Obiettivo/tema del periodo: ${opts.goal}` : 'Nessun tema specifico: mix bilanciato dei pillar.',
-    opts.productBrief ? `\nPRODOTTI DISPONIBILI (usa questi slug reali per product_slug):\n${opts.productBrief}` : '',
+    `Crea un piano editoriale di ${opts.days} giorni secondo il Piano MASTER.`,
+    `Canali abilitati: ${opts.channels.join(', ')}.`,
+    startDow,
+    opts.goal ? `Tema/obiettivo del periodo: ${opts.goal}` : 'Nessun tema specifico: rispetta la rotazione pillar (Heritage 20 / BTS 15 / Prodotto 25 / Lifestyle Lago 25 / Educational 15).',
+    opts.productBrief ? `\nPRODOTTI REALI (usa questi slug per product_slug):\n${opts.productBrief}` : '',
     '',
-    `Distribuisci i post sui ${opts.days} giorni in modo realistico (non ogni giorno su ogni canale). Restituisci SOLO il JSON.`,
-  ].join('\n');
+    `Distribuisci i post in modo realistico per cadenza (non ogni canale ogni giorno), agli ORARI dei picchi e sui giorni forti. Restituisci SOLO il JSON.`,
+  ].filter(Boolean).join('\n');
 
   let content = '';
   let lastErr = '';
@@ -141,9 +157,11 @@ export async function generateContentPlan(opts: {
     .filter((it) => it && typeof it.day === 'number' && it.channel && it.action_type && it.title)
     .map((it) => ({
       day: Math.max(0, Math.floor(it.day)),
+      time: typeof it.time === 'string' && /^\d{1,2}:\d{2}$/.test(it.time) ? it.time : undefined,
       channel: String(it.channel),
       action_type: String(it.action_type),
       pillar: it.pillar ? String(it.pillar) : undefined,
+      material: it.material ? String(it.material) : null,
       title: String(it.title).slice(0, 200),
       hook: it.hook ? String(it.hook) : undefined,
       caption: it.caption ? String(it.caption) : undefined,

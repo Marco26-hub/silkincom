@@ -60,9 +60,14 @@ export async function POST(req: NextRequest) {
     .map((p) => `- ${p.name}${p.product_type ? ` (${p.product_type})` : ''} [${p.slug}]`)
     .join('\n');
 
+  // Monday-based weekday of the start date, so the AI can align posts to the
+  // strong days in the timing matrix (0=Mon … 6=Sun).
+  const jsDow = new Date(startDate + 'T00:00:00Z').getUTCDay();
+  const startWeekday = (jsDow + 6) % 7;
+
   let items;
   try {
-    items = await generateContentPlan({ days, channels, goal: body.goal, productBrief });
+    items = await generateContentPlan({ days, channels, goal: body.goal, productBrief, startWeekday });
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 502 });
   }
@@ -70,8 +75,10 @@ export async function POST(req: NextRequest) {
   const rows = items
     .filter((it) => channels.includes(it.channel))
     .map((it) => {
+      const meta = [it.time && `🕐 ${it.time} CEST`, it.pillar && `Pillar: ${it.pillar}`, it.material && `Materiale: ${it.material}`]
+        .filter(Boolean).join(' · ');
       const parts: string[] = [];
-      if (it.pillar) parts.push(`[${it.pillar}]`);
+      if (meta) parts.push(meta);
       if (it.hook) parts.push(`HOOK · ${it.hook}`);
       if (it.caption) parts.push(it.caption);
       if (it.hashtags?.length) parts.push(it.hashtags.join(' '));
