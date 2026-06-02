@@ -163,18 +163,6 @@ export function CheckoutClient() {
       full_name: customerName,
     };
 
-    // Silent client-side debug: traces the delivery/shipping round-trip in the
-    // browser console only (no UI). Helps confirm the hand-delivery path
-    // without exposing anything to the customer.
-    console.debug('[delivery-debug] submit', {
-      delivery_method: deliveryMethod,
-      subtotal,
-      shipping_shown: shipping,
-      coupon: coupon?.code ?? null,
-      coupon_type: coupon?.discount_type ?? null,
-      grand_total_shown: grandTotal,
-    });
-
     try {
       const res = await fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
@@ -197,13 +185,6 @@ export function CheckoutClient() {
       });
 
       const data = await res.json();
-
-      console.debug('[delivery-debug] response', {
-        ok: res.ok,
-        server_total: data?.total_amount ?? null,
-        matches_shown: data?.total_amount === grandTotal,
-        error: res.ok ? null : (data?.error ?? null),
-      });
 
       if (!res.ok) {
         setApiError(data.error ?? t('errors.paymentFailed'));

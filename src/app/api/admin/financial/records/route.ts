@@ -76,12 +76,23 @@ export async function GET(req: NextRequest) {
 
   const totals = (totalsRows ?? []).reduce(
     (acc, r) => {
+      const net = Number(r.net_amount);
       acc.gross += Number(r.gross_amount);
       acc.fees += Number(r.fee_amount);
       acc.tax += Number(r.tax_amount);
       acc.shipping += Number(r.shipping_amount);
-      acc.net += Number(r.net_amount);
-      acc.bySource[r.source] = (acc.bySource[r.source] ?? 0) + Number(r.net_amount);
+      acc.net += net;
+      // Direction split by the sign of the net amount — this is what lets the
+      // UI read as ENTRATE vs USCITE instead of one confusing signed sum.
+      // Income = money in (Stripe sales, net of platform fee). Expense =
+      // money out (Etsy commissions + ads, Google Ads, refunds).
+      if (net >= 0) {
+        acc.income += net;
+        acc.grossSales += Number(r.gross_amount);
+      } else {
+        acc.expense += -net;
+      }
+      acc.bySource[r.source] = (acc.bySource[r.source] ?? 0) + net;
       acc.byType[r.type] = (acc.byType[r.type] ?? 0) + Number(r.gross_amount);
       return acc;
     },
@@ -91,6 +102,9 @@ export async function GET(req: NextRequest) {
       tax: 0,
       shipping: 0,
       net: 0,
+      income: 0,
+      expense: 0,
+      grossSales: 0,
       bySource: {} as Record<string, number>,
       byType: {} as Record<string, number>,
     },

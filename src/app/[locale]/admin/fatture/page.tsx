@@ -23,10 +23,8 @@ import {
   Download,
   ExternalLink,
   TrendingUp,
-  PiggyBank,
-  Receipt as ReceiptIcon,
-  Wallet,
-  AlertTriangle,
+  TrendingDown,
+  Scale,
 } from 'lucide-react';
 
 type Row = {
@@ -56,6 +54,9 @@ type Totals = {
   tax: number;
   shipping: number;
   net: number;
+  income: number;
+  expense: number;
+  grossSales: number;
   bySource: Record<string, number>;
   byType: Record<string, number>;
 };
@@ -292,72 +293,98 @@ export default function AdminFattureePage() {
         </Field>
       </div>
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <Kpi label="Incassato lordo" value={fmt(totals?.gross ?? 0)} icon={TrendingUp} accent />
-        <Kpi label="Commissioni" value={fmt(totals?.fees ?? 0)} icon={ReceiptIcon} muted />
-        <Kpi label="IVA / Tasse" value={fmt(totals?.tax ?? 0)} icon={AlertTriangle} muted />
-        <Kpi label="Spedizione" value={fmt(totals?.shipping ?? 0)} icon={Wallet} muted />
-        <Kpi label="Netto" value={fmt(totals?.net ?? 0)} icon={PiggyBank} accent />
+      {/* Entrate / Uscite / Saldo — the headline numbers, read at a glance */}
+      <div className="border border-pearl-grey bg-white">
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y divide-pearl-grey sm:divide-y-0 sm:divide-x">
+          <Summary
+            tone="in"
+            label="Entrate"
+            value={totals?.income ?? 0}
+            sub={
+              (totals?.grossSales ?? 0) > (totals?.income ?? 0) + 0.005
+                ? `su ${fmt(totals?.grossSales ?? 0)} di vendite lorde`
+                : 'incassi del mese'
+            }
+          />
+          <Summary
+            tone="out"
+            label="Uscite"
+            value={totals?.expense ?? 0}
+            sub="commissioni · sponsorizzate · pubblicità"
+          />
+          <Summary
+            tone="balance"
+            label="Saldo"
+            value={totals?.net ?? 0}
+            sub={(totals?.net ?? 0) >= 0 ? 'utile del mese' : 'perdita del mese'}
+          />
+        </div>
       </div>
 
-      {/* Channel breakdown */}
+      {/* Secondary detail — the breakdown the commercialista still needs, de-emphasised */}
       {totals && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {(['stripe', 'etsy', 'google_ads'] as const).map((s) => {
-            const label =
-              s === 'stripe' ? 'Sito (Stripe)' : s === 'etsy' ? 'Etsy' : 'Google Ads (spesa)';
-            const isCost = s === 'google_ads';
-            const state = data?.syncStates?.find((st) => st.source === s);
-            const lastSyncedAt = state?.last_synced_at
-              ? new Date(state.last_synced_at).toLocaleString('it-IT', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              : 'mai';
-            const isStale =
-              state?.last_synced_at &&
-              Date.now() - new Date(state.last_synced_at).getTime() > 36 * 60 * 60 * 1000;
-            return (
-              <div
-                key={s}
-                className={`border p-5 ${
-                  isCost ? 'border-red-200 bg-red-50/30' : 'border-pearl-grey bg-white'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span
-                    className={`text-[10px] uppercase tracking-[0.3em] ${
-                      isCost ? 'text-red-600' : 'text-soft-grey'
+        <div className="flex flex-wrap gap-x-10 gap-y-3 px-1">
+          <Detail label="Vendite lorde" value={fmt(totals.grossSales)} />
+          <Detail label="Commissioni" value={fmt(totals.fees)} />
+          <Detail label="IVA / Tasse" value={fmt(totals.tax)} />
+          <Detail label="Spedizione" value={fmt(totals.shipping)} />
+        </div>
+      )}
+
+      {/* Per-channel breakdown — direction-aware (incasso vs spesa) */}
+      {totals && (
+        <div>
+          <h3 className="text-[10px] uppercase tracking-[0.3em] text-soft-grey mb-3 px-1">Dettaglio per canale</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {(['stripe', 'etsy', 'google_ads'] as const).map((s) => {
+              const label = s === 'stripe' ? 'Sito · Stripe' : s === 'etsy' ? 'Etsy' : 'Google Ads';
+              const value = totals.bySource[s] ?? 0;
+              const isIncome = value > 0.005;
+              const isCost = value < -0.005;
+              const state = data?.syncStates?.find((st) => st.source === s);
+              const lastSyncedAt = state?.last_synced_at
+                ? new Date(state.last_synced_at).toLocaleString('it-IT', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })
+                : 'mai';
+              const isStale =
+                state?.last_synced_at &&
+                Date.now() - new Date(state.last_synced_at).getTime() > 36 * 60 * 60 * 1000;
+              return (
+                <div key={s} className="border border-pearl-grey bg-white p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-soft-grey">{label}</span>
+                    {state?.last_status === 'partial' && (
+                      <span className="text-[9px] uppercase tracking-[0.2em] text-amber-600">parziale</span>
+                    )}
+                  </div>
+                  <p
+                    className={`font-display text-3xl ${
+                      isIncome ? 'text-emerald-700' : isCost ? 'text-red-700' : 'text-soft-black/40'
                     }`}
                   >
-                    {label}
-                  </span>
-                  {state?.last_status === 'partial' && (
-                    <span className="text-[9px] uppercase tracking-[0.2em] text-amber-600">parziale</span>
+                    {isIncome ? '+ ' : isCost ? '− ' : ''}
+                    {fmt(Math.abs(value))}
+                  </p>
+                  <p className="text-xs text-soft-grey mt-1">
+                    {isIncome ? 'incassato netto' : isCost ? 'spese del mese' : 'nessun movimento'}
+                  </p>
+                  <p className={`text-[10px] mt-2 ${isStale ? 'text-amber-600' : 'text-soft-grey/70'}`}>
+                    Ultimo sync: {lastSyncedAt}
+                    {isStale && ' · obsoleto'}
+                  </p>
+                  {state?.last_error && (
+                    <p className="text-[10px] text-red-600 mt-1 truncate" title={state.last_error}>
+                      ⚠ {state.last_error.slice(0, 80)}
+                    </p>
                   )}
                 </div>
-                <p className={`font-display text-3xl ${isCost ? 'text-red-700' : ''}`}>
-                  {isCost ? '−' : ''}
-                  {fmt(Math.abs(totals.bySource[s] ?? 0))}
-                </p>
-                <p className="text-xs text-soft-grey mt-1">
-                  {isCost ? 'spesa pubblicità del mese' : 'netto del mese'}
-                </p>
-                <p className={`text-[10px] mt-2 ${isStale ? 'text-amber-600' : 'text-soft-grey/70'}`}>
-                  Ultimo sync: {lastSyncedAt}
-                  {isStale && ' · obsoleto'}
-                </p>
-                {state?.last_error && (
-                  <p className="text-[10px] text-red-600 mt-1 truncate" title={state.last_error}>
-                    ⚠ {state.last_error.slice(0, 80)}
-                  </p>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -503,30 +530,53 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Kpi({
+/**
+ * Headline figure for the Entrate / Uscite / Saldo strip. `tone` decides the
+ * sign prefix and colour: entrate always +green, uscite always −red, saldo
+ * coloured by its own sign so a loss reads red and a profit green.
+ */
+function Summary({
+  tone,
   label,
   value,
-  icon: Icon,
-  accent = false,
-  muted = false,
+  sub,
 }: {
+  tone: 'in' | 'out' | 'balance';
   label: string;
-  value: string;
-  icon: typeof Receipt;
-  accent?: boolean;
-  muted?: boolean;
+  value: number;
+  sub: string;
 }) {
+  const isBalance = tone === 'balance';
+  const positive = isBalance ? value >= 0 : tone === 'in';
+  const zero = Math.abs(value) < 0.005;
+  const Icon = isBalance ? Scale : positive ? TrendingUp : TrendingDown;
+  const color = zero ? 'text-soft-black/40' : positive ? 'text-emerald-700' : 'text-red-700';
+  const sign = zero ? '' : positive ? '+ ' : '− ';
   return (
-    <div
-      className={`border p-4 ${
-        accent ? 'border-gold-primary/60 bg-ivory/40' : muted ? 'border-pearl-grey bg-warm-white/40' : 'border-pearl-grey bg-white'
-      }`}
-    >
-      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-soft-grey">
-        <Icon className={`w-3.5 h-3.5 ${accent ? 'text-gold-primary' : 'text-soft-grey'}`} />
+    <div className={`p-6 sm:p-7 ${isBalance ? 'bg-ivory/40' : ''}`}>
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-soft-grey">
+        <Icon className={`w-3.5 h-3.5 ${color}`} />
         {label}
       </div>
-      <p className={`font-display text-2xl mt-2 ${accent ? 'text-soft-black' : 'text-soft-black/80'}`}>{value}</p>
+      <p
+        className={`font-display leading-none mt-3 ${
+          isBalance ? 'text-4xl sm:text-5xl' : 'text-3xl sm:text-4xl'
+        } ${color}`}
+      >
+        {sign}
+        {fmt(Math.abs(value))}
+      </p>
+      <p className="text-[11px] text-soft-grey/80 mt-2">{sub}</p>
+    </div>
+  );
+}
+
+/** De-emphasised label/value pair for the secondary accounting detail row. */
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span className="block text-[9px] uppercase tracking-[0.25em] text-soft-grey/70">{label}</span>
+      <span className="font-display text-lg text-soft-black/80">{value}</span>
     </div>
   );
 }
