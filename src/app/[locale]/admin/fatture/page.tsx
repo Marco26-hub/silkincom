@@ -27,6 +27,7 @@ import {
   Scale,
 } from 'lucide-react';
 import { QuarterlyReportPanel } from '@/components/admin/QuarterlyReportPanel';
+import { signedNet, signedGross } from '@/lib/financial/summary';
 
 type Row = {
   id: string;
@@ -441,7 +442,7 @@ export default function AdminFattureePage() {
                   {r.buyer_name || <span className="text-soft-grey">—</span>}
                 </td>
                 <td className="px-5 py-2 text-soft-grey">{r.buyer_country || '—'}</td>
-                <td className="px-5 py-2 text-right tabular-nums">{fmt(Number(r.gross_amount), r.currency)}</td>
+                <td className="px-5 py-2 text-right tabular-nums">{fmt(signedGross(r), r.currency)}</td>
                 <td className="px-5 py-2 text-right tabular-nums text-soft-grey">
                   {Number(r.tax_amount) > 0 ? fmt(Number(r.tax_amount), r.currency) : '—'}
                 </td>
@@ -449,7 +450,7 @@ export default function AdminFattureePage() {
                   {Number(r.fee_amount) > 0 ? fmt(Number(r.fee_amount), r.currency) : '—'}
                 </td>
                 <td className="px-5 py-2 text-right tabular-nums font-medium">
-                  {fmt(Number(r.net_amount), r.currency)}
+                  {fmt(signedNet(r), r.currency)}
                 </td>
                 <td className="px-5 py-2">
                   {r.invoice_url ? (

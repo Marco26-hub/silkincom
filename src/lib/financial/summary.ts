@@ -35,6 +35,24 @@ export type FinTotals = {
   byType: Record<string, number>;
 };
 
+/**
+ * The Etsy billing_payment (type 'payout') is stored as a positive credit in
+ * Etsy's ledger, but in our books it is the invoice we paid — an expense. These
+ * helpers give the SIGNED amount for per-row display/export so a payout reads
+ * negative everywhere (table, CSV, PDF), consistent with the totals.
+ */
+export function isEtsyPayout(r: { source: string; type: string }): boolean {
+  return r.source === 'etsy' && r.type === 'payout';
+}
+export function signedNet(r: { source: string; type: string; net_amount: number | string }): number {
+  const n = Number(r.net_amount);
+  return isEtsyPayout(r) ? -Math.abs(n) : n;
+}
+export function signedGross(r: { source: string; type: string; gross_amount: number | string }): number {
+  const n = Number(r.gross_amount);
+  return isEtsyPayout(r) ? -Math.abs(n) : n;
+}
+
 export function computeTotals(rows: FinRow[]): FinTotals {
   return rows.reduce<FinTotals>(
     (acc, r) => {
@@ -150,7 +168,8 @@ export function buildCsv(rows: CsvRow[]): string {
   ];
   const lines = [header.join(',')];
   for (const r of rows) {
-    const imponibile = Number(r.gross_amount) - Number(r.tax_amount) - Number(r.shipping_amount);
+    const gross = signedGross(r);
+    const imponibile = gross - Number(r.tax_amount) - Number(r.shipping_amount);
     lines.push([
       new Date(r.transaction_date).toISOString().slice(0, 10),
       r.source.toUpperCase(),
@@ -165,8 +184,8 @@ export function buildCsv(rows: CsvRow[]): string {
       Number(r.tax_amount).toFixed(2),
       Number(r.shipping_amount).toFixed(2),
       Number(r.fee_amount).toFixed(2),
-      Number(r.gross_amount).toFixed(2),
-      Number(r.net_amount).toFixed(2),
+      gross.toFixed(2),
+      signedNet(r).toFixed(2),
       r.currency ?? 'EUR',
       r.invoice_url ?? r.receipt_url ?? '',
     ].map(csvCell).join(','));

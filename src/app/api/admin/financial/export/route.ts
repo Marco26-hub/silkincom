@@ -12,7 +12,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
-import { computeTotals, resolvePeriod, buildCsv, type FinRow, type CsvRow } from '@/lib/financial/summary';
+import { computeTotals, resolvePeriod, buildCsv, signedNet, signedGross, type FinRow, type CsvRow } from '@/lib/financial/summary';
 
 export const runtime = 'nodejs';
 
@@ -99,10 +99,10 @@ export async function GET(req: NextRequest) {
         <td>${esc(String(r.source).toUpperCase())}</td>
         <td>${esc(r.type)}</td>
         <td>${esc(r.buyer_name ?? r.buyer_email ?? '—')}</td>
-        <td class="r">${eur(Number(r.gross_amount))}</td>
+        <td class="r">${eur(signedGross(r as unknown as FinRow))}</td>
         <td class="r">${eur(Number(r.tax_amount))}</td>
         <td class="r">${eur(Number(r.fee_amount))}</td>
-        <td class="r">${eur(Number(r.net_amount))}</td>
+        <td class="r">${eur(signedNet(r as unknown as FinRow))}</td>
       </tr>`).join('');
     const kpis = adsOnly
       ? `<div class="kpi"><div class="l">Spesa Etsy Ads</div><div class="v">${eur(Math.abs(sum('net_amount')))}</div></div>`
@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
         <table>
           <thead><tr><th>Data</th><th>Canale</th><th>Tipo</th><th>Cliente</th><th class="r">Lordo</th><th class="r">IVA</th><th class="r">Fee</th><th class="r">Netto</th></tr></thead>
           <tbody>${trs || '<tr><td colspan="8" style="text-align:center;color:#aaa;padding:24px;">Nessun movimento nel periodo</td></tr>'}</tbody>
-          <tfoot><tr><td colspan="4">Totali</td><td class="r">${eur(sum('gross_amount'))}</td><td class="r">${eur(sum('tax_amount'))}</td><td class="r">${eur(sum('fee_amount'))}</td><td class="r">${eur(sum('net_amount'))}</td></tr></tfoot>
+          <tfoot><tr><td colspan="4">Totali</td><td class="r">${eur((rows as unknown as FinRow[]).reduce((s, r) => s + signedGross(r), 0))}</td><td class="r">${eur(sum('tax_amount'))}</td><td class="r">${eur(sum('fee_amount'))}</td><td class="r">${eur((rows as unknown as FinRow[]).reduce((s, r) => s + signedNet(r), 0))}</td></tr></tfoot>
         </table>
         <p class="ft">SILKinCOM · P.IVA 03786790133 · generato ${esc(new Date().toLocaleString('it-IT'))}</p>
       </body></html>`;
