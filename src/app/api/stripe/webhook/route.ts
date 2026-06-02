@@ -25,6 +25,18 @@ export async function POST(req: NextRequest) {
     );
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
+    // Make the failure visible on /admin/errors instead of dying silently in
+    // console.error — a signature mismatch (wrong/missing STRIPE_WEBHOOK_SECRET,
+    // or live-vs-test mode mismatch) means real payments never update the DB.
+    try {
+      const sb = createServiceClient();
+      await sb.from('error_logs').insert({
+        level: 'error',
+        message: `Stripe webhook signature verification failed: ${(err as Error).message}`,
+        url: '/api/stripe/webhook',
+        context: { hasSecret: !!process.env.STRIPE_WEBHOOK_SECRET },
+      });
+    } catch { /* logging must never block the 400 */ }
     return NextResponse.json(
       { error: 'Webhook signature verification failed' },
       { status: 400 }
