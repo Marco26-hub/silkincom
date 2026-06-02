@@ -27,36 +27,41 @@ export default async function AdminOverview() {
     supabase.from('orders').select('total_amount').gte('created_at', start7d).eq('payment_status', 'succeeded'),
     supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'paid'),
-    // All inventory rows + product status — we aggregate per product below so a
-    // multi-variant product (e.g. sizes) shows its TRUE total, not one row, and
-    // archived/duplicate products are excluded.
-    supabase.from('inventory').select('product_id, quantity_available, products(name, slug, status)'),
+    // All inventory rows + product status + variant size. We list low stock at
+    // the SIZE level (a product can be in stock overall yet sold out in one
+    // size), skip archived/duplicate products, and drop the spurious
+    // product-level row of products that are actually sold by size.
+    supabase.from('inventory').select('id, product_id, variant_id, quantity_available, products(name, slug, status), product_variants(size)'),
     supabase.from('orders').select('id, order_number, customer_email, total_amount, status, created_at').order('created_at', { ascending: false }).limit(8),
   ]);
 
   const revenueToday = (ordersToday ?? []).reduce((sum, o) => sum + Number(o.total_amount), 0);
   const revenue7d = (orders7d ?? []).reduce((sum, o) => sum + Number(o.total_amount), 0);
 
-  // Low stock: sum available across all inventory rows of each PUBLISHED product,
-  // then keep those under the threshold. Aggregating fixes two bugs — variant
-  // rows were shown individually (a product with M=1,L=1 looked like "0"), and
-  // archived duplicates polluted the list.
+  // Low stock — SIZE-aware. Show one row per inventory record under threshold,
+  // labelled with its size, so a size that's sold out is visible even if the
+  // product has stock in other sizes. Excludes archived/duplicate products and
+  // the leftover product-level (no-size) row of products sold by size.
   const LOW_STOCK_THRESHOLD = 5;
-  const stockByProduct = new Map<string, { name: string; qty: number }>();
-  for (const r of (invRows ?? []) as any[]) {
-    // Supabase types the joined relation as array; at runtime it's the related
-    // row (object) for a to-one FK — handle either shape.
-    const prod = Array.isArray(r.products) ? r.products[0] : r.products;
-    if (!prod || prod.status !== 'published') continue;
-    const cur = stockByProduct.get(r.product_id) ?? { name: prod.name as string, qty: 0 };
-    cur.qty += (r.quantity_available as number) ?? 0;
-    stockByProduct.set(r.product_id, cur);
-  }
-  const lowStock = [...stockByProduct.entries()]
-    .map(([product_id, v]) => ({ product_id, name: v.name, qty: v.qty }))
-    .filter((v) => v.qty < LOW_STOCK_THRESHOLD)
+  const invAll = (invRows ?? []) as any[];
+  const norm = (x: any) => (Array.isArray(x) ? x[0] : x);
+  const hasVariants = new Set<string>();
+  for (const r of invAll) if (r.variant_id) hasVariants.add(r.product_id);
+  const lowStock = invAll
+    .filter((r) => {
+      const prod = norm(r.products);
+      if (!prod || prod.status !== 'published') return false;
+      if (!r.variant_id && hasVariants.has(r.product_id)) return false; // spurious no-size row
+      return ((r.quantity_available as number) ?? 0) < LOW_STOCK_THRESHOLD;
+    })
+    .map((r) => ({
+      id: r.id as string,
+      name: norm(r.products)?.name as string,
+      size: (norm(r.product_variants)?.size as string | null) ?? null,
+      qty: (r.quantity_available as number) ?? 0,
+    }))
     .sort((a, b) => a.qty - b.qty)
-    .slice(0, 10);
+    .slice(0, 12);
 
   return (
     <div className="space-y-8 max-w-[1400px]">
@@ -105,9 +110,12 @@ export default async function AdminOverview() {
           </header>
           <div className="divide-y divide-pearl-grey/60">
             {lowStock.map((row) => (
-              <div key={row.product_id} className="px-6 py-3 flex justify-between items-center">
-                <span className="text-sm truncate">{row.name || '—'}</span>
-                <span className={`text-sm font-medium ${row.qty === 0 ? 'text-red-600' : 'text-amber-600'}`}>{row.qty}</span>
+              <div key={row.id} className="px-6 py-3 flex justify-between items-center gap-3">
+                <span className="text-sm truncate">
+                  {row.name || '—'}
+                  {row.size && <span className="ml-2 text-[10px] uppercase tracking-[0.15em] text-gold-dark">Taglia {row.size}</span>}
+                </span>
+                <span className={`text-sm font-medium shrink-0 ${row.qty === 0 ? 'text-red-600' : 'text-amber-600'}`}>{row.qty}</span>
               </div>
             ))}
             {!lowStock.length && <p className="px-6 py-8 text-sm text-soft-grey text-center">Tutti i prodotti hanno scorta sufficiente</p>}
