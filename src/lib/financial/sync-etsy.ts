@@ -81,12 +81,13 @@ type EtsyLedgerEntry = {
   entry_id: number;
   ledger_id: number;
   sequence_number: number;
-  amount: number;
+  amount: number;           // minor units (cents) — divide by 100
   currency: string;
   description: string;
   balance: number;
   create_date: number;
-  entry_type: string;
+  ledger_type?: string;     // real field (e.g. prolist=Etsy Ads, listing, auto_renew_expired, billing_payment)
+  entry_type?: string;      // legacy/fallback (not actually returned by Etsy)
   reference_id?: string | null;
 };
 
@@ -116,25 +117,29 @@ function receiptToRow(r: EtsyReceipt): FinancialRow {
 }
 
 function ledgerEntryToRow(e: EtsyLedgerEntry): FinancialRow {
-  // Etsy ledger entries carry signed amounts already (positive = credit,
-  // negative = debit). We split them by `entry_type` so the report can group
-  // sales-vs-fees-vs-refunds-vs-payouts.
-  const t = (e.entry_type || '').toLowerCase();
+  // Etsy ledger `amount` is in MINOR UNITS (cents): 803 = €8.03. Divide by 100.
+  // Signed (positive = credit, negative = debit). Classify on `ledger_type`
+  // (the real field; `entry_type` is never returned). Known types:
+  // prolist = Etsy Ads · listing / auto_renew_expired / transaction = fees ·
+  // billing_payment / deposit = payment/payout · refund/reversal = refund.
+  const amount = e.amount / 100;
+  const t = (e.ledger_type || e.entry_type || '').toLowerCase();
   let type: FinancialRow['type'] = 'fee';
-  if (t.includes('payment') || t.includes('sale')) type = 'charge';
-  else if (t.includes('refund') || t.includes('reversal')) type = 'refund';
+  if (t.includes('refund') || t.includes('reversal')) type = 'refund';
+  else if (t.includes('billing_payment') || t.includes('deposit') || t.includes('payout') || t.includes('transfer') || t.includes('payment')) type = 'payout';
+  else if (t.includes('sale') || t.includes('order')) type = 'charge';
   else if (t.includes('tax') || t.includes('vat')) type = 'tax';
-  else if (t.includes('payout') || t.includes('transfer')) type = 'payout';
+  // else fee (prolist=Etsy Ads, listing, auto_renew, transaction, ...)
 
   return {
     source: 'etsy',
     external_id: `ledger_${e.entry_id}`,
     type,
-    gross_amount: e.amount,
-    fee_amount: type === 'fee' ? Math.abs(e.amount) : 0,
-    tax_amount: type === 'tax' ? Math.abs(e.amount) : 0,
+    gross_amount: amount,
+    fee_amount: type === 'fee' ? Math.abs(amount) : 0,
+    tax_amount: type === 'tax' ? Math.abs(amount) : 0,
     shipping_amount: 0,
-    net_amount: e.amount,
+    net_amount: amount,
     currency: (e.currency ?? 'EUR').toUpperCase(),
     buyer_name: null,
     buyer_email: null,

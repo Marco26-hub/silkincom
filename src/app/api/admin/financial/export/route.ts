@@ -66,10 +66,12 @@ export async function GET(req: NextRequest) {
 
   // Etsy Ads = ledger entries whose entry_type/description mention advertising.
   // (Etsy lumps these into the generic "fee" type; this isolates the ad spend.)
-  const AD_RE = /\b(ads?|advertis|marketing|offsite|promoted)\b/i;
+  // Etsy Ads = "prolist" (Promoted Listings) ledger entries; also catch generic
+  // ad/marketing wording for safety. Field is ledger_type (entry_type fallback).
+  const AD_RE = /\b(ads?|advertis|marketing|offsite|promoted|prolist)\b/i;
   const isEtsyAd = (r: { raw_data?: Record<string, unknown> | null }) => {
     const d = r.raw_data || {};
-    return AD_RE.test(String(d.entry_type ?? '')) || AD_RE.test(String(d.description ?? ''));
+    return AD_RE.test(String(d.ledger_type ?? d.entry_type ?? '')) || AD_RE.test(String(d.description ?? ''));
   };
   const rows = adsOnly ? (rowsRaw ?? []).filter(isEtsyAd) : (rowsRaw ?? []);
 
