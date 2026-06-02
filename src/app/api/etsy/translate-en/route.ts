@@ -15,7 +15,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { etsyFetch, resolveShopId } from '@/lib/etsy/client';
-import { translateListingToEN } from '@/lib/etsy/translate';
+import { translateListing, ETSY_TRANSLATION_LANGS } from '@/lib/etsy/translate';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -36,15 +36,19 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: 'Forbidden' }, { status: auth.status });
 
-  const body = await req.json().catch(() => ({})) as { confirm?: boolean; listingId?: number };
+  const body = await req.json().catch(() => ({})) as { confirm?: boolean; listingId?: number; lang?: string };
+  const lang = (body.lang || 'en').toLowerCase();
   if (body.confirm !== true) {
     return NextResponse.json(
-      { error: 'Conferma richiesta: questa operazione pubblica la traduzione EN su Etsy.' },
+      { error: 'Conferma richiesta: questa operazione pubblica la traduzione su Etsy.' },
       { status: 400 },
     );
   }
   if (!body.listingId) {
     return NextResponse.json({ error: 'listingId richiesto' }, { status: 400 });
+  }
+  if (!ETSY_TRANSLATION_LANGS[lang]) {
+    return NextResponse.json({ error: `Lingua non supportata: ${lang}` }, { status: 400 });
   }
 
   const supabase = createServiceClient();
@@ -56,23 +60,23 @@ export async function POST(req: NextRequest) {
   if (!listing) return NextResponse.json({ error: 'Listing non trovato' }, { status: 404 });
 
   try {
-    const en = await translateListingToEN({
+    const tr = await translateListing({
       title: listing.title ?? '',
       description: listing.description ?? '',
       tags: listing.tags ?? [],
       materials: listing.materials ?? [],
-    });
+    }, lang);
 
     const shopId = await resolveShopId();
-    await etsyFetch(`/application/shops/${shopId}/listings/${listing.listing_id}/translations/en`, {
+    await etsyFetch(`/application/shops/${shopId}/listings/${listing.listing_id}/translations/${lang}`, {
       method: 'PUT',
-      body: JSON.stringify({ title: en.title, description: en.description, tags: en.tags }),
+      body: JSON.stringify({ title: tr.title, description: tr.description, tags: tr.tags }),
     });
 
-    return NextResponse.json({ ok: true, listing_id: listing.listing_id, title: en.title });
+    return NextResponse.json({ ok: true, listing_id: listing.listing_id, lang, title: tr.title });
   } catch (e) {
     return NextResponse.json(
-      { ok: false, listing_id: listing.listing_id, error: (e as Error).message },
+      { ok: false, listing_id: listing.listing_id, lang, error: (e as Error).message },
       { status: 502 },
     );
   }

@@ -24,38 +24,48 @@ const MODELS = [
   'google/gemini-2.0-flash-001',
 ];
 
-const SYSTEM = `You are the senior English copywriter & Etsy SEO specialist for
+// Etsy translation language codes → human name used in the prompt.
+export const ETSY_TRANSLATION_LANGS: Record<string, string> = {
+  en: 'English',
+  de: 'German (Deutsch)',
+  fr: 'French (Français)',
+  es: 'Spanish (Español)',
+  pt: 'Portuguese (Português)',
+  nl: 'Dutch (Nederlands)',
+};
+
+function buildSystem(langName: string): string {
+  return `You are the senior ${langName} copywriter & Etsy SEO specialist for
 SILKinCOM — a luxury silk & cashmere atelier in Como, Italy (silk weaving
 tradition since 1400, Made in Como). You translate the Italian master listing
-into ENGLISH, optimised for Etsy search AND Google/AI discovery (GEO).
+into ${langName}, optimised for Etsy search AND Google/AI discovery (GEO).
 
 Output STRICT JSON, no markdown, no commentary:
 {
-  "title":       string,    // English, <= 140 chars, keyword FIRST. Front-load
-                            //   the highest-intent buyer search terms, then
-                            //   brand/geo. Use " | " separators. Natural, not
-                            //   keyword-stuffed.
-  "description": string,    // English. The FIRST 160 chars must carry the main
-                            //   keywords + value (Google snippet + Etsy). Keep
-                            //   the technical-details block (composition,
+  "title":       string,    // ${langName}, <= 140 chars, keyword FIRST.
+                            //   Front-load the highest-intent buyer search
+                            //   terms, then brand/geo. Use " | " separators.
+                            //   Natural, not keyword-stuffed.
+  "description": string,    // ${langName}. The FIRST 160 chars must carry the
+                            //   main keywords + value (Google snippet + Etsy).
+                            //   Keep the technical-details block (composition,
                             //   dimensions, finish) and gift/occasion framing.
                             //   Preserve line breaks with \\n.
   "tags":        string[]   // EXACTLY up to 13 tags. Each <= 20 characters,
                             //   lowercase, multi-word long-tail phrases buyers
-                            //   actually type (e.g. "silk hair scarf",
-                            //   "gift for her", "made in italy"). No duplicates,
+                            //   actually type in ${langName}. No duplicates,
                             //   no '#'.
 }
 
 Rules:
-- Real, fluent English — never Italian words left untranslated (keep only
-  proper nouns: SILKinCOM, Como, Lake Como, Italy).
-- Luxury editorial voice: restrained, specific, no clichés ("best", "high
-  quality"). Favour concrete cues: pure silk, hand-rolled hem, jacquard, Made
-  in Como, Lake Como.
-- Tags: mix product-type + fabric + occasion + brand/geo intent. Each <= 20
-  chars (hard Etsy limit) — drop or shorten any that exceed it.
+- Real, fluent, idiomatic ${langName} — translate everything (keep only proper
+  nouns: SILKinCOM, Como, Lake Como, Italy). Use the correct accents/umlauts.
+- Luxury editorial voice: restrained, specific, no clichés. Favour concrete
+  cues: pure silk, hand-rolled hem, jacquard, Made in Como, Lake Como.
+- Tags: mix product-type + fabric + occasion + brand/geo intent, in ${langName}.
+  Each <= 20 chars (hard Etsy limit) — drop or shorten any that exceed it.
 - Keep factual details accurate (composition %, dimensions, care).`;
+}
 
 export type ListingTranslation = {
   title: string;
@@ -63,18 +73,18 @@ export type ListingTranslation = {
   tags: string[];
 };
 
-export async function translateListingToEN(it: {
-  title: string;
-  description: string;
-  tags: string[];
-  materials?: string[];
-}): Promise<ListingTranslation> {
+export async function translateListing(
+  it: { title: string; description: string; tags: string[]; materials?: string[] },
+  targetLang: string = 'en',
+): Promise<ListingTranslation> {
   if (!process.env.OPENROUTER_API_KEY) {
     throw new Error('OPENROUTER_API_KEY non configurato');
   }
+  const langName = ETSY_TRANSLATION_LANGS[targetLang];
+  if (!langName) throw new Error(`Lingua non supportata: ${targetLang}`);
 
   const user = [
-    'Translate this Italian Etsy listing into optimised English. Return JSON only.',
+    `Translate this Italian Etsy listing into optimised ${langName}. Return JSON only.`,
     '',
     `ITALIAN TITLE:\n${it.title}`,
     '',
@@ -98,7 +108,7 @@ export async function translateListingToEN(it: {
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: SYSTEM },
+          { role: 'system', content: buildSystem(langName) },
           { role: 'user', content: user },
         ],
         temperature: 0.4,

@@ -98,7 +98,9 @@ export default async function AdminEtsyCatalogoPage({
           </span>
           <div className="flex items-center gap-3 flex-wrap">
             <EtsyFixMaterialsButton count={missingMaterials} />
-            <EtsyTranslateAllButton listingIds={rows.map((r) => r.listing_id)} />
+            <EtsyTranslateAllButton listingIds={rows.map((r) => r.listing_id)} lang="en" label="EN" />
+            <EtsyTranslateAllButton listingIds={rows.map((r) => r.listing_id)} lang="de" label="DE" />
+            <EtsyTranslateAllButton listingIds={rows.map((r) => r.listing_id)} lang="fr" label="FR" />
           </div>
         </div>
       )}
