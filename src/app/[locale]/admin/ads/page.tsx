@@ -18,6 +18,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import { EtsyAdsSpendCard } from '@/components/admin/EtsyAdsSpendCard';
 import {
   Megaphone,
   RefreshCw,
@@ -216,6 +217,9 @@ export default function AdminAdsPage() {
           </a>
         </div>
       )}
+
+      {/* Etsy Ads spend — independent of Google Ads connection */}
+      <EtsyAdsSpendCard />
 
       {/* Range picker */}
       <div className="border border-pearl-grey bg-white p-4 flex items-center gap-4 flex-wrap">

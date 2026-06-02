@@ -73,6 +73,15 @@ export async function GET(req: NextRequest) {
   };
   const rows = adsOnly ? (rowsRaw ?? []).filter(isEtsyAd) : (rowsRaw ?? []);
 
+  // ---- JSON summary (for inline cards, e.g. the Etsy Ads spend widget). ----
+  if (format === 'json') {
+    const s = (k: string) => (rows as Array<Record<string, unknown>>).reduce((acc, r) => acc + Number(r[k] || 0), 0);
+    return NextResponse.json({
+      count: rows.length,
+      totals: { gross: s('gross_amount'), fee: s('fee_amount'), tax: s('tax_amount'), net: s('net_amount') },
+    });
+  }
+
   // ---- PDF (print-optimised HTML; opening it triggers the browser's "Save as
   // PDF" dialog — no PDF dependency, works on Vercel serverless). ----
   if (format === 'pdf') {
