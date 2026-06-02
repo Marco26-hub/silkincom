@@ -21,7 +21,7 @@ export function AddToCartButton({ slug, name, price, image }: Props) {
     addItem({ slug, name, price, image });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-    // Analytics — fires only if cookie consent granted
+    // Analytics — GA/Meta fire only with cookie consent…
     if (typeof window !== 'undefined' && window.silkincomTrack) {
       window.silkincomTrack('add_to_cart', {
         currency: 'EUR',
@@ -29,6 +29,8 @@ export function AddToCartButton({ slug, name, price, image }: Props) {
         items: [{ item_id: slug, item_name: name, price, quantity: 1 }],
       });
     }
+    // …first-party beacon always (aggregate, non-identifying).
+    window.silkincomAnalytics?.('add_to_cart', { product: slug, value: price });
   }
 
   return (

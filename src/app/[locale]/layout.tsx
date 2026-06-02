@@ -6,6 +6,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import '../globals.css';
 import { PublicChrome } from '@/components/layout/PublicChrome';
 import { Analytics } from '@/components/analytics/Analytics';
+import { FirstPartyBeacon } from '@/components/analytics/FirstPartyBeacon';
 import { routing } from '@/i18n/routing';
 import { getHomeSection } from '@/data/home-content';
 import { APP_URL } from '@/lib/app-url';
@@ -236,6 +237,7 @@ export default async function LocaleLayout({
       <body className="min-h-screen bg-warm-white text-soft-black antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Analytics />
+          <FirstPartyBeacon />
           <PublicChrome announcementSection={announcementSection}>{children}</PublicChrome>
         </NextIntlClientProvider>
       </body>

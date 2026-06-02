@@ -5,6 +5,7 @@ import { usePathname } from '@/i18n/navigation';
 import { createBrowserClient } from '@/lib/supabase/client';
 import {
   LayoutDashboard,
+  BarChart3,
   Package,
   ShoppingBag,
   Boxes,
@@ -45,6 +46,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: 'Operatività',
     items: [
       { href: '/admin', label: 'Overview', icon: LayoutDashboard, roles: ALL },
+      { href: '/admin/analytics', label: 'Analytics', icon: BarChart3, roles: ADMIN },
       { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ORDERS },
       { href: '/admin/spedizioni', label: 'Spedizioni', icon: Truck, roles: ORDERS },
       { href: '/admin/resi', label: 'Resi', icon: Undo2, roles: ORDERS },

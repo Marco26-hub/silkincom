@@ -60,6 +60,8 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
         ],
       });
     }
+    // First-party beacon (always, aggregate).
+    window.silkincomAnalytics?.('add_to_cart', { product: slug, value: effectivePrice });
   }
 
   return (

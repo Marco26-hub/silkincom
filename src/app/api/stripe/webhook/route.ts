@@ -86,6 +86,19 @@ export async function POST(req: NextRequest) {
         payment_method: paymentIntent.payment_method_types[0],
       });
 
+      // First-party analytics: record the purchase server-side (more reliable
+      // than a client beacon, which can be lost if the buyer closes the tab
+      // before /checkout/success renders). No session id available here, so we
+      // key it on the order number. Best-effort — never block the webhook.
+      try {
+        await supabase.from('analytics_events').insert({
+          session_id: `order:${order.order_number}`,
+          event_type: 'purchase',
+          path: '/checkout/success',
+          value: Number(order.total_amount),
+        });
+      } catch { /* analytics must not break the webhook */ }
+
       // Decrement inventory (with FOR UPDATE lock via RPC function).
       // Variant-aware: call apply_inventory_movement directly so size-bound
       // inventory rows decrement, not the product-level row.
