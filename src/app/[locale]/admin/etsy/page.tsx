@@ -13,8 +13,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import {
-  Store, Download, ShoppingBag, Boxes, Package, RefreshCw, Link2,
-  CheckCircle, ExternalLink, ArrowRight, AlertTriangle,
+  Store, Download, ShoppingBag, Boxes, Package, Link2,
+  CheckCircle, ExternalLink, ArrowRight, AlertTriangle, Pencil,
 } from 'lucide-react';
 
 type SyncLog = {
@@ -44,7 +44,19 @@ export default function AdminEtsyPage() {
   const [loading, setLoading] = useState(true);
   const [pulling, setPulling] = useState(false);
   const [pushing, setPushing] = useState<string | null>(null);
-  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string; details?: string[] } | null>(null);
+  const [mode, setMode] = useState<'read' | 'write'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('etsy-mode') as 'read' | 'write') ?? 'read';
+    }
+    return 'read';
+  });
+
+  function toggleMode() {
+    const next = mode === 'read' ? 'write' : 'read';
+    setMode(next);
+    if (typeof window !== 'undefined') localStorage.setItem('etsy-mode', next);
+  }
 
   async function load() {
     try {
@@ -67,10 +79,14 @@ export default function AdminEtsyPage() {
       if (data.ok) {
         const l = data.pull_listings?.synced ?? 0;
         const o = data.pull_orders?.synced ?? 0;
-        const errs = [...(data.pull_listings?.errors ?? []), ...(data.pull_orders?.errors ?? [])];
+        const errs: string[] = [
+          ...(data.pull_listings?.errors ?? []),
+          ...(data.pull_orders?.errors ?? []),
+        ];
         setMsg({
           type: errs.length ? 'err' : 'ok',
           text: `Scaricati ${l} listing e ${o} ordini da Etsy${errs.length ? ` — ${errs.length} avvisi` : ''}.`,
+          details: errs.length ? errs : undefined,
         });
       } else {
         setMsg({ type: 'err', text: data.error || 'Errore download' });
@@ -116,12 +132,34 @@ export default function AdminEtsyPage() {
 
   return (
     <div className="space-y-6 max-w-[1100px]">
-      <div className="flex items-center gap-3">
-        <Store className="w-6 h-6 text-[#F1641E]" />
-        <div>
-          <h1 className="font-display text-4xl">Etsy</h1>
-          <p className="text-soft-grey text-sm">Mirror sola lettura — separato dal catalogo del sito</p>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3">
+          <Store className="w-6 h-6 text-[#F1641E]" />
+          <div>
+            <h1 className="font-display text-4xl">Etsy</h1>
+            <p className="text-soft-grey text-sm">
+              {mode === 'write'
+                ? <span className="text-amber-700 font-medium">Modalità scrittura attiva</span>
+                : 'Mirror sola lettura — separato dal catalogo del sito'
+              }
+            </p>
+          </div>
         </div>
+
+        {/* Read / Write switch */}
+        <button
+          onClick={toggleMode}
+          className={`inline-flex items-center gap-3 px-5 py-2.5 border text-[10px] uppercase tracking-[0.2em] font-medium transition-colors ${
+            mode === 'write'
+              ? 'border-amber-400 bg-amber-50 text-amber-900 hover:bg-amber-100'
+              : 'border-pearl-grey text-soft-grey hover:border-soft-black hover:text-soft-black'
+          }`}
+        >
+          <span className={`relative inline-flex w-9 h-5 shrink-0 rounded-full border-2 transition-colors ${mode === 'write' ? 'bg-amber-500 border-amber-500' : 'bg-pearl-grey border-pearl-grey'}`}>
+            <span className={`inline-block w-3.5 h-3.5 rounded-full bg-white shadow transition-transform duration-200 mt-[1px] ${mode === 'write' ? 'translate-x-[18px]' : 'translate-x-[1px]'}`} />
+          </span>
+          {mode === 'write' ? <><Pencil className="w-3 h-3" /> Scrittura ON</> : 'Solo lettura'}
+        </button>
       </div>
 
       {authError && (
@@ -137,6 +175,11 @@ export default function AdminEtsyPage() {
       {msg && (
         <div className={`border px-4 py-3 text-sm ${msg.type === 'ok' ? 'border-green-200 bg-green-50 text-green-800' : 'border-red-200 bg-red-50 text-red-700'}`}>
           {msg.text}
+          {msg.details && (
+            <ul className="mt-2 space-y-1 font-mono text-xs opacity-80 list-disc list-inside">
+              {msg.details.map((d, i) => <li key={i}>{d}</li>)}
+            </ul>
+          )}
         </div>
       )}
 
@@ -176,18 +219,24 @@ export default function AdminEtsyPage() {
 
       {connected && (
         <>
-          {/* Read-only mirror sections */}
+          {/* Mirror sections */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link href="/admin/etsy/catalogo" className="border border-pearl-grey bg-white p-5 hover:border-soft-black transition-colors group">
+            <Link
+              href={mode === 'write' ? '/admin/etsy/catalogo?mode=write' : '/admin/etsy/catalogo'}
+              className={`border bg-white p-5 hover:border-soft-black transition-colors group ${mode === 'write' ? 'border-amber-200' : 'border-pearl-grey'}`}
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4 text-gold-primary" />
                   <span className="text-sm font-medium">Catalogo Etsy</span>
+                  {mode === 'write' && <span className="text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 bg-amber-100 text-amber-700">write</span>}
                 </div>
                 <ArrowRight className="w-4 h-4 text-soft-grey group-hover:text-soft-black group-hover:translate-x-0.5 transition-all" />
               </div>
               <p className="font-display text-3xl mt-3">{status?.listingsCount ?? 0}</p>
-              <p className="text-xs text-soft-grey mt-1">inserzioni Etsy (sola lettura)</p>
+              <p className="text-xs text-soft-grey mt-1">
+                {mode === 'write' ? 'clicca per modificare le inserzioni' : 'inserzioni Etsy (sola lettura)'}
+              </p>
             </Link>
             <Link href="/admin/etsy/ordini" className="border border-pearl-grey bg-white p-5 hover:border-soft-black transition-colors group">
               <div className="flex items-center justify-between">

@@ -36,9 +36,9 @@ export async function POST(req: NextRequest) {
   async function run(action: 'pull_listings' | 'pull_orders', fn: () => Promise<{ synced: number; errors: string[] }>) {
     const res = await fn();
     await supabase.from('etsy_sync_log').insert({
-      action,
-      product_count: res.synced,
-      error_message: res.errors.length ? res.errors.join(' | ').slice(0, 1000) : null,
+      sync_type: action,
+      synced_count: res.synced,
+      errors: res.errors.length ? res.errors : null,
     });
     out[action] = res;
   }

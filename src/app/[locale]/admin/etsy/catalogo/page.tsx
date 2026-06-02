@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { ArrowLeft, ExternalLink, Store } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Store, Pencil } from 'lucide-react';
 import { createServiceClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
@@ -35,7 +35,14 @@ function statePill(s: string | null) {
   return map[t] ?? 'bg-pearl-grey/40 text-soft-grey';
 }
 
-export default async function AdminEtsyCatalogoPage() {
+export default async function AdminEtsyCatalogoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ mode?: string }>;
+}) {
+  const { mode } = await searchParams;
+  const isWrite = mode === 'write';
+
   const supabase = createServiceClient();
   const { data: listings } = await supabase
     .from('etsy_listings')
@@ -47,17 +54,45 @@ export default async function AdminEtsyCatalogoPage() {
 
   return (
     <div className="space-y-6 max-w-[1400px]">
-      <Link href="/admin/etsy" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-soft-grey hover:text-soft-black">
+      <Link
+        href={isWrite ? '/admin/etsy?mode=write' : '/admin/etsy'}
+        className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-soft-grey hover:text-soft-black"
+      >
         <ArrowLeft className="w-3.5 h-3.5" /> Etsy
       </Link>
 
-      <div className="flex items-center gap-3">
-        <Store className="w-6 h-6 text-[#F1641E]" />
-        <div>
-          <h1 className="font-display text-4xl">Catalogo Etsy</h1>
-          <p className="text-soft-grey text-sm">{rows.length} inserzioni · sola lettura, separato dal catalogo sito</p>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          <Store className="w-6 h-6 text-[#F1641E]" />
+          <div>
+            <h1 className="font-display text-4xl">Catalogo Etsy</h1>
+            <p className="text-soft-grey text-sm">
+              {rows.length} inserzioni ·{' '}
+              {isWrite
+                ? <span className="text-amber-700 font-medium">modalità scrittura</span>
+                : 'sola lettura, separato dal catalogo sito'
+              }
+            </p>
+          </div>
         </div>
+        <Link
+          href={isWrite ? '/admin/etsy/catalogo' : '/admin/etsy/catalogo?mode=write'}
+          className={`inline-flex items-center gap-2 px-5 py-2 text-[10px] uppercase tracking-[0.2em] border transition-colors ${
+            isWrite
+              ? 'border-soft-black bg-soft-black text-warm-white hover:bg-gold-primary hover:text-soft-black hover:border-gold-primary'
+              : 'border-pearl-grey text-soft-grey hover:border-soft-black hover:text-soft-black'
+          }`}
+        >
+          {isWrite ? <><Pencil className="w-3 h-3" /> Scrittura ON</> : <><Pencil className="w-3 h-3" /> Attiva scrittura</>}
+        </Link>
       </div>
+
+      {isWrite && (
+        <div className="border border-amber-200 bg-amber-50/40 px-4 py-3 text-xs text-amber-800 flex items-center gap-2">
+          <Pencil className="w-3.5 h-3.5 shrink-0 text-amber-600" />
+          Modalità scrittura attiva — clicca <strong>Modifica</strong> su qualsiasi inserzione per aggiornare i campi su Etsy (EN + IT).
+        </div>
+      )}
 
       <div className="border border-pearl-grey bg-white overflow-x-auto">
         <table className="w-full text-sm">
@@ -70,6 +105,7 @@ export default async function AdminEtsyCatalogoPage() {
               <th className="px-5 py-2 font-medium text-right">Viste</th>
               <th className="px-5 py-2 font-medium text-right">Preferiti</th>
               <th className="px-5 py-2 font-medium">Link</th>
+              {isWrite && <th className="px-5 py-2 font-medium">Modifica</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-pearl-grey/60">
@@ -82,7 +118,7 @@ export default async function AdminEtsyCatalogoPage() {
                         <Image src={l.image_urls[0]} alt="" fill sizes="40px" className="object-cover" unoptimized />
                       )}
                     </div>
-                    <span className="max-w-[420px] truncate">{l.title || `#${l.listing_id}`}</span>
+                    <span className="max-w-[380px] truncate">{l.title || `#${l.listing_id}`}</span>
                   </div>
                 </td>
                 <td className="px-5 py-2">
@@ -101,11 +137,21 @@ export default async function AdminEtsyCatalogoPage() {
                     </a>
                   ) : '—'}
                 </td>
+                {isWrite && (
+                  <td className="px-5 py-2">
+                    <Link
+                      href={`/admin/etsy/catalogo/${l.listing_id}`}
+                      className="inline-flex items-center gap-1 px-3 py-1 border border-pearl-grey text-[10px] uppercase tracking-[0.15em] text-soft-grey hover:border-soft-black hover:text-soft-black transition-colors"
+                    >
+                      <Pencil className="w-3 h-3" /> Modifica
+                    </Link>
+                  </td>
+                )}
               </tr>
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-5 py-10 text-center text-soft-grey text-sm">
+                <td colSpan={isWrite ? 8 : 7} className="px-5 py-10 text-center text-soft-grey text-sm">
                   Nessuna inserzione. Vai su Etsy → «Scarica da Etsy» per popolare il mirror.
                 </td>
               </tr>
