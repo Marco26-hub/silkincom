@@ -213,26 +213,32 @@ export async function syncEtsyFinancial(
   }
 
   try {
-    // Etsy's ledger-entries endpoint requires BOTH min_created and max_created
-    // (unlike receipts, where max_created is optional). Omitting max_created
-    // returned "400 Missing input parameter: [max_created]" and the whole Etsy
-    // fee/commission ledger never synced.
+    // Etsy's ledger-entries endpoint requires BOTH min_created and max_created,
+    // AND caps the window span ("400: Time window between min_created and
+    // max_created is too large"). So we walk the range from `since` to now in
+    // 30-day chunks, paginating offset within each chunk.
     const nowSec = Math.floor(Date.now() / 1000);
-    let offset = 0;
+    const CHUNK = 30 * 24 * 60 * 60; // 30 days in seconds
     const limit = 100;
-    while (true) {
-      const page = await etsyFetch<{ results: EtsyLedgerEntry[]; count: number }>(
-        `/application/shops/${shopId}/payment-account/ledger-entries?min_created=${since}&max_created=${nowSec}&limit=${limit}&offset=${offset}`,
-      );
-      const entries = page.results ?? [];
-      for (const e of entries) rows.push(ledgerEntryToRow(e));
-      if (entries.length < limit) break;
-      offset += limit;
-      if (offset >= 2000) {
-        const msg = 'safety cap reached: more than 2000 ledger entries in window';
-        result.errors.push(`ledger: ${msg}`);
-        await logSyncError(supabase, { source: 'etsy', operation: 'ledger', message: msg });
-        break;
+    let stop = false;
+    for (let winStart = since; winStart < nowSec && !stop; winStart += CHUNK) {
+      const winEnd = Math.min(winStart + CHUNK, nowSec);
+      let offset = 0;
+      while (true) {
+        const page = await etsyFetch<{ results: EtsyLedgerEntry[]; count: number }>(
+          `/application/shops/${shopId}/payment-account/ledger-entries?min_created=${winStart}&max_created=${winEnd}&limit=${limit}&offset=${offset}`,
+        );
+        const entries = page.results ?? [];
+        for (const e of entries) rows.push(ledgerEntryToRow(e));
+        if (entries.length < limit) break;
+        offset += limit;
+        if (offset >= 2000) {
+          const msg = `safety cap reached: >2000 ledger entries in window ${winStart}-${winEnd}`;
+          result.errors.push(`ledger: ${msg}`);
+          await logSyncError(supabase, { source: 'etsy', operation: 'ledger', message: msg });
+          stop = true;
+          break;
+        }
       }
     }
   } catch (e) {
