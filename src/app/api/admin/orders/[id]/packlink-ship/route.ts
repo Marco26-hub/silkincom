@@ -83,10 +83,18 @@ async function createShipment(
 
   const { data: order } = await supabase
     .from('orders')
-    .select('id, order_number, customer_email, subtotal, total_amount, weight_grams, shipping_address, order_items(product_name, quantity)')
+    .select('id, order_number, customer_email, subtotal, total_amount, weight_grams, shipping_address, delivery_method, order_items(product_name, quantity)')
     .eq('id', orderId)
     .single();
   if (!order) return NextResponse.json({ error: 'Ordine non trovato' }, { status: 404 });
+
+  // Hand delivery never books a carrier — managed in person.
+  if (order.delivery_method === 'hand_delivery') {
+    return NextResponse.json(
+      { error: 'Consegna a mano: nessuna spedizione Packlink, gestione manuale.' },
+      { status: 400 },
+    );
+  }
 
   const addr = order.shipping_address as Record<string, string> | null;
   if (!addr || !addr.country || !addr.postal_code || !addr.street_address) {

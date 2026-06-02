@@ -14,7 +14,7 @@ type Shipment = {
   price: number | null;
 };
 
-export function PacklinkShipPanel({ orderId }: { orderId: string }) {
+export function PacklinkShipPanel({ orderId, deliveryMethod }: { orderId: string; deliveryMethod?: string }) {
   const [shipment, setShipment] = useState<Shipment | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<'create' | 'sync' | null>(null);
@@ -52,6 +52,22 @@ export function PacklinkShipPanel({ orderId }: { orderId: string }) {
       setError(e instanceof Error ? e.message : 'Errore di rete');
     }
     setBusy(null);
+  }
+
+  // Hand delivery = no carrier. Never book Packlink — handled in person.
+  // (After all hooks, so rules-of-hooks stays satisfied.)
+  if (deliveryMethod === 'hand_delivery') {
+    return (
+      <section className="border border-gold-primary/40 bg-gold-primary/5 p-6">
+        <h2 className="font-medium mb-2 text-sm flex items-center gap-2">
+          <Truck className="w-4 h-4 text-gold-dark" /> Consegna a mano
+        </h2>
+        <p className="text-xs text-soft-grey leading-relaxed">
+          Il cliente ha scelto <strong>consegna a mano</strong> — nessuna spedizione corriere.
+          Gestione manuale, Packlink non viene usato.
+        </p>
+      </section>
+    );
   }
 
   return (

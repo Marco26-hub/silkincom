@@ -127,7 +127,7 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
             currentTracking={order.tracking_number}
           />
 
-          <PacklinkShipPanel orderId={order.id} />
+          <PacklinkShipPanel orderId={order.id} deliveryMethod={order.delivery_method} />
 
           <section className="border border-pearl-grey bg-white p-6">
             <h2 className="font-medium mb-3 text-sm">Pagamento</h2>
