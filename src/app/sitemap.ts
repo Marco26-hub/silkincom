@@ -115,7 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  const journalRoutes: MetadataRoute.Sitemap = getPosts('it').map((post) =>
+  const journalRoutes: MetadataRoute.Sitemap = (await getPosts('it')).map((post) =>
     entry(`/trame-di-como/${post.slug}`, {
       lastModified: post.date ? new Date(post.date) : now,
       changeFrequency: 'monthly',

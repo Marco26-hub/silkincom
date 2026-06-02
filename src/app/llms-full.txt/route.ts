@@ -10,7 +10,7 @@
 
 import { unstable_cache } from 'next/cache';
 import { createPublicClient } from '@/lib/supabase/server';
-import { getPost } from '@/data/posts';
+import { getPost, type Post } from '@/data/posts';
 import { APP_URL } from '@/lib/app-url';
 
 export const runtime = 'nodejs';
@@ -61,7 +61,7 @@ function formatPrice(n: number | null): string {
   return `€${n.toFixed(0)}`;
 }
 
-function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
+function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: Post | undefined): string {
   const lines: string[] = [];
 
   lines.push('# SILKinCOM — Full Corpus for LLMs');
@@ -75,8 +75,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('Contatto: info@silkincom.com — risposta in 24h lavorative.');
   lines.push('');
 
-  // --- Heritage pillar (Italian source) ---
-  const pillar = getPost('storia-della-seta-a-como', 'it');
+  // --- Heritage pillar (Italian source, passed in from the async caller) ---
   lines.push('## Storia della seta a Como');
   lines.push('');
   if (pillar?.description) {
@@ -209,7 +208,8 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
 const getCachedCorpus = unstable_cache(
   async () => {
     const { products, materials } = await fetchCorpusData();
-    return buildCorpus(products, materials);
+    const pillar = await getPost('storia-della-seta-a-como', 'it');
+    return buildCorpus(products, materials, pillar);
   },
   ['llms-full-corpus'],
   { revalidate: 3600, tags: ['products', 'home-materials'] }

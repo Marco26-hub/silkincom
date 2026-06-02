@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { POST_SLUGS, getPosts, getPost } from '@/data/posts';
+import { getPostSlugs, getPosts, getPost } from '@/data/posts';
 import { localizedAlternates } from '@/i18n/routing';
 import { ArrowUpRight } from 'lucide-react';
 import { APP_URL } from '@/lib/app-url';
@@ -48,14 +48,19 @@ const HOWTO_POSTS: Record<string, { totalTime: string; steps: Array<{ name: stri
   },
 };
 
-export function generateStaticParams() {
-  return POST_SLUGS.map((slug) => ({ slug }));
+// ISR: refresh CMS-backed post pages at most every 2 min; new slugs render
+// on-demand (dynamicParams defaults to true).
+export const revalidate = 120;
+
+export async function generateStaticParams() {
+  const slugs = await getPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
-  const p = getPost(slug, locale);
+  const p = await getPost(slug, locale);
   if (!p) return {};
   return {
     title: p.title,
@@ -68,12 +73,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
-  const post = getPost(slug, locale);
+  const post = await getPost(slug, locale);
   if (!post) notFound();
 
   const t = await getTranslations('journal');
   const paragraphs = post.body.split('\n\n').filter(Boolean);
-  const others = getPosts(locale).filter((p) => p.slug !== post.slug).slice(0, 3);
+  const others = (await getPosts(locale)).filter((p) => p.slug !== post.slug).slice(0, 3);
 
   const articleUrl = `${APP_URL}/trame-di-como/${post.slug}`;
   const articleSchema = {

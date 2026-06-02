@@ -28,6 +28,7 @@ import {
   Image as ImageIcon,
   ClipboardList,
   ScrollText,
+  Newspaper,
   LogOut,
 } from 'lucide-react';
 
@@ -84,6 +85,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: 'Clienti & Contenuti',
     items: [
       { href: '/admin/clienti', label: 'Clienti', icon: Users, roles: ADMIN },
+      { href: '/admin/blog', label: 'Blog', icon: Newspaper, roles: EDITOR },
       { href: '/admin/pagine', label: 'Pagine', icon: FileText, roles: EDITOR },
       { href: '/admin/foto-home', label: 'Foto Home', icon: ImageIcon, roles: EDITOR },
       { href: '/admin/collezioni-home', label: 'Collezioni Home', icon: FolderTree, roles: EDITOR },
