@@ -54,5 +54,7 @@ Thumbs.db
 # Local Netlify folder
 .netlify
 
-# Social marketing assets — kept local only (carousels, briefs, exports)
-social/
+# Social marketing assets — kept local only (carousels, briefs, exports).
+# Anchored to repo root so it does NOT match app code dirs like
+# src/app/.../social/ (the admin Social dashboard).
+/social/
