@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation';
 import { createServiceClient } from '@/lib/supabase/server';
 import { OrderStatusForm } from '@/components/admin/OrderStatusForm';
 import { PacklinkShipPanel } from '@/components/admin/PacklinkShipPanel';
+import { ResendConfirmationButton } from '@/components/admin/ResendConfirmationButton';
 import { ArrowLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -141,6 +142,8 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
               )}
             </dl>
           </section>
+
+          <ResendConfirmationButton orderId={order.id} />
         </aside>
       </div>
     </div>
