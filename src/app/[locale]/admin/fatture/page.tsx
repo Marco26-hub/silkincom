@@ -159,6 +159,11 @@ export default function AdminFattureePage() {
     window.open(`/api/admin/financial/export?${params.toString()}`, '_blank');
   }
 
+  function exportPdf() {
+    const params = new URLSearchParams({ month, source, format: 'pdf' });
+    window.open(`/api/admin/financial/export?${params.toString()}`, '_blank');
+  }
+
   const totals = data?.totals;
   const monthOptions = useMemo(() => {
     const out: string[] = [];
@@ -188,6 +193,13 @@ export default function AdminFattureePage() {
             className="inline-flex items-center gap-2 px-4 py-2 border border-pearl-grey hover:border-soft-black text-[11px] uppercase tracking-[0.2em] transition-colors disabled:opacity-40"
           >
             <Download className="w-3.5 h-3.5" /> Esporta CSV
+          </button>
+          <button
+            onClick={exportPdf}
+            disabled={!data || data.rows.length === 0}
+            className="inline-flex items-center gap-2 px-4 py-2 border border-pearl-grey hover:border-soft-black text-[11px] uppercase tracking-[0.2em] transition-colors disabled:opacity-40"
+          >
+            <Download className="w-3.5 h-3.5" /> Esporta PDF
           </button>
           <button
             onClick={runSync}
