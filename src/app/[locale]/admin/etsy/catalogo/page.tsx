@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ArrowLeft, ExternalLink, Store, Pencil } from 'lucide-react';
 import { createServiceClient } from '@/lib/supabase/server';
 import { EtsyFixMaterialsButton } from '@/components/admin/EtsyFixMaterialsButton';
+import { EtsyTranslateAllButton } from '@/components/admin/EtsyTranslateAllButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -93,9 +94,12 @@ export default async function AdminEtsyCatalogoPage({
         <div className="border border-amber-200 bg-amber-50/40 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
           <span className="text-xs text-amber-800 flex items-center gap-2">
             <Pencil className="w-3.5 h-3.5 shrink-0 text-amber-600" />
-            Modalità scrittura attiva — clicca <strong>Modifica</strong> su un'inserzione per aggiornare i campi su Etsy (EN + IT).
+            Modalità scrittura attiva — clicca <strong>Modifica</strong> su un'inserzione per aggiornare i campi su Etsy (IT + EN).
           </span>
-          <EtsyFixMaterialsButton count={missingMaterials} />
+          <div className="flex items-center gap-3 flex-wrap">
+            <EtsyFixMaterialsButton count={missingMaterials} />
+            <EtsyTranslateAllButton listingIds={rows.map((r) => r.listing_id)} />
+          </div>
         </div>
       )}
 
