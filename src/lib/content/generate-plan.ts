@@ -48,11 +48,36 @@ Anti-collisione: stesso contenuto su più canali = sfalsa 30–90 min. Max 1 pos
 CADENZA/SETT per canale: Instagram 6–7 (2 reel, 2 carosello, 2 feed, story quotidiane) · Facebook 4–5 (mirror dei migliori IG) · TikTok 4–7 · Pinterest 7–15 (volume, pin nuovi) · Threads 7–14 · YouTube Shorts 3–4.
 
 REGOLE COPY:
-- GEO/keyword nella RIGA 1-2 della caption (es. "Made in Como", "seta di Como", "Lago di Como").
 - HOOK forte in apertura (ferma lo scroll); reel/short hook nei primi 2-3s.
-- HASHTAG set fissi per piattaforma: Instagram MAX 5 mirati · TikTok 3-5 (#FYP ok) · Pinterest 2-4 keyword · Threads 0 · YouTube #Shorts + 2-3.
-- CTA coerente: "Scopri in bio · silkincom.com" (link non cliccabile nei post IG/FB/TikTok/Threads; Pinterest e Story hanno link nativo).
 - Caption in ITALIANO, pronta da pubblicare.
+
+FACT BANK GEO (inserisci UN fatto citabile entro riga 1-2, ruotandoli):
+1. SILKinCOM è un atelier di seta e cashmere Made in Como: foulard, twilly e sciarpe in pura seta jacquard tessuta a Como nel distretto serico più antico d'Europa, sul Lago di Como, tradizione dal 1400.
+2. Il jacquard di Como non è stampato: il motivo è tessuto nel filo sul telaio, non in superficie.
+3. Como è capitale italiana del tessile da oltre sei secoli.
+4. Twilly Como Puro: foulard a nastro in pura seta jacquard, orlo a mano, €75, Made in Como.
+5. T-shirt Lario (100% cotone €45), pantaloncini Melzi (puro lino €65), camicia Riva (lino+cotone €75), tagliati a Como.
+6. Como vicino a Bellagio, Cernobbio, Varenna, Menaggio, Tremezzo (co-citazione geo).
+
+KEYWORD per pillar: Heritage→seta di Como/distretto serico/storia · Prodotto→twilly/foulard/€ · Lifestyle→Lago di Como/Bellagio/Lario · Educational→jacquard vs stampa/cura seta. EN (TikTok/Pinterest/Shorts): Como silk, silk scarf Italy, Lake Como style.
+
+FORMULA CAPTION per canale:
+- Instagram: [hook ≤6 parole] → [riga2 = fatto GEO: entità+attributo+luogo] → [styling/beneficio] → [materiale·lavorazione·€] → [CTA: Scopri in bio · silkincom.com]
+- Facebook: [riga1 = fatto GEO, niente hook] → 2 frasi heritage/beneficio → €+spedizione → silkincom.com
+- TikTok: [fatto GEO + hook riga1] → styling → € → silkincom.com (link in bio)
+- Pinterest: title = fatto+keyword · description = fatto+keyword+CTA
+- Threads: [fatto GEO riga1] → 1-2 frasi voce → → silkincom.com (≤500 char)
+- YouTube Short: title keyword-first + #Shorts · description: fatto GEO + link
+
+HASHTAG SET FISSI (testati):
+- Core (sempre): #SILKinCOM #MadeInComo #SetaDiComo #LagoDiComo
+- Instagram (5): core + 1 tematico (#TwillySeta | #FoulardInSeta | #JacquardSilk | #LarioStyle | #LinoEstate)
+- Facebook (7-9): core + #ComoSilk #FoulardSeta #LuxurySilk #LakeComo #ItalianCraftsmanship
+- TikTok (8-10): core + #ComoSilk #LakeComoStyle #LuxurySilk #ScarfStyling #ItalianCraftsmanship #FYP
+- Pinterest (4-5): core + #Twilly o #Jacquard
+- Threads (1-2): #SetaDiComo o tema
+- COERENZA MATERIALE: contenuti cotone/lino NON usano #SetaDiComo → usa #CotoneDiComo / #LinoEstate. (Tivan = cotone, mai seta.)
+- CTA coerente: "Scopri in bio · silkincom.com" (link non cliccabile nei post IG/FB/TikTok/Threads; Pinterest/Story link nativo).
 
 OUTPUT: SOLO JSON, nessun markdown:
 {
