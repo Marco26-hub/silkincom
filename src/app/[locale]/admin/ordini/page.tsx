@@ -10,11 +10,12 @@ const STATUS_FILTERS = ['all', 'pending', 'paid', 'processing', 'shipped', 'deli
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; test?: string }>;
 }) {
   const params = await searchParams;
   const filter = params.status && STATUS_FILTERS.includes(params.status as any) ? params.status : 'all';
   const q = params.q ?? '';
+  const showTest = params.test === '1';
 
   const supabase = createServiceClient();
   let query = supabase
@@ -25,14 +26,21 @@ export default async function AdminOrdersPage({
 
   if (filter !== 'all') query = query.eq('status', filter);
   if (q) query = query.or(`order_number.ilike.%${q}%,customer_email.ilike.%${q}%`);
+  // Hide test orders by default; ?test=1 reveals them for inspection.
+  if (!showTest) query = query.eq('is_test', false);
 
   const { data: orders } = await query;
 
   return (
     <div className="space-y-6 max-w-[1400px]">
-      <div>
-        <h1 className="font-display text-4xl mb-1">Ordini</h1>
-        <p className="text-soft-grey text-sm">{orders?.length ?? 0} ordini</p>
+      <div className="flex items-end justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="font-display text-4xl mb-1">Ordini</h1>
+          <p className="text-soft-grey text-sm">{orders?.length ?? 0} ordini{showTest ? ' · inclusi i test' : ''}</p>
+        </div>
+        <a href={showTest ? '/admin/ordini' : '/admin/ordini?test=1'} className="text-xs text-soft-grey hover:text-soft-black underline">
+          {showTest ? 'Nascondi test' : 'Mostra ordini test'}
+        </a>
       </div>
 
       <OrderFilters />

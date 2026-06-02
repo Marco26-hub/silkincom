@@ -23,16 +23,16 @@ export default async function AdminOverview() {
     { data: invRows },
     { data: recentOrders },
   ] = await Promise.all([
-    supabase.from('orders').select('total_amount').gte('created_at', startToday).eq('payment_status', 'succeeded'),
-    supabase.from('orders').select('total_amount').gte('created_at', start7d).eq('payment_status', 'succeeded'),
-    supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'paid'),
+    supabase.from('orders').select('total_amount').gte('created_at', startToday).eq('payment_status', 'succeeded').eq('is_test', false),
+    supabase.from('orders').select('total_amount').gte('created_at', start7d).eq('payment_status', 'succeeded').eq('is_test', false),
+    supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'pending').eq('is_test', false),
+    supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'paid').eq('is_test', false),
     // All inventory rows + product status + variant size. We list low stock at
     // the SIZE level (a product can be in stock overall yet sold out in one
     // size), skip archived/duplicate products, and drop the spurious
     // product-level row of products that are actually sold by size.
     supabase.from('inventory').select('id, product_id, variant_id, quantity_available, products(name, slug, status), product_variants(size)'),
-    supabase.from('orders').select('id, order_number, customer_email, total_amount, status, created_at').order('created_at', { ascending: false }).limit(8),
+    supabase.from('orders').select('id, order_number, customer_email, total_amount, status, created_at').eq('is_test', false).order('created_at', { ascending: false }).limit(8),
   ]);
 
   const revenueToday = (ordersToday ?? []).reduce((sum, o) => sum + Number(o.total_amount), 0);

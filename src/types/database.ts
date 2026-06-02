@@ -156,6 +156,7 @@ export interface Order {
   discount_amount: number;
   total_amount: number;
   currency: string;
+  is_test: boolean;
   shipping_method: string | null;
   delivery_method: 'standard' | 'hand_delivery';
   shipping_address_id: string | null;
