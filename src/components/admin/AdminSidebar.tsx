@@ -22,6 +22,7 @@ import {
   CreditCard,
   Receipt,
   Megaphone,
+  Share2,
   FolderTree,
   Image as ImageIcon,
   ClipboardList,
@@ -74,6 +75,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
       { href: '/admin/coupon', label: 'Coupon', icon: Tag, roles: ADMIN },
       { href: '/admin/recensioni', label: 'Recensioni', icon: Star, roles: EDITOR },
       { href: '/admin/ads', label: 'Pubblicità', icon: Megaphone, roles: ADMIN },
+      { href: '/admin/social', label: 'Social', icon: Share2, roles: ADMIN },
     ],
   },
   {
