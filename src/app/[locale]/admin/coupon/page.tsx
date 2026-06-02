@@ -188,7 +188,7 @@ export default function AdminCouponsPage() {
               <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">Tipo sconto</label>
               <select value={form.discount_type} onChange={(e) => setForm({ ...form, discount_type: e.target.value })} className={cls + ' bg-white'}>
                 <option value="percentage">Percentuale (%)</option>
-                <option value="fixed">Fisso (€)</option>
+                <option value="fixed_amount">Fisso (€)</option>
               </select>
             </div>
             <Inp label="Valore" type="number" step="0.01" value={form.discount_value ?? ''} onChange={(v) => setForm({ ...form, discount_value: Number(v) })} required />
