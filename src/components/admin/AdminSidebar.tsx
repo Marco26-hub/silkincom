@@ -29,6 +29,7 @@ import {
   ClipboardList,
   ScrollText,
   Newspaper,
+  Music2,
   LogOut,
 } from 'lucide-react';
 
@@ -98,6 +99,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: 'Sistema',
     items: [
       { href: '/admin/etsy', label: 'Etsy', icon: Store, roles: ADMIN },
+      { href: '/admin/tiktok', label: 'TikTok Shop', icon: Music2, roles: ADMIN },
       { href: '/admin/audit', label: 'Audit Log', icon: ScrollText, roles: ['super_admin'] },
       { href: '/admin/errors', label: 'Errori', icon: AlertCircle, roles: ADMIN },
       { href: '/admin/impostazioni', label: 'Impostazioni', icon: Settings, roles: ADMIN },
