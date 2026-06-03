@@ -18,11 +18,13 @@ export default async function AdminPagamentiPage() {
   const supabase = createServiceClient();
   const { data: payments } = await supabase
     .from('payments')
-    .select('*, orders(order_number, customer_email)')
+    .select('*, orders(order_number, customer_email, is_test)')
     .order('created_at', { ascending: false })
     .limit(200);
 
-  const rows = (payments as any[]) ?? [];
+  // Hide payments tied to the cold-start test orders (only is_test=true ones).
+  // The first real payment is order 0038.
+  const rows = ((payments as any[]) ?? []).filter((p) => p.orders?.is_test !== true);
   const totalIncassato = rows
     .filter((p) => ['succeeded', 'paid'].includes((p.status || '').toLowerCase()))
     .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
