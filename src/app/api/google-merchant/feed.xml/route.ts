@@ -17,6 +17,7 @@
 import { NextRequest } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
+import { resolveColor, resolveMaterial } from '@/lib/google-merchant/mapping';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
@@ -36,53 +37,8 @@ function cdata(text: string): string {
   return `<![CDATA[${(text || '').replace(/]]>/g, ']]]]><![CDATA[>')}]]>`;
 }
 
-// Google Merchant requires color / material / gender / age_group to avoid
-// "missing attribute" warnings. Colors are not stored as structured data
-// (product_colors is empty), so we derive them from the Italian product name
-// (the colour is the trailing token, e.g. "Varenna Azzurra" → Light Blue) plus
-// a few explicit overrides where the name is a style, not a colour.
-const COLOR_IT_EN: Record<string, string> = {
-  azzurra: 'Light Blue', azzurro: 'Light Blue',
-  beige: 'Beige',
-  grigia: 'Grey', grigio: 'Grey',
-  bianco: 'White', bianca: 'White',
-  blu: 'Blue', navy: 'Navy',
-  nero: 'Black', nera: 'Black',
-  verde: 'Green', rosa: 'Pink', viola: 'Purple',
-  cipria: 'Powder Pink',
-};
-
-function resolveColor(name: string): string {
-  const n = (name || '').toLowerCase();
-  if (n.startsWith('bellagio')) return 'Powder Pink'; // "Cipria", logo colour is just a variant
-  if (n.startsWith('como ')) return 'Blue';           // Como silk twillys are blue
-  if (n === 'tivan') return 'Turquoise';              // turquoise beach towel
-  if (n.includes('blu navy')) return 'Navy';
-  if (n.includes('grigio melange')) return 'Grey';
-  const tokens = n.replace(/[—–-]/g, ' ').split(/\s+/).filter(Boolean);
-  for (let i = tokens.length - 1; i >= 0; i--) {
-    if (COLOR_IT_EN[tokens[i]]) return COLOR_IT_EN[tokens[i]];
-  }
-  return 'Multicolor';
-}
-
-// Primary fibre, translated to English. composition is e.g. "100% cashmere",
-// "53% lino, 47% cotone", "Frontale 100% cotone, retro 100% poliestere" — the
-// first fibre listed is the dominant one.
-const FIBER_IT_EN: Record<string, string> = {
-  seta: 'Silk', cotone: 'Cotton', lana: 'Wool', lino: 'Linen',
-  cashmere: 'Cashmere', poliestere: 'Polyester', elastan: 'Elastane',
-};
-
-function resolveMaterial(composition?: string): string {
-  const c = (composition || '').toLowerCase();
-  let best: { idx: number; en: string } | null = null;
-  for (const [it, en] of Object.entries(FIBER_IT_EN)) {
-    const idx = c.indexOf(it);
-    if (idx >= 0 && (best === null || idx < best.idx)) best = { idx, en };
-  }
-  return best ? best.en : 'Silk';
-}
+// Colour / material inference is shared with the Content API push so the feed
+// and the API never drift — see src/lib/google-merchant/mapping.ts.
 
 export async function GET(req: NextRequest) {
   const lang = req.nextUrl.searchParams.get('lang') === 'en' ? 'en' : 'it';

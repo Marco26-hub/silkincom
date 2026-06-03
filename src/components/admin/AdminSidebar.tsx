@@ -8,6 +8,7 @@ import {
   BarChart3,
   Package,
   ShoppingBag,
+  ShoppingCart,
   Boxes,
   Users,
   Tag,
@@ -100,6 +101,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: '/admin/etsy', label: 'Etsy', icon: Store, roles: ADMIN },
       { href: '/admin/tiktok', label: 'TikTok Shop', icon: Music2, roles: ADMIN },
+      { href: '/admin/merchant', label: 'Google Merchant', icon: ShoppingCart, roles: ADMIN },
       { href: '/admin/audit', label: 'Audit Log', icon: ScrollText, roles: ['super_admin'] },
       { href: '/admin/errors', label: 'Errori', icon: AlertCircle, roles: ADMIN },
       { href: '/admin/impostazioni', label: 'Impostazioni', icon: Settings, roles: ADMIN },
