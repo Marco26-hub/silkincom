@@ -12,16 +12,16 @@ export async function GET() {
 
   const supabase = createServiceClient();
 
+  // Exclude test orders at the DB level (inner join + filter) on both queries,
+  // so a missing/array embed can never silently fall back to showing them.
   const { data: shipments } = await supabase
     .from('shipments')
     .select(
-      'id, order_id, carrier, service_name, packlink_reference, tracking_number, status, price, label_url, created_at, orders(order_number, customer_email, is_test)',
+      'id, order_id, carrier, service_name, packlink_reference, tracking_number, status, price, label_url, created_at, orders!inner(order_number, customer_email, is_test)',
     )
+    .not('orders.is_test', 'is', true)
     .order('created_at', { ascending: false })
     .limit(100);
-
-  // Hide the cold-start test orders (only is_test=true). First real order is 0038.
-  const realShipments = (shipments ?? []).filter((s) => (s.orders as any)?.is_test !== true);
 
   const { data: paidOrders } = await supabase
     .from('orders')
@@ -31,13 +31,13 @@ export async function GET() {
     .order('created_at', { ascending: false })
     .limit(100);
 
-  const shippedOrderIds = new Set(realShipments.map((s) => s.order_id));
+  const shippedOrderIds = new Set((shipments ?? []).map((s) => s.order_id));
   const toShip = (paidOrders ?? []).filter((o) => !shippedOrderIds.has(o.id));
 
   const { data: reorder } = await supabase.from('reorder_alerts').select('*').limit(50);
 
   return NextResponse.json({
-    shipments: realShipments,
+    shipments: shipments ?? [],
     toShip,
     reorder: reorder ?? [],
   });

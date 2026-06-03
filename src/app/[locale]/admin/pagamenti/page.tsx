@@ -16,15 +16,17 @@ function statusBadge(status: string) {
 
 export default async function AdminPagamentiPage() {
   const supabase = createServiceClient();
+  // Exclude payments tied to test orders at the DB level (inner join + filter),
+  // so a missing/array embed can never silently fall back to showing them. The
+  // first real payment is order 0038.
   const { data: payments } = await supabase
     .from('payments')
-    .select('*, orders(order_number, customer_email, is_test)')
+    .select('*, orders!inner(order_number, customer_email, is_test)')
+    .not('orders.is_test', 'is', true)
     .order('created_at', { ascending: false })
     .limit(200);
 
-  // Hide payments tied to the cold-start test orders (only is_test=true ones).
-  // The first real payment is order 0038.
-  const rows = ((payments as any[]) ?? []).filter((p) => p.orders?.is_test !== true);
+  const rows = (payments as any[]) ?? [];
   const totalIncassato = rows
     .filter((p) => ['succeeded', 'paid'].includes((p.status || '').toLowerCase()))
     .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
