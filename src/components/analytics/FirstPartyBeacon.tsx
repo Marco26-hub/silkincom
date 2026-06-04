@@ -64,6 +64,9 @@ export function FirstPartyBeacon() {
   // Expose the funnel-event helper once.
   useEffect(() => {
     window.silkincomAnalytics = (type, params) => {
+      // Skip internal/admin traffic — the owner working in /admin must not
+      // pollute the customer funnel (it inflated sessions + dominated top-paths).
+      if (typeof window !== 'undefined' && window.location.pathname.includes('/admin')) return;
       send({
         type,
         sid: sessionId(),
@@ -83,6 +86,8 @@ export function FirstPartyBeacon() {
   useEffect(() => {
     if (lastPath.current === pathname) return;
     lastPath.current = pathname;
+    // Don't track the owner's admin work — keeps the customer funnel clean.
+    if (pathname.startsWith('/admin')) return;
     const ref = typeof document !== 'undefined' ? document.referrer || undefined : undefined;
     const sid = sessionId();
     send({ type: 'pageview', sid, path: pathname, ref, locale });
