@@ -27,6 +27,10 @@ type Overview = {
   topPaths: { path: string; views: number }[];
   topProducts: { product_slug: string; views: number }[];
   referrers: { referrer_host: string; visits: number }[];
+  sources: {
+    utm_source: string; utm_medium: string; sessions: number;
+    product_views: number; add_to_cart: number; purchases: number; revenue: number;
+  }[];
   errors: string[];
 };
 
@@ -172,6 +176,42 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
       </div>
+
+      {/* Attribuzione campagne (UTM) → vendite */}
+      {data && (data.sources?.length ?? 0) > 0 && (
+        <div className="border border-pearl-grey bg-white p-5 overflow-x-auto">
+          <h3 className="text-[10px] uppercase tracking-[0.3em] text-soft-grey mb-4 flex items-center gap-2">
+            <MousePointerClick className="w-3.5 h-3.5" />Fonti campagna (UTM) → vendite
+          </h3>
+          <table className="w-full text-sm min-w-[640px]">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-[0.15em] text-soft-grey text-left border-b border-pearl-grey">
+                <th className="py-2">Fonte</th><th>Mezzo</th>
+                <th className="text-right">Visite</th><th className="text-right">Prodotto</th>
+                <th className="text-right">Carrello</th><th className="text-right">Acquisti</th>
+                <th className="text-right">Fatturato</th><th className="text-right">Conv.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.sources.map((r, i) => (
+                <tr key={i} className="border-b border-pearl-grey/40">
+                  <td className="py-1.5 font-medium">{r.utm_source}</td>
+                  <td className="text-soft-grey">{r.utm_medium || '—'}</td>
+                  <td className="text-right tabular-nums">{fmtInt(r.sessions)}</td>
+                  <td className="text-right tabular-nums">{fmtInt(r.product_views)}</td>
+                  <td className="text-right tabular-nums">{fmtInt(r.add_to_cart)}</td>
+                  <td className="text-right tabular-nums font-medium">{fmtInt(r.purchases)}</td>
+                  <td className="text-right tabular-nums">{fmtEUR(Number(r.revenue))}</td>
+                  <td className="text-right tabular-nums text-soft-grey">{pct(r.purchases, r.sessions)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-3 text-[11px] text-soft-grey">
+            Attribuzione da <code>utm_source</code> nei bio-link (sticky per sessione → anche l'acquisto eredita la fonte). «(nessuna)» = traffico senza tag campagna.
+          </p>
+        </div>
+      )}
 
       {!loading && (s?.pageviews ?? 0) === 0 && (
         <div className="bg-ivory border border-pearl-grey/60 p-4 text-xs text-soft-grey">

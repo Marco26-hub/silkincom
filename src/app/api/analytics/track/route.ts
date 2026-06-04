@@ -81,6 +81,11 @@ export async function POST(req: NextRequest) {
     device: deviceFromUA(ua),
     product_slug: clamp(body.product, 120),
     value,
+    // Campaign attribution from the landing URL (sticky per session via the
+    // beacon) — lets us attribute the whole funnel, incl. purchase, to a source.
+    utm_source: clamp(body.utm_source, 64),
+    utm_medium: clamp(body.utm_medium, 64),
+    utm_campaign: clamp(body.utm_campaign, 120),
   };
 
   const supabase = createServiceClient();

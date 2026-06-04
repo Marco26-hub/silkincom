@@ -42,9 +42,34 @@ function sessionId(): string {
   }
 }
 
+const UTM_KEY = 'silkincom-utm';
+
+// Capture utm_* ONCE at session landing and keep it sticky in sessionStorage,
+// so every later event (incl. the purchase, whose URL has no utm) is still
+// attributed to the original source/medium/campaign.
+function utmParams(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+  try {
+    let stored = sessionStorage.getItem(UTM_KEY);
+    if (stored === null) {
+      const q = new URLSearchParams(window.location.search);
+      const o: Record<string, string> = {};
+      for (const k of ['utm_source', 'utm_medium', 'utm_campaign'] as const) {
+        const v = q.get(k);
+        if (v) o[k] = v.slice(0, 120);
+      }
+      stored = JSON.stringify(o);
+      sessionStorage.setItem(UTM_KEY, stored); // capture-once at landing
+    }
+    return JSON.parse(stored);
+  } catch {
+    return {};
+  }
+}
+
 function send(payload: Record<string, unknown>) {
   try {
-    const body = JSON.stringify(payload);
+    const body = JSON.stringify({ ...utmParams(), ...payload });
     const url = '/api/analytics/track';
     if (navigator.sendBeacon) {
       navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));

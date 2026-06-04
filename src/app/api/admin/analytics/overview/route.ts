@@ -31,12 +31,13 @@ export async function GET(req: NextRequest) {
   const days = r === '7d' ? 7 : r === '90d' ? 90 : 30;
 
   const supabase = createServiceClient();
-  const [summary, daily, paths, products, referrers] = await Promise.all([
+  const [summary, daily, paths, products, referrers, sources] = await Promise.all([
     supabase.rpc('analytics_summary', { days }),
     supabase.rpc('analytics_daily', { days }),
     supabase.rpc('analytics_top_paths', { days, lim: 12 }),
     supabase.rpc('analytics_top_products', { days, lim: 10 }),
     supabase.rpc('analytics_referrers', { days, lim: 10 }),
+    supabase.rpc('analytics_utm_sources', { days }),
   ]);
 
   const s = summary.data?.[0] ?? {
@@ -51,7 +52,8 @@ export async function GET(req: NextRequest) {
     topPaths: paths.data ?? [],
     topProducts: products.data ?? [],
     referrers: referrers.data ?? [],
-    errors: [summary.error, daily.error, paths.error, products.error, referrers.error]
+    sources: sources.data ?? [],
+    errors: [summary.error, daily.error, paths.error, products.error, referrers.error, sources.error]
       .filter(Boolean)
       .map((e) => e!.message),
   });
