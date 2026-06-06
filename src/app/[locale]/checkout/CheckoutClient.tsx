@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { loadStripe } from '@stripe/stripe-js';
@@ -129,6 +129,17 @@ export function CheckoutClient() {
   useEffect(() => {
     useCart.persist.rehydrate();
   }, []);
+
+  // Funnel: fire begin_checkout once when the checkout page loads with items.
+  // (add_to_cart fires from the product buttons, purchase server-side from the
+  // Stripe webhook — this closes the missing middle step in /admin/analytics.)
+  const beganCheckout = useRef(false);
+  useEffect(() => {
+    if (!beganCheckout.current && items.length > 0) {
+      beganCheckout.current = true;
+      window.silkincomAnalytics?.('begin_checkout', { value: total() });
+    }
+  }, [items]);
 
   useEffect(() => {
     if (items.length === 0 && !initData) {
