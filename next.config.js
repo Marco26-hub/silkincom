@@ -59,6 +59,17 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Canonicalizzazione dominio: il dominio Vercel di default
+      // (silkincom.vercel.app) serve gli STESSI contenuti del custom domain →
+      // Google lo indicizza come DUPLICATO (canonical da solo non basta).
+      // Redirect 308 di ogni path verso www.silkincom.com così sparisce
+      // dall'indice. (L'apex silkincom.com → www è già gestito da Vercel.)
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'silkincom.vercel.app' }],
+        destination: 'https://www.silkincom.com/:path*',
+        permanent: true,
+      },
       // Wix category URLs → nuovo sito italiano
       { source: '/category/twilly', destination: '/collezioni/twilly-como', permanent: true },
       { source: '/category/bellagio', destination: '/collezioni/bellagio', permanent: true },
