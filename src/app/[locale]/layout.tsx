@@ -117,6 +117,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     apple: '/apple-icon.png',
   },
   verification: {
+    google: 'LBplwrKCDJvhwLKGVo1iCSoJt9NUa1Anw5Fpk1KmcdA',
     other: {
       'msvalidate.01': '',
     },
