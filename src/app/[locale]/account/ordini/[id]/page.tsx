@@ -43,6 +43,7 @@ export default function OrderDetailPage() {
   const tc = useTranslations('common');
   const tcheckout = useTranslations('checkout.fields');
   const tcart = useTranslations('cart');
+  const tRecesso = useTranslations('recesso');
   const locale = useLocale();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -300,6 +301,21 @@ export default function OrderDetailPage() {
             (Date.now() - new Date(order.delivered_at).getTime()) / 86_400_000 <= 14 && (
               <ReturnRequestForm orderId={order.id} />
             )}
+
+          {/* Right of withdrawal — accessible for any active order (art. 54-bis) */}
+          {order.status !== 'cancelled' && order.status !== 'refunded' && (
+            <div className="border border-pearl-grey/60 p-6">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-soft-black/60 mb-3">
+                {tRecesso('title')}
+              </p>
+              <Link
+                href="/recesso"
+                className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-soft-black border-b border-pearl-grey hover:border-gold-primary hover:text-gold-primary pb-0.5 transition-colors"
+              >
+                {tRecesso('formHeading')} →
+              </Link>
+            </div>
+          )}
 
           {/* Shipping address */}
           {order.shipping_address && (

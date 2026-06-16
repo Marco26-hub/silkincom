@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
+import { Link } from '@/i18n/navigation';
 
 export const metadata = { title: 'Termini e Condizioni', description: 'Termini e condizioni di vendita SILKinCOM.' };
 
@@ -8,6 +9,7 @@ type Section = { h: string; body: string };
 export default async function TerminiPage() {
   const t = await getTranslations('legalPages');
   const tt = await getTranslations('legalPages.termini');
+  const tRec = await getTranslations('recesso');
   const notice = t('legalNotice');
   const sections = tt.raw('sections') as Section[];
 
@@ -23,6 +25,15 @@ export default async function TerminiPage() {
           <div dangerouslySetInnerHTML={{ __html: s.body }} />
         </div>
       ))}
+
+      {/* Pre-contractual disclosure of the right of withdrawal (art. 49 Cod. Consumo) */}
+      <h2>{tRec('title')}</h2>
+      <p>{tRec('intro')}</p>
+      <p>
+        <Link href="/recesso" className="text-gold-dark underline">
+          {tRec('formHeading')} →
+        </Link>
+      </p>
     </LegalPage>
   );
 }

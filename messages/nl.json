@@ -1430,6 +1430,9 @@
     }
   },
   "recesso": {
+    "moduloHeading": "Modelformulier voor herroeping",
+    "moduloIntro": "Als alternatief voor de knop hierboven kunt u het onderstaande modelformulier gebruiken: invullen en sturen naar info@silkincom.com.",
+    "moduloBody": "(dit formulier alleen invullen en terugzenden als u de overeenkomst wilt herroepen)\n\nAan: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italië — info@silkincom.com\n\nIk/Wij (*) deel/delen (*) u hierbij mede dat ik/wij (*) de overeenkomst betreffende de verkoop van de volgende goederen/diensten (*) herroep/herroepen (*):\n_______________________________________\nBesteld op (*)/ontvangen op (*): __________\nNaam consument(en): __________\nAdres consument(en): __________\nHandtekening van consument(en) (alleen bij kennisgeving op papier): __________\nDatum: __________\n\n(*) Doorhalen wat niet van toepassing is.",
     "title": "Herroepingsrecht",
     "subtitle": "Online herroepen · art. 54-bis Italiaans consumentenwetboek",
     "intro": "U hebt het recht om de overeenkomst binnen 14 dagen zonder opgave van redenen te herroepen. De termijn gaat in op de dag waarop u, of een door u aangewezen derde, de goederen ontvangt.",

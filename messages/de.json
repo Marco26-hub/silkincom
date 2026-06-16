@@ -1430,6 +1430,9 @@
     }
   },
   "recesso": {
+    "moduloHeading": "Muster-Widerrufsformular",
+    "moduloIntro": "Alternativ zum Button oben können Sie das folgende Musterformular verwenden: ausfüllen und an info@silkincom.com senden.",
+    "moduloBody": "(Wenn Sie den Vertrag widerrufen wollen, füllen Sie bitte dieses Formular aus und senden Sie es zurück)\n\nAn: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italien — info@silkincom.com\n\nHiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren/Dienstleistungen (*):\n_______________________________________\nBestellt am (*)/erhalten am (*): __________\nName des/der Verbraucher(s): __________\nAnschrift des/der Verbraucher(s): __________\nUnterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): __________\nDatum: __________\n\n(*) Unzutreffendes streichen.",
     "title": "Widerrufsrecht",
     "subtitle": "Online widerrufen · Art. 54-bis ital. Verbrauchergesetzbuch",
     "intro": "Sie haben das Recht, binnen 14 Tagen ohne Angabe von Gründen den Vertrag zu widerrufen. Die Frist beginnt an dem Tag, an dem Sie oder ein von Ihnen benannter Dritter die Waren erhalten.",

@@ -167,7 +167,8 @@ export async function sendOrderConfirmationEmail(
     </table>
     <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">Le invieremo una notifica appena il pacco lascerà il nostro atelier.</p>
     ${luxuryButton(`${APP_URL}/account/ordini`, 'Visualizza ordine')}
-    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
+    <p style="font-size:12px; color:#A9A6A0; margin-top:28px; line-height:1.7;">Diritto di recesso: ha 14 giorni per recedere dal contratto senza motivazione. <a href="${APP_URL}/recesso" style="color:#A87F1E; text-decoration:none;">Esercita il recesso qui</a>.</p>
+    <p style="font-size:12px; color:#A9A6A0; margin-top:16px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
   `;
   return sendEmail({
     from: FROM_EMAIL,

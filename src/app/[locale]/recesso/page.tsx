@@ -34,6 +34,12 @@ export default async function RecessoPage() {
 
       <h2>{t('formHeading')}</h2>
       <RecessoForm />
+
+      <h2>{t('moduloHeading')}</h2>
+      <p>{t('moduloIntro')}</p>
+      <div className="whitespace-pre-line border border-pearl-grey/60 bg-ivory p-5 text-sm leading-relaxed text-soft-black/80">
+        {t('moduloBody')}
+      </div>
     </LegalPage>
   );
 }

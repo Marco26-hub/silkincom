@@ -1430,6 +1430,9 @@
     }
   },
   "recesso": {
+    "moduloHeading": "Formulaire de rétractation type",
+    "moduloIntro": "Au lieu du bouton ci-dessus, vous pouvez utiliser le formulaire type ci-dessous : à compléter et à envoyer à info@silkincom.com.",
+    "moduloBody": "(veuillez compléter et renvoyer le présent formulaire uniquement si vous souhaitez vous rétracter du contrat)\n\nÀ l'attention de : SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italie — info@silkincom.com\n\nJe/Nous (*) vous notifie/notifions (*) par la présente ma/notre (*) rétractation du contrat portant sur la vente des biens/services (*) ci-dessous :\n_______________________________________\nCommandé le (*)/reçu le (*) : __________\nNom du/des consommateur(s) : __________\nAdresse du/des consommateur(s) : __________\nSignature du/des consommateur(s) (uniquement en cas de notification sur papier) : __________\nDate : __________\n\n(*) Rayez la mention inutile.",
     "title": "Droit de Rétractation",
     "subtitle": "Se rétracter en ligne · art. 54-bis Code de la consommation italien",
     "intro": "Vous avez le droit de vous rétracter du contrat dans un délai de 14 jours sans avoir à motiver votre décision. Le délai court à compter du jour où vous, ou un tiers désigné par vous, recevez les biens.",

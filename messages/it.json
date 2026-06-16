@@ -1430,6 +1430,9 @@
     }
   },
   "recesso": {
+    "moduloHeading": "Modulo di recesso tipo",
+    "moduloIntro": "In alternativa al pulsante qui sopra, puoi usare il modulo tipo seguente: compilalo e invialo a info@silkincom.com.",
+    "moduloBody": "(compilare e restituire il presente modulo solo se si desidera recedere dal contratto)\n\nDestinatario: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia — info@silkincom.com\n\nCon la presente io/noi (*) notifico/notifichiamo (*) il recesso dal mio/nostro (*) contratto di vendita dei seguenti beni/servizi (*):\n_______________________________________\nOrdinato il (*)/ricevuto il (*): __________\nNome del/dei consumatore(i): __________\nIndirizzo del/dei consumatore(i): __________\nFirma del/dei consumatore(i) (solo se il presente modulo è notificato in versione cartacea): __________\nData: __________\n\n(*) Cancellare la dicitura inutile.",
     "title": "Diritto di Recesso",
     "subtitle": "Esercita il recesso online · art. 54-bis Codice del Consumo",
     "intro": "Hai il diritto di recedere dal contratto entro 14 giorni senza fornire alcuna motivazione. Il termine decorre dal giorno in cui tu, o un terzo da te designato, ricevi i beni.",
