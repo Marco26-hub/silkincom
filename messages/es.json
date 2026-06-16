@@ -73,7 +73,8 @@
       "cookies": "Cookies",
       "terms": "Términos",
       "dataProcessing": "Tratamiento de datos",
-      "reviews": "Reseñas"
+      "reviews": "Reseñas",
+      "withdrawal": "Derecho de desistimiento"
     },
     "rights": "Todos los derechos reservados.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% algodón",
       "pureCottonEyebrow": "Fibra natural pura"
     }
+  },
+  "recesso": {
+    "title": "Derecho de Desistimiento",
+    "subtitle": "Desiste en línea · art. 54-bis Código de Consumo italiano",
+    "intro": "Tiene derecho a desistir del contrato en un plazo de 14 días sin necesidad de justificación. El plazo comienza el día en que usted, o un tercero designado por usted, recibe los bienes.",
+    "s1": "Cuándo puede desistir",
+    "s1Body": "En un plazo de 14 días desde la recepción de su pedido (o del último artículo, en caso de varios envíos). También puede desistir antes de la entrega.",
+    "s2": "Cómo desistir",
+    "s2Body": "Rellene el formulario siguiente con su número de pedido y el correo electrónico utilizado en la compra. Recibirá un acuse de recibo por correo con la fecha y la hora de la solicitud.",
+    "s3": "Reembolso",
+    "s3Body": "Le reembolsaremos en un plazo de 14 días desde su comunicación de desistimiento, con el mismo medio de pago utilizado en la compra. Podemos retener el reembolso hasta recibir los bienes o una prueba de su devolución.",
+    "s4": "Exclusiones",
+    "s4Body": "El derecho de desistimiento no se aplica a bienes hechos a medida o claramente personalizados, ni a bienes precintados abiertos tras la entrega por razones de higiene.",
+    "formHeading": "Desistir ahora"
+  },
+  "recessoForm": {
+    "step1Title": "Tus datos",
+    "intro": "Introduce tu número de pedido y el correo electrónico utilizado en la compra.",
+    "orderNumberLabel": "Número de pedido",
+    "orderNumberPlaceholder": "Ej. SK-20260616-0001",
+    "emailLabel": "Correo del pedido",
+    "emailPlaceholder": "Tu correo electrónico",
+    "lookupButton": "Continuar",
+    "looking": "Comprobando…",
+    "step2Title": "Confirmar el desistimiento",
+    "reviewIntro": "Comprueba los datos y confirma. La confirmación es el acto definitivo de desistimiento.",
+    "orderLabel": "Pedido",
+    "itemsLabel": "Productos",
+    "declarationLabel": "Declaración",
+    "confirmButton": "Confirmar el desistimiento",
+    "confirming": "Enviando…",
+    "back": "Atrás",
+    "successTitle": "Desistimiento registrado",
+    "successBody": "Tu solicitud de desistimiento se ha registrado con la referencia {number}.",
+    "successReceipt": "Te hemos enviado un acuse de recibo por correo con la fecha y la hora.",
+    "successNoEmail": "Solicitud registrada, pero no pudimos enviar el correo de confirmación. Te contactaremos en breve.",
+    "windowExpired": "El plazo de desistimiento de 14 días ha expirado para este pedido.",
+    "alreadyRequested": "Ya se ha registrado un desistimiento para este pedido ({number}).",
+    "notFound": "No se encontró ningún pedido con estos datos. Comprueba el número de pedido y el correo.",
+    "errorGeneric": "Se ha producido un error. Inténtalo de nuevo.",
+    "errorNetwork": "Error de red. Inténtalo de nuevo."
   }
 }

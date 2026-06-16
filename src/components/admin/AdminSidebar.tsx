@@ -55,6 +55,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
       { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ORDERS },
       { href: '/admin/spedizioni', label: 'Spedizioni', icon: Truck, roles: ORDERS },
       { href: '/admin/resi', label: 'Resi', icon: Undo2, roles: ORDERS },
+      { href: '/admin/recessi', label: 'Recessi', icon: ScrollText, roles: ORDERS },
       { href: '/admin/contatti', label: 'Contatti', icon: Mail, roles: ORDERS },
       { href: '/admin/pagamenti', label: 'Pagamenti', icon: CreditCard, roles: ADMIN },
       { href: '/admin/fatture', label: 'Fatture', icon: Receipt, roles: ADMIN },

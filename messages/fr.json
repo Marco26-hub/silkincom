@@ -73,7 +73,8 @@
       "cookies": "Cookies",
       "terms": "Conditions",
       "dataProcessing": "Traitement des données",
-      "reviews": "Avis"
+      "reviews": "Avis",
+      "withdrawal": "Droit de rétractation"
     },
     "rights": "Tous droits réservés.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% coton",
       "pureCottonEyebrow": "Fibre naturelle pure"
     }
+  },
+  "recesso": {
+    "title": "Droit de Rétractation",
+    "subtitle": "Se rétracter en ligne · art. 54-bis Code de la consommation italien",
+    "intro": "Vous avez le droit de vous rétracter du contrat dans un délai de 14 jours sans avoir à motiver votre décision. Le délai court à compter du jour où vous, ou un tiers désigné par vous, recevez les biens.",
+    "s1": "Quand vous pouvez vous rétracter",
+    "s1Body": "Dans les 14 jours suivant la réception de votre commande (ou du dernier article en cas de livraisons multiples). Vous pouvez aussi vous rétracter avant la livraison.",
+    "s2": "Comment vous rétracter",
+    "s2Body": "Remplissez le formulaire ci-dessous avec votre numéro de commande et l’email utilisé pour l’achat. Vous recevrez un accusé de réception par email avec la date et l’heure de la demande.",
+    "s3": "Remboursement",
+    "s3Body": "Nous vous rembourserons dans les 14 jours suivant votre notification de rétractation, avec le même moyen de paiement que celui utilisé pour l’achat. Nous pouvons différer le remboursement jusqu’à réception des biens ou d’une preuve de leur expédition.",
+    "s4": "Exclusions",
+    "s4Body": "Le droit de rétractation ne s’applique pas aux biens confectionnés sur mesure ou nettement personnalisés, ni aux biens scellés ouverts après la livraison pour des raisons d’hygiène.",
+    "formHeading": "Se rétracter maintenant"
+  },
+  "recessoForm": {
+    "step1Title": "Vos informations",
+    "intro": "Saisissez votre numéro de commande et l’email utilisé pour l’achat.",
+    "orderNumberLabel": "Numéro de commande",
+    "orderNumberPlaceholder": "Ex. SK-20260616-0001",
+    "emailLabel": "Email de la commande",
+    "emailPlaceholder": "Votre email",
+    "lookupButton": "Continuer",
+    "looking": "Vérification…",
+    "step2Title": "Confirmer la rétractation",
+    "reviewIntro": "Vérifiez les informations et confirmez. La confirmation est l’acte définitif de rétractation.",
+    "orderLabel": "Commande",
+    "itemsLabel": "Produits",
+    "declarationLabel": "Déclaration",
+    "confirmButton": "Confirmer la rétractation",
+    "confirming": "Envoi…",
+    "back": "Retour",
+    "successTitle": "Rétractation enregistrée",
+    "successBody": "Votre demande de rétractation a été enregistrée sous la référence {number}.",
+    "successReceipt": "Nous vous avons envoyé un accusé de réception par email avec la date et l’heure.",
+    "successNoEmail": "Demande enregistrée, mais nous n’avons pas pu envoyer l’email de confirmation. Nous vous contacterons sous peu.",
+    "windowExpired": "Le délai de rétractation de 14 jours a expiré pour cette commande.",
+    "alreadyRequested": "Une rétractation a déjà été enregistrée pour cette commande ({number}).",
+    "notFound": "Aucune commande trouvée avec ces informations. Vérifiez le numéro de commande et l’email.",
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+    "errorNetwork": "Erreur réseau. Veuillez réessayer."
   }
 }

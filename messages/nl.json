@@ -73,7 +73,8 @@
       "cookies": "Cookies",
       "terms": "Voorwaarden",
       "dataProcessing": "Gegevensverwerking",
-      "reviews": "Recensies"
+      "reviews": "Recensies",
+      "withdrawal": "Herroepingsrecht"
     },
     "rights": "Alle rechten voorbehouden.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% katoen",
       "pureCottonEyebrow": "Pure natuurlijke vezel"
     }
+  },
+  "recesso": {
+    "title": "Herroepingsrecht",
+    "subtitle": "Online herroepen · art. 54-bis Italiaans consumentenwetboek",
+    "intro": "U hebt het recht om de overeenkomst binnen 14 dagen zonder opgave van redenen te herroepen. De termijn gaat in op de dag waarop u, of een door u aangewezen derde, de goederen ontvangt.",
+    "s1": "Wanneer u kunt herroepen",
+    "s1Body": "Binnen 14 dagen na ontvangst van uw bestelling (of het laatste artikel bij meerdere zendingen). U kunt ook vóór de levering herroepen.",
+    "s2": "Hoe u herroept",
+    "s2Body": "Vul het onderstaande formulier in met uw bestelnummer en het e-mailadres dat u bij de aankoop hebt gebruikt. U ontvangt een ontvangstbevestiging per e-mail met de datum en tijd van het verzoek.",
+    "s3": "Terugbetaling",
+    "s3Body": "Wij betalen u binnen 14 dagen na uw herroeping terug, met hetzelfde betaalmiddel dat u bij de aankoop hebt gebruikt. Wij mogen de terugbetaling opschorten tot wij de goederen hebben ontvangen of een bewijs van terugzending.",
+    "s4": "Uitzonderingen",
+    "s4Body": "Het herroepingsrecht geldt niet voor op maat gemaakte of duidelijk gepersonaliseerde goederen, noch voor verzegelde goederen die na levering om hygiënische redenen zijn geopend.",
+    "formHeading": "Nu herroepen"
+  },
+  "recessoForm": {
+    "step1Title": "Uw gegevens",
+    "intro": "Voer uw bestelnummer in en het e-mailadres dat u bij de aankoop hebt gebruikt.",
+    "orderNumberLabel": "Bestelnummer",
+    "orderNumberPlaceholder": "Bijv. SK-20260616-0001",
+    "emailLabel": "E-mail van de bestelling",
+    "emailPlaceholder": "Uw e-mailadres",
+    "lookupButton": "Doorgaan",
+    "looking": "Controleren…",
+    "step2Title": "Herroeping bevestigen",
+    "reviewIntro": "Controleer de gegevens en bevestig. De bevestiging is de definitieve herroeping.",
+    "orderLabel": "Bestelling",
+    "itemsLabel": "Producten",
+    "declarationLabel": "Verklaring",
+    "confirmButton": "Herroeping bevestigen",
+    "confirming": "Verzenden…",
+    "back": "Terug",
+    "successTitle": "Herroeping geregistreerd",
+    "successBody": "Uw herroepingsverzoek is geregistreerd met referentie {number}.",
+    "successReceipt": "We hebben u een ontvangstbevestiging per e-mail gestuurd met de datum en tijd.",
+    "successNoEmail": "Verzoek geregistreerd, maar we konden de bevestigingsmail niet verzenden. We nemen binnenkort contact op.",
+    "windowExpired": "De herroepingstermijn van 14 dagen is voor deze bestelling verstreken.",
+    "alreadyRequested": "Voor deze bestelling is al een herroeping geregistreerd ({number}).",
+    "notFound": "Geen bestelling gevonden met deze gegevens. Controleer het bestelnummer en e-mailadres.",
+    "errorGeneric": "Er is iets misgegaan. Probeer het opnieuw.",
+    "errorNetwork": "Netwerkfout. Probeer het opnieuw."
   }
 }

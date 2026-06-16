@@ -73,7 +73,8 @@
       "cookies": "Cookies",
       "terms": "Termos",
       "dataProcessing": "Tratamento de dados",
-      "reviews": "Avaliações"
+      "reviews": "Avaliações",
+      "withdrawal": "Direito de rescisão"
     },
     "rights": "Todos os direitos reservados.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% algodão",
       "pureCottonEyebrow": "Fibra natural pura"
     }
+  },
+  "recesso": {
+    "title": "Direito de Rescisão",
+    "subtitle": "Rescinda online · art. 54-bis Código do Consumo italiano",
+    "intro": "Tem o direito de rescindir o contrato no prazo de 14 dias sem necessidade de justificação. O prazo começa no dia em que você, ou um terceiro por si designado, recebe os bens.",
+    "s1": "Quando pode rescindir",
+    "s1Body": "No prazo de 14 dias após a receção do seu pedido (ou do último artigo, em caso de vários envios). Também pode rescindir antes da entrega.",
+    "s2": "Como rescindir",
+    "s2Body": "Preencha o formulário abaixo com o seu número de encomenda e o email usado na compra. Receberá um aviso de receção por email com a data e a hora do pedido.",
+    "s3": "Reembolso",
+    "s3Body": "Reembolsaremos no prazo de 14 dias após a sua comunicação de rescisão, com o mesmo meio de pagamento usado na compra. Podemos reter o reembolso até recebermos os bens ou a prova do seu envio.",
+    "s4": "Exclusões",
+    "s4Body": "O direito de rescisão não se aplica a bens feitos por medida ou claramente personalizados, nem a bens selados abertos após a entrega por motivos de higiene.",
+    "formHeading": "Rescindir agora"
+  },
+  "recessoForm": {
+    "step1Title": "Os seus dados",
+    "intro": "Introduza o seu número de encomenda e o email usado na compra.",
+    "orderNumberLabel": "Número de encomenda",
+    "orderNumberPlaceholder": "Ex. SK-20260616-0001",
+    "emailLabel": "Email da encomenda",
+    "emailPlaceholder": "O seu email",
+    "lookupButton": "Continuar",
+    "looking": "A verificar…",
+    "step2Title": "Confirmar a rescisão",
+    "reviewIntro": "Verifique os dados e confirme. A confirmação é o ato definitivo de rescisão.",
+    "orderLabel": "Encomenda",
+    "itemsLabel": "Produtos",
+    "declarationLabel": "Declaração",
+    "confirmButton": "Confirmar a rescisão",
+    "confirming": "A enviar…",
+    "back": "Voltar",
+    "successTitle": "Rescisão registada",
+    "successBody": "O seu pedido de rescisão foi registado com a referência {number}.",
+    "successReceipt": "Enviámos-lhe um aviso de receção por email com a data e a hora.",
+    "successNoEmail": "Pedido registado, mas não foi possível enviar o email de confirmação. Entraremos em contacto em breve.",
+    "windowExpired": "O prazo de rescisão de 14 dias expirou para esta encomenda.",
+    "alreadyRequested": "Já foi registada uma rescisão para esta encomenda ({number}).",
+    "notFound": "Nenhuma encomenda encontrada com estes dados. Verifique o número de encomenda e o email.",
+    "errorGeneric": "Ocorreu um erro. Tente novamente.",
+    "errorNetwork": "Erro de rede. Tente novamente."
   }
 }

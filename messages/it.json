@@ -73,7 +73,8 @@
       "cookies": "Cookie",
       "terms": "Termini",
       "dataProcessing": "Trattamento dati",
-      "reviews": "Recensioni"
+      "reviews": "Recensioni",
+      "withdrawal": "Diritto di recesso"
     },
     "rights": "Tutti i diritti riservati.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% cotone",
       "pureCottonEyebrow": "Fibra naturale"
     }
+  },
+  "recesso": {
+    "title": "Diritto di Recesso",
+    "subtitle": "Esercita il recesso online · art. 54-bis Codice del Consumo",
+    "intro": "Hai il diritto di recedere dal contratto entro 14 giorni senza fornire alcuna motivazione. Il termine decorre dal giorno in cui tu, o un terzo da te designato, ricevi i beni.",
+    "s1": "Quando puoi recedere",
+    "s1Body": "Entro 14 giorni dal ricevimento dell’ordine (o dell’ultimo bene, in caso di consegne multiple). Puoi esercitare il recesso anche prima della consegna.",
+    "s2": "Come esercitare il recesso",
+    "s2Body": "Compila il modulo qui sotto con il numero d’ordine e l’email usata per l’acquisto. Riceverai una conferma di ricevimento via email con la data e l’ora della richiesta.",
+    "s3": "Rimborso",
+    "s3Body": "Ti rimborseremo entro 14 giorni dalla comunicazione di recesso, con lo stesso mezzo di pagamento usato per l’acquisto. Possiamo trattenere il rimborso fino al ricevimento dei beni o alla prova della loro spedizione.",
+    "s4": "Esclusioni",
+    "s4Body": "Il diritto di recesso non si applica a beni confezionati su misura o chiaramente personalizzati, né a beni sigillati aperti dopo la consegna per motivi igienici.",
+    "formHeading": "Esercita il recesso ora"
+  },
+  "recessoForm": {
+    "step1Title": "I tuoi dati",
+    "intro": "Inserisci il numero d’ordine e l’email usata per l’acquisto.",
+    "orderNumberLabel": "Numero ordine",
+    "orderNumberPlaceholder": "Es. SK-20260616-0001",
+    "emailLabel": "Email dell’ordine",
+    "emailPlaceholder": "La tua email",
+    "lookupButton": "Continua",
+    "looking": "Verifica…",
+    "step2Title": "Conferma il recesso",
+    "reviewIntro": "Verifica i dati e conferma. La conferma è l’atto definitivo di recesso.",
+    "orderLabel": "Ordine",
+    "itemsLabel": "Prodotti",
+    "declarationLabel": "Dichiarazione",
+    "confirmButton": "Conferma il recesso",
+    "confirming": "Invio…",
+    "back": "Indietro",
+    "successTitle": "Recesso registrato",
+    "successBody": "La tua richiesta di recesso è stata registrata con il riferimento {number}.",
+    "successReceipt": "Ti abbiamo inviato una conferma di ricevimento via email con la data e l’ora.",
+    "successNoEmail": "Richiesta registrata, ma non siamo riusciti a inviare l’email di conferma. Ti contatteremo a breve.",
+    "windowExpired": "Il termine di 14 giorni per il recesso è scaduto per questo ordine.",
+    "alreadyRequested": "Per questo ordine è già stato registrato un recesso ({number}).",
+    "notFound": "Nessun ordine trovato con questi dati. Controlla numero ordine ed email.",
+    "errorGeneric": "Si è verificato un errore. Riprova.",
+    "errorNetwork": "Errore di rete. Riprova."
   }
 }

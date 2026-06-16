@@ -358,6 +358,103 @@ export async function sendReturnStatusEmail(
   });
 }
 
+// Right-of-withdrawal acknowledgement — the legally mandated "avviso di
+// ricevimento su supporto durevole" (art. 54-bis Codice del Consumo). It must
+// echo the content of the withdrawal declaration and the date/time it was
+// transmitted, so the consumer holds durable proof. Written in Italian (legal
+// master language); the echoed declaration is in the consumer's own language.
+export async function sendWithdrawalAcknowledgementEmail(args: {
+  customerEmail: string;
+  customerName?: string | null;
+  orderNumber: string;
+  withdrawalNumber: string;
+  items: { name: string; quantity: number }[];
+  declaration: string;
+  submittedAt: Date;
+}) {
+  const when = new Intl.DateTimeFormat('it-IT', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+    timeZone: 'Europe/Rome',
+  }).format(args.submittedAt);
+
+  const itemsHtml = (args.items || [])
+    .map(
+      (it) =>
+        `<li style="font-size:13px; color:#4A4A4A; margin:0 0 4px 0;">${e(it.name)}${
+          it.quantity > 1 ? ` &nbsp;·&nbsp; ×${e(it.quantity)}` : ''
+        }</li>`,
+    )
+    .join('');
+
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Recesso ricevuto</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 20px 0;">Abbiamo registrato il suo <em style="color:#D4AF37; font-style:italic;">recesso</em></h1>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">${args.customerName ? `Gentile ${e(args.customerName)}, ` : ''}confermiamo la ricezione della sua dichiarazione di recesso ai sensi dell'art. 54-bis del Codice del Consumo. Questa email costituisce avviso di ricevimento su supporto durevole.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0; width:100%;">
+      <tr>
+        <td style="background:#F5F0E8; padding:22px 26px; border-left:3px solid #D4AF37;">
+          <p style="margin:0 0 6px 0; font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase;">Riferimento recesso</p>
+          <p style="margin:0 0 14px 0; font-family:'Cormorant Garamond', Georgia, serif; font-size:24px; font-weight:300; color:#1A1A1A; letter-spacing:0.04em;">${e(args.withdrawalNumber)}</p>
+          <p style="margin:0 0 4px 0; font-size:13px; color:#4A4A4A;"><strong style="color:#1A1A1A; font-weight:500;">Ordine</strong> &nbsp;·&nbsp; ${e(args.orderNumber)}</p>
+          <p style="margin:0; font-size:13px; color:#4A4A4A;"><strong style="color:#1A1A1A; font-weight:500;">Data e ora di trasmissione</strong> &nbsp;·&nbsp; ${e(when)}</p>
+        </td>
+      </tr>
+    </table>
+    ${
+      itemsHtml
+        ? `<p style="font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase; margin:0 0 8px 0;">Prodotti oggetto di recesso</p>
+    <ul style="margin:0 0 20px 0; padding:0 0 0 18px;">${itemsHtml}</ul>`
+        : ''
+    }
+    <p style="font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase; margin:0 0 8px 0;">Dichiarazione trasmessa</p>
+    <p style="font-size:13px; line-height:1.7; color:#4A4A4A; margin:0 0 24px 0; padding:16px 18px; background:#FAFAF8; border:1px solid #ECE7DD; white-space:pre-wrap;">${e(args.declaration)}</p>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">La rimborseremo entro 14 giorni con lo stesso mezzo di pagamento usato per l'acquisto. Per i beni, il rimborso può essere trattenuto fino al ricevimento della merce resa o alla prova della spedizione. Le invieremo a breve le istruzioni per la restituzione.</p>
+    <p style="font-size:12px; color:#A9A6A0; margin-top:32px; font-style:italic;">Per qualsiasi domanda, scriva a <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
+  `;
+
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: args.customerEmail,
+    subject: `Recesso ricevuto ${e(args.withdrawalNumber)} — Ordine ${e(args.orderNumber)}`,
+    html: luxuryShell(inner, `Avviso di ricevimento del recesso per l'ordine ${args.orderNumber} — ${when}.`),
+  });
+}
+
+// Internal alert — tells the shop a withdrawal came in.
+export async function sendOwnerWithdrawalNotificationEmail(args: {
+  orderNumber: string;
+  withdrawalNumber: string;
+  customerEmail: string;
+  customerName?: string | null;
+  submittedAt: Date;
+}) {
+  const when = new Intl.DateTimeFormat('it-IT', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    timeZone: 'Europe/Rome',
+  }).format(args.submittedAt);
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: OWNER_EMAIL,
+    replyTo: args.customerEmail,
+    subject: `Recesso ${e(args.withdrawalNumber)} — Ordine ${e(args.orderNumber)}`,
+    html: `
+      <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:520px;">
+        <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;">Nuova richiesta di recesso</h2>
+        <p><strong>Riferimento:</strong> ${e(args.withdrawalNumber)}</p>
+        <p><strong>Ordine:</strong> ${e(args.orderNumber)}</p>
+        <p><strong>Cliente:</strong> ${args.customerName ? `${e(args.customerName)} · ` : ''}<a href="mailto:${e(args.customerEmail)}">${e(args.customerEmail)}</a></p>
+        <p><strong>Trasmesso:</strong> ${e(when)}</p>
+        <p style="margin-top:24px;">
+          <a href="${APP_URL}/admin/recessi" style="display:inline-block;padding:12px 24px;background:#171717;color:#FFFDF8;text-decoration:none;text-transform:uppercase;letter-spacing:0.1em;font-size:12px;">Apri in amministrazione</a>
+        </p>
+        <p style="font-size:11px;color:#6B6B6B;margin-top:24px;">SILKinCOM — notifica automatica recessi · rimborso entro 14 giorni</p>
+      </div>
+    `,
+  });
+}
+
 // ===== Lifecycle email templates (luxury editorial style) =====
 
 const NEWSLETTER_FROM = DOMAIN_VERIFIED

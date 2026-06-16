@@ -73,7 +73,8 @@
       "cookies": "Cookies",
       "terms": "AGB",
       "dataProcessing": "Datenverarbeitung",
-      "reviews": "Bewertungen"
+      "reviews": "Bewertungen",
+      "withdrawal": "Widerrufsrecht"
     },
     "rights": "Alle Rechte vorbehalten.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% Baumwolle",
       "pureCottonEyebrow": "Reine Naturfaser"
     }
+  },
+  "recesso": {
+    "title": "Widerrufsrecht",
+    "subtitle": "Online widerrufen · Art. 54-bis ital. Verbrauchergesetzbuch",
+    "intro": "Sie haben das Recht, binnen 14 Tagen ohne Angabe von Gründen den Vertrag zu widerrufen. Die Frist beginnt an dem Tag, an dem Sie oder ein von Ihnen benannter Dritter die Waren erhalten.",
+    "s1": "Wann Sie widerrufen können",
+    "s1Body": "Innerhalb von 14 Tagen nach Erhalt Ihrer Bestellung (bzw. der letzten Ware bei mehreren Lieferungen). Sie können auch vor der Lieferung widerrufen.",
+    "s2": "So widerrufen Sie",
+    "s2Body": "Füllen Sie das untenstehende Formular mit Ihrer Bestellnummer und der beim Kauf verwendeten E-Mail aus. Sie erhalten eine Empfangsbestätigung per E-Mail mit Datum und Uhrzeit der Anfrage.",
+    "s3": "Rückerstattung",
+    "s3Body": "Wir erstatten Ihnen den Betrag binnen 14 Tagen nach Ihrer Widerrufserklärung mit demselben Zahlungsmittel, das Sie beim Kauf verwendet haben. Wir können die Rückerstattung zurückhalten, bis wir die Waren erhalten oder einen Versandnachweis haben.",
+    "s4": "Ausnahmen",
+    "s4Body": "Das Widerrufsrecht gilt nicht für maßgefertigte oder eindeutig personalisierte Waren sowie für versiegelte Waren, die nach der Lieferung aus Hygienegründen geöffnet wurden.",
+    "formHeading": "Jetzt widerrufen"
+  },
+  "recessoForm": {
+    "step1Title": "Ihre Angaben",
+    "intro": "Geben Sie Ihre Bestellnummer und die beim Kauf verwendete E-Mail ein.",
+    "orderNumberLabel": "Bestellnummer",
+    "orderNumberPlaceholder": "z. B. SK-20260616-0001",
+    "emailLabel": "E-Mail der Bestellung",
+    "emailPlaceholder": "Ihre E-Mail",
+    "lookupButton": "Weiter",
+    "looking": "Prüfung…",
+    "step2Title": "Widerruf bestätigen",
+    "reviewIntro": "Prüfen Sie die Angaben und bestätigen Sie. Die Bestätigung ist die endgültige Widerrufserklärung.",
+    "orderLabel": "Bestellung",
+    "itemsLabel": "Produkte",
+    "declarationLabel": "Erklärung",
+    "confirmButton": "Widerruf bestätigen",
+    "confirming": "Senden…",
+    "back": "Zurück",
+    "successTitle": "Widerruf erfasst",
+    "successBody": "Ihr Widerruf wurde unter der Referenz {number} erfasst.",
+    "successReceipt": "Wir haben Ihnen eine Empfangsbestätigung per E-Mail mit Datum und Uhrzeit gesendet.",
+    "successNoEmail": "Antrag erfasst, aber wir konnten die Bestätigungs-E-Mail nicht senden. Wir melden uns in Kürze.",
+    "windowExpired": "Die 14-tägige Widerrufsfrist ist für diese Bestellung abgelaufen.",
+    "alreadyRequested": "Für diese Bestellung wurde bereits ein Widerruf erfasst ({number}).",
+    "notFound": "Keine Bestellung mit diesen Angaben gefunden. Prüfen Sie Bestellnummer und E-Mail.",
+    "errorGeneric": "Es ist ein Fehler aufgetreten. Bitte erneut versuchen.",
+    "errorNetwork": "Netzwerkfehler. Bitte erneut versuchen."
   }
 }

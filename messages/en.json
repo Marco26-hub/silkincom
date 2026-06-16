@@ -73,7 +73,8 @@
       "cookies": "Cookies",
       "terms": "Terms",
       "dataProcessing": "Data Processing",
-      "reviews": "Reviews"
+      "reviews": "Reviews",
+      "withdrawal": "Right of withdrawal"
     },
     "rights": "All rights reserved.",
     "madeIn": "100% Made in Como"
@@ -1427,5 +1428,46 @@
       "pureCotton": "100% cotton",
       "pureCottonEyebrow": "Pure natural fibre"
     }
+  },
+  "recesso": {
+    "title": "Right of Withdrawal",
+    "subtitle": "Withdraw online · art. 54-bis Italian Consumer Code",
+    "intro": "You have the right to withdraw from the contract within 14 days without giving any reason. The period starts from the day on which you, or a third party designated by you, receive the goods.",
+    "s1": "When you can withdraw",
+    "s1Body": "Within 14 days of receiving your order (or the last item, for multiple shipments). You may also withdraw before delivery.",
+    "s2": "How to withdraw",
+    "s2Body": "Fill in the form below with your order number and the email used for the purchase. You will receive an acknowledgement of receipt by email with the date and time of the request.",
+    "s3": "Refund",
+    "s3Body": "We will refund you within 14 days of your withdrawal notice, using the same payment method used for the purchase. We may withhold the refund until we receive the goods or proof of their return shipment.",
+    "s4": "Exclusions",
+    "s4Body": "The right of withdrawal does not apply to custom-made or clearly personalised goods, nor to sealed goods opened after delivery for hygiene reasons.",
+    "formHeading": "Withdraw now"
+  },
+  "recessoForm": {
+    "step1Title": "Your details",
+    "intro": "Enter your order number and the email used for the purchase.",
+    "orderNumberLabel": "Order number",
+    "orderNumberPlaceholder": "e.g. SK-20260616-0001",
+    "emailLabel": "Order email",
+    "emailPlaceholder": "Your email",
+    "lookupButton": "Continue",
+    "looking": "Checking…",
+    "step2Title": "Confirm withdrawal",
+    "reviewIntro": "Check the details and confirm. Confirming is the final act of withdrawal.",
+    "orderLabel": "Order",
+    "itemsLabel": "Products",
+    "declarationLabel": "Declaration",
+    "confirmButton": "Confirm withdrawal",
+    "confirming": "Sending…",
+    "back": "Back",
+    "successTitle": "Withdrawal recorded",
+    "successBody": "Your withdrawal request has been recorded with reference {number}.",
+    "successReceipt": "We have sent you an acknowledgement of receipt by email with the date and time.",
+    "successNoEmail": "Request recorded, but we could not send the confirmation email. We will contact you shortly.",
+    "windowExpired": "The 14-day withdrawal period has expired for this order.",
+    "alreadyRequested": "A withdrawal has already been recorded for this order ({number}).",
+    "notFound": "No order found with these details. Check the order number and email.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorNetwork": "Network error. Please try again."
   }
 }
