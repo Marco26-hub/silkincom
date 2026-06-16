@@ -3,6 +3,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 import { isRecessoEnabled } from '@/lib/recesso';
+import { getValidProductSlugs } from '@/lib/product-slugs';
 
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
@@ -58,6 +59,21 @@ export async function middleware(request: NextRequest) {
   if (rest === '/recesso') {
     if (!(await isRecessoEnabled())) {
       return new NextResponse('Not Found', { status: 404 });
+    }
+  }
+
+  // 1c. Real 404 for unknown product slugs. The PDP calls notFound() for missing
+  //     slugs, but notFound() in a [locale] page renders with a 200 status here
+  //     (next-intl + Next 15 soft-404). Enforce a true 404 in middleware against
+  //     the cached set of valid slugs. Fail-open: if the set can't be read, the
+  //     request passes through (the page renders) rather than risking a false 404.
+  if (rest.startsWith('/prodotto/')) {
+    const slug = rest.slice('/prodotto/'.length).split('/')[0];
+    if (slug) {
+      const valid = await getValidProductSlugs();
+      if (valid && !valid.has(decodeURIComponent(slug))) {
+        return new NextResponse('Not Found', { status: 404 });
+      }
     }
   }
 
