@@ -4,6 +4,11 @@ import { LegalPage } from '@/components/ui/LegalPage';
 import { RecessoForm } from '@/components/recesso/RecessoForm';
 import { isRecessoEnabled } from '@/lib/recesso';
 
+// The page gates on a runtime admin kill-switch, so it must render per request
+// rather than be statically cached at build time (which would freeze the
+// enabled/disabled state and ignore the toggle).
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata() {
   const t = await getTranslations('recesso');
   return {
