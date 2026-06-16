@@ -1,13 +1,9 @@
-import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { RecessoForm } from '@/components/recesso/RecessoForm';
-import { isRecessoEnabled } from '@/lib/recesso';
 
-// The page gates on a runtime admin kill-switch, so it must render per request
-// rather than be statically cached at build time (which would freeze the
-// enabled/disabled state and ignore the toggle).
-export const dynamic = 'force-dynamic';
+// The admin kill-switch for this page is enforced in middleware (it returns a
+// real 404 when disabled — notFound() here would render with a 200 status).
 
 export async function generateMetadata() {
   const t = await getTranslations('recesso');
@@ -18,9 +14,6 @@ export async function generateMetadata() {
 }
 
 export default async function RecessoPage() {
-  // Admin kill-switch: when disabled the page 404s like any non-existent route.
-  if (!(await isRecessoEnabled('page'))) notFound();
-
   const t = await getTranslations('recesso');
 
   return (

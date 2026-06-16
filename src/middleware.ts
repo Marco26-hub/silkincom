@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
+import { isRecessoEnabled } from '@/lib/recesso';
 
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
@@ -47,6 +48,18 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const { locale, rest } = stripLocale(pathname);
+
+  // 1b. Right-of-withdrawal kill-switch. When an admin disables the feature the
+  //     public /recesso page must return a real 404. notFound() inside a
+  //     [locale] page renders with a 200 status in this app, so we enforce the
+  //     404 here in middleware, where the status code is reliable. The flag is
+  //     read (anon key, no-store) only for this exact path — every other request
+  //     skips it.
+  if (rest === '/recesso') {
+    if (!(await isRecessoEnabled())) {
+      return new NextResponse('Not Found', { status: 404 });
+    }
+  }
 
   // 2. Supabase session/auth work only matters for protected routes. Skipping
   //    it elsewhere keeps every public page independent of Supabase, so a

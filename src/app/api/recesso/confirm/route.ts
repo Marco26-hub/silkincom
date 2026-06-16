@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   if (limited) return limited;
 
   // Admin kill-switch: behave as a non-existent endpoint when disabled.
-  if (!(await isRecessoEnabled('api-confirm'))) {
+  if (!(await isRecessoEnabled())) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
