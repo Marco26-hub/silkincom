@@ -1,6 +1,8 @@
+import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { RecessoForm } from '@/components/recesso/RecessoForm';
+import { isRecessoEnabled } from '@/lib/recesso';
 
 export async function generateMetadata() {
   const t = await getTranslations('recesso');
@@ -11,6 +13,9 @@ export async function generateMetadata() {
 }
 
 export default async function RecessoPage() {
+  // Admin kill-switch: when disabled the page 404s like any non-existent route.
+  if (!(await isRecessoEnabled())) notFound();
+
   const t = await getTranslations('recesso');
 
   return (

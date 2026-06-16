@@ -51,6 +51,8 @@ export default function AdminWithdrawalsPage() {
   const [adminNotes, setAdminNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [enabled, setEnabled] = useState<boolean | null>(null);
+  const [togglingFlag, setTogglingFlag] = useState(false);
 
   async function load() {
     const supabase = createBrowserClient();
@@ -63,8 +65,39 @@ export default function AdminWithdrawalsPage() {
     setLoading(false);
   }
 
+  async function loadFlag() {
+    try {
+      const res = await fetch('/api/admin/settings');
+      const data = await res.json();
+      // Absent flag = enabled by default.
+      setEnabled(data?.recesso_enabled !== false);
+    } catch {
+      setEnabled(true);
+    }
+  }
+
+  async function toggleEnabled() {
+    if (togglingFlag || enabled === null) return;
+    const next = !enabled;
+    if (!next && !confirm('Disattivare il recesso? La pagina pubblica /recesso restituirà errore 404 e i clienti non potranno esercitare il recesso online. Obbligo di legge dal 19/06/2026.')) {
+      return;
+    }
+    setTogglingFlag(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recesso_enabled: next }),
+      });
+      if (res.ok) setEnabled(next);
+    } finally {
+      setTogglingFlag(false);
+    }
+  }
+
   useEffect(() => {
     load();
+    loadFlag();
   }, []);
 
   function openDetail(w: Withdrawal) {
@@ -92,11 +125,36 @@ export default function AdminWithdrawalsPage() {
 
   return (
     <div className="space-y-6 max-w-[1400px]">
-      <div>
-        <h1 className="font-display text-4xl mb-1">Recessi</h1>
-        <p className="text-soft-grey text-sm">
-          {rows.length} richieste di recesso · art. 54-bis Cod. Consumo
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl mb-1">Recessi</h1>
+          <p className="text-soft-grey text-sm">
+            {rows.length} richieste di recesso · art. 54-bis Cod. Consumo
+          </p>
+        </div>
+        <div className={`border px-4 py-3 ${enabled === false ? 'border-red-300 bg-red-50' : 'border-pearl-grey bg-white'}`}>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">Funzione recesso</p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleEnabled}
+              disabled={togglingFlag || enabled === null}
+              role="switch"
+              aria-checked={enabled === true}
+              aria-label="Attiva o disattiva la funzione di recesso"
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? 'bg-green-600' : 'bg-gray-300'}`}
+            >
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+            <span className="text-sm">
+              {enabled === null ? '…' : enabled ? 'Attiva (pubblica)' : 'Disattivata → 404'}
+            </span>
+          </div>
+          {enabled === false && (
+            <p className="text-[11px] text-red-700 mt-2 max-w-[220px] leading-snug">
+              /recesso restituisce 404. Obbligo di legge dal 19/06/2026.
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-2 flex-wrap">

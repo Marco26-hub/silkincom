@@ -10,6 +10,32 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const WITHDRAWAL_WINDOW_DAYS = 14;
 
+// Admin kill-switch. Stored in store_settings under `recesso_enabled` (jsonb
+// boolean). FAIL-OPEN: any read error keeps the feature ON — a legally required
+// function must never disappear because of a transient settings-read failure.
+// Disabled only when an admin has explicitly set the flag to `false`.
+let _flagCache: { value: boolean; at: number } | null = null;
+const FLAG_TTL_MS = 30_000;
+
+export async function isRecessoEnabled(): Promise<boolean> {
+  if (_flagCache && Date.now() - _flagCache.at < FLAG_TTL_MS) return _flagCache.value;
+  let enabled = true;
+  try {
+    const { createServiceClient } = await import('@/lib/supabase/server');
+    const supabase = createServiceClient();
+    const { data } = await supabase
+      .from('store_settings')
+      .select('value')
+      .eq('key', 'recesso_enabled')
+      .maybeSingle();
+    if (data && data.value === false) enabled = false;
+  } catch {
+    enabled = true;
+  }
+  _flagCache = { value: enabled, at: Date.now() };
+  return enabled;
+}
+
 export type WithdrawalItem = { name: string; quantity: number };
 
 export type EligibleOrder = {

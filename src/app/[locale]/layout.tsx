@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import '../globals.css';
 import { PublicChrome } from '@/components/layout/PublicChrome';
+import { isRecessoEnabled } from '@/lib/recesso';
 import { Analytics } from '@/components/analytics/Analytics';
 import { FirstPartyBeacon } from '@/components/analytics/FirstPartyBeacon';
 import { routing } from '@/i18n/routing';
@@ -214,6 +215,7 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
   const announcementSection = await getHomeSection('announcement_bar', locale);
+  const recessoEnabled = await isRecessoEnabled();
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${inter.variable} ${baskerville.variable}`}>
@@ -239,7 +241,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Analytics />
           <FirstPartyBeacon />
-          <PublicChrome announcementSection={announcementSection}>{children}</PublicChrome>
+          <PublicChrome announcementSection={announcementSection} recessoEnabled={recessoEnabled}>{children}</PublicChrome>
         </NextIntlClientProvider>
       </body>
     </html>

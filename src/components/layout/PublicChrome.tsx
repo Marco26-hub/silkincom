@@ -13,9 +13,11 @@ import type { HomeSectionLocalized } from '@/data/home-content';
 export function PublicChrome({
   children,
   announcementSection,
+  recessoEnabled = true,
 }: {
   children: React.ReactNode;
   announcementSection?: HomeSectionLocalized | null;
+  recessoEnabled?: boolean;
 }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
@@ -30,7 +32,7 @@ export function PublicChrome({
       <Header />
       <CartDrawer />
       <main>{children}</main>
-      <Footer />
+      <Footer recessoEnabled={recessoEnabled} />
       <FloatingNav />
       <CookieBanner />
       <SalesNotification />

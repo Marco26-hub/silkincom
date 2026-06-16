@@ -25,7 +25,7 @@ export async function GET() {
   return NextResponse.json(settings);
 }
 
-const ALLOWED_KEYS = ['free_shipping_threshold', 'standard_shipping_cost', 'vat_rate', 'store_name', 'store_email'];
+const ALLOWED_KEYS = ['free_shipping_threshold', 'standard_shipping_cost', 'vat_rate', 'store_name', 'store_email', 'recesso_enabled'];
 
 export async function PATCH(req: NextRequest) {
   const auth = await requireAdmin();

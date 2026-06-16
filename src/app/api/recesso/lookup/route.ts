@@ -8,7 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
-import { findOrderForWithdrawal } from '@/lib/recesso';
+import { findOrderForWithdrawal, isRecessoEnabled } from '@/lib/recesso';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,6 +16,11 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   const limited = rateLimit(req, 8, 60_000);
   if (limited) return limited;
+
+  // Admin kill-switch: behave as a non-existent endpoint when disabled.
+  if (!(await isRecessoEnabled())) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
 
   const body = await req.json().catch(() => ({}));
   const orderNumber = String(body?.orderNumber || '');
