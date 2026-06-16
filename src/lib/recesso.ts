@@ -7,6 +7,7 @@
  * must be able to withdraw easily, without forcing an account login).
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { createServiceClient } from '@/lib/supabase/server';
 
 export const WITHDRAWAL_WINDOW_DAYS = 14;
 
@@ -21,15 +22,16 @@ export async function isRecessoEnabled(): Promise<boolean> {
   if (_flagCache && Date.now() - _flagCache.at < FLAG_TTL_MS) return _flagCache.value;
   let enabled = true;
   try {
-    const { createServiceClient } = await import('@/lib/supabase/server');
     const supabase = createServiceClient();
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('store_settings')
       .select('value')
       .eq('key', 'recesso_enabled')
       .maybeSingle();
+    if (error) throw error;
     if (data && data.value === false) enabled = false;
-  } catch {
+  } catch (e) {
+    console.error('[recesso] flag read failed, defaulting enabled:', e);
     enabled = true;
   }
   _flagCache = { value: enabled, at: Date.now() };
