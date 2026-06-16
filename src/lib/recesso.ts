@@ -6,8 +6,7 @@
  * public, non-authenticated interface by order number + email (the consumer
  * must be able to withdraw easily, without forcing an account login).
  */
-import type { SupabaseClient } from '@supabase/supabase-js';
-import { createServiceClient } from '@/lib/supabase/server';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 export const WITHDRAWAL_WINDOW_DAYS = 14;
 
@@ -15,27 +14,32 @@ export const WITHDRAWAL_WINDOW_DAYS = 14;
 // boolean). FAIL-OPEN: any read error keeps the feature ON — a legally required
 // function must never disappear because of a transient settings-read failure.
 // Disabled only when an admin has explicitly set the flag to `false`.
-let _flagCache: { value: boolean; at: number } | null = null;
-const FLAG_TTL_MS = 30_000;
-
+//
+// The read MUST bypass the Next.js Data Cache (a cached supabase fetch from when
+// the flag was enabled would otherwise mask the toggle). We use a one-off client
+// whose fetch forces `cache: 'no-store'`, and we never call this from a
+// statically-rendered tree (only the force-dynamic page + the API routes) so it
+// doesn't opt the whole site out of static rendering.
 export async function isRecessoEnabled(): Promise<boolean> {
-  if (_flagCache && Date.now() - _flagCache.at < FLAG_TTL_MS) return _flagCache.value;
-  let enabled = true;
   try {
-    const supabase = createServiceClient();
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) return true;
+    const supabase = createClient(url, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: (input, init) => fetch(input as RequestInfo, { ...init, cache: 'no-store' }) },
+    });
     const { data, error } = await supabase
       .from('store_settings')
       .select('value')
       .eq('key', 'recesso_enabled')
       .maybeSingle();
     if (error) throw error;
-    if (data && data.value === false) enabled = false;
+    return !(data && data.value === false);
   } catch (e) {
     console.error('[recesso] flag read failed, defaulting enabled:', e);
-    enabled = true;
+    return true;
   }
-  _flagCache = { value: enabled, at: Date.now() };
-  return enabled;
 }
 
 export type WithdrawalItem = { name: string; quantity: number };

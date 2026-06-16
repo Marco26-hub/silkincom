@@ -9,7 +9,7 @@ import { Logo } from './Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CERTIFICATIONS } from '@/data/credentials';
 
-export function Footer({ recessoEnabled = true }: { recessoEnabled?: boolean }) {
+export function Footer() {
   const t = useTranslations('footer');
   const tn = useTranslations('nav');
   const [email, setEmail] = useState('');
@@ -95,7 +95,7 @@ export function Footer({ recessoEnabled = true }: { recessoEnabled?: boolean }) 
             <ul className="space-y-3.5 text-[13px] font-light text-warm-white/80">
               <li><Link href="/spedizioni" className="hover:text-gold-primary transition-colors">{t('links.shipping')}</Link></li>
               <li><Link href="/resi" className="hover:text-gold-primary transition-colors">{t('links.returns')}</Link></li>
-              {recessoEnabled && <li><Link href="/recesso" className="hover:text-gold-primary transition-colors">{t('links.withdrawal')}</Link></li>}
+              <li><Link href="/recesso" className="hover:text-gold-primary transition-colors">{t('links.withdrawal')}</Link></li>
               <li><Link href="/cura-prodotto" className="hover:text-gold-primary transition-colors">{t('links.care')}</Link></li>
               <li><Link href="/faq" className="hover:text-gold-primary transition-colors">{t('links.faq')}</Link></li>
               <li><Link href="/recensioni" className="hover:text-gold-primary transition-colors">{t('links.reviews')}</Link></li>
