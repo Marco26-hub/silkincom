@@ -20,11 +20,14 @@ export const WITHDRAWAL_WINDOW_DAYS = 14;
 // whose fetch forces `cache: 'no-store'`, and we never call this from a
 // statically-rendered tree (only the force-dynamic page + the API routes) so it
 // doesn't opt the whole site out of static rendering.
-export async function isRecessoEnabled(): Promise<boolean> {
+export async function isRecessoEnabled(tag = ''): Promise<boolean> {
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!url || !key) return true;
+    if (!url || !key) {
+      console.log('[recesso:flag]', tag, 'NO_ENV', JSON.stringify({ hasUrl: !!url, hasKey: !!key }));
+      return true;
+    }
     const supabase = createClient(url, key, {
       auth: { persistSession: false, autoRefreshToken: false },
       global: { fetch: (input, init) => fetch(input as RequestInfo, { ...init, cache: 'no-store' }) },
@@ -35,9 +38,11 @@ export async function isRecessoEnabled(): Promise<boolean> {
       .eq('key', 'recesso_enabled')
       .maybeSingle();
     if (error) throw error;
-    return !(data && data.value === false);
+    const enabled = !(data && data.value === false);
+    console.log('[recesso:flag]', tag, JSON.stringify({ data, valueType: typeof data?.value, enabled }));
+    return enabled;
   } catch (e) {
-    console.error('[recesso] flag read failed, defaulting enabled:', e);
+    console.error('[recesso:flag]', tag, 'READ_FAILED', (e as Error)?.message);
     return true;
   }
 }

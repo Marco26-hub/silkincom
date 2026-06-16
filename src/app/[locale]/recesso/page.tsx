@@ -19,7 +19,7 @@ export async function generateMetadata() {
 
 export default async function RecessoPage() {
   // Admin kill-switch: when disabled the page 404s like any non-existent route.
-  if (!(await isRecessoEnabled())) notFound();
+  if (!(await isRecessoEnabled('page'))) notFound();
 
   const t = await getTranslations('recesso');
 
