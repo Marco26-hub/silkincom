@@ -1430,6 +1430,8 @@
     }
   },
   "recesso": {
+    "costiHeading": "Custos de devolução",
+    "costiBody": "Os custos diretos de devolução dos bens são suportados pelo cliente. O cliente reenvia os bens a expensas próprias para o endereço indicado nas instruções enviadas por email.",
     "moduloHeading": "Modelo de formulário de livre resolução",
     "moduloIntro": "Em alternativa ao botão acima, pode utilizar o modelo de formulário seguinte: preencha-o e envie para info@silkincom.com.",
     "moduloBody": "(só deve preencher e devolver o presente formulário se quiser resolver o contrato)\n\nPara: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Itália — info@silkincom.com\n\nPela presente comunico/comunicamos (*) que resolvo/resolvemos (*) o meu/nosso (*) contrato de compra e venda dos seguintes bens/serviços (*):\n_______________________________________\nEncomendado em (*)/recebido em (*): __________\nNome do(s) consumidor(es): __________\nEndereço do(s) consumidor(es): __________\nAssinatura do(s) consumidor(es) (só no caso de o formulário ser notificado em papel): __________\nData: __________\n\n(*) Riscar o que não interessa.",

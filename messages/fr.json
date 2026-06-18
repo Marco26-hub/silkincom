@@ -1430,6 +1430,8 @@
     }
   },
   "recesso": {
+    "costiHeading": "Frais de retour",
+    "costiBody": "Les coûts directs de renvoi des biens sont à la charge du client. Vous renvoyez les biens à vos frais à l'adresse indiquée dans les instructions transmises par e-mail.",
     "moduloHeading": "Formulaire de rétractation type",
     "moduloIntro": "Au lieu du bouton ci-dessus, vous pouvez utiliser le formulaire type ci-dessous : à compléter et à envoyer à info@silkincom.com.",
     "moduloBody": "(veuillez compléter et renvoyer le présent formulaire uniquement si vous souhaitez vous rétracter du contrat)\n\nÀ l'attention de : SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italie — info@silkincom.com\n\nJe/Nous (*) vous notifie/notifions (*) par la présente ma/notre (*) rétractation du contrat portant sur la vente des biens/services (*) ci-dessous :\n_______________________________________\nCommandé le (*)/reçu le (*) : __________\nNom du/des consommateur(s) : __________\nAdresse du/des consommateur(s) : __________\nSignature du/des consommateur(s) (uniquement en cas de notification sur papier) : __________\nDate : __________\n\n(*) Rayez la mention inutile.",

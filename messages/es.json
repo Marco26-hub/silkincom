@@ -1430,6 +1430,8 @@
     }
   },
   "recesso": {
+    "costiHeading": "Gastos de devolución",
+    "costiBody": "Los costes directos de devolución de los bienes corren a cargo del cliente. Usted reenvía los bienes a su cargo a la dirección indicada en las instrucciones enviadas por correo electrónico.",
     "moduloHeading": "Modelo de formulario de desistimiento",
     "moduloIntro": "Como alternativa al botón anterior, puede utilizar el modelo de formulario siguiente: cumpliméntelo y envíelo a info@silkincom.com.",
     "moduloBody": "(solo debe cumplimentar y enviar el presente formulario si desea desistir del contrato)\n\nA la atención de: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia — info@silkincom.com\n\nPor la presente le comunico/comunicamos (*) que desisto/desistimos (*) de mi/nuestro (*) contrato de venta de los siguientes bienes/servicios (*):\n_______________________________________\nPedido el (*)/recibido el (*): __________\nNombre del/de los consumidor(es): __________\nDirección del/de los consumidor(es): __________\nFirma del/de los consumidor(es) (solo si el formulario se presenta en papel): __________\nFecha: __________\n\n(*) Táchese lo que no proceda.",

@@ -1430,6 +1430,8 @@
     }
   },
   "recesso": {
+    "costiHeading": "Retourkosten",
+    "costiBody": "De directe kosten van het terugzenden van de goederen komen voor rekening van de klant. U stuurt de goederen op eigen kosten terug naar het adres dat in de per e-mail verzonden instructies is vermeld.",
     "moduloHeading": "Modelformulier voor herroeping",
     "moduloIntro": "Als alternatief voor de knop hierboven kunt u het onderstaande modelformulier gebruiken: invullen en sturen naar info@silkincom.com.",
     "moduloBody": "(dit formulier alleen invullen en terugzenden als u de overeenkomst wilt herroepen)\n\nAan: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italië — info@silkincom.com\n\nIk/Wij (*) deel/delen (*) u hierbij mede dat ik/wij (*) de overeenkomst betreffende de verkoop van de volgende goederen/diensten (*) herroep/herroepen (*):\n_______________________________________\nBesteld op (*)/ontvangen op (*): __________\nNaam consument(en): __________\nAdres consument(en): __________\nHandtekening van consument(en) (alleen bij kennisgeving op papier): __________\nDatum: __________\n\n(*) Doorhalen wat niet van toepassing is.",

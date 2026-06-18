@@ -53,6 +53,8 @@ export default function AdminWithdrawalsPage() {
   const [filter, setFilter] = useState('all');
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [togglingFlag, setTogglingFlag] = useState(false);
+  const [sendingInstr, setSendingInstr] = useState(false);
+  const [instrMsg, setInstrMsg] = useState<string | null>(null);
 
   async function load() {
     const supabase = createBrowserClient();
@@ -104,6 +106,32 @@ export default function AdminWithdrawalsPage() {
     setSelected(w);
     setNewStatus(w.status);
     setAdminNotes(w.admin_notes || '');
+    setInstrMsg(null);
+  }
+
+  async function sendInstructions() {
+    if (!selected) return;
+    if (!confirm(`Inviare le istruzioni di reso a ${selected.customer_email}? (spese di reso a carico del cliente)`)) return;
+    setSendingInstr(true);
+    setInstrMsg(null);
+    try {
+      const res = await fetch('/api/admin/recesso/instructions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ withdrawalId: selected.id }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setInstrMsg('Istruzioni inviate ✓');
+        load();
+      } else {
+        setInstrMsg(data.error || 'Errore invio');
+      }
+    } catch {
+      setInstrMsg('Errore di rete');
+    } finally {
+      setSendingInstr(false);
+    }
   }
 
   async function save() {
@@ -214,9 +242,15 @@ export default function AdminWithdrawalsPage() {
             <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">Note admin</label>
             <textarea value={adminNotes} onChange={(e) => setAdminNotes(e.target.value)} rows={2} className="w-full border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black" />
           </div>
-          <button onClick={save} disabled={saving} className="px-8 py-2.5 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50">
-            {saving ? 'Salvataggio...' : 'Aggiorna recesso'}
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button onClick={save} disabled={saving} className="px-8 py-2.5 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black transition-colors disabled:opacity-50">
+              {saving ? 'Salvataggio...' : 'Aggiorna recesso'}
+            </button>
+            <button onClick={sendInstructions} disabled={sendingInstr} className="px-8 py-2.5 border border-soft-black text-soft-black text-[10px] uppercase tracking-[0.2em] hover:bg-soft-black hover:text-warm-white transition-colors disabled:opacity-50">
+              {sendingInstr ? 'Invio...' : 'Invia istruzioni di reso'}
+            </button>
+            {instrMsg && <span className="text-xs text-soft-grey">{instrMsg}</span>}
+          </div>
         </div>
       )}
 

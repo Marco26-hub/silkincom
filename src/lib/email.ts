@@ -456,6 +456,94 @@ export async function sendOwnerWithdrawalNotificationEmail(args: {
   });
 }
 
+// Return instructions for a withdrawal — sent by the admin after a request comes
+// in. Tells the customer how/where to ship the goods back, at their own expense
+// (art. 57 Codice del Consumo). Localised IT/EN, falls back to EN.
+const RETURN_ADDRESS = 'SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia';
+
+export async function sendWithdrawalInstructionsEmail(args: {
+  customerEmail: string;
+  customerName?: string | null;
+  orderNumber: string;
+  withdrawalNumber: string;
+  locale?: string;
+}) {
+  type Strings = {
+    eyebrow: string; titlePlain: string; titleAccent: string; intro: string;
+    addressLabel: string; stepsLabel: string; steps: string[]; deadline: string;
+    refund: string; subject: string; preheader: string; help: string;
+  };
+  const IT: Strings = {
+    eyebrow: 'Istruzioni di reso',
+    titlePlain: 'Come restituire i suoi',
+    titleAccent: 'articoli',
+    intro: `Abbiamo registrato il suo recesso (rif. ${e(args.withdrawalNumber)}, ordine ${e(args.orderNumber)}). Per completarlo, ci rispedisca gli articoli seguendo le indicazioni qui sotto.`,
+    addressLabel: 'Indirizzo di reso',
+    stepsLabel: 'Come procedere',
+    steps: [
+      'Imballi gli articoli con cura, possibilmente nella confezione originale.',
+      `Includa un foglio con il riferimento ${e(args.withdrawalNumber)}.`,
+      'Spedisca con un corriere a sua scelta. Le spese di restituzione sono a suo carico.',
+      'Conservi la prova di spedizione.',
+    ],
+    deadline: 'La restituzione va effettuata entro 14 giorni dalla comunicazione di recesso.',
+    refund: 'Riceverà il rimborso entro 14 giorni, dopo il ricevimento della merce o la prova della spedizione.',
+    subject: `Istruzioni di reso — Recesso ${e(args.withdrawalNumber)}`,
+    preheader: `Come restituire gli articoli dell'ordine ${args.orderNumber}.`,
+    help: 'Per assistenza',
+  };
+  const EN: Strings = {
+    eyebrow: 'Return instructions',
+    titlePlain: 'How to return your',
+    titleAccent: 'items',
+    intro: `We have registered your withdrawal (ref. ${e(args.withdrawalNumber)}, order ${e(args.orderNumber)}). To complete it, please ship the items back following the steps below.`,
+    addressLabel: 'Return address',
+    stepsLabel: 'How to proceed',
+    steps: [
+      'Pack the items carefully, ideally in their original packaging.',
+      `Include a note with the reference ${e(args.withdrawalNumber)}.`,
+      'Ship with a carrier of your choice. Return costs are at your expense.',
+      'Keep the proof of shipment.',
+    ],
+    deadline: 'The return must be made within 14 days of the withdrawal notice.',
+    refund: 'You will be refunded within 14 days, after we receive the goods or proof of shipment.',
+    subject: `Return instructions — Withdrawal ${e(args.withdrawalNumber)}`,
+    preheader: `How to return the items from order ${args.orderNumber}.`,
+    help: 'For assistance',
+  };
+  const L = args.locale === 'it' ? IT : EN;
+
+  const stepsHtml = L.steps
+    .map((s) => `<li style="font-size:13px; line-height:1.7; color:#4A4A4A; margin:0 0 6px 0;">${s}</li>`)
+    .join('');
+
+  const inner = `
+    <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">${L.eyebrow}</p>
+    <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 20px 0;">${L.titlePlain} <em style="color:#D4AF37; font-style:italic;">${L.titleAccent}</em></h1>
+    <p style="font-size:14px; line-height:1.75; color:#4A4A4A; margin:16px 0;">${args.customerName ? `${e(args.customerName)}, ` : ''}${L.intro}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0; width:100%;">
+      <tr>
+        <td style="background:#F5F0E8; padding:20px 24px; border-left:3px solid #D4AF37;">
+          <p style="margin:0 0 6px 0; font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase;">${L.addressLabel}</p>
+          <p style="margin:0; font-size:14px; color:#1A1A1A; line-height:1.6;">${e(RETURN_ADDRESS)}</p>
+        </td>
+      </tr>
+    </table>
+    <p style="font-size:10px; letter-spacing:0.3em; color:#A87F1E; text-transform:uppercase; margin:0 0 8px 0;">${L.stepsLabel}</p>
+    <ol style="margin:0 0 20px 0; padding:0 0 0 18px;">${stepsHtml}</ol>
+    <p style="font-size:13px; line-height:1.7; color:#4A4A4A; margin:16px 0;">${L.deadline}</p>
+    <p style="font-size:13px; line-height:1.7; color:#4A4A4A; margin:16px 0;">${L.refund}</p>
+    <p style="font-size:12px; color:#A9A6A0; margin-top:28px; font-style:italic;">${L.help}: <a href="mailto:info@silkincom.com" style="color:#A87F1E; text-decoration:none;">info@silkincom.com</a>.</p>
+  `;
+
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: args.customerEmail,
+    subject: L.subject,
+    html: luxuryShell(inner, L.preheader),
+  });
+}
+
 // ===== Lifecycle email templates (luxury editorial style) =====
 
 const NEWSLETTER_FROM = DOMAIN_VERIFIED
