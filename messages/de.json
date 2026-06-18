@@ -1431,7 +1431,7 @@
   },
   "recesso": {
     "costiHeading": "Rücksendekosten",
-    "costiBody": "Die unmittelbaren Kosten der Rücksendung der Waren trägt der Kunde. Sie senden die Waren auf eigene Kosten an die in den per E-Mail übermittelten Anweisungen angegebene Adresse zurück.",
+    "costiBody": "Die unmittelbaren Kosten der Rücksendung der Waren trägt der Kunde. Sie senden die Waren auf eigene Kosten an die in den per E-Mail übermittelten Anweisungen angegebene Adresse zurück. Bei mangelhaften oder nicht vertragsgemäßen Waren gilt etwas anderes: In diesem Fall trägt SILKinCOM die Rücksendekosten (gesetzliche Gewährleistung).",
     "moduloHeading": "Muster-Widerrufsformular",
     "moduloIntro": "Alternativ zum Button oben können Sie das folgende Musterformular verwenden: ausfüllen und an info@silkincom.com senden.",
     "moduloBody": "(Wenn Sie den Vertrag widerrufen wollen, füllen Sie bitte dieses Formular aus und senden Sie es zurück)\n\nAn: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italien — info@silkincom.com\n\nHiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren/Dienstleistungen (*):\n_______________________________________\nBestellt am (*)/erhalten am (*): __________\nName des/der Verbraucher(s): __________\nAnschrift des/der Verbraucher(s): __________\nUnterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): __________\nDatum: __________\n\n(*) Unzutreffendes streichen.",

@@ -1431,7 +1431,7 @@
   },
   "recesso": {
     "costiHeading": "Return costs",
-    "costiBody": "The direct cost of returning the goods is borne by the customer. You return the goods at your own expense to the address provided in the instructions sent by email.",
+    "costiBody": "The direct cost of returning the goods is borne by the customer. You return the goods at your own expense to the address provided in the instructions sent by email. Different rules apply to defective or non-conforming goods: in that case the return costs are borne by SILKinCOM (legal guarantee of conformity).",
     "moduloHeading": "Model withdrawal form",
     "moduloIntro": "As an alternative to the button above, you may use the model form below: fill it in and send it to info@silkincom.com.",
     "moduloBody": "(complete and return this form only if you wish to withdraw from the contract)\n\nTo: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italy — info@silkincom.com\n\nI/We (*) hereby give notice that I/We (*) withdraw from my/our (*) contract of sale of the following goods/services (*):\n_______________________________________\nOrdered on (*)/received on (*): __________\nName of consumer(s): __________\nAddress of consumer(s): __________\nSignature of consumer(s) (only if this form is notified on paper): __________\nDate: __________\n\n(*) Delete as appropriate.",

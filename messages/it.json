@@ -1431,7 +1431,7 @@
   },
   "recesso": {
     "costiHeading": "Spese di restituzione",
-    "costiBody": "Le spese dirette di restituzione dei beni sono a carico del cliente. Il cliente rispedisce i beni a proprie spese all'indirizzo indicato nelle istruzioni che riceverà via email.",
+    "costiBody": "Le spese dirette di restituzione dei beni sono a carico del cliente. Il cliente rispedisce i beni a proprie spese all'indirizzo indicato nelle istruzioni che riceverà via email. Diverso è il caso di prodotti difettosi o non conformi: in tale ipotesi le spese di restituzione sono a carico di SILKinCOM (garanzia legale di conformità).",
     "moduloHeading": "Modulo di recesso tipo",
     "moduloIntro": "In alternativa al pulsante qui sopra, puoi usare il modulo tipo seguente: compilalo e invialo a info@silkincom.com.",
     "moduloBody": "(compilare e restituire il presente modulo solo se si desidera recedere dal contratto)\n\nDestinatario: SILKinCOM, Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia — info@silkincom.com\n\nCon la presente io/noi (*) notifico/notifichiamo (*) il recesso dal mio/nostro (*) contratto di vendita dei seguenti beni/servizi (*):\n_______________________________________\nOrdinato il (*)/ricevuto il (*): __________\nNome del/dei consumatore(i): __________\nIndirizzo del/dei consumatore(i): __________\nFirma del/dei consumatore(i) (solo se il presente modulo è notificato in versione cartacea): __________\nData: __________\n\n(*) Cancellare la dicitura inutile.",
