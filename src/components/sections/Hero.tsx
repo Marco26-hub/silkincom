@@ -22,7 +22,7 @@ export type HeroSlideInput = {
 const FALLBACK_SLIDES: HeroSlideInput[] = [
   {
     id: 'fallback-1',
-    src: '/instagram/ig-06.jpg',
+    src: '/instagram/ig-06.webp',
     alt: 'Sciarpe in cashmere e lana SILKinCOM con logo Lago di Como oro — dettaglio tessuto',
     focus: 'center',
     titleMain: '',
@@ -31,7 +31,7 @@ const FALLBACK_SLIDES: HeroSlideInput[] = [
   },
   {
     id: 'fallback-2',
-    src: '/instagram/ig-02.jpg',
+    src: '/instagram/ig-02.webp',
     alt: 'Donna con twilly in seta SILKinCOM tra i capelli — aperitivo sul Lago di Como',
     focus: 'center',
     titleMain: '',
@@ -40,7 +40,7 @@ const FALLBACK_SLIDES: HeroSlideInput[] = [
   },
   {
     id: 'fallback-3',
-    src: '/instagram/ig-01.jpg',
+    src: '/instagram/ig-01.webp',
     alt: 'Uomo con camicia lino e cappello SILKinCOM sul molo — Lago di Como',
     focus: 'center',
     titleMain: '',

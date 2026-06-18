@@ -17,11 +17,11 @@ export type FeaturedCollectionCard = {
 };
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  inverno: '/instagram/ig-09.jpg',
-  iconica: '/instagram/ig-10.jpg',
-  primavera: '/instagram/ig-11.jpg',
+  inverno: '/instagram/ig-09.webp',
+  iconica: '/instagram/ig-10.webp',
+  primavera: '/instagram/ig-11.webp',
 };
-const DEFAULT_FALLBACK = '/instagram/ig-09.jpg';
+const DEFAULT_FALLBACK = '/instagram/ig-09.webp';
 
 export function FeaturedCollections({ collections }: { collections: FeaturedCollectionCard[] }) {
   const t = useTranslations('home.featured');

@@ -221,9 +221,9 @@ export type Collection = {
 };
 
 const COLLECTION_META: { slug: string; image: string }[] = [
-  { slug: 'inverno',   image: '/instagram/ig-06.jpg' },
-  { slug: 'iconica',   image: '/instagram/ig-02.jpg' },
-  { slug: 'primavera', image: '/instagram/ig-01.jpg' },
+  { slug: 'inverno',   image: '/instagram/ig-06.webp' },
+  { slug: 'iconica',   image: '/instagram/ig-02.webp' },
+  { slug: 'primavera', image: '/instagram/ig-01.webp' },
 ];
 
 const COLLECTIONS_RAW: RawCollection[] = COLLECTION_META.map((c) => ({

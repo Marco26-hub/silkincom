@@ -54,7 +54,7 @@ function OfficialLogo({ size = 'md', variant = 'default', className = '' }: {
 
   return (
     <Image
-      src="/logo-gold.png"
+      src="/logo-gold.webp"
       alt="SILKinCOM"
       width={1500}
       height={1499}
