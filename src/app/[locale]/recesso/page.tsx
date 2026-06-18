@@ -35,6 +35,9 @@ export default async function RecessoPage() {
       <h2>{t('costiHeading')}</h2>
       <p>{t('costiBody')}</p>
 
+      <h2>{t('condHeading')}</h2>
+      <p>{t('condBody')}</p>
+
       <h2>{t('formHeading')}</h2>
       <RecessoForm />
 
