@@ -4,14 +4,25 @@ import { useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Instagram, Facebook, Mail, Check } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Logo } from './Logo';
+
+// Typed commercial category links — surfaced site-wide for internal linking +
+// discoverability of the buyer-intent landing pages. Labels localized it/en.
+const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
+  { href: '/foulard-seta', label: { it: 'Foulard di seta', en: 'Silk foulards' } },
+  { href: '/sciarpe-seta', label: { it: 'Sciarpe di seta', en: 'Silk scarves' } },
+  { href: '/pashmine-cashmere', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas' } },
+  { href: '/regalo-seta-donna', label: { it: 'Idee regalo', en: 'Gift ideas' } },
+];
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CERTIFICATIONS } from '@/data/credentials';
 
 export function Footer() {
   const t = useTranslations('footer');
   const tn = useTranslations('nav');
+  const locale = useLocale();
+  const catLabel = (m: Record<string, string>) => m[locale] ?? m.en ?? m.it;
   const [email, setEmail] = useState('');
   const [nlState, setNlState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [nlMsg, setNlMsg] = useState<string | null>(null);
@@ -81,6 +92,9 @@ export function Footer() {
           <div>
             <ColumnHeading>{t('sections.maison')}</ColumnHeading>
             <ul className="space-y-3.5 text-[13px] font-light text-warm-white/80">
+              {SHOP_CATEGORIES.map((c) => (
+                <li key={c.href}><Link href={c.href} className="hover:text-gold-primary transition-colors">{catLabel(c.label)}</Link></li>
+              ))}
               <li><Link href="/la-nostra-storia" className="hover:text-gold-primary transition-colors">{tn('story')}</Link></li>
               <li><Link href="/materiali" className="hover:text-gold-primary transition-colors">{tn('materials')}</Link></li>
               <li><Link href="/artigiani" className="hover:text-gold-primary transition-colors">{tn('artigiani')}</Link></li>

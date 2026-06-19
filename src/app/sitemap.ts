@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/data/catalog';
+import { SEO_CATEGORY_SLUGS } from '@/data/seo-categories';
 import { getPosts } from '@/data/posts';
 import { routing } from '@/i18n/routing';
 import { createPublicClient } from '@/lib/supabase/server';
@@ -115,6 +116,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
+  const seoCategoryRoutes: MetadataRoute.Sitemap = SEO_CATEGORY_SLUGS.map((slug) =>
+    entry(`/${slug}`, { lastModified: now, changeFrequency: 'weekly', priority: 0.9 })
+  );
+
   const journalRoutes: MetadataRoute.Sitemap = (await getPosts('it')).map((post) =>
     entry(`/trame-di-como/${post.slug}`, {
       lastModified: post.date ? new Date(post.date) : now,
@@ -123,5 +128,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  return [...staticRoutes, ...productRoutes, ...collectionRoutes, ...journalRoutes];
+  return [...staticRoutes, ...seoCategoryRoutes, ...productRoutes, ...collectionRoutes, ...journalRoutes];
 }
