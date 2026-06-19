@@ -352,9 +352,23 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 delay: activeSlide === 0 ? 1.0 : 0.35,
                 ease: [0.21, 0.47, 0.32, 0.98],
               }}
-              className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-warm-white/85 max-w-xl mb-10 md:mb-12 leading-[1.7] md:leading-[1.75] tracking-wide"
+              className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-warm-white/85 max-w-xl mb-7 md:mb-9 leading-[1.7] md:leading-[1.75] tracking-wide"
             >
               {subtitle}
+            </motion.p>
+
+            {/* Commercial offer line — fixed copy (what + where + price) shown
+                on EVERY slide so the hero passes the 5-second test regardless
+                of which editorial slide title is on screen. Drives the buy
+                decision the poetic slide copy alone never made. */}
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 1.25, ease: [0.21, 0.47, 0.32, 0.98] }}
+              className="flex items-center gap-3 text-[11px] sm:text-xs uppercase tracking-[0.16em] text-gold-primary mb-8 md:mb-10 [text-shadow:0_1px_10px_rgba(0,0,0,0.5)]"
+            >
+              <span className="block h-px w-6 bg-gold-primary/70 flex-shrink-0" />
+              {t('offer')}
             </motion.p>
 
             <motion.div

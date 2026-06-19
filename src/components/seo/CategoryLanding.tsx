@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { getProducts } from '@/data/catalog';
 import { ProductCard } from '@/components/product/ProductCard';
-import { getSeoCategory, pickLocale } from '@/data/seo-categories';
+import { getSeoCategory, pickLocale, SEO_CATEGORIES } from '@/data/seo-categories';
 import { APP_URL } from '@/lib/app-url';
 
 /**
@@ -105,7 +105,26 @@ export async function CategoryLanding({ slug, locale }: { slug: string; locale: 
                 </div>
               ))}
             </div>
-            <p className="mt-12 text-center">
+            {/* Sibling commercial categories — internal links spread authority
+                to every money page and keep a hesitant buyer moving toward a
+                related (often higher-AOV) product instead of bouncing. */}
+            <div className="mt-12 text-center">
+              <span className="block text-[10px] uppercase tracking-[0.35em] text-soft-black/50 mb-4">
+                {locale === 'it' ? 'Esplora anche' : 'Explore also'}
+              </span>
+              <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+                {SEO_CATEGORIES.filter((c) => c.slug !== slug).map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/${c.slug}`}
+                    className="text-sm font-light text-soft-black/70 border-b border-pearl-grey hover:text-gold-primary hover:border-gold-primary pb-0.5 transition-colors"
+                  >
+                    {L(c.h1).split(' —')[0]}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <p className="mt-10 text-center">
               <Link
                 href="/collezioni"
                 className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-soft-black border-b border-pearl-grey hover:border-gold-primary hover:text-gold-primary pb-0.5 transition-colors"

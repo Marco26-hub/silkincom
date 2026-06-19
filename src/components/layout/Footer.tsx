@@ -13,6 +13,8 @@ const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   { href: '/foulard-seta', label: { it: 'Foulard di seta', en: 'Silk foulards' } },
   { href: '/sciarpe-seta', label: { it: 'Sciarpe in cashmere', en: 'Cashmere scarves' } },
   { href: '/pashmine-cashmere', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas' } },
+  { href: '/camicie-lino', label: { it: 'Camicie in lino', en: 'Linen shirts' } },
+  { href: '/teli-mare', label: { it: 'Teli mare', en: 'Beach towels' } },
   { href: '/regalo-seta-donna', label: { it: 'Idee regalo', en: 'Gift ideas' } },
 ];
 import { LanguageSwitcher } from './LanguageSwitcher';

@@ -5,6 +5,7 @@ import { Truck, RotateCcw, MapPin, Sparkles } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { PRODUCT_SLUGS, getCategories, getProduct, getProducts, getMaterials } from '@/data/catalog';
 import { localizedAlternates } from '@/i18n/routing';
+import { PRODUCT_CAT_TO_SEO, getSeoCategory, pickLocale } from '@/data/seo-categories';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductPurchaseSection } from '@/components/product/ProductPurchaseSection';
 import { ReviewSchema } from '@/components/schemas/ReviewSchema';
@@ -144,6 +145,8 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const colorLabel = color ? titleCase(color) : '';
   const altDescriptor = [p.name, color, materialLabel].filter(Boolean).join(' ');
   const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
+  const seoCatSlug = PRODUCT_CAT_TO_SEO[p.category];
+  const seoCat = seoCatSlug ? getSeoCategory(seoCatSlug) : undefined;
 
   const productUrl = `${APP_URL}/prodotto/${p.slug}`;
 
@@ -351,6 +354,18 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                   <span>{t('perks.returns')}</span>
                 </div>
               </div>
+
+              {/* Buyer-intent category up-link — internal linking + a path to a
+                  sibling SKU for a hesitant visitor. */}
+              {seoCat && seoCatSlug && (
+                <Link
+                  href={`/${seoCatSlug}`}
+                  className="inline-flex items-center gap-2 mb-8 text-[11px] uppercase tracking-[0.25em] text-soft-black/70 border-b border-pearl-grey hover:text-gold-primary hover:border-gold-primary pb-0.5 transition-colors"
+                >
+                  {pickLocale(seoCat.h1, locale).split(' —')[0]}
+                  <span aria-hidden>→</span>
+                </Link>
+              )}
 
               {/* Description full */}
               <details open className="group border-b border-pearl-grey/60 py-5">

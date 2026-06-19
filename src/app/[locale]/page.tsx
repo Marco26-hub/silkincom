@@ -1,4 +1,5 @@
 import { Hero } from '@/components/sections/Hero';
+import { ShopStrip } from '@/components/sections/ShopStrip';
 import { ValueProps } from '@/components/sections/ValueProps';
 import { FeaturedCollections } from '@/components/sections/FeaturedCollections';
 import { BrandStory } from '@/components/sections/BrandStory';
@@ -65,6 +66,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero slides={slides} />
+      <ShopStrip />
       <ValueProps section={valueProps} />
       <FeaturedCollections collections={featured} />
       <BrandStory section={brandStory} />

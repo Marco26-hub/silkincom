@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Check } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { Check, Lock, Truck, RotateCcw } from 'lucide-react';
 import { useCart } from '@/store/cart';
 import { WishlistButton } from './WishlistButton';
 import { SizeGuideModal } from './SizeGuideModal';
@@ -16,12 +16,41 @@ type Props = {
   variants: ProductVariant[];
 };
 
+// Trust line shown right under the CTA — the purchase-decision moment. Self
+// contained 7-locale copy so it needs no message-file changes.
+const REASSURE = {
+  secure: { it: 'Pagamento sicuro', en: 'Secure checkout', de: 'Sichere Zahlung', fr: 'Paiement sécurisé', es: 'Pago seguro', pt: 'Pagamento seguro', nl: 'Veilig betalen' },
+  shipping: { it: 'Spedizione gratuita oltre €200', en: 'Free shipping over €200', de: 'Gratisversand ab €200', fr: 'Livraison gratuite dès €200', es: 'Envío gratis desde €200', pt: 'Portes grátis acima de €200', nl: 'Gratis verzending vanaf €200' },
+  returns: { it: 'Reso gratuito entro 14 giorni', en: 'Free returns within 14 days', de: 'Kostenlose Rückgabe binnen 14 Tagen', fr: 'Retour gratuit sous 14 jours', es: 'Devolución gratis en 14 días', pt: 'Devolução grátis em 14 dias', nl: 'Gratis retour binnen 14 dagen' },
+} as const;
+
+function fmtPrice(n: number) {
+  return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+}
+
 export function ProductPurchaseSection({ slug, name, price, image, variants }: Props) {
   const t = useTranslations('product');
+  const locale = useLocale();
+  const r = (m: Record<string, string>) => m[locale] ?? m.en ?? m.it;
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const [showError, setShowError] = useState(false);
+  // Mobile sticky add-to-cart: surfaces a fixed price + CTA bar once the inline
+  // button scrolls out of view, so the buy action is always one tap away on
+  // phones (where the whole audience is).
+  const ctaRef = useRef<HTMLButtonElement>(null);
+  const [showSticky, setShowSticky] = useState(false);
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      ([entry]) => setShowSticky(!entry.isIntersecting),
+      { rootMargin: '0px 0px -40px 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const hasSizes = variants.length > 0;
   const selectedVariant = hasSizes
@@ -121,6 +150,7 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
       ) : null}
 
       <button
+        ref={ctaRef}
         type="button"
         onClick={handleAdd}
         disabled={added}
@@ -140,7 +170,35 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
         )}
       </button>
 
+      {/* Reassurance — the trust signals that unblock the purchase decision,
+          placed immediately under the CTA. */}
+      <ul className="flex flex-col gap-2 text-[11px] font-light text-soft-black/70">
+        <li className="flex items-center gap-2"><Lock className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.secure)}</li>
+        <li className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.shipping)}</li>
+        <li className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.returns)}</li>
+      </ul>
+
       <WishlistButton productSlug={slug} />
+
+      {/* Mobile sticky add-to-cart (phones only); appears once inline CTA scrolls away */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-pearl-grey bg-warm-white/95 px-4 py-3 backdrop-blur-md transition-transform duration-300 sm:hidden ${
+          showSticky && !added ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}
+      >
+        <div className="flex flex-col leading-tight">
+          <span className="text-base font-light text-soft-black">{fmtPrice(selectedVariant?.priceOverride ?? price)}</span>
+          <span className="text-[9px] uppercase tracking-[0.15em] text-soft-grey">{r(REASSURE.returns)}</span>
+        </div>
+        <button
+          type="button"
+          onClick={handleAdd}
+          className="ml-auto flex-1 max-w-[60%] bg-soft-black px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-warm-white"
+        >
+          {t('addToCart')}
+        </button>
+      </div>
     </div>
   );
 }

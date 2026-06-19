@@ -159,6 +159,18 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: P
     }
   }
 
+  // --- Commercial category index (so AI engines point buyers to the right buy page) ---
+  lines.push('## Categorie commerciali (pagine di acquisto)');
+  lines.push('');
+  lines.push('Pagine dove acquistare per tipo di prodotto, con prezzi e materiali:');
+  lines.push(`- Foulard in seta di Como (da €75): ${APP_URL}/foulard-seta`);
+  lines.push(`- Sciarpe in cashmere e lana (da €70): ${APP_URL}/sciarpe-seta`);
+  lines.push(`- Pashmine in cashmere (da €120): ${APP_URL}/pashmine-cashmere`);
+  lines.push(`- Camicie in lino (da €75): ${APP_URL}/camicie-lino`);
+  lines.push(`- Teli mare in cotone (da €45): ${APP_URL}/teli-mare`);
+  lines.push(`- Idee regalo in seta e cashmere: ${APP_URL}/regalo-seta-donna`);
+  lines.push('');
+
   // --- Founder + entity ---
   lines.push('## Marco Dibenedetto — Founder');
   lines.push('');

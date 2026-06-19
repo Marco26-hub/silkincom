@@ -120,6 +120,52 @@ export const SEO_CATEGORIES: SeoCategory[] = [
       },
     ],
   },
+  {
+    slug: 'camicie-lino',
+    categories: ['riva'],
+    eyebrow: { it: 'Lino 100% · Made in Como', en: 'Linen 100% · Made in Como' },
+    h1: { it: 'Camicie in Lino di Como — Uomo e Donna', en: 'Como Linen Shirts — Men & Women' },
+    title: { it: 'Camicia in Lino — Made in Como, Uomo e Donna', en: 'Linen Shirt — Made in Como, Men & Women' },
+    description: {
+      it: 'Camicie in puro lino, tagliate e confezionate nel distretto tessile di Como. Riva, vestibilità leggera per primavera ed estate. Made in Italy, reso entro 14 giorni.',
+      en: 'Pure linen shirts, cut and sewn in the Como textile district. Riva, a light fit for spring and summer. Made in Italy, 14-day returns.',
+    },
+    intro: {
+      it: 'La camicia Riva è in puro lino, tagliata e confezionata nel distretto tessile di Como. Una mano fresca e leggera che cade impeccabile sulla pelle, perfetta dalla primavera alla fine dell’estate, in città come in barca sul Lago.',
+      en: 'The Riva shirt is pure linen, cut and sewn in the Como textile district. A cool, light hand that drapes impeccably, perfect from spring through late summer, in the city or out on the Lake.',
+    },
+    faq: [
+      {
+        q: { it: 'Di che materiale sono le camicie Riva?', en: 'What are the Riva shirts made of?' },
+        a: { it: 'Puro lino, tagliato e confezionato nel distretto tessile di Como, Made in Italy.', en: 'Pure linen, cut and sewn in the Como textile district, Made in Italy.' },
+      },
+      {
+        q: { it: 'La camicia di lino si stira facilmente?', en: 'Does the linen shirt iron easily?' },
+        a: { it: 'Il lino è naturalmente vissuto: una leggera spiegazzatura fa parte del suo fascino. Si stira a vapore da umido.', en: 'Linen is naturally lived-in: a soft crease is part of its charm. Steam-iron while slightly damp.' },
+      },
+    ],
+  },
+  {
+    slug: 'teli-mare',
+    categories: ['tivan'],
+    eyebrow: { it: 'Cotone · Lago di Como', en: 'Cotton · Lake Como' },
+    h1: { it: 'Teli Mare in Cotone — Lago di Como', en: 'Cotton Beach Towels — Lake Como' },
+    title: { it: 'Telo Mare in Cotone — Made in Como', en: 'Cotton Beach Towel — Made in Como' },
+    description: {
+      it: 'Teli mare Tivan in puro cotone, lavorati nel distretto tessile di Como. Morbidi, assorbenti, eleganti dalla spiaggia al lago. Made in Italy.',
+      en: 'Tivan cotton beach towels, crafted in the Como textile district. Soft, absorbent, elegant from beach to lake. Made in Italy.',
+    },
+    intro: {
+      it: 'Il telo Tivan è in puro cotone lavorato nel distretto tessile di Como: morbido, assorbente e leggero, pensato per la spiaggia e per le giornate sul Lago. Un accessorio che unisce praticità ed eleganza italiana.',
+      en: 'The Tivan towel is pure cotton crafted in the Como textile district: soft, absorbent and light, made for the beach and for days on the Lake. An accessory that pairs practicality with Italian elegance.',
+    },
+    faq: [
+      {
+        q: { it: 'Di che materiale è il telo Tivan?', en: 'What is the Tivan towel made of?' },
+        a: { it: 'Puro cotone, lavorato nel distretto tessile di Como, Made in Italy.', en: 'Pure cotton, crafted in the Como textile district, Made in Italy.' },
+      },
+    ],
+  },
 ];
 
 export function getSeoCategory(slug: string): SeoCategory | undefined {
@@ -127,3 +173,16 @@ export function getSeoCategory(slug: string): SeoCategory | undefined {
 }
 
 export const SEO_CATEGORY_SLUGS = SEO_CATEGORIES.map((c) => c.slug);
+
+// Map a product's DB category (brand line) -> its buyer-intent SEO landing
+// page, so every PDP can link "up" to its commercial category (internal
+// linking + a path to a sibling SKU instead of a bounce).
+export const PRODUCT_CAT_TO_SEO: Record<string, string> = {
+  'twilly-como': 'foulard-seta',
+  bellagio: 'pashmine-cashmere',
+  varenna: 'sciarpe-seta',
+  cernobbio: 'sciarpe-seta',
+  tremezzo: 'sciarpe-seta',
+  riva: 'camicie-lino',
+  tivan: 'teli-mare',
+};
