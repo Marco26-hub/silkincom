@@ -168,7 +168,10 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     name: productFullName,
     description: p.description,
     sku: p.slug,
-    gtin: p.slug,
+    // mpn (manufacturer part number) as the global identifier — artisan goods
+    // have no GTIN, so brand + mpn satisfies Google. (Was `gtin: p.slug`, an
+    // INVALID GTIN that triggered the Merchant "GTIN non valido" warning.)
+    mpn: p.slug,
     image: p.images,
     url: productUrl,
     brand: { '@type': 'Brand', name: 'SILKinCOM' },
@@ -185,6 +188,29 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@type': 'Organization', name: 'SILKinCOM' },
+      // Merchant listing enhancements (GSC "Schede commercianti": campi mancanti)
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'IT',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 14,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/ReturnShippingFees',
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: p.price >= 200 ? '0' : '9',
+          currency: 'EUR',
+        },
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IT' },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 4, unitCode: 'DAY' },
+        },
+      },
     },
   };
   const breadcrumbSchema = {
