@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
@@ -6,6 +7,35 @@ import { getPostSlugs, getPosts, getPost } from '@/data/posts';
 import { localizedAlternates } from '@/i18n/routing';
 import { ArrowUpRight } from 'lucide-react';
 import { APP_URL } from '@/lib/app-url';
+
+// Inline markdown-link parser for post bodies: turns [anchor](/url) into a
+// real link (internal -> next-intl <Link>, external -> <a>). The body renderer
+// printed paragraphs as raw text, so internal links (the whole point of a
+// link-bait post) never rendered. This enables them for every post.
+function renderInline(text: string): ReactNode {
+  const parts: ReactNode[] = [];
+  const re = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let k = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    const label = m[1];
+    const url = m[2];
+    if (url.startsWith('/')) {
+      parts.push(
+        <Link key={k++} href={url} className="text-gold-primary hover:text-gold-dark">{label}</Link>
+      );
+    } else {
+      parts.push(
+        <a key={k++} href={url} target="_blank" rel="noopener noreferrer" className="text-gold-primary hover:text-gold-dark">{label}</a>
+      );
+    }
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts.length ? parts : text;
+}
 
 // External citation references appended to pillar posts. Strengthens
 // E-E-A-T and gives AI grounding back-links to authoritative sources.
@@ -206,7 +236,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                       : 'mb-8'
                   }
                 >
-                  {p}
+                  {renderInline(p)}
                 </p>
               );
             })}

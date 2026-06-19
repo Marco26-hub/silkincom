@@ -24,6 +24,24 @@ export const revalidate = 3600;
 
 const BRAND = 'SILKinCOM';
 
+// Google product taxonomy per brand line (the catalog mixes scarves, apparel,
+// hats and beach towels — emitting "Scarves & Shawls" for ALL of them, as the
+// feed did before, mislabels a T-shirt/cap/towel and hurts Shopping matching).
+type Gpc = { pt: string; id: number };
+const GPC_BY_CATEGORY: Record<string, Gpc> = {
+  'twilly-como': { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
+  varenna: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
+  cernobbio: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
+  tremezzo: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
+  bellagio: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
+  lario: { pt: 'Apparel & Accessories > Clothing > Shirts & Tops', id: 212 },
+  riva: { pt: 'Apparel & Accessories > Clothing > Shirts & Tops', id: 212 },
+  darsena: { pt: 'Apparel & Accessories > Clothing Accessories > Hats', id: 173 },
+  melzi: { pt: 'Apparel & Accessories > Clothing > Shorts', id: 207 },
+  tivan: { pt: 'Home & Garden > Linens & Bedding > Towels > Beach Towels', id: 2548 },
+};
+const GPC_DEFAULT: Gpc = GPC_BY_CATEGORY['twilly-como'];
+
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -52,7 +70,7 @@ export async function GET(req: NextRequest) {
   const { data: products, error } = await supabase
     .from('products')
     .select(`
-      id, slug, name, sku, price, compare_at_price, currency,
+      id, slug, name, sku, price, compare_at_price, currency, category_id,
       description_short, description_long, composition,
       name_i18n, description_short_i18n, description_long_i18n,
       product_images(image_url, is_primary, display_order),
@@ -63,6 +81,10 @@ export async function GET(req: NextRequest) {
   if (error) {
     console.error('google-merchant feed query failed:', error);
   }
+
+  // category_id -> slug, to map each product to the right Google taxonomy.
+  const { data: cats } = await supabase.from('categories').select('id, slug');
+  const catSlugById = new Map<string, string>((cats || []).map((c: any) => [c.id, c.slug]));
 
   const items = (products || []).map((p: any) => {
     const sortedImages = (p.product_images || []).sort((a: any, b: any) => {
@@ -80,6 +102,14 @@ export async function GET(req: NextRequest) {
       0,
     );
     const availability = stock > 0 ? 'in_stock' : 'out_of_stock';
+
+    const catSlug = catSlugById.get(p.category_id) || '';
+    const gpc = GPC_BY_CATEGORY[catSlug] || GPC_DEFAULT;
+    // Sale pricing: emit the original (compare_at) as price and the current as
+    // sale_price ONLY when there is a genuine markdown.
+    const hasSale = p.compare_at_price && Number(p.compare_at_price) > Number(p.price);
+    const cur = p.currency || 'EUR';
+    const listPrice = hasSale ? Number(p.compare_at_price) : Number(p.price);
 
     // Resolve localised fields: prefer i18n value for requested lang, fallback to base field.
     const title = (lang === 'en'
@@ -101,8 +131,8 @@ export async function GET(req: NextRequest) {
       <g:image_link>${escapeXml(primaryImage)}</g:image_link>
       ${additionalImages.map((u: string) => `<g:additional_image_link>${escapeXml(u)}</g:additional_image_link>`).join('\n      ')}
       <g:availability>${availability}</g:availability>
-      <g:price>${Number(p.price).toFixed(2)} ${p.currency || 'EUR'}</g:price>
-      ${p.compare_at_price ? `<g:sale_price>${Number(p.price).toFixed(2)} ${p.currency || 'EUR'}</g:sale_price>` : ''}
+      <g:price>${listPrice.toFixed(2)} ${cur}</g:price>
+      ${hasSale ? `<g:sale_price>${Number(p.price).toFixed(2)} ${cur}</g:sale_price>` : ''}
       <g:brand>${BRAND}</g:brand>
       <g:condition>new</g:condition>
       <g:color>${escapeXml(resolveColor(p.name))}</g:color>
@@ -110,8 +140,8 @@ export async function GET(req: NextRequest) {
       <g:age_group>adult</g:age_group>
       <g:material>${escapeXml(resolveMaterial(p.composition))}</g:material>
       <g:identifier_exists>false</g:identifier_exists>
-      <g:product_type>Apparel &amp; Accessories &gt; Clothing Accessories &gt; Scarves &amp; Shawls</g:product_type>
-      <g:google_product_category>1786</g:google_product_category>
+      <g:product_type>${escapeXml(gpc.pt)}</g:product_type>
+      <g:google_product_category>${gpc.id}</g:google_product_category>
       <g:mpn>${escapeXml(p.sku || p.id)}</g:mpn>
       <g:custom_label_0>made-in-como</g:custom_label_0>
       <g:custom_label_1>${escapeXml(p.composition || 'silk')}</g:custom_label_1>
