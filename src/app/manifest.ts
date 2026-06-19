@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'SILKinCOM — Sciarpe e accessori in seta e cashmere',
+    name: 'SILKinCOM — Accessori in seta e cashmere, Made in Como',
     short_name: 'SILKinCOM',
     description:
       'Maison di sciarpe, foulard, pashmine e accessori in seta, cashmere, lana, lino e cotone. Made in Como, Italia.',

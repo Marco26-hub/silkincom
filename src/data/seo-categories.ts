@@ -77,18 +77,22 @@ export const SEO_CATEGORIES: SeoCategory[] = [
   {
     slug: 'sciarpe-seta',
     categories: ['varenna', 'tremezzo', 'cernobbio'],
-    eyebrow: { it: 'Seta 100% · Made in Como', en: 'Silk 100% · Made in Como' },
-    h1: { it: 'Sciarpe in Seta di Como', en: 'Como Silk Scarves' },
-    title: { it: 'Sciarpe in Seta di Como — 100% Seta, Uomo e Donna', en: 'Como Silk Scarves — 100% Silk, Men & Women' },
+    eyebrow: { it: 'Cashmere e Lana · Made in Como', en: 'Cashmere & Wool · Made in Como' },
+    h1: { it: 'Sciarpe in Cashmere e Lana di Como', en: 'Como Cashmere & Wool Scarves' },
+    title: { it: 'Sciarpe in Cashmere e Lana — Made in Como, Uomo e Donna', en: 'Cashmere & Wool Scarves — Made in Como, Men & Women' },
     description: {
-      it: 'Sciarpe in 100% seta tessute nel distretto serico di Como, per uomo e donna. Eleganza Made in Como, spedizione gratuita oltre €200.',
-      en: 'Scarves in 100% silk woven in the Como silk district, for men and women. Made in Como elegance, free shipping over €200.',
+      it: 'Sciarpe in puro cashmere e in pura lana, lavorate nel distretto tessile di Como, per uomo e donna. Eleganza Made in Como, spedizione gratuita oltre €200.',
+      en: 'Scarves in pure cashmere and pure wool, crafted in the Como textile district, for men and women. Made in Como elegance, free shipping over €200.',
     },
     intro: {
-      it: 'Sciarpe in pura seta di Como, tessute nel distretto serico più antico d’Europa. Per lui e per lei, una mano fresca che cade impeccabile in ogni stagione.',
-      en: 'Scarves in pure Como silk, woven in the oldest silk district in Europe. For him and her — a fresh hand that drapes impeccably in every season.',
+      it: 'Sciarpe in puro cashmere e in pura lana, lavorate nel distretto tessile di Como — lo stesso da cui le grandi maison comprano i filati. Per lui e per lei, una mano morbida e calda che cade impeccabile in ogni stagione.',
+      en: 'Scarves in pure cashmere and pure wool, crafted in the Como textile district — the same district the great maisons source their yarns from. For him and her, a soft, warm hand that drapes impeccably in every season.',
     },
     faq: [
+      {
+        q: { it: 'Di che materiale sono le sciarpe?', en: 'What are the scarves made of?' },
+        a: { it: 'Cashmere puro (Varenna, Cernobbio) e pura lana (Tremezzo), lavorate nel distretto di Como.', en: 'Pure cashmere (Varenna, Cernobbio) and pure wool (Tremezzo), crafted in the Como district.' },
+      },
       {
         q: { it: 'Sono adatte a uomo e donna?', en: 'Are they for men and women?' },
         a: { it: 'Sì, i modelli sono unisex e disponibili in più colori.', en: 'Yes, the styles are unisex and available in several colours.' },

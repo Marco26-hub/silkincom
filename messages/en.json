@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "The Hands That Weave",
       "title": "Our <em>artisans</em>",
-      "subtitle": "Weavers, printers and tailors of the Como district. Every SILKinCOM piece bears the signature of hands that have passed down their craft for generations."
+      "subtitle": "Weavers, dyers and finishers of the Como district. Every SILKinCOM piece bears the signature of hands that have passed down their craft for generations."
     },
     "weaving": {
       "eyebrow": "Inside the Weaving",
       "title": "From the Como loom to the foulard",
-      "description": "Looms, threads and silk become scarves and foulards in the Como district: every step gives the piece its hand, drape and luminosity."
+      "description": "Yarns, colours and looms become silk foulards and cashmere scarves in the Como district: every step gives the piece its hand, drape and luminosity."
     },
     "artisans": {
-      "lorenzo": {
-        "name": "Paolo",
-        "role": "Master Weaver",
-        "city": "Cermenate (CO)",
-        "alt": "Paolo, SILKinCOM jacquard weaver, at the loom in the Como silk district",
-        "caption": "Jacquard loom at work",
-        "story": "He follows the rhythm of the jacquard loom, controlling weave, tension and thread alignment for silk scarves and foulards. He learned on the district's mechanical looms and today leads the Maison's weaving floor."
-      },
-      "telaio": {
+      "tintore": {
         "name": "Adriano",
         "role": "Master Dyer",
         "city": "Como",
-        "alt": "Adriano, SILKinCOM master dyer, at the silk dye baths",
-        "caption": "Silk dyeing in progress",
-        "story": "Prepares the dye baths, monitors water pH, doses the dyes by fibre and batch weight. Silk dyeing demands exact temperatures, times and immersion speeds: a few degrees of variation can shift the colour. Every batch is matched by eye against the reference swatch before finishing."
+        "alt": "Adriano, SILKinCOM master dyer, dyeing the yarns in the vats of the Como dyehouse",
+        "caption": "Dyeing the yarns",
+        "story": "He prepares the dye baths and controls pH, temperature and immersion times. He dyes silk and cashmere yarns on the cone in the vats of the Como district: a few degrees shift the shade. Every batch is checked by eye against the reference sample before finishing."
       },
-      "twill": {
+      "tessitore": {
+        "name": "Paolo",
+        "role": "Master Weaver",
+        "city": "Cermenate (CO)",
+        "alt": "Paolo, SILKinCOM master weaver, at the jacquard loom with a silk foulard",
+        "caption": "Foulard on the jacquard loom",
+        "story": "He follows the rhythm of the jacquard loom and checks the weave, tension and thread feed. Under his hands silk becomes a foulard, with the SILKinCOM monogram woven into the cloth. He learned on the looms of the Como district and now leads the Maison's weaving."
+      },
+      "confezione": {
         "name": "Roberta",
-        "role": "Embroiderer",
+        "role": "Finisher",
         "city": "Como",
-        "alt": "Roberta, SILKinCOM embroiderer, hand-stitching a monogram on a silk foulard",
-        "caption": "Hand embroidery in progress",
-        "story": "Hand-embroiders the details — logos, monograms, decorative motifs — on the silk foulards and scarves. Each stitch is set by eye with needle and silk thread matched to the fabric's weight. A custom monogram takes between 2 and 6 hours, depending on the complexity of the design."
+        "alt": "Roberta, SILKinCOM finisher, finishing and packaging a piece in the Como atelier",
+        "caption": "Hand finishing & packaging",
+        "story": "She sews the hems, attaches the labels and hand-finishes every piece before packaging. She checks the hand of the fabric, then folds and wraps foulards and scarves in the Maison gift box. She is the last to see the product before it reaches the client."
       }
     },
     "cta": {

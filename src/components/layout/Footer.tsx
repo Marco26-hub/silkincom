@@ -11,7 +11,7 @@ import { Logo } from './Logo';
 // discoverability of the buyer-intent landing pages. Labels localized it/en.
 const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   { href: '/foulard-seta', label: { it: 'Foulard di seta', en: 'Silk foulards' } },
-  { href: '/sciarpe-seta', label: { it: 'Sciarpe di seta', en: 'Silk scarves' } },
+  { href: '/sciarpe-seta', label: { it: 'Sciarpe in cashmere', en: 'Cashmere scarves' } },
   { href: '/pashmine-cashmere', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas' } },
   { href: '/regalo-seta-donna', label: { it: 'Idee regalo', en: 'Gift ideas' } },
 ];

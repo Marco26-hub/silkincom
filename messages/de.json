@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "Die Hände, die weben",
       "title": "Unsere <em>Kunsthandwerker</em>",
-      "subtitle": "Weber, Druckmeister und Schneider des Distrikts von Como. Jedes Stück von SILKinCOM trägt die Handschrift von Händen, die ihr Handwerk seit Generationen weitergeben."
+      "subtitle": "Weber, Färber und Konfektioniererinnen des Distrikts von Como. Jedes Stück von SILKinCOM trägt die Handschrift von Händen, die ihr Handwerk seit Generationen weitergeben."
     },
     "weaving": {
       "eyebrow": "Einblick in die Webkunst",
       "title": "Vom Webstuhl in Como zum Foulard",
-      "description": "Webstühle, Fäden und Seide werden im Distrikt von Como zu Schals und Foulards: Jeder Arbeitsschritt verleiht dem Stück seinen Griff, seinen Fall und seinen Glanz."
+      "description": "Garne, Farben und Webstühle werden im Distrikt von Como zu Seidenfoulards und Kaschmirschals: Jeder Arbeitsschritt verleiht dem Stück seinen Griff, seinen Fall und seinen Glanz."
     },
     "artisans": {
-      "lorenzo": {
-        "name": "Paolo",
-        "role": "Meisterweber",
-        "city": "Cermenate (CO)",
-        "alt": "Paolo, Jacquard-Weber von SILKinCOM, am Webstuhl im Seidendistrikt von Como",
-        "caption": "Jacquard-Webstuhl in Betrieb",
-        "story": "Er folgt dem Rhythmus des Jacquard-Webstuhls, kontrolliert Bindung, Spannung und Fadenführung der Garne für seidene Schals und Foulards. Er hat an den mechanischen Webstühlen des Distrikts gelernt und leitet heute die Weberei der Maison."
-      },
-      "telaio": {
+      "tintore": {
         "name": "Adriano",
-        "role": "Meisterfärber",
+        "role": "Färbermeister",
         "city": "Como",
-        "alt": "Adriano, Meisterfärber von SILKinCOM, vor den Seidenfärbebädern",
-        "caption": "Seidenfärberei in Arbeit",
-        "story": "Bereitet die Färbebäder vor, kontrolliert den pH-Wert des Wassers, dosiert die Farbstoffe nach Faser und Chargengewicht. Die Seidenfärberei verlangt exakte Temperaturen, Zeiten und Eintauchgeschwindigkeiten: Wenige Grad Abweichung können den Farbton verschieben. Jede Charge wird vor dem Finishing per Auge mit der Referenzprobe abgeglichen."
+        "alt": "Adriano, SILKinCOM-Färbermeister, färbt die Garne in den Bottichen der Comasker Färberei",
+        "caption": "Färben der Garne",
+        "story": "Er bereitet die Färbebäder vor und kontrolliert pH-Wert, Temperatur und Tauchzeiten. Er färbt Seiden- und Kaschmirgarne auf der Spule in den Bottichen des Distrikts von Como: Wenige Grad verschieben den Farbton. Jede Partie wird vor der Veredelung von Hand mit dem Referenzmuster abgeglichen."
       },
-      "twill": {
+      "tessitore": {
+        "name": "Paolo",
+        "role": "Webmeister",
+        "city": "Cermenate (CO)",
+        "alt": "Paolo, SILKinCOM-Webmeister, am Jacquard-Webstuhl mit einem Seidenfoulard",
+        "caption": "Foulard am Jacquard-Webstuhl",
+        "story": "Er folgt dem Rhythmus des Jacquard-Webstuhls und kontrolliert Bindung, Spannung und Fadenlauf. Unter seinen Händen wird Seide zum Foulard, mit dem in das Gewebe eingewebten SILKinCOM-Monogramm. Er hat an den Webstühlen des Comasker Distrikts gelernt und leitet heute die Weberei der Maison."
+      },
+      "confezione": {
         "name": "Roberta",
-        "role": "Stickerin",
+        "role": "Konfektioniererin",
         "city": "Como",
-        "alt": "Roberta, Stickerin von SILKinCOM, beim Handsticken eines Monogramms auf einem Seidenfoulard",
-        "caption": "Handstickerei in Arbeit",
-        "story": "Stickt von Hand die Details — Logos, Monogramme, dekorative Motive — auf die Seidenfoulards und -schals. Jeder Stich wird nach Augenmaß mit Nadel und Seidenfaden im Gewicht des Stoffes gesetzt. Ein individuelles Monogramm braucht je nach Komplexität des Dessins zwischen zwei und sechs Stunden."
+        "alt": "Roberta, SILKinCOM-Konfektioniererin, veredelt und verpackt ein Stück im Atelier in Como",
+        "caption": "Verarbeitung & Endfertigung von Hand",
+        "story": "Sie näht die Säume, bringt die Etiketten an und vollendet jedes Stück von Hand vor dem Verpacken. Sie prüft den Griff des Stoffes, faltet dann Foulards und Schals und legt sie in die Geschenkbox der Maison. Sie sieht das Produkt als Letzte, bevor es zum Kunden geht."
       }
     },
     "cta": {

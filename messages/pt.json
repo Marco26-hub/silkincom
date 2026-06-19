@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "As Mãos Que Tecem",
       "title": "Os nossos <em>artesãos</em>",
-      "subtitle": "Tecelões, estampadores e alfaiates do distrito de Como. Cada peça SILKinCOM carrega a assinatura de mãos que transmitem o seu ofício há gerações."
+      "subtitle": "Tecelões, tintureiros e confecionadoras do distrito de Como. Cada peça SILKinCOM carrega a assinatura de mãos que transmitem o seu ofício há gerações."
     },
     "weaving": {
       "eyebrow": "No Interior da Tecelagem",
       "title": "Do tear de Como ao foulard",
-      "description": "Teares, fios e seda transformam-se em lenços e foulards no distrito de Como: cada etapa confere à peça o seu toque, o seu caimento e a sua luminosidade."
+      "description": "Fios, cores e teares transformam-se em lenços de seda e cachecóis de caxemira no distrito de Como: cada etapa confere à peça o seu toque, o seu caimento e a sua luminosidade."
     },
     "artisans": {
-      "lorenzo": {
-        "name": "Paolo",
-        "role": "Mestre Tecelão",
-        "city": "Cermenate (CO)",
-        "alt": "Paolo, tecelão jacquard SILKinCOM, ao tear no distrito sedeiro de Como",
-        "caption": "Tear jacquard em funcionamento",
-        "story": "Segue o ritmo do tear jacquard, controla a trama, a tensão e a passagem dos fios destinados aos lenços e foulards de seda. Aprendeu nos teares mecânicos do distrito e hoje dirige a tecelagem da Maison."
-      },
-      "telaio": {
+      "tintore": {
         "name": "Adriano",
         "role": "Mestre Tintureiro",
         "city": "Como",
-        "alt": "Adriano, mestre tintureiro SILKinCOM, diante dos banhos de tingimento da seda",
-        "caption": "Tingimento da seda em curso",
-        "story": "Prepara os banhos de tingimento, controla o pH da água, doseia os corantes em função da fibra e do peso do lote. O tingimento da seda exige temperaturas, tempos e velocidades de imersão precisos: uma variação de poucos graus pode deslocar a tonalidade. Cada partida é comparada à vista com a amostra de referência antes do acabamento."
+        "alt": "Adriano, mestre tintureiro SILKinCOM, tinge os fios nas cubas da tinturaria comasca",
+        "caption": "Tingimento dos fios em curso",
+        "story": "Prepara os banhos de tingimento e controla o pH, a temperatura e os tempos de imersão. Tinge em cone os fios de seda e de caxemira nas cubas do distrito de Como: poucos graus deslocam o tom. Cada partida é comparada a olho com a amostra de referência antes do acabamento."
       },
-      "twill": {
+      "tessitore": {
+        "name": "Paolo",
+        "role": "Mestre Tecelão",
+        "city": "Cermenate (CO)",
+        "alt": "Paolo, mestre tecelão SILKinCOM, no tear jacquard com um lenço de seda",
+        "caption": "Lenço no tear jacquard",
+        "story": "Segue o ritmo do tear jacquard e controla o entrelaçamento, a tensão e a passagem dos fios. Sob as suas mãos a seda torna-se lenço, com o monograma SILKinCOM tecido no tecido. Aprendeu nos teares do distrito de Como e hoje dirige a tecelagem da Maison."
+      },
+      "confezione": {
         "name": "Roberta",
-        "role": "Bordadeira",
+        "role": "Confecionadora",
         "city": "Como",
-        "alt": "Roberta, bordadeira SILKinCOM, enquanto borda à mão um monograma num foulard de seda",
-        "caption": "Bordado à mão em curso",
-        "story": "Borda à mão os detalhes — logótipos, monogramas, motivos decorativos — nos foulards e lenços de seda. Cada ponto é executado à vista com agulha e fio de seda no peso do tecido. Um monograma personalizado requer entre 2 e 6 horas, conforme a complexidade do desenho."
+        "alt": "Roberta, confecionadora SILKinCOM, remata e embala uma peça no atelier de Como",
+        "caption": "Acabamento e embalagem à mão",
+        "story": "Cose as bainhas, aplica as etiquetas e remata à mão cada peça antes da embalagem. Controla o toque do tecido, dobra e embrulha lenços e cachecóis na caixa de presente da Maison. É a última a ver o produto antes de seguir para o cliente."
       }
     },
     "cta": {

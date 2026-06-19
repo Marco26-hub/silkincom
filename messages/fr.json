@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "Les Mains qui Tissent",
       "title": "Nos <em>artisans</em>",
-      "subtitle": "Tisserands, imprimeurs et tailleurs du district de Côme. Chaque pièce SILKinCOM porte la signature de mains qui transmettent leur savoir-faire depuis des générations."
+      "subtitle": "Tisserands, teinturiers et finisseuses du district de Côme. Chaque pièce SILKinCOM porte la signature de mains qui transmettent leur savoir-faire depuis des générations."
     },
     "weaving": {
       "eyebrow": "Au Cœur du Tissage",
       "title": "Du métier à tisser de Côme au foulard",
-      "description": "Métiers à tisser, fils et soie deviennent écharpes et foulards dans le district de Côme : chaque étape confère à la pièce son tombé, sa main et sa luminosité."
+      "description": "Fils, couleurs et métiers à tisser deviennent foulards de soie et écharpes en cachemire dans le district de Côme : chaque étape confère à la pièce sa main, son tombé et sa luminosité."
     },
     "artisans": {
-      "lorenzo": {
-        "name": "Paolo",
-        "role": "Maître Tisserand",
-        "city": "Cermenate (CO)",
-        "alt": "Paolo, tisserand jacquard SILKinCOM, devant le métier dans le district séricicole de Côme",
-        "caption": "Métier jacquard en marche",
-        "story": "Il suit le rythme du métier jacquard, contrôle le tissage, la tension et le passage des fils destinés aux foulards et écharpes de soie. Il a appris sur les métiers mécaniques du district et dirige aujourd'hui le tissage de la Maison."
-      },
-      "telaio": {
+      "tintore": {
         "name": "Adriano",
         "role": "Maître Teinturier",
         "city": "Como",
-        "alt": "Adriano, maître teinturier SILKinCOM, devant les bains de teinture de la soie",
-        "caption": "Teinture de la soie en cours",
-        "story": "Prépare les bains de teinture, contrôle le pH de l'eau, dose les colorants selon la fibre et le poids du lot. La teinture de la soie demande des températures, des durées et des vitesses d'immersion précises : quelques degrés d'écart peuvent décaler la tonalité. Chaque lot est comparé à l'œil au témoin de référence avant le finissage."
+        "alt": "Adriano, maître teinturier SILKinCOM, teint les fils dans les cuves de la teinturerie comasque",
+        "caption": "Teinture des fils en cours",
+        "story": "Il prépare les bains de teinture et contrôle le pH, la température et les temps d'immersion. Il teint les fils de soie et de cachemire sur cône dans les cuves du district de Côme : quelques degrés suffisent à déplacer la nuance. Chaque lot est comparé à l'œil avec l'échantillon de référence avant le finissage."
       },
-      "twill": {
+      "tessitore": {
+        "name": "Paolo",
+        "role": "Maître Tisserand",
+        "city": "Cermenate (CO)",
+        "alt": "Paolo, maître tisserand SILKinCOM, au métier jacquard avec un foulard de soie",
+        "caption": "Foulard sur le métier jacquard",
+        "story": "Il suit le rythme du métier jacquard et contrôle l'armure, la tension et le passage des fils. Sous ses mains, la soie devient foulard, avec le monogramme SILKinCOM tissé dans l'étoffe. Il a appris sur les métiers du district de Côme et dirige aujourd'hui le tissage de la Maison."
+      },
+      "confezione": {
         "name": "Roberta",
-        "role": "Brodeuse",
+        "role": "Finisseuse",
         "city": "Como",
-        "alt": "Roberta, brodeuse SILKinCOM, en train de broder à la main un monogramme sur un foulard de soie",
-        "caption": "Broderie main en cours",
-        "story": "Brode à la main les détails — logos, monogrammes, motifs décoratifs — sur les foulards et écharpes de soie. Chaque point est exécuté à vue avec aiguille et fil de soie au grammage du tissu. Un monogramme personnalisé demande de 2 à 6 heures, selon la complexité du dessin."
+        "alt": "Roberta, finisseuse SILKinCOM, finit et emballe une pièce dans l'atelier de Côme",
+        "caption": "Finition & emballage à la main",
+        "story": "Elle coud les ourlets, pose les étiquettes et finit chaque pièce à la main avant l'emballage. Elle contrôle la main du tissu, puis plie et emballe foulards et écharpes dans le coffret cadeau de la Maison. Elle est la dernière à voir le produit avant qu'il ne parte chez le client."
       }
     },
     "cta": {

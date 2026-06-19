@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "Le Mani che Tessono",
       "title": "I nostri <em>artigiani</em>",
-      "subtitle": "Tessitori, stampatori, sarti del distretto comasco. Ogni capo SILKinCOM porta la firma di mani che tramandano il mestiere da generazioni."
+      "subtitle": "Tessitori, tintori e confezioniste del distretto comasco. Ogni capo SILKinCOM porta la firma di mani che tramandano il mestiere da generazioni."
     },
     "weaving": {
       "eyebrow": "Dentro la tessitura",
       "title": "Dal telaio comasco al foulard",
-      "description": "Telai, fili e seta diventano sciarpe e foulard nel distretto comasco: ogni passaggio serve a dare mano, caduta e luce al capo."
+      "description": "Filati, colori e telai diventano foulard di seta e sciarpe in cashmere nel distretto comasco: ogni passaggio serve a dare mano, caduta e luce al capo."
     },
     "artisans": {
-      "lorenzo": {
+      "tintore": {
+        "name": "Adriano",
+        "role": "Maestro Tintore",
+        "city": "Como",
+        "alt": "Adriano, maestro tintore SILKinCOM, tinge i filati nelle vasche della tintoria comasca",
+        "caption": "Tintura dei filati in corso",
+        "story": "Prepara i bagni di tintura e controlla pH, temperatura e tempi di immersione. Tinge a rocche i filati di seta e di cashmere nelle vasche del distretto comasco: pochi gradi spostano la tonalità. Ogni partita viene confrontata a vista con il campione di riferimento prima del finissaggio."
+      },
+      "tessitore": {
         "name": "Paolo",
         "role": "Maestro Tessitore",
         "city": "Cermenate (CO)",
-        "alt": "Paolo, tessitore jacquard SILKinCOM, al telaio nel distretto comasco",
-        "caption": "Telaio jacquard in lavorazione",
-        "story": "Segue il ritmo del telaio jacquard, controlla intreccio, tensione e passaggio dei fili destinati a sciarpe e foulard in seta. Ha imparato sui telai meccanici del distretto e oggi guida la tessitura della Maison."
+        "alt": "Paolo, maestro tessitore SILKinCOM, al telaio jacquard con un foulard di seta",
+        "caption": "Foulard al telaio jacquard",
+        "story": "Segue il ritmo del telaio jacquard e controlla intreccio, tensione e passaggio dei fili. Sotto le sue mani la seta diventa foulard, con il monogramma SILKinCOM tessuto nella trama. Ha imparato sui telai del distretto comasco e oggi guida la tessitura della Maison."
       },
-      "telaio": {
-        "name": "Adriano",
-        "role": "Mastro Tintore",
-        "city": "Como",
-        "alt": "Adriano, mastro tintore SILKinCOM, davanti ai bagni di tintura della seta",
-        "caption": "Tintura della seta in corso",
-        "story": "Prepara i bagni di tintura, controlla il pH dell'acqua, dosa i coloranti in base alla fibra e al peso del lotto. La tintura della seta richiede temperature, tempi e velocità di immersione precisi: una variazione di pochi gradi può spostare la tonalità del colore. Ogni partita viene confrontata a vista con il campione di riferimento prima del finissaggio."
-      },
-      "twill": {
+      "confezione": {
         "name": "Roberta",
-        "role": "Ricamatrice",
+        "role": "Confezionista",
         "city": "Como",
-        "alt": "Roberta, ricamatrice SILKinCOM, mentre ricama a mano un monogramma su un foulard di seta",
-        "caption": "Ricamo a mano in corso",
-        "story": "Ricama a mano i dettagli — loghi, monogrammi, motivi decorativi — sui foulard e sulle sciarpe di seta. Ogni punto è eseguito a vista con ago e filo di seta dello stesso peso del tessuto. Un monogramma personalizzato richiede da 2 a 6 ore di lavoro, a seconda della complessità del disegno."
+        "alt": "Roberta, confezionista SILKinCOM, rifinisce e confeziona un capo nell'atelier di Como",
+        "caption": "Confezione e finissaggio a mano",
+        "story": "Cuce gli orli, applica le etichette e rifinisce a mano ogni capo prima della confezione. Controlla la mano del tessuto, piega e incarta foulard e sciarpe nella scatola regalo della Maison. È l'ultima a vedere il prodotto prima che parta per il cliente."
       }
     },
     "cta": {

@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "Las Manos que Tejen",
       "title": "Nuestros <em>artesanos</em>",
-      "subtitle": "Tejedores, estampadores y sastres del distrito de Como. Cada pieza SILKinCOM lleva la firma de manos que han transmitido su oficio durante generaciones."
+      "subtitle": "Tejedores, tintoreros y confeccionistas del distrito de Como. Cada pieza SILKinCOM lleva la firma de manos que han transmitido su oficio durante generaciones."
     },
     "weaving": {
       "eyebrow": "Dentro del Tejido",
       "title": "Del telar de Como al foulard",
-      "description": "Telares, hilos y seda se transforman en pañuelos y foulards en el distrito de Como: cada paso aporta a la pieza su tacto, su caída y su luminosidad."
+      "description": "Hilos, colores y telares se transforman en foulards de seda y bufandas de cachemir en el distrito de Como: cada paso aporta a la pieza su tacto, su caída y su luminosidad."
     },
     "artisans": {
-      "lorenzo": {
-        "name": "Paolo",
-        "role": "Maestro Tejedor",
-        "city": "Cermenate (CO)",
-        "alt": "Paolo, tejedor jacquard SILKinCOM, al telar en el distrito serico de Como",
-        "caption": "Telar jacquard en funcionamiento",
-        "story": "Sigue el ritmo del telar jacquard, controla el entrelazado, la tensión y el paso de los hilos destinados a pañuelos y foulards de seda. Aprendió en los telares mecánicos del distrito y hoy dirige la tejeduría de la Maison."
-      },
-      "telaio": {
+      "tintore": {
         "name": "Adriano",
         "role": "Maestro Tintorero",
         "city": "Como",
-        "alt": "Adriano, maestro tintorero SILKinCOM, ante los baños de tintura de la seda",
-        "caption": "Tintura de la seda en curso",
-        "story": "Prepara los baños de tintura, controla el pH del agua, dosifica los colorantes según la fibra y el peso del lote. La tintura de la seda requiere temperaturas, tiempos y velocidades de inmersión precisos: una variación de pocos grados puede desplazar la tonalidad del color. Cada partida se compara a la vista con la muestra de referencia antes del acabado."
+        "alt": "Adriano, maestro tintorero SILKinCOM, tiñe los hilos en las cubas de la tintorería comasca",
+        "caption": "Tinte de los hilos en curso",
+        "story": "Prepara los baños de tinte y controla el pH, la temperatura y los tiempos de inmersión. Tiñe en conos los hilos de seda y de cachemir en las cubas del distrito de Como: pocos grados desplazan el tono. Cada partida se compara a la vista con la muestra de referencia antes del acabado."
       },
-      "twill": {
+      "tessitore": {
+        "name": "Paolo",
+        "role": "Maestro Tejedor",
+        "city": "Cermenate (CO)",
+        "alt": "Paolo, maestro tejedor SILKinCOM, en el telar jacquard con un foulard de seda",
+        "caption": "Foulard en el telar jacquard",
+        "story": "Sigue el ritmo del telar jacquard y controla el ligamento, la tensión y el paso de los hilos. Bajo sus manos la seda se convierte en foulard, con el monograma SILKinCOM tejido en la tela. Aprendió en los telares del distrito de Como y hoy dirige el tejido de la Maison."
+      },
+      "confezione": {
         "name": "Roberta",
-        "role": "Bordadora",
+        "role": "Confeccionista",
         "city": "Como",
-        "alt": "Roberta, bordadora SILKinCOM, mientras borda a mano un monograma en un foulard de seda",
-        "caption": "Bordado a mano en curso",
-        "story": "Borda a mano los detalles — logotipos, monogramas, motivos decorativos — en los foulards y pañuelos de seda. Cada puntada se ejecuta a la vista con aguja e hilo de seda del mismo peso del tejido. Un monograma personalizado requiere entre 2 y 6 horas, según la complejidad del diseño."
+        "alt": "Roberta, confeccionista SILKinCOM, remata y empaqueta una pieza en el atelier de Como",
+        "caption": "Acabado y empaquetado a mano",
+        "story": "Cose los dobladillos, coloca las etiquetas y remata a mano cada pieza antes del empaquetado. Controla el tacto del tejido, dobla y envuelve foulards y bufandas en la caja regalo de la Maison. Es la última en ver el producto antes de que parta hacia el cliente."
       }
     },
     "cta": {

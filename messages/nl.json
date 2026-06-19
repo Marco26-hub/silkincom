@@ -1205,37 +1205,37 @@
     "hero": {
       "eyebrow": "De handen die weven",
       "title": "Onze <em>ambachtslieden</em>",
-      "subtitle": "Wevers, drukkers en kleermakers uit het district van Como. Elk SILKinCOM-stuk draagt de signatuur van handen die hun vak al generaties lang doorgeven."
+      "subtitle": "Wevers, ververs en finishers uit het district van Como. Elk SILKinCOM-stuk draagt de signatuur van handen die hun vak al generaties lang doorgeven."
     },
     "weaving": {
       "eyebrow": "In het weefatelier",
       "title": "Van het Comasaanse weefgetouw tot de foulard",
-      "description": "Weefgetouwen, draden en zijde worden sjaals en foulards in het district van Como: elke stap geeft het stuk zijn val, soepelheid en glans."
+      "description": "Garens, kleuren en weefgetouwen worden zijden foulards en kasjmier sjaals in het district van Como: elke stap geeft het stuk zijn val, soepelheid en glans."
     },
     "artisans": {
-      "lorenzo": {
-        "name": "Paolo",
-        "role": "Meesterwever",
-        "city": "Cermenate (CO)",
-        "alt": "Paolo, jacquardwever van SILKinCOM, aan het weefgetouw in het Comomeer-zijdedistrict",
-        "caption": "Jacquardweefgetouw in werking",
-        "story": "Volgt het ritme van het jacquardweefgetouw, controleert binding, spanning en de gang van de draden bestemd voor zijden sjaals en foulards. Hij leerde aan de mechanische weefgetouwen van het district en leidt vandaag de weverij van het Maison."
-      },
-      "telaio": {
+      "tintore": {
         "name": "Adriano",
-        "role": "Meesterverver",
+        "role": "Meester-verver",
         "city": "Como",
-        "alt": "Adriano, meesterverver van SILKinCOM, voor de zijdeverfbaden",
-        "caption": "Zijdeverven in uitvoering",
-        "story": "Bereidt de verfbaden voor, controleert de pH van het water, doseert de kleurstoffen op vezel en partijgewicht. Het verven van zijde vraagt om exacte temperaturen, tijden en onderdompelingssnelheden: enkele graden afwijking kunnen de tint verschuiven. Elke partij wordt vóór de afwerking op het oog vergeleken met het referentiestaal."
+        "alt": "Adriano, SILKinCOM meester-verver, verft de garens in de kuipen van de Comaskische ververij",
+        "caption": "Het verven van de garens",
+        "story": "Hij bereidt de verfbaden en bewaakt pH, temperatuur en dompeltijden. Hij verft zijden en kasjmier garens in de kuipen van het district van Como: enkele graden verschuiven de tint. Elke partij wordt vóór de afwerking met het oog vergeleken met het referentiemonster."
       },
-      "twill": {
+      "tessitore": {
+        "name": "Paolo",
+        "role": "Meester-wever",
+        "city": "Cermenate (CO)",
+        "alt": "Paolo, SILKinCOM meester-wever, aan het jacquardweefgetouw met een zijden foulard",
+        "caption": "Foulard aan het jacquardweefgetouw",
+        "story": "Hij volgt het ritme van het jacquardweefgetouw en bewaakt binding, spanning en draadloop. Onder zijn handen wordt zijde een foulard, met het SILKinCOM-monogram in de stof geweven. Hij leerde het vak aan de weefgetouwen van het district van Como en leidt vandaag de weverij van de Maison."
+      },
+      "confezione": {
         "name": "Roberta",
-        "role": "Borduurster",
+        "role": "Atelierfinisher",
         "city": "Como",
-        "alt": "Roberta, borduurster van SILKinCOM, terwijl ze met de hand een monogram op een zijden foulard borduurt",
-        "caption": "Handborduurwerk in uitvoering",
-        "story": "Borduurt met de hand de details — logo's, monogrammen, decoratieve motieven — op de zijden foulards en sjaals. Elke steek wordt op het oog gezet met naald en zijden draad in het gewicht van de stof. Een persoonlijk monogram vergt 2 tot 6 uur, afhankelijk van de complexiteit van het ontwerp."
+        "alt": "Roberta, SILKinCOM-finisher, werkt een stuk af en verpakt het in het atelier van Como",
+        "caption": "Met de hand afwerken & verpakken",
+        "story": "Zij naait de zomen, brengt de labels aan en werkt elk stuk met de hand af vóór het verpakken. Ze controleert de greep van de stof, vouwt vervolgens foulards en sjaals en verpakt ze in de geschenkdoos van de Maison. Zij ziet het product als laatste voordat het naar de klant vertrekt."
       }
     },
     "cta": {
