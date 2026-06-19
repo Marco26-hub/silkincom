@@ -1,26 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Star, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 type Props = {
   productSlug: string;
   isAuthenticated: boolean;
 };
 
+const NAME_LABEL: Record<string, string> = { it: 'Il tuo nome', en: 'Your name', de: 'Dein Name', fr: 'Votre nom', es: 'Tu nombre', pt: 'O seu nome', nl: 'Je naam' };
+
 export function ReviewForm({ productSlug, isAuthenticated }: Props) {
   const t = useTranslations('product.reviews.form');
+  const locale = useLocale();
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
+  const [authorName, setAuthorName] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Signed token from the post-delivery review email — lets an account-less
+  // buyer review without logging in. Read from the URL on the client so the
+  // PDP can stay statically rendered (no useSearchParams Suspense boundary).
+  const [reviewToken, setReviewToken] = useState<string | null>(null);
+  useEffect(() => {
+    setReviewToken(new URLSearchParams(window.location.search).get('rt'));
+  }, []);
 
-  if (!isAuthenticated) {
+  const isGuestToken = !isAuthenticated && !!reviewToken;
+
+  if (!isAuthenticated && !reviewToken) {
     return (
       <div className="border border-pearl-grey/60 p-8 text-center bg-warm-white">
         <p className="font-display italic text-xl text-soft-black/80 mb-4">
@@ -58,7 +71,13 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
       const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product_slug: productSlug, rating, title, comment }),
+        body: JSON.stringify({
+          product_slug: productSlug,
+          rating,
+          title,
+          comment,
+          ...(reviewToken ? { rt: reviewToken, author_name: authorName } : {}),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -102,6 +121,22 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
           ))}
         </div>
       </div>
+
+      {isGuestToken && (
+        <div>
+          <label htmlFor="rev-name" className="block text-[10px] uppercase tracking-[0.3em] text-soft-black/60 mb-2">
+            {NAME_LABEL[locale] ?? NAME_LABEL.en}
+          </label>
+          <input
+            id="rev-name"
+            type="text"
+            maxLength={80}
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
+            className="w-full px-4 py-3 border border-pearl-grey bg-warm-white text-sm focus:outline-none focus:border-gold-primary transition-colors"
+          />
+        </div>
+      )}
 
       <div>
         <label htmlFor="rev-title" className="block text-[10px] uppercase tracking-[0.3em] text-soft-black/60 mb-2">

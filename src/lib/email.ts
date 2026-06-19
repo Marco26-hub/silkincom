@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 // sitemap, schema and llms.txt all agree even when NEXT_PUBLIC_APP_URL on
 // Vercel still points at a vercel.app preview.
 import { APP_URL } from './app-url';
+import { signReviewToken } from './review-token';
 
 function e(str: string | number): string {
   return String(str)
@@ -673,7 +674,7 @@ export async function sendReviewRequestEmail(
             ${it.image && safeImageUrl(it.image) ? `<td width="80" style="padding-right:14px;"><img src="${e(it.image)}" alt="${e(it.name)}" width="80" style="display:block; border:1px solid #E8E2D4;"></td>` : ''}
             <td style="vertical-align:middle;">
               <div style="font-family:'Cormorant Garamond', Georgia, serif; font-size:18px; color:#1A1A1A; margin-bottom:8px;">${e(it.name)}</div>
-              <a href="${APP_URL}/prodotto/${encodeURIComponent(it.slug)}#review" style="display:inline-block; padding:8px 16px; background:#1A1A1A; color:#FFFDF8; text-decoration:none; text-transform:uppercase; letter-spacing:0.2em; font-size:10px;">Lascia recensione</a>
+              <a href="${APP_URL}/prodotto/${encodeURIComponent(it.slug)}?rt=${encodeURIComponent(signReviewToken(email, it.slug))}#review" style="display:inline-block; padding:8px 16px; background:#1A1A1A; color:#FFFDF8; text-decoration:none; text-transform:uppercase; letter-spacing:0.2em; font-size:10px;">Lascia recensione</a>
             </td>
           </tr>
         </table>
