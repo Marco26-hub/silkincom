@@ -39,7 +39,7 @@ export default async function ArtigianiPage() {
       name: t('artisans.confezione.name'),
       role: t('artisans.confezione.role'),
       city: t('artisans.confezione.city'),
-      image: '/artisans/confezione-atelier-como.webp',
+      image: '/artisans/confezione-atelier-como-v2.webp',
       alt: t('artisans.confezione.alt'),
       caption: t('artisans.confezione.caption'),
       story: t('artisans.confezione.story'),
