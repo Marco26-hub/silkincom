@@ -56,6 +56,32 @@ export function generateStaticParams() {
   return PRODUCT_SLUGS.map((slug) => ({ slug }));
 }
 
+// Commercial product TYPE per category-line (the DB categories are brand lines,
+// not product types). Drives the buyer-intent keyword in title/description so
+// each page ranks for what people actually search — and so a cap/tee/towel is
+// never mislabelled "scarf". Localised; falls back to '' for unknown lines.
+const TYPE_BY_CAT: Record<string, Record<string, string>> = {
+  lario:        { it: 'T-shirt', en: 'T-shirt', de: 'T-Shirt', fr: 'T-shirt', es: 'Camiseta', pt: 'T-shirt', nl: 'T-shirt' },
+  bellagio:     { it: 'Pashmina', en: 'Pashmina', de: 'Pashmina', fr: 'Pashmina', es: 'Pashmina', pt: 'Pashmina', nl: 'Pashmina' },
+  'twilly-como':{ it: 'Foulard', en: 'Silk scarf', de: 'Seidentuch', fr: 'Foulard', es: 'Pañuelo de seda', pt: 'Lenço de seda', nl: 'Zijden sjaaltje' },
+  darsena:      { it: 'Cappellino', en: 'Cap', de: 'Cap', fr: 'Casquette', es: 'Gorra', pt: 'Boné', nl: 'Pet' },
+  tremezzo:     { it: 'Sciarpa', en: 'Scarf', de: 'Schal', fr: 'Écharpe', es: 'Bufanda', pt: 'Cachecol', nl: 'Sjaal' },
+  varenna:      { it: 'Sciarpa', en: 'Scarf', de: 'Schal', fr: 'Écharpe', es: 'Bufanda', pt: 'Cachecol', nl: 'Sjaal' },
+  cernobbio:    { it: 'Sciarpa', en: 'Scarf', de: 'Schal', fr: 'Écharpe', es: 'Bufanda', pt: 'Cachecol', nl: 'Sjaal' },
+  melzi:        { it: 'Pantaloncini', en: 'Shorts', de: 'Shorts', fr: 'Short', es: 'Pantalón corto', pt: 'Calções', nl: 'Short' },
+  riva:         { it: 'Camicia', en: 'Shirt', de: 'Hemd', fr: 'Chemise', es: 'Camisa', pt: 'Camisa', nl: 'Overhemd' },
+  tivan:        { it: 'Telo mare', en: 'Beach towel', de: 'Strandtuch', fr: 'Serviette de plage', es: 'Toalla de playa', pt: 'Toalha de praia', nl: 'Strandlaken' },
+};
+const SHIP_SUFFIX: Record<string, string> = {
+  it: 'Made in Como. Spedizione gratuita oltre €200.',
+  en: 'Made in Como. Free shipping over €200.',
+  de: 'Made in Como. Kostenloser Versand ab €200.',
+  fr: 'Made in Como. Livraison gratuite dès €200.',
+  es: 'Made in Como. Envío gratis desde €200.',
+  pt: 'Made in Como. Portes grátis acima de €200.',
+  nl: 'Made in Como. Gratis verzending vanaf €200.',
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
@@ -63,14 +89,41 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!p) return {};
   const mat = materialName(p.material, locale);
   const rawColor = colorFromSlug(p.slug, p.category);
-  const color = rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? rawColor : '';
+  const color = rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? titleCase(rawColor) : '';
   const colorBit = color ? ` ${color}` : '';
-  const matBit = mat ? ` in ${mat}` : '';
-  const dimBit = p.dimensions ? ` ${p.dimensions}.` : '';
+  const type = TYPE_BY_CAT[p.category]?.[locale] ?? '';
+  const typeMat = [type, mat].filter(Boolean).join(' · ');         // e.g. "Foulard · Seta"
+  const ship = SHIP_SUFFIX[locale] ?? SHIP_SUFFIX.it;
+
+  const title = `${p.name}${colorBit}${typeMat ? ` — ${typeMat}` : ''} | SILKinCOM`;
+  const ogTitle = `${p.name}${colorBit}${typeMat ? ` — ${typeMat}` : ''}`;
+  // Keyword-first description: type+material+name up front (so the buying query
+  // matches), then the native short copy, then the commercial shipping hook.
+  const lead = `${type ? type + ' ' : ''}${p.name}${colorBit}${mat ? ' in ' + mat : ''}`.trim();
+  const base = (p.descriptionShort || '').replace(/\s+/g, ' ').trim();
+  let description = `${lead}. ${base ? base + ' ' : ''}${ship}`.replace(/\s+/g, ' ').trim();
+  if (description.length > 160) description = description.slice(0, 157).trimEnd() + '…';
+
+  const url = `${APP_URL}/prodotto/${slug}`;
+  const image = p.images?.[0];
   return {
-    title: `${p.name}${colorBit}${matBit}`,
-    description: `${p.name}${colorBit}${matBit}.${dimBit} Sciarpa luxury Made in Como, spedizione gratuita oltre €200.`,
+    title,
+    description,
     alternates: localizedAlternates(locale, `/prodotto/${slug}`),
+    openGraph: {
+      title: ogTitle,
+      description,
+      url,
+      siteName: 'SILKinCOM',
+      type: 'website',
+      ...(image ? { images: [{ url: image, alt: ogTitle }] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: ogTitle,
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 
