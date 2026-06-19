@@ -176,7 +176,7 @@ const organizationSchema = {
     'https://it.pinterest.com/silkincomofficial',
     'https://www.linkedin.com/company/silkincom',
     'https://www.youtube.com/@silkincom',
-    'https://www.wikidata.org/wiki/Special:Search?search=SILKinCOM',
+    'https://www.tiktok.com/@silkincom',
   ],
 };
 
