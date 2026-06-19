@@ -95,8 +95,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const typeMat = [type, mat].filter(Boolean).join(' · ');         // e.g. "Foulard · Seta"
   const ship = SHIP_SUFFIX[locale] ?? SHIP_SUFFIX.it;
 
-  const title = `${p.name}${colorBit}${typeMat ? ` — ${typeMat}` : ''} | SILKinCOM`;
+  // The root layout applies a "%s | SILKinCOM" title template, so the brand is
+  // appended automatically — don't add it here (it doubled before).
   const ogTitle = `${p.name}${colorBit}${typeMat ? ` — ${typeMat}` : ''}`;
+  const title = ogTitle;
   // Keyword-first description: type+material+name up front (so the buying query
   // matches), then the native short copy, then the commercial shipping hook.
   const lead = `${type ? type + ' ' : ''}${p.name}${colorBit}${mat ? ' in ' + mat : ''}`.trim();
