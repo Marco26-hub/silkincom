@@ -78,6 +78,24 @@ const nextConfig = {
       { source: '/category/varenna', destination: '/collezioni/varenna', permanent: true },
       { source: '/category/collezione-iconica', destination: '/collezioni/iconica', permanent: true },
       { source: '/category/collezione-primavera', destination: '/collezioni/primavera', permanent: true },
+      { source: '/category/collezione-inverno', destination: '/collezioni/inverno', permanent: true },
+      // Catch-all categorie Wix residue (all-products, collezione-limited-edition, ecc.) → collezioni
+      { source: '/category/:slug', destination: '/collezioni', permanent: true },
+      { source: '/:locale(en|de|fr|es|pt|nl)/category/:slug', destination: '/:locale/collezioni', permanent: true },
+      // ⚠️ CRITICO — Wix PRODUCT PAGES: Google ha indicizzato /product-page/<slug> (decine, alcune in
+      // posizione 1-15) ma ora danno 404. 301/308 al nuovo PDP per recuperare ranking + traffico.
+      { source: '/product-page/:slug', destination: '/prodotto/:slug', permanent: true },
+      { source: '/:locale(en|de|fr|es|pt|nl)/product-page/:slug', destination: '/:locale/prodotto/:slug', permanent: true },
+      // Wix blog posts → trame-di-como
+      { source: '/post/:slug', destination: '/trame-di-como/:slug', permanent: true },
+      { source: '/:locale(en|de|fr|es|pt|nl)/post/:slug', destination: '/:locale/trame-di-como/:slug', permanent: true },
+      // Vecchie pagine Wix indicizzate (ranking buono ma URL legacy)
+      { source: '/assistenza-contatti', destination: '/contatti', permanent: true },
+      { source: '/:locale(en|de|fr|es|pt|nl)/assistenza-contatti', destination: '/:locale/contatti', permanent: true },
+      { source: '/resi-e-rimborsi', destination: '/resi', permanent: true },
+      { source: '/:locale(en|de|fr|es|pt|nl)/resi-e-rimborsi', destination: '/:locale/resi', permanent: true },
+      { source: '/termini-e-condizioni', destination: '/termini', permanent: true },
+      { source: '/:locale(en|de|fr|es|pt|nl)/termini-e-condizioni', destination: '/:locale/termini', permanent: true },
       // Vecchi percorsi inglesi
       { source: '/collections/:slug', destination: '/collezioni/:slug', permanent: true },
       { source: '/products/:slug', destination: '/prodotto/:slug', permanent: true },
