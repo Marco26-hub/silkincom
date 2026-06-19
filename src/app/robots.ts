@@ -24,11 +24,15 @@ export default function robots(): MetadataRoute.Robots {
     'YouBot',
     'Diffbot',
   ];
+  // The Google Merchant / Shopping product feed lives under /api/ but must stay
+  // crawlable/fetchable (free product listings + Merchant Center scheduled fetch
+  // respect robots.txt). A more-specific Allow overrides the /api/ Disallow.
+  const feedAllow = ['/', '/api/google-merchant/feed.xml'];
   return {
     rules: [
-      { userAgent: '*', allow: '/', disallow: denied },
-      { userAgent: 'Googlebot', allow: '/', disallow: ['/admin/', '/api/'] },
-      { userAgent: 'Bingbot', allow: '/', disallow: ['/admin/', '/api/'] },
+      { userAgent: '*', allow: feedAllow, disallow: denied },
+      { userAgent: 'Googlebot', allow: feedAllow, disallow: ['/admin/', '/api/'] },
+      { userAgent: 'Bingbot', allow: feedAllow, disallow: ['/admin/', '/api/'] },
       ...aiBots.map((ua) => ({ userAgent: ua, allow: '/', disallow: ['/admin/', '/api/', '/account/', '/checkout/'] })),
     ],
     sitemap: `${APP_URL}/sitemap.xml`,
