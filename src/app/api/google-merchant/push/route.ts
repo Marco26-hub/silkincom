@@ -46,12 +46,16 @@ export async function POST(req: NextRequest) {
     const supabase = createServiceClient();
     const products = await fetchPublishedProducts(supabase);
 
+    // category_id -> slug, for the correct Google product category per line.
+    const { data: cats } = await supabase.from('categories').select('id, slug');
+    const catSlugById = new Map<string, string>((cats || []).map((c: any) => [c.id, c.slug]));
+
     const entries = products.flatMap((p, pi) =>
       LANGS.map((lang, li) => ({
         batchId: pi * LANGS.length + li,
         merchantId,
         method: 'insert' as const,
-        product: buildContentApiProduct(p, lang),
+        product: buildContentApiProduct(p, lang, catSlugById.get(p.category_id)),
       })),
     );
 

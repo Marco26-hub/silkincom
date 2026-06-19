@@ -17,30 +17,12 @@
 import { NextRequest } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
-import { resolveColor, resolveMaterial } from '@/lib/google-merchant/mapping';
+import { resolveColor, resolveMaterial, resolveGpc } from '@/lib/google-merchant/mapping';
 
 export const runtime = 'nodejs';
 export const revalidate = 3600;
 
 const BRAND = 'SILKinCOM';
-
-// Google product taxonomy per brand line (the catalog mixes scarves, apparel,
-// hats and beach towels — emitting "Scarves & Shawls" for ALL of them, as the
-// feed did before, mislabels a T-shirt/cap/towel and hurts Shopping matching).
-type Gpc = { pt: string; id: number };
-const GPC_BY_CATEGORY: Record<string, Gpc> = {
-  'twilly-como': { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
-  varenna: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
-  cernobbio: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
-  tremezzo: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
-  bellagio: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: 1786 },
-  lario: { pt: 'Apparel & Accessories > Clothing > Shirts & Tops', id: 212 },
-  riva: { pt: 'Apparel & Accessories > Clothing > Shirts & Tops', id: 212 },
-  darsena: { pt: 'Apparel & Accessories > Clothing Accessories > Hats', id: 173 },
-  melzi: { pt: 'Apparel & Accessories > Clothing > Shorts', id: 207 },
-  tivan: { pt: 'Home & Garden > Linens & Bedding > Towels > Beach Towels', id: 2548 },
-};
-const GPC_DEFAULT: Gpc = GPC_BY_CATEGORY['twilly-como'];
 
 function escapeXml(str: string): string {
   return str
@@ -104,7 +86,7 @@ export async function GET(req: NextRequest) {
     const availability = stock > 0 ? 'in_stock' : 'out_of_stock';
 
     const catSlug = catSlugById.get(p.category_id) || '';
-    const gpc = GPC_BY_CATEGORY[catSlug] || GPC_DEFAULT;
+    const gpc = resolveGpc(catSlug);
     // Sale pricing: emit the original (compare_at) as price and the current as
     // sale_price ONLY when there is a genuine markdown.
     const hasSale = p.compare_at_price && Number(p.compare_at_price) > Number(p.price);

@@ -12,8 +12,28 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const BRAND = 'SILKinCOM';
 export const TARGET_COUNTRY = 'IT';
-export const GOOGLE_PRODUCT_CATEGORY = '1786'; // Apparel & Accessories > Clothing Accessories > Scarves & Shawls
-const PRODUCT_TYPE = 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls';
+
+// Google product taxonomy per brand line. The catalog mixes scarves, apparel,
+// hats and beach towels — emitting "Scarves & Shawls" for ALL of them (the old
+// behaviour) mislabels a T-shirt/cap/towel and hurts Shopping matching. Shared
+// by the RSS feed and the Content API push so they never drift.
+export type Gpc = { pt: string; id: string };
+export const GPC_BY_CATEGORY: Record<string, Gpc> = {
+  'twilly-como': { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: '1786' },
+  varenna: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: '1786' },
+  cernobbio: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: '1786' },
+  tremezzo: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: '1786' },
+  bellagio: { pt: 'Apparel & Accessories > Clothing Accessories > Scarves & Shawls', id: '1786' },
+  lario: { pt: 'Apparel & Accessories > Clothing > Shirts & Tops', id: '212' },
+  riva: { pt: 'Apparel & Accessories > Clothing > Shirts & Tops', id: '212' },
+  darsena: { pt: 'Apparel & Accessories > Clothing Accessories > Hats', id: '173' },
+  melzi: { pt: 'Apparel & Accessories > Clothing > Shorts', id: '207' },
+  tivan: { pt: 'Home & Garden > Linens & Bedding > Towels > Beach Towels', id: '2548' },
+};
+export const GPC_DEFAULT: Gpc = GPC_BY_CATEGORY['twilly-como'];
+export function resolveGpc(catSlug?: string): Gpc {
+  return (catSlug && GPC_BY_CATEGORY[catSlug]) || GPC_DEFAULT;
+}
 
 // Colours are not stored as structured data (product_colors is empty), so we
 // derive them from the Italian product name (the colour is the trailing token,
@@ -65,7 +85,7 @@ export function resolveMaterial(composition?: string): string {
 // Columns required to build a Merchant item — shared by the feed and the API
 // push so a query change can't silently desync them.
 export const PRODUCT_SELECT = `
-  id, slug, name, sku, price, compare_at_price, currency,
+  id, slug, name, sku, price, compare_at_price, currency, category_id,
   description_short, description_long, composition,
   name_i18n, description_short_i18n, description_long_i18n,
   product_images(image_url, is_primary, display_order),
@@ -135,8 +155,9 @@ export function normalizeItem(p: CatalogProduct, lang: 'it' | 'en') {
  * row in the requested language. Mirrors the feed's attributes; availability
  * uses the API spelling ("in stock"/"out of stock", with a space).
  */
-export function buildContentApiProduct(p: CatalogProduct, lang: 'it' | 'en') {
+export function buildContentApiProduct(p: CatalogProduct, lang: 'it' | 'en', catSlug?: string) {
   const it = normalizeItem(p, lang);
+  const gpc = resolveGpc(catSlug);
   return {
     offerId: it.offerId,
     title: `${it.title} — SILKinCOM`,
@@ -155,8 +176,8 @@ export function buildContentApiProduct(p: CatalogProduct, lang: 'it' | 'en') {
     gender: 'unisex',
     ageGroup: 'adult',
     material: it.material,
-    googleProductCategory: GOOGLE_PRODUCT_CATEGORY,
-    productTypes: [PRODUCT_TYPE],
+    googleProductCategory: gpc.id,
+    productTypes: [gpc.pt],
     shipping: [{ country: TARGET_COUNTRY, service: 'Standard', price: { value: it.shippingPrice, currency: 'EUR' } }],
     customLabel0: 'made-in-como',
     customLabel1: it.composition,
