@@ -6,6 +6,10 @@ import { routing } from '@/i18n/routing';
 import { createPublicClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
 
+// ISR: regenerate hourly so blog posts added via the CMS/DB (not a code
+// deploy) appear in the sitemap without waiting for the next build.
+export const revalidate = 3600;
+
 function localizedUrl(locale: string, path: string): string {
   const suffix = path === '/' ? '' : path;
   return locale === routing.defaultLocale
