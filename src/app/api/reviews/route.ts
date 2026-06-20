@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
 import { verifyReviewToken } from '@/lib/review-token';
+import { sendOwnerReviewNotificationEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
     // Resolve product
     const { data: product } = await supabase
       .from('products')
-      .select('id')
+      .select('id, name')
       .eq('slug', productSlug)
       .single();
     if (!product) {
@@ -99,6 +100,11 @@ export async function POST(req: NextRequest) {
       if (gErr) {
         console.error('Guest review insert error:', gErr);
         return NextResponse.json({ error: 'Errore salvataggio' }, { status: 500 });
+      }
+      try {
+        await sendOwnerReviewNotificationEmail(product.name, productSlug, rating, safeName, title, comment);
+      } catch (notifyErr) {
+        console.error('Owner review notification failed:', notifyErr);
       }
       return NextResponse.json(
         { success: true, message: 'Recensione inviata, sarà visibile dopo moderazione.' },
@@ -149,6 +155,12 @@ export async function POST(req: NextRequest) {
     if (insertError) {
       console.error('Review insert error:', insertError);
       return NextResponse.json({ error: 'Errore salvataggio' }, { status: 500 });
+    }
+
+    try {
+      await sendOwnerReviewNotificationEmail(product.name, productSlug, rating, null, title, comment);
+    } catch (notifyErr) {
+      console.error('Owner review notification failed:', notifyErr);
     }
 
     return NextResponse.json(

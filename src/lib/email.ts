@@ -206,6 +206,38 @@ export async function sendOwnerOrderNotificationEmail(
   });
 }
 
+export async function sendOwnerReviewNotificationEmail(
+  productName: string,
+  productSlug: string,
+  rating: number,
+  authorName?: string | null,
+  title?: string | null,
+  comment?: string | null
+) {
+  const r = Math.max(0, Math.min(5, Math.round(rating)));
+  const stars = '★'.repeat(r) + '☆'.repeat(5 - r);
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: OWNER_EMAIL,
+    subject: `Nuova recensione ${stars} — ${e(productName)}`,
+    html: `
+      <div style="font-family:'Inter',-apple-system,sans-serif;color:#171717;max-width:520px;">
+        <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;">Nuova recensione ricevuta</h2>
+        <p><strong>Prodotto:</strong> ${e(productName)}</p>
+        <p><strong>Voto:</strong> ${stars} (${e(String(r))}/5)</p>
+        ${authorName ? `<p><strong>Autore:</strong> ${e(authorName)}</p>` : ''}
+        ${title ? `<p><strong>Titolo:</strong> ${e(title)}</p>` : ''}
+        ${comment ? `<p style="background:#F5F0E8;padding:14px 18px;border-left:3px solid #D4AF37;margin:16px 0;">${e(comment)}</p>` : ''}
+        <p style="font-size:13px;color:#6B6B6B;">In attesa di moderazione — approvala per pubblicarla sul sito.</p>
+        <p style="margin-top:24px;">
+          <a href="${APP_URL}/admin/recensioni" style="display:inline-block;padding:12px 24px;background:#171717;color:#FFFDF8;text-decoration:none;text-transform:uppercase;letter-spacing:0.1em;font-size:12px;">Modera in amministrazione</a>
+        </p>
+        <p style="font-size:11px;color:#6B6B6B;margin-top:24px;">SILKinCOM — notifica automatica recensioni · <a href="${APP_URL}/prodotto/${e(productSlug)}#review" style="color:#A87F1E;">vedi prodotto</a></p>
+      </div>
+    `,
+  });
+}
+
 export async function sendShippingNotificationEmail(
   customerEmail: string,
   orderNumber: string,
