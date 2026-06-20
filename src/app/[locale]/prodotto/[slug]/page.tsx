@@ -319,7 +319,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
 
               {/* Short essence */}
               <p className="text-[15px] font-light text-soft-black/85 leading-[1.7] mb-10 max-w-md">
-                {shortComposition(p.description)}
+                {p.descriptionShort?.trim() || shortComposition(p.description)}
               </p>
 
               {/* Artisan attribution (renders only if mapped) */}
