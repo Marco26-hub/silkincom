@@ -1,6 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { APP_URL } from '@/lib/app-url';
 
+// Force a fully static robots.txt (no per-request serverless work) so crawlers
+// and Lighthouse always download it instantly.
+export const dynamic = 'force-static';
+
 export default function robots(): MetadataRoute.Robots {
   const denied = ['/admin/', '/api/', '/account/', '/checkout/', '/cart/', '/(auth)/'];
   // GEO: tutti i principali AI crawler ammessi (visibilità in ChatGPT, Claude, Perplexity, Gemini, Bing Copilot, Meta AI)
@@ -36,6 +40,5 @@ export default function robots(): MetadataRoute.Robots {
       ...aiBots.map((ua) => ({ userAgent: ua, allow: '/', disallow: ['/admin/', '/api/', '/account/', '/checkout/'] })),
     ],
     sitemap: `${APP_URL}/sitemap.xml`,
-    host: APP_URL,
   };
 }

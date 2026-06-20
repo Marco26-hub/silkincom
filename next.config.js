@@ -55,6 +55,17 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // robots.txt / sitemap.xml are static metadata routes. Next serves them
+        // with `max-age=0, must-revalidate`, so every crawler/Lighthouse fetch
+        // revalidates at the origin — a cold serverless edge can make that fetch
+        // time out ("Lighthouse couldn't download robots.txt"). Cache them hard
+        // on the CDN so the fetch is always instant.
+        source: '/:file(robots.txt|sitemap.xml)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800' },
+        ],
+      },
     ];
   },
   async redirects() {
