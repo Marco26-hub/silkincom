@@ -198,7 +198,7 @@ export default async function MarcoDibenedettoPage({ params }: { params: Promise
 
       <section className="relative overflow-hidden bg-[#11100e] pt-32 text-warm-white md:pt-36">
         <div className="mx-auto grid min-h-[76svh] max-w-[1500px] md:grid-cols-[0.92fr_1.08fr]">
-          <div className="relative z-10 flex flex-col justify-end px-7 pb-14 pt-14 sm:px-10 md:px-14 md:pb-20 lg:px-20">
+          <div className="relative z-10 flex flex-col justify-center px-7 py-16 sm:px-10 md:px-14 md:py-20 lg:px-20">
             <span className="mb-7 block h-px w-14 bg-gold-primary" />
             <span className="mb-5 text-[9px] uppercase tracking-[0.46em] text-gold-primary">
               SILKinCOM · {t('role')}
