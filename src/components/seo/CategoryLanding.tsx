@@ -15,6 +15,13 @@ const CATEGORY_HERO_IMAGES: Record<string, string> = {
   'regalo-seta-donna': '/instagram/ig-08.webp',
 };
 
+// Per-slug object-position for the hero (defaults to 'center'). The Riva linen
+// shot (ig-01) is a tall portrait with the face near the top, so a centred crop
+// clips the head on wide containers — bias the crop upward to keep the face.
+const CATEGORY_HERO_POSITION: Record<string, string> = {
+  'camicie-lino': 'center 18%',
+};
+
 const UI_COPY = {
   shop: { it: 'Scopri i modelli', en: 'Shop the edit', es: 'Descubre los modelos', fr: 'Découvrir les modèles', de: 'Modelle entdecken', pt: 'Descobrir os modelos', nl: 'Ontdek de modellen' },
   from: { it: 'Da', en: 'From', es: 'Desde', fr: 'Dès', de: 'Ab', pt: 'Desde', nl: 'Vanaf' },
@@ -42,6 +49,7 @@ export async function CategoryLanding({ slug, locale }: { slug: string; locale: 
   const prefix = locale === 'it' ? '' : `/${locale}`;
   const url = `${APP_URL}${prefix}/${slug}`;
   const heroImage = CATEGORY_HERO_IMAGES[slug] || '/editorial/materiali-seta-cashmere-lana.webp';
+  const heroPosition = CATEGORY_HERO_POSITION[slug] || 'center';
   const minimumPrice = products.length ? Math.min(...products.map((product) => product.price)) : null;
 
   const collectionSchema = {
@@ -127,7 +135,7 @@ export async function CategoryLanding({ slug, locale }: { slug: string; locale: 
             </a>
           </div>
           <div className="relative min-h-[48svh] overflow-hidden border-l border-gold-primary/15 md:min-h-0">
-            <Image src={heroImage} alt={L(cfg.h1)} fill priority sizes="(max-width: 767px) 100vw, 55vw" className="object-cover" />
+            <Image src={heroImage} alt={L(cfg.h1)} fill priority sizes="(max-width: 767px) 100vw, 55vw" className="object-cover" style={{ objectPosition: heroPosition }} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10 md:bg-gradient-to-r md:from-[#11100e]/35 md:to-transparent" />
             <div className="absolute inset-4 border border-gold-primary/25 md:inset-6" />
             <span className="absolute bottom-8 right-8 text-[8px] uppercase tracking-[0.36em] text-gold-primary">Made in Como</span>
