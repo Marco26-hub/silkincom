@@ -123,16 +123,60 @@ function renderInline(text: string): ReactNode {
 
 function RichBody({ body }: { body: string }) {
   const blocks = body.split('\n').map((block) => block.trim()).filter(Boolean);
+  // Group the flat block list into an editorial structure: any leading
+  // paragraphs become the intro lead; each "## " starts a numbered chapter
+  // that collects the paragraphs following it. Rendered with gold chapter
+  // numerals + a fading hairline so it reads like the rest of the Maison.
+  const intro: string[] = [];
+  const chapters: { heading: string; paras: string[] }[] = [];
+  for (const block of blocks) {
+    if (block.startsWith('## ')) {
+      chapters.push({ heading: block.slice(3), paras: [] });
+    } else if (chapters.length) {
+      chapters[chapters.length - 1].paras.push(block);
+    } else {
+      intro.push(block);
+    }
+  }
   return (
-    <>
-      {blocks.map((block, index) =>
-        block.startsWith('## ') ? (
-          <h2 key={index}>{block.slice(3)}</h2>
-        ) : (
-          <p key={index}>{renderInline(block)}</p>
-        )
+    <div className="[&_a]:text-gold-dark [&_a]:underline [&_a]:decoration-gold-primary/40 [&_a]:underline-offset-4 hover:[&_a]:text-gold-primary [&_strong]:font-medium [&_strong]:text-soft-black">
+      {intro.length > 0 && (
+        <div className="mb-16 space-y-5">
+          {intro.map((para, i) => (
+            <p
+              key={i}
+              className={
+                i === 0
+                  ? 'font-display text-xl font-light leading-[1.6] text-soft-black md:text-2xl'
+                  : 'font-light leading-[1.9] text-soft-black/80'
+              }
+            >
+              {renderInline(para)}
+            </p>
+          ))}
+        </div>
       )}
-    </>
+      {chapters.map((chapter, i) => (
+        <section key={i} className={i > 0 ? 'mt-16 md:mt-20' : ''}>
+          <div className="mb-6 flex items-center gap-4">
+            <span className="font-display text-2xl font-light leading-none text-gold-primary tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span className="h-px flex-1 bg-gradient-to-r from-gold-primary/50 to-transparent" />
+          </div>
+          <h2 className="font-display text-3xl font-light leading-[1.08] text-soft-black md:text-[2.5rem]">
+            {chapter.heading}
+          </h2>
+          <div className="mt-6 space-y-5">
+            {chapter.paras.map((para, j) => (
+              <p key={j} className="font-light leading-[1.9] text-soft-black/80">
+                {renderInline(para)}
+              </p>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -272,7 +316,7 @@ export default async function MarcoDibenedettoPage({ params }: { params: Promise
               <footer className="mt-5 text-[9px] uppercase tracking-[0.34em] text-gold-dark">Marco Dibenedetto · SILKinCOM</footer>
             </blockquote>
 
-            <div className="prose prose-lg max-w-none break-words font-light leading-relaxed text-soft-black/80 prose-headings:mt-14 prose-headings:mb-5 prose-headings:font-display prose-headings:text-3xl prose-headings:font-light prose-headings:text-soft-black prose-p:leading-[1.9] prose-strong:font-medium prose-strong:text-soft-black prose-a:text-gold-dark hover:prose-a:text-gold-primary">
+            <div className="max-w-none break-words">
               <RichBody body={t('body')} />
             </div>
 
