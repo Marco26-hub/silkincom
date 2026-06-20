@@ -173,9 +173,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       )}
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         {post.image && (
-          <Image src={post.image} alt={post.title} fill priority className="object-cover scale-105 animate-[heroZoom_20s_ease-out_forwards]" />
+          <Image src={post.image} alt={post.title} fill priority sizes="100vw" className="object-cover object-[center_32%] scale-105 animate-[heroZoom_20s_ease-out_forwards]" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-soft-black/80 via-soft-black/30 to-soft-black/10" />
+        {/* Bottom scrim carries the title; the image recedes into soft-black. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-soft-black/85 via-soft-black/25 to-transparent" />
+        {/* Top scrim so the nav + gold wordmark stay legible over any hero image. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-soft-black/80 via-soft-black/30 to-transparent" />
         <div className="relative z-10 h-full flex items-end pb-20">
           <div className="max-w-[1100px] w-full mx-auto px-6 lg:px-10 text-warm-white animate-[fadeUp_1s_ease-out_forwards]">
             <span className="inline-block px-3 py-1 bg-warm-white/10 backdrop-blur-md text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-6 border border-warm-white/20">
