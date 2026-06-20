@@ -203,7 +203,11 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
         returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
         merchantReturnDays: 14,
         returnMethod: 'https://schema.org/ReturnByMail',
-        returnFees: 'https://schema.org/ReturnShippingFees',
+        // Customer ships the return at their own expense via a carrier of their
+        // choice (resi/recesso policy: "a carico del cliente, a proprie spese").
+        // ReturnFeesCustomerResponsibility correctly models this WITHOUT requiring
+        // a fixed returnShippingFeesAmount (which ReturnShippingFees would demand).
+        returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
       },
       shippingDetails: {
         '@type': 'OfferShippingDetails',
