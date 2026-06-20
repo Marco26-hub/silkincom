@@ -2,12 +2,14 @@
 
 import { Mail, MapPin, Instagram, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 
 export function ContattiClient() {
   const t = useTranslations('contatti');
+  const nav = useTranslations('nav');
+  const locale = useLocale();
   const [formData, setFormData] = useState({
     nome: '',
     cognome: '',
@@ -63,9 +65,10 @@ export function ContattiClient() {
   return (
     <>
       <BreadcrumbSchema
+        locale={locale}
         trail={[
-          { name: 'Home', path: '/' },
-          { name: 'Contatti', path: '/contatti' },
+          { name: nav('home'), path: '/' },
+          { name: t('title'), path: '/contatti' },
         ]}
       />
       {/* Floating success toast — fixed at top so the user sees it after

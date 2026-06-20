@@ -28,20 +28,6 @@ type Sale = {
   when: string | null;
 };
 
-// Fallback curated entries — used when DB has no real paid orders yet.
-// Replaced automatically once real sales come in (API prefers real data).
-// All Italian luxury market cities + actual catalog products.
-const FALLBACK_SALES: Sale[] = [
-  { initials: 'Giulia M.', city: 'Milano', product: 'Bellagio Pashmina', slug: 'bellagio-1', when: new Date(Date.now() - 7 * 60_000).toISOString() },
-  { initials: 'Anna T.', city: 'Como', product: 'Cernobbio Stola', slug: 'cernobbio-1', when: new Date(Date.now() - 14 * 60_000).toISOString() },
-  { initials: 'Federica L.', city: 'Roma', product: 'Como Twilly', slug: 'como-elegante', when: new Date(Date.now() - 22 * 60_000).toISOString() },
-  { initials: 'Sofia R.', city: 'Firenze', product: 'Tremezzo Sciarpa', slug: 'tremezzo-azzurra', when: new Date(Date.now() - 38 * 60_000).toISOString() },
-  { initials: 'Chiara B.', city: 'Torino', product: 'Bellagio 70', slug: 'bellagio-4', when: new Date(Date.now() - 55 * 60_000).toISOString() },
-  { initials: 'Elena V.', city: 'Bologna', product: 'Varenna', slug: 'varenna-1', when: new Date(Date.now() - 75 * 60_000).toISOString() },
-  { initials: 'Marta S.', city: 'Venezia', product: 'Lario', slug: 'lario-1', when: new Date(Date.now() - 92 * 60_000).toISOString() },
-  { initials: 'Silvia P.', city: 'Napoli', product: 'Bellagio Carré', slug: 'bellagio-5', when: new Date(Date.now() - 110 * 60_000).toISOString() },
-];
-
 const FIRST_DELAY_MS = 15_000;       // 15s after mount (first impression)
 const INTERVAL_MS = 5 * 60 * 1000;   // 5 min between popups (per user spec)
 const VISIBLE_MS = 8_000;            // 8s on screen
@@ -78,11 +64,10 @@ export function SalesNotification() {
       .then((d) => {
         if (!alive) return;
         const items: Sale[] = d?.items || [];
-        // Prefer real orders; fall back to curated entries when DB empty
-        setSales(items.length > 0 ? items : FALLBACK_SALES);
+        setSales(items);
       })
       .catch(() => {
-        if (alive) setSales(FALLBACK_SALES);
+        if (alive) setSales([]);
       });
     return () => {
       alive = false;
@@ -90,7 +75,7 @@ export function SalesNotification() {
   }, []);
 
   useEffect(() => {
-    if (!sales || dismissed) return;
+    if (!sales?.length || dismissed) return;
 
     function showNext() {
       const next = sales![cycleIndex.current % sales!.length];
@@ -121,14 +106,14 @@ export function SalesNotification() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-5 left-5 z-40 max-w-[228px] animate-fade-in"
+      className="fixed bottom-[5.75rem] left-3 z-40 max-w-[190px] animate-fade-in sm:bottom-5 sm:left-5 sm:max-w-[228px]"
     >
-      <div className="relative border border-gold-primary/20 border-l-2 border-l-gold-primary bg-warm-white/95 backdrop-blur-md pl-4 pr-7 py-3 shadow-[0_14px_44px_-16px_rgba(23,23,23,0.32)]">
+      <div className="relative border border-gold-primary/25 border-l-2 border-l-gold-primary bg-warm-white/95 py-2.5 pl-3.5 pr-7 shadow-[0_14px_44px_-16px_rgba(23,23,23,0.32)] backdrop-blur-md sm:py-3 sm:pl-4">
         <p className="flex items-center gap-1.5 text-[8px] uppercase tracking-[0.26em] text-gold-primary font-medium">
           <ShoppingBag className="h-2.5 w-2.5 shrink-0 stroke-[1.6]" />
           <span className="truncate">{t('justOrdered')}</span>
         </p>
-        <p className="mt-1.5 font-display italic text-[14px] leading-[1.25] text-soft-black line-clamp-2">
+        <p className="mt-1 font-display text-[13px] italic leading-[1.2] text-soft-black line-clamp-2 sm:mt-1.5 sm:text-[14px]">
           {current.slug ? (
             <Link href={`/prodotto/${current.slug}`} className="hover:text-gold-primary transition-colors">
               {current.product}
@@ -137,7 +122,7 @@ export function SalesNotification() {
             current.product
           )}
         </p>
-        <p className="mt-1.5 text-[10px] text-soft-black/45 truncate">
+        <p className="mt-1 truncate text-[9px] text-soft-black/45 sm:mt-1.5 sm:text-[10px]">
           {current.initials}
           {current.city ? ` · ${current.city}` : ''}
           {current.when ? ` · ${timeAgo(current.when, t)}` : ''}

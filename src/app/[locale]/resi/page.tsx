@@ -1,10 +1,13 @@
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = {
-  title: 'Resi e Rimborsi — Diritto di recesso globale',
-  description: 'Periodi di reso, condizioni, modalità di rimborso. SILKinCOM, accessori made in Como.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations('resi');
+  return { title: t('title'), description: t('subtitle'), alternates: localizedAlternates(locale, '/resi') };
+}
 
 export default async function ResiPage() {
   const t = await getTranslations('resi');

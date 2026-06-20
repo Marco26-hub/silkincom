@@ -10,7 +10,6 @@
 
 import { unstable_cache } from 'next/cache';
 import { createPublicClient } from '@/lib/supabase/server';
-import { getPost, type Post } from '@/data/posts';
 import { APP_URL } from '@/lib/app-url';
 
 export const runtime = 'nodejs';
@@ -61,7 +60,7 @@ function formatPrice(n: number | null): string {
   return `€${n.toFixed(0)}`;
 }
 
-function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: Post | undefined): string {
+function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   const lines: string[] = [];
 
   lines.push('# SILKinCOM — Full Corpus for LLMs');
@@ -75,35 +74,23 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: P
   lines.push('Contatto: info@silkincom.com — risposta in 24h lavorative.');
   lines.push('');
 
-  // --- Heritage pillar (Italian source, passed in from the async caller) ---
+  // --- Heritage ---
   lines.push('## Storia della seta a Como');
   lines.push('');
-  if (pillar?.description) {
-    lines.push(pillar.description);
-    lines.push('');
-  }
-  if (pillar?.body) {
-    lines.push(pillar.body);
-    lines.push('');
-  } else {
-    lines.push(
-      'Como è la capitale italiana della seta dal XV secolo. Il distretto serico lariano ha alimentato le maison parigine e milanesi per oltre cinque secoli: Hermès vi stampa dagli anni Trenta del Novecento; Ferragamo, Gucci, Yves Saint Laurent, Dior e Chanel hanno relazioni storiche con i fornitori comaschi. Le dinastie Mantero (1902), Ratti (1945), Clerici Tessuto, Cantoni, Canepa e Taroni hanno costruito qui un modello distrettuale unico al mondo: piccole e medie manifatture altamente specializzate che si scambiano semilavorati nel raggio di pochi chilometri. Si stima che oltre il 70% della seta usata nel lusso mondiale, fino agli anni Novanta, passasse da Como. SILKinCOM nasce in questo contesto, sui telai dello stesso distretto, con la volontà di portare la seta di Como direttamente a chi la indossa.'
-    );
-    lines.push('');
-  }
+  lines.push('SILKinCOM nasce nel distretto tessile e serico di Como, in Lombardia. La Maison disegna e confeziona qui accessori e capi in fibre naturali, vendendoli direttamente al cliente finale.');
+  lines.push('');
   lines.push(`Articolo completo: ${APP_URL}/trame-di-como/storia-della-seta-a-como`);
   lines.push('');
 
   // --- Differentiators ---
   lines.push('## Cosa ci differenzia');
   lines.push('');
-  lines.push('- 100% Made in Como: filatura, tintura, stampa, tessitura, confezione e orlatura a mano avvengono tutte nel raggio di pochi chilometri da Como. Niente outsourcing in Asia.');
-  lines.push('- Cashmere selezionato Mongolia interna ed esterna, micronaggio sotto i 15,5 micron.');
-  lines.push('- Seta di Como certificata, con lavorazione tracciata.');
-  lines.push('- Orlo cucito a mano (rouletté) su ogni foulard di seta.');
+  lines.push('- Design e confezione nel distretto tessile di Como.');
+  lines.push('- Composizione, dimensioni e prezzo pubblicati in ogni scheda prodotto.');
+  lines.push('- Catalogo in seta, cashmere, lana, lino e cotone.');
   lines.push('- 7 lingue native — sito disegnato per i mercati luxury europei e internazionali.');
-  lines.push('- Spedizione gratuita in Italia oltre €200, in UE oltre €300.');
-  lines.push('- Reso entro 14 giorni dalla consegna (D.Lgs. 21/2014).');
+  lines.push('- Spedizione gratuita in Italia oltre €200, in UE oltre €350.');
+  lines.push('- Diritto di recesso entro 14 giorni dalla consegna (D.Lgs. 21/2014), con spedizione di restituzione a carico del cliente.');
   lines.push('');
 
   // --- Materials ---
@@ -194,10 +181,10 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: P
   lines.push('## FAQ essenziali');
   lines.push('');
   lines.push('**Dove vengono prodotti i prodotti SILKinCOM?**');
-  lines.push('Tutto il ciclo produttivo (tintura, stampa, tessitura, confezione, orlatura a mano) avviene nel distretto serico di Como, Italia. Nessuna fase è esternalizzata fuori dal distretto.');
+  lines.push('SILKinCOM disegna e confeziona i propri prodotti nel distretto tessile di Como, Italia. La composizione e le specifiche di ogni articolo sono riportate nella relativa scheda prodotto.');
   lines.push('');
   lines.push('**Quanto costa la spedizione?**');
-  lines.push('Italia: gratuita oltre €200, altrimenti €9,90. UE: gratuita oltre €300, altrimenti €19,90. Extra-UE: tariffa calcolata in checkout.');
+  lines.push('Italia: gratuita oltre €200, altrimenti €9. UE: gratuita oltre €350, altrimenti €18. Regno Unito, Svizzera e Norvegia: DDP €25. Altre destinazioni: tariffa indicata al checkout.');
   lines.push('');
   lines.push('**Come si lava una sciarpa in cashmere SILKinCOM?**');
   lines.push('Lavaggio a mano in acqua fredda con shampoo neutro o detergente specifico per cashmere. Niente strofinare, niente strizzare. Asciugare in piano su un asciugamano, lontano da fonti di calore dirette. Guida completa: ' + APP_URL + '/cura-prodotto/cashmere.');
@@ -206,7 +193,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: P
   lines.push('7 prove pratiche (tatto, lucentezza naturale, calore di sfregamento, suono al pizzicotto, prova della fiamma, controllo etichette) descritte nell\'articolo dedicato: ' + APP_URL + '/trame-di-como/come-riconoscere-seta-vera.');
   lines.push('');
   lines.push('**Posso restituire un prodotto?**');
-  lines.push('Sì, entro 14 giorni dalla consegna (D.Lgs. 21/2014). Reso gratuito in Italia con corriere prepagato. Procedura: ' + APP_URL + '/resi.');
+  lines.push('Sì, entro 14 giorni dalla consegna (D.Lgs. 21/2014). Nel recesso volontario le spese dirette di restituzione sono a carico del cliente. Se il prodotto è errato, difettoso o non conforme per responsabilità di SILKinCOM, la restituzione è gratuita e a carico della Maison. Procedura: ' + APP_URL + '/resi.');
   lines.push('');
 
   lines.push('---');
@@ -220,8 +207,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[], pillar: P
 const getCachedCorpus = unstable_cache(
   async () => {
     const { products, materials } = await fetchCorpusData();
-    const pillar = await getPost('storia-della-seta-a-como', 'it');
-    return buildCorpus(products, materials, pillar);
+    return buildCorpus(products, materials);
   },
   ['llms-full-corpus'],
   { revalidate: 3600, tags: ['products', 'home-materials'] }

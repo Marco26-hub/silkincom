@@ -1,10 +1,13 @@
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
+import type { Metadata } from 'next';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = {
-  title: 'Cura del prodotto — Come trattare seta, cashmere, lana, lino e cotone',
-  description: 'Consigli per la cura di sciarpe, foulard e accessori in seta, cashmere, lana, lino e cotone.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations('cura');
+  return { title: t('title'), description: t('subtitle'), alternates: localizedAlternates(locale, '/cura-prodotto') };
+}
 
 export default async function CuraPage() {
   const t = await getTranslations('cura');

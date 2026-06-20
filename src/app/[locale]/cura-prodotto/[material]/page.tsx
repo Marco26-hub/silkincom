@@ -9,34 +9,14 @@ import { APP_URL } from '@/lib/app-url';
 const MATERIALS = ['seta', 'cashmere', 'lana', 'lino', 'cotone'] as const;
 type Material = (typeof MATERIALS)[number];
 
-// Per-material SEO copy. Italian only for the MVP; the next intl
-// pass can lift these into messages/cura.{material}Intro.
-const COPY: Record<Material, { title: string; intro: string }> = {
-  seta: {
-    title: 'Cura della seta: come lavare e conservare sciarpe e foulard',
-    intro:
-      'La seta è una fibra proteica delicata che richiede attenzione. Lavaggio a mano in acqua fredda o lavaggio a secco, mai centrifuga, asciugatura piatta lontano da fonti di calore. Una sciarpa o un foulard di seta ben curati accompagnano chi li porta per decenni.',
-  },
-  cashmere: {
-    title: 'Cura del cashmere: lavaggio e conservazione di pashmine e sciarpe',
-    intro:
-      'Il cashmere è la fibra più nobile e fragile del guardaroba. Lavaggio a mano con sapone neutro o detergente specifico, asciugatura piatta, mai stiratura diretta. Con queste cure una pashmina o una sciarpa in cashmere conserva morbidezza e calore per molte stagioni.',
-  },
-  lana: {
-    title: 'Cura della lana: come lavare e proteggere sciarpe e accessori',
-    intro:
-      'La lana merino, robusta ma traspirante, tollera lavaggi delicati in acqua tiepida con detergente neutro. Si asciuga distesa, lontano da luce diretta. Stiratura a vapore solo se necessaria, sempre con un panno protettivo interposto.',
-  },
-  lino: {
-    title: 'Cura del lino: come lavare camicie, foulard e capi estivi',
-    intro:
-      'Il lino è una fibra resistente che migliora con l’uso. Tollera il lavaggio in lavatrice a bassa temperatura, ma l’asciugatrice è sconsigliata. Stiratura a caldo da umido per ridare il caratteristico finish liscio. La leggera stropicciatura è parte del fascino del lino.',
-  },
-  cotone: {
-    title: 'Cura del cotone: come lavare t-shirt e accessori extra-lungo',
-    intro:
-      'Il cotone, in particolare quello extra-lungo che usiamo, è resistente e facile da curare. Lavaggio in lavatrice fino a 30 °C, asciugatura naturale, stiratura a media temperatura. Per i capi colorati, lavare al rovescio per preservare la stampa.',
-  },
+const CARE_UI: Record<string, { essentials: string; others: string; back: string }> = {
+  it: { essentials: 'I gesti essenziali', others: 'Altri materiali', back: 'Torna alla cura del prodotto' },
+  en: { essentials: 'Essential care steps', others: 'Other materials', back: 'Back to product care' },
+  es: { essentials: 'Cuidados esenciales', others: 'Otros materiales', back: 'Volver al cuidado del producto' },
+  fr: { essentials: 'Les gestes essentiels', others: 'Autres matières', back: 'Retour à l’entretien du produit' },
+  de: { essentials: 'Die wichtigsten Pflegeschritte', others: 'Weitere Materialien', back: 'Zurück zur Produktpflege' },
+  pt: { essentials: 'Cuidados essenciais', others: 'Outros materiais', back: 'Voltar aos cuidados do produto' },
+  nl: { essentials: 'Essentiële verzorging', others: 'Andere materialen', back: 'Terug naar productverzorging' },
 };
 
 export function generateStaticParams() {
@@ -50,14 +30,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { material, locale } = await params;
   if (!(MATERIALS as readonly string[]).includes(material)) return {};
-  const info = COPY[material as Material];
+  const t = await getTranslations('cura');
+  const materialName = t(material as Material);
+  const items = t.raw(`${material}Items`) as string[];
+  const title = `${materialName} — ${t('title')}`;
+  const intro = items.slice(0, 2).join(' ');
   return {
-    title: info.title,
-    // Trim to a clean word boundary — no trailing ellipsis.
+    title,
     description:
-      info.intro.length > 160
-        ? info.intro.slice(0, 160).replace(/\s+\S*$/, '')
-        : info.intro,
+      intro.length > 160
+        ? intro.slice(0, 160).replace(/\s+\S*$/, '')
+        : intro,
     alternates: localizedAlternates(locale, `/cura-prodotto/${material}`),
   };
 }
@@ -70,17 +53,20 @@ export default async function CuraMaterialePage({
   const { material, locale } = await params;
   if (!(MATERIALS as readonly string[]).includes(material)) notFound();
   const m = material as Material;
-  const info = COPY[m];
   const t = await getTranslations('cura');
   const items = t.raw(`${m}Items`) as string[];
+  const materialName = t(m);
+  const title = `${materialName} — ${t('title')}`;
+  const intro = items.slice(0, 2).join(' ');
+  const ui = CARE_UI[locale] ?? CARE_UI.en;
 
   const prefix = locale === 'it' ? '' : `/${locale}`;
   const pageUrl = `${APP_URL}${prefix}/cura-prodotto/${m}`;
   const howToSchema = {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
-    name: info.title,
-    description: info.intro,
+    name: title,
+    description: intro,
     inLanguage: locale,
     step: items.map((stepText, i) => ({
       '@type': 'HowToStep',
@@ -93,18 +79,18 @@ export default async function CuraMaterialePage({
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}${prefix || '/'}` },
-      { '@type': 'ListItem', position: 2, name: 'Cura del prodotto', item: `${APP_URL}${prefix}/cura-prodotto` },
-      { '@type': 'ListItem', position: 3, name: info.title, item: pageUrl },
+      { '@type': 'ListItem', position: 2, name: t('title'), item: `${APP_URL}${prefix}/cura-prodotto` },
+      { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
     ],
   };
 
   return (
-    <LegalPage title={info.title} subtitle={t('subtitle')}>
+    <LegalPage title={title} subtitle={t('subtitle')}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <p>{info.intro}</p>
+      <p>{intro}</p>
 
-      <h2>I gesti essenziali</h2>
+      <h2>{ui.essentials}</h2>
       <ul>
         {items.map((i, k) => (
           <li key={k}>{i}</li>
@@ -114,15 +100,15 @@ export default async function CuraMaterialePage({
       <h2>{t('general')}</h2>
       <p>{t('generalBody')}</p>
 
-      <h2>Altri materiali</h2>
+      <h2>{ui.others}</h2>
       <ul>
         {MATERIALS.filter((x) => x !== m).map((other) => (
           <li key={other}>
-            <Link href={`/cura-prodotto/${other}`}>{COPY[other].title}</Link>
+            <Link href={`/cura-prodotto/${other}`}>{`${t(other)} — ${t('title')}`}</Link>
           </li>
         ))}
         <li>
-          <Link href="/cura-prodotto">Torna alla cura del prodotto</Link>
+          <Link href="/cura-prodotto">{ui.back}</Link>
         </li>
       </ul>
     </LegalPage>

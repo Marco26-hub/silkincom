@@ -46,7 +46,9 @@
     "register": "Registreren",
     "logout": "Uitloggen",
     "admin": "Beheer",
-    "artigiani": "Ambachtslieden"
+    "artigiani": "Ambachtslieden",
+    "founder": "De oprichter",
+    "press": "Pers"
   },
   "footer": {
     "newsletter": {
@@ -131,8 +133,8 @@
         "desc": "Maison-geschenkdoos inbegrepen, gepersonaliseerd kaartje."
       },
       "returns": {
-        "title": "Gratis retourneren",
-        "desc": "14 dagen bedenktijd, ophalen aan huis."
+        "title": "14 dagen bedenktijd",
+        "desc": "Bedenktijd: retourzending voor rekening van de klant. SILKinCOM-gebrek of -fout: gratis retour."
       }
     },
     "bestsellers": {
@@ -356,7 +358,7 @@
       "madeInComo": "Made in Como, Italië",
       "artisan": "100% Italiaans ambacht",
       "shipping": "Gratis verzending vanaf € 200",
-      "returns": "14 dagen retourneren"
+      "returns": "14 dagen bedenktijd"
     },
     "related": {
       "eyebrow": "Verder kijken",
@@ -366,7 +368,7 @@
     "taxIncluded": "Inclusief btw — Verzendkosten worden bij afrekenen berekend",
     "shippingDetails": {
       "standard": "Standaard verzending 3–5 werkdagen. Gratis voor bestellingen boven €200.",
-      "returns": "Gratis retourneren binnen 14 dagen na ontvangst.",
+      "returns": "Bedenktijd van 14 dagen; gratis retour alleen bij verkeerde, gebrekkige of niet-conforme producten.",
       "allDetails": "Alle details"
     },
     "wishlistAdd": "Toevoegen aan favorieten",
@@ -526,14 +528,44 @@
         "cancelled": "Geannuleerd",
         "refunded": "Terugbetaald",
         "failed": "Mislukt"
-      }
+      },
+      "cancelConfirm": "Weet u zeker dat u deze bestelling wilt annuleren? De actie is onomkeerbaar.",
+      "cancelError": "De bestelling kon niet worden geannuleerd.",
+      "networkError": "Netwerkfout. Probeer het opnieuw.",
+      "cancelling": "Annuleren…",
+      "cancelOrder": "Bestelling annuleren",
+      "shippingStatus": "Verzendstatus",
+      "timeline": {
+        "created": "Bestelling ontvangen",
+        "paid": "Betaling bevestigd",
+        "shipped": "Verzonden",
+        "delivered": "Afgeleverd"
+      },
+      "productFallback": "Product",
+      "leaveReview": "Laat een recensie achter",
+      "couponDiscount": "Couponkorting"
     },
     "profile": {
       "title": "Profiel",
       "fullName": "Volledige naam",
       "phone": "Telefoon",
       "email": "E-mail",
-      "saved": "Profiel bijgewerkt."
+      "saved": "Profiel bijgewerkt.",
+      "changePassword": "Wachtwoord wijzigen",
+      "newPassword": "Nieuw wachtwoord",
+      "confirmPassword": "Bevestig wachtwoord",
+      "passwordMin": "Het wachtwoord moet minimaal 8 tekens bevatten.",
+      "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "passwordUpdated": "Wachtwoord bijgewerkt.",
+      "updating": "Bijwerken…",
+      "updatePassword": "Wachtwoord bijwerken",
+      "deleteTitle": "Account verwijderen",
+      "deleteDescription": "Deze actie is permanent. Uw persoonlijke gegevens worden verwijderd. Bestellingen worden geanonimiseerd vanwege fiscale verplichtingen.",
+      "deletePrompt": "Typ {word} om te bevestigen",
+      "deleteConfirmationWord": "VERWIJDEREN",
+      "deleting": "Verwijderen…",
+      "deleteAction": "Account definitief verwijderen",
+      "deleteError": "Het account kon niet worden verwijderd."
     },
     "wishlistPage": {
       "title": "Verlanglijst",
@@ -558,8 +590,12 @@
       "phone": "Telefoon",
       "type": "Type",
       "setDefault": "Als standaard instellen",
-      "addAddress": "Adres toevoegen"
-    }
+      "addAddress": "Adres toevoegen",
+      "editAddress": "Adres bewerken",
+      "editAria": "Adres bewerken"
+    },
+    "metaTitle": "Mijn account — SILKinCOM",
+    "metaDescription": "Beheer bestellingen, adressen, verlanglijstjes en profiel van uw SILKinCOM-account."
   },
   "auth": {
     "login": {
@@ -574,7 +610,8 @@
       "createAccount": "Account aanmaken",
       "invalidCredentials": "Ongeldige inloggegevens.",
       "emailNotConfirmed": "E-mail niet bevestigd. Controleer je inbox en klik op de bevestigingslink.",
-      "missingFields": "Voer e-mailadres en wachtwoord in."
+      "missingFields": "Voer e-mailadres en wachtwoord in.",
+      "googleSignIn": "Doorgaan met Google"
     },
     "register": {
       "title": "Account aanmaken",
@@ -593,7 +630,9 @@
       "passwordTooShort": "Wachtwoord te kort (minimaal 8 tekens).",
       "termsRequired": "Aanvaard voorwaarden en privacy om verder te gaan.",
       "missingFields": "Vul alle verplichte velden in.",
-      "emailSent": "Account aangemaakt. Controleer uw e-mail om te bevestigen."
+      "emailSent": "Account aangemaakt. Controleer uw e-mail om te bevestigen.",
+      "googleSignUp": "Registreren met Google",
+      "errorDefault": "Registratie mislukt. Probeer het opnieuw."
     },
     "forgotPassword": {
       "tag": "Accountherstel",
@@ -639,7 +678,7 @@
       "Gratis verzending in Italië vanaf €200",
       "Maison-cadeauverpakking bij elke bestelling",
       "100% Made in Como — Zijdetraditie sinds 1400",
-      "Gratis retourneren binnen 14 dagen — Ophalen aan huis"
+      "14 dagen bedenktijd na levering"
     ]
   },
   "cookies": {
@@ -778,7 +817,7 @@
       },
       {
         "q": "Kan ik een artikel retourneren?",
-        "a": "Ja, u heeft 14 dagen vanaf ontvangst om elk ongebruikt artikel te retourneren. Retouren zijn gratis voor bestellingen binnen Italië. Zie <a href=\"/resi\">Retouren</a> voor de procedure."
+        "a": "Ja, u heeft 14 dagen vanaf ontvangst om elk ongebruikt artikel te retourneren. De retourkosten zijn voor rekening van de klant, behalve bij verkeerde of defecte producten. Zie <a href=\"/resi\">Retouren</a> voor de procedure."
       },
       {
         "q": "Hoe vind ik de juiste maat?",
@@ -1383,7 +1422,7 @@
     "requestSent": "Verzoek verzonden",
     "openButton": "Retour aanvragen",
     "formTitle": "Retouraanvraag",
-    "formIntro": "U heeft 14 dagen na levering om een retour aan te vragen. Het retourneren is gratis.",
+    "formIntro": "U heeft 14 dagen na levering om een retour aan te vragen. De retourkosten zijn voor rekening van de klant, behalve bij verkeerde of defecte producten.",
     "reasonLabel": "Reden voor retour *",
     "reasonPlaceholder": "Selecteer een reden",
     "notesLabel": "Aanvullende opmerkingen (optioneel)",
@@ -1479,12 +1518,22 @@
     "errorNetwork": "Netwerkfout. Probeer het opnieuw."
   },
   "founder": {
-    "metaTitle": "Marco Dibenedetto — Oprichter SILKinCOM",
-    "metaDescription": "Marco Dibenedetto, oprichter van SILKinCOM. Opgeleid aan het ITIS Setificio di Como (1998), actief in het zijdedistrict van Como met een direct-to-consumer visie.",
-    "eyebrow": "Het Maison",
+    "metaTitle": "Marco Dibenedetto — Oprichter van SILKinCOM",
+    "metaDescription": "Marco Dibenedetto, oprichter van SILKinCOM en afgestudeerd in textiel aan ITIS Setificio di Como. Zijn project combineert productcultuur, het Como-district en directe verkoop.",
+    "eyebrow": "De Maison",
     "role": "Oprichter",
     "ctaStory": "Ons verhaal",
-    "quote": "Het district van Como produceert al bijna een eeuw op het hoogste technische niveau voor de wereldwijde luxesector. SILKinCOM brengt deze kwaliteit rechtstreeks naar wie haar draagt, zonder de tussenkomst van de grote ketens.",
-    "body": "**Marco Dibenedetto** is de oprichter van SILKinCOM, het Italiaanse Maison van accessoires in zijde, cashmere en natuurlijke vezels, ontstaan aan het Lago di Como om het belangrijkste zijdedistrict van Europa rechtstreeks te brengen naar wie zijn creaties draagt. Een eenvoudig uitgangspunt, maar zelden te vinden in de hedendaagse luxe: het idee dat de technische kwaliteit van het weefsel uit Como — dezelfde die al tientallen jaren de belangrijkste internationale luxehuizen bevoorraadt — kan worden aangeboden zonder het filter van de grote ketens, via een rechtstreekse band tussen Maison en klant.\n\n## De oorsprong, aan het Setificio\nMarco werd opgeleid aan het **ITIS Setificio di Como**, waar hij in **1998** zijn textieldiploma behaalde. Het Setificio, actief sinds 1869, is de technische school die het zijdedistrict zelf heeft opgericht om zijn kennis door te geven aan de volgende generaties: hieruit kwamen de technici, de textielchemici, de drukkers en de wevers die de manufacturen van Como ruim anderhalve eeuw lang hebben gevoed. Hier leerde Marco de grammatica van het weefsel: bindingen, garens, twijnen, de chemie van zijde, druk, finishing. Een rigoureuze technische opleiding, afgestemd op de realiteit van het gebied.\n\n## Het district als school\nDe vorming wordt buiten het klaslokaal voltooid. In de jaren na zijn diploma doorkruiste Marco het manufactuurweefsel van Como en ging hij rechtstreeks de dialoog aan met wie de vezels bewerkt: jacquardwevers, kaderdrukkers, naaisters die de rouletté van de foulard met de hand zomen, ververs, finishers. De praktijk van het district is grotendeels stilzwijgend — ze wordt doorgegeven in het atelier, voor het weefgetouw, naast de druktafel. Het is een kennis die het Setificio in systematische vorm aanreikt en die de ambachtslieden overdragen in haar concrete dimensie, gebaar voor gebaar. Uit deze verwevenheid van technische school en werkplaats ontstaat het netwerk van ambachtelijke partners dat, jaren later, de productiebasis van SILKinCOM zou worden.\n\n## De direct-to-consumer keuze\nSILKinCOM ontstaat uit een eenvoudige vaststelling: het district van Como produceert op zeer hoog technisch niveau voor de wereldwijde luxe, maar het grootste deel van dit werk komt uiteindelijk onder het label van derden terecht, die meervoudige marges op de productiekosten toepassen. De klant betaalt uiteindelijk twee of drie keer de intrinsieke waarde van het product. Marco ontwierp SILKinCOM uitdrukkelijk als reactie op dit schema: een Italiaans Maison dat met dezelfde weefgetouwen en dezelfde ambachtslieden van de internationale luxe werkt, maar rechtstreeks aan de eindklant verkoopt, zonder tussenpersonen.\n\n## De visie\nMade in Como is voor SILKinCOM geen marketingclaim: het is een strikte operationele regel. Spinnen, verven, drukken, weven, confectie en finishing gebeuren allemaal binnen een straal van enkele kilometers van Como. Geen enkele fase wordt buiten het district uitbesteed. De vezels worden geval per geval geselecteerd — Mongoolse cashmere met een micronage onder 15,5 micron, zijde uit Como, Europees linnen, extra-lang katoen, superfijne merinowol. De transparantie over de bronnen maakt integraal deel uit van het product: elk materiaal heeft een eigen pagina die de herkomst, de technische kenmerken en de verzorging toelicht.\n\n## Het proces\nEen creatie van SILKinCOM ontstaat uit een dialoog tussen ontwerper en wever. Marco werkt nauw samen met de ateliers van Como bij de keuze van de bindingen (twill, satijn, jacquard), bij het bepalen van de ketting- en inslagdichtheid, bij de selectie van de kleurpaletten. De druk — op de zijden foulards — verloopt via gespecialiseerde ateliers van het district. De zoom van de foulard wordt met de hand genaaid: elke rouletté vergt tussen de 90 en 180 minuten werk van één enkele ervaren ambachtsvrouw. Het is het detail dat een hoogwaardige foulard onderscheidt van een industrieel accessoire, en dat de klant herkent met de tast nog voordat hij het ziet.\n\n## De mensen\nSILKinCOM is geen monolithisch merk: het is een netwerk van onafhankelijke werkplaatsen, gecoördineerd door Marco en zijn operationele zetel in Cermenate. Drie ambachtslieden in het bijzonder werken vast samen met het Maison: **Paolo**, meesterwever — hij bedient het jacquardweefgetouw; **Adriano**, meesterverver — hij bereidt de verfbaden, doseert de kleurstoffen en controleert de kleurweergave op de garens van zijde en cashmere; **Roberta**, confectienaaister — zij naait de zomen, brengt de etiketten aan en werkt elk stuk met de hand af vóór de confectie. Marco tekent persoonlijk voor de selectie van het project, maar het eindproduct is het resultaat van een gedeeld werk dat de districtelijke aard van de zijde-industrie van Como weerspiegelt. Hun gezichten en hun stemmen zijn verzameld op de pagina [Ambachtslieden](/nl/artigiani).\n\n## Continuïteit en verantwoordelijkheid\nSILKinCOM schrijft zich in een geschiedenis in die zes eeuwen overspant: van de eerste moerbeibomen die in de vijftiende eeuw op de heuvels rond het Lario werden geplant, tot de spinnerijen van de achttiende eeuw, de textieldynastieën van de twintigste eeuw, tot aan het hedendaagse district. Het Maison draagt de verantwoordelijkheid om een keten levend te houden die de globalisering van de jaren negentig heeft verzwakt, maar niet heeft gedoofd. De direct-to-consumer keuze is in die zin ook een industriële keuze: de werkplaatsen van Como een alternatief bieden voor het werk in opdracht van derden. Het uitgebreide verhaal is beschikbaar in [Geschiedenis van de zijde in Como](/nl/trame-di-como/storia-della-seta-a-como).\n\n## Publicaties\nMarco tekent voor de redactionele pagina's van het Journal SILKinCOM — [Geschiedenis van de zijde in Como](/nl/trame-di-como/storia-della-seta-a-como), [Hoe je echte zijde herkent](/nl/trame-di-como/come-riconoscere-seta-vera), [Mongoolse of Chinese cashmere](/nl/trame-di-como/cashmere-mongolo-vs-cinese), [Pashmina en sjaal: de verschillen](/nl/trame-di-como/pashmina-vs-sciarpa-differenze) — met de bedoeling om de technische kennis die het zijdedistrict al generaties lang bewaart, toegankelijk te maken voor de eindklant.\n\n## Contact\nE-mail: [info@silkincom.com](mailto:info@silkincom.com). Operationele zetel: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italië. P.IVA: IT03786790133."
+    "quote": "Het kennen van de stof, het proces en de mensen die ermee werken is het uitgangspunt van elke SILKinCOM collectie.",
+    "body": "**Marco Dibenedetto** is de oprichter van SILKinCOM. Het project is ontstaan ​​uit de ontmoeting tussen textielopleiding, kennis van het Como-district en de wens om een ​​directere relatie tussen product en klant op te bouwen. De Maison ontwikkelt accessoires en kledingstukken van zijde, kasjmier, wol, linnen en katoen, waarbij de samenstelling en onderhoudsinstructies in de individuele productbladen worden vermeld.\n\n## Textielopleiding\nMarco behaalde zijn textieldiploma aan **ITIS Setificio di Como in 1998**. Technische training biedt hem de middelen om een ​​stof te lezen die verder gaat dan zijn uiterlijk: vezels, garens, weefsels, bedrukken, verven en afwerken. Deze expertise blijft de referentie waarmee hij de materialen, constructie en prestaties van de collecties evalueert.\n\n## Het SILKinCOM-idee\nSILKinCOM kiest voor een direct-to-consumer-model: het presenteert de collecties via zijn website en onderhoudt een directe dialoog met klanten. Het doel is om de kenmerken van het product beter leesbaar te maken - materiaal, gevoel, afmetingen, verklaard vakmanschap en zorg - zonder alleen te vertrouwen op promotioneel taalgebruik.\n\n## Werk in het textieldistrict\nMarco coördineert het project vanuit het operationele hoofdkantoor van Cermenate en werkt samen met professionals en gespecialiseerde laboratoria in de regio Como. Op de pagina [Ambachtslieden](/artigiani) worden enkele van deze vaardigheden beschreven aan de hand van het werk van Paolo, een wever, Adriano, een verver, en Roberta, een kledingmaker. De daadwerkelijke processen en samenstelling variëren van product tot product en worden aangegeven in de betreffende databladen.\n\n## Selectie en ontwikkeling\nElk voorstel vertrekt vanuit het gebruik: hoe een sjaal moet vallen, hoe warm een sjaal moet omhullen, welk evenwicht er nodig is tussen lichtheid, comfort en weerstand. Van hieruit worden het materiaal, de constructie, de kleur en de afwerking geselecteerd. Bij de eindcontrole wordt gekeken naar de consistentie van de stof, de kwaliteit van de afwerking en de presentatie van het product.\n\n## Productcultuur\nVoor SILKinCOM is kennis onderdeel van de dienstverlening. Op de pagina's [Materialen](/materiali), [Productverzorging](/cura-prodotto) en [Textielwoordenlijst](/glossario) worden nuttige termen, kenmerken en voorzorgsmaatregelen uitgelegd zonder de specifieke informatie op het etiket te vervangen.\n\n## Journal en contact\nMarco schrijft voor het SILKinCOM Journal, gewijd aan de textielcultuur, de keuze van vezels en het bewuste gebruik van accessoires. Lees onder meer: [Geschiedenis van zijde in Como](/trame-di-como/storia-della-seta-a-como), [Hoe echte zijde herkennen](/trame-di-como/come-riconoscere-seta-vera) en [Pashmina en sjaal: de verschillen](/trame-di-como/pashmina-vs-sciarpa-differenze). Voor redactionele of professionele vragen: [info@silkincom.com](mailto:info@silkincom.com)."
+  },
+  "pressPage": {
+    "metaTitle": "Press Room — SILKinCOM Media kit",
+    "metaDescription": "Perskit, logo, biografie en contacten voor journalisten en media. SILKinCOM, een Italiaanse maison van zijde, cashmere en natuurvezels uit het textieldistrict van Como.",
+    "schemaName": "SILKinCOM Press Room",
+    "schemaDescription": "Persmateriaal en media kit van SILKinCOM: merkprofiel, contacten voor journalisten, officieel logo en afbeeldingen.",
+    "eyebrow": "Press Room",
+    "h1": "Media kit",
+    "subtitle": "Materiaal voor journalisten, media en redactionele partners",
+    "body": "## Boilerplate\n\n**SILKinCOM** is een Italiaanse maison van accessoires en kleding in zijde, cashmere, wol, linnen en katoen. De collecties worden ontworpen en vervaardigd in het textieldistrict van Como en rechtstreeks aan de eindklant verkocht. Oprichter: Marco Dibenedetto. Operationele vestiging: Cermenate (CO), Italië.\n\n## Fact sheet\n\n- **Merk**: SILKinCOM\n- **Oprichter**: [Marco Dibenedetto](/nl/maison/marco-dibenedetto)\n- **Operationele vestiging**: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia\n- **P.IVA**: IT03786790133\n- **Activiteit**: ontwerp, confectie en directe verkoop vanuit het textieldistrict van Como\n- **Materialen**: zijde, cashmere, wol, linnen en katoen; samenstelling vermeld op elke productpagina\n- **Talen van de site**: Italiaans, Engels, Spaans, Frans, Duits, Portugees en Nederlands\n- **Website**: [silkincom.com](https://www.silkincom.com)\n\n## Logo en afbeeldingen\n\n- [Logo SVG (vector)](/logo-official.svg)\n- [Logo PNG (raster)](/logo-official.png)\n- [Logo goudvariant](/logo-gold.png)\n- [Merk-coverbeeld](/og-image.jpg)\n\n## Perscontacten\n\n- Media-e-mail: [info@silkincom.com](mailto:info@silkincom.com)\n- Onderwerpen: het textieldistrict van Como, natuurvezels, directe verkoop, productcultuur en de oprichter\n- Beschikbaarheid: interviews met de oprichter, achtergrond bij het project en productmateriaal\n\n## Verhalen voor de redactie\n\nAchtergronden beschikbaar op het SILKinCOM Journal:\n\n- [De geschiedenis van zijde in Como](/nl/trame-di-como/storia-della-seta-a-como)\n- [Echte zijde herkennen](/nl/trame-di-como/come-riconoscere-seta-vera)\n- [Pashmina en sjaal: de verschillen](/nl/trame-di-como/pashmina-vs-sciarpa-differenze)\n- [Mongools of Chinees cashmere: een gids](/nl/trame-di-como/cashmere-mongolo-vs-cinese)\n\n## Social\n\n- Instagram: [@silkincom.official](https://www.instagram.com/silkincom.official/)\n- Facebook: [SILKinCOM](https://www.facebook.com/profile.php?id=61581900780447)\n- Pinterest: [silkincomofficial](https://it.pinterest.com/silkincomofficial)"
   }
 }

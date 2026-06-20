@@ -36,17 +36,27 @@ const OG_LOCALE: Record<string, string> = {
   it: 'it_IT', en: 'en_US', es: 'es_ES', fr: 'fr_FR', de: 'de_DE', pt: 'pt_PT', nl: 'nl_NL',
 };
 
+const SITE_META: Record<string, { title: string; description: string; socialTitle: string }> = {
+  it: { title: 'SILKinCOM — Seta, Cashmere e Fibre Naturali Made in Como', description: 'Foulard in seta da €75, sciarpe in lana da €70 e cashmere da €120, confezionati nel distretto tessile di Como. Cofanetto Maison incluso.', socialTitle: 'SILKinCOM | Seta e Cashmere dal Lago di Como' },
+  en: { title: 'SILKinCOM — Silk, Cashmere & Natural Fibres from Como', description: 'Silk scarves from €75, wool scarves from €70 and cashmere from €120, made in the Como textile district. Maison gift box included.', socialTitle: 'SILKinCOM | Silk & Cashmere from Lake Como' },
+  es: { title: 'SILKinCOM — Seda, Cachemir y Fibras Naturales de Como', description: 'Pañuelos de seda desde 75 €, bufandas de lana desde 70 € y cachemir desde 120 €, confeccionados en el distrito textil de Como.', socialTitle: 'SILKinCOM | Seda y Cachemir del Lago de Como' },
+  fr: { title: 'SILKinCOM — Soie, Cachemire et Fibres Naturelles de Côme', description: 'Foulards en soie dès 75 €, écharpes en laine dès 70 € et cachemire dès 120 €, confectionnés dans le district textile de Côme.', socialTitle: 'SILKinCOM | Soie et Cachemire du Lac de Côme' },
+  de: { title: 'SILKinCOM — Seide, Cashmere & Naturfasern aus Como', description: 'Seidentücher ab 75 €, Wollschals ab 70 € und Cashmere ab 120 €, gefertigt im Textilbezirk von Como. Maison-Geschenkbox inklusive.', socialTitle: 'SILKinCOM | Seide & Cashmere vom Comer See' },
+  pt: { title: 'SILKinCOM — Seda, Caxemira e Fibras Naturais de Como', description: 'Lenços de seda desde 75 €, cachecóis de lã desde 70 € e caxemira desde 120 €, confecionados no distrito têxtil de Como.', socialTitle: 'SILKinCOM | Seda e Caxemira do Lago de Como' },
+  nl: { title: 'SILKinCOM — Zijde, Cashmere & Natuurlijke Vezels uit Como', description: 'Zijden sjaaltjes vanaf €75, wollen sjaals vanaf €70 en cashmere vanaf €120, gemaakt in het textieldistrict van Como.', socialTitle: 'SILKinCOM | Zijde & Cashmere van het Comomeer' },
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const ogLocale = OG_LOCALE[locale] ?? 'it_IT';
+  const metadata = SITE_META[locale] ?? SITE_META.en;
   return {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'SILKinCOM — Foulard in seta e sciarpe in cashmere, Made in Como',
+    default: metadata.title,
     template: '%s | SILKinCOM',
   },
-  description:
-    'Foulard e twilly in seta, sciarpe e pashmine in cashmere, 100% Made in Como dal distretto serico più importante d\'Europa. Spedizione gratuita oltre €200.',
+  description: metadata.description,
   keywords: [
     'sciarpe cashmere Como',
     'foulard seta italiano',
@@ -58,9 +68,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     'tessile comasco',
     'lago di Como brand',
     'silkincom',
-    'cashmere mongolo Como',
     'lino estate Italia',
-    'cotone extra lungo',
+    'cotone Made in Italy',
   ],
   authors: [{ name: 'SILKinCOM', url: APP_URL }],
   creator: 'SILKinCOM',
@@ -71,9 +80,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     locale: ogLocale,
     alternateLocale: Object.values(OG_LOCALE).filter((l) => l !== ogLocale),
     siteName: 'SILKinCOM',
-    title: 'SILKinCOM — Foulard in seta e sciarpe in cashmere, Made in Como',
-    description:
-      'Foulard e twilly in seta, sciarpe e pashmine in cashmere. 100% Made in Como dal distretto serico. Spedizione gratuita oltre €200.',
+    title: metadata.title,
+    description: metadata.description,
     url: '/',
     images: [
       {
@@ -86,11 +94,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@silkincom.official',
-    creator: '@silkincom.official',
-    title: 'SILKinCOM | Accessori in Seta e Cashmere',
-    description:
-      'Accessori premium 100% Made in Como. Seta, cashmere e fibre naturali pregiate.',
+    title: metadata.socialTitle,
+    description: metadata.description,
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -149,11 +154,6 @@ const organizationSchema = {
     postalCode: '22072',
     addressCountry: 'IT',
   },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: 45.7408,
-    longitude: 9.0856,
-  },
   vatID: 'IT03786790133',
   founder: {
     '@type': 'Person',
@@ -174,25 +174,7 @@ const organizationSchema = {
     'https://www.instagram.com/silkincom.official/',
     'https://www.facebook.com/profile.php?id=61581900780447',
     'https://it.pinterest.com/silkincomofficial',
-    'https://www.linkedin.com/company/silkincom',
-    'https://www.youtube.com/@silkincom',
-    'https://www.tiktok.com/@silkincom',
   ],
-};
-
-const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  '@id': `${APP_URL}/#website`,
-  url: APP_URL,
-  name: 'SILKinCOM',
-  inLanguage: 'it-IT',
-  publisher: { '@id': `${APP_URL}/#organization` },
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${APP_URL}/collezioni?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
-  },
 };
 
 export default async function LocaleLayout({
@@ -214,6 +196,21 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
   const announcementSection = await getHomeSection('announcement_bar', locale);
+  const prefix = locale === routing.defaultLocale ? '' : `/${locale}`;
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${APP_URL}${prefix}/#website`,
+    url: `${APP_URL}${prefix || '/'}`,
+    name: 'SILKinCOM',
+    inLanguage: OG_LOCALE[locale]?.replace('_', '-') ?? locale,
+    publisher: { '@id': `${APP_URL}/#organization` },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${APP_URL}${prefix}/collezioni?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  };
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${inter.variable} ${baskerville.variable}`}>

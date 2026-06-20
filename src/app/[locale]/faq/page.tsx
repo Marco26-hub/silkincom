@@ -10,10 +10,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations('faq');
   return {
-    title: 'FAQ — Domande frequenti',
-    description:
-      'Risposte alle domande più frequenti sui prodotti, ordini, spedizioni e resi SILKinCOM.',
+    title: t('title'),
+    description: (t.raw('faqs') as Faq[]).slice(0, 2).map((faq) => faq.q).join(' · '),
     alternates: localizedAlternates(locale, '/faq'),
   };
 }

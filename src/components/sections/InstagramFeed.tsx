@@ -6,15 +6,13 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import type { HomeSectionLocalized } from '@/data/home-content';
 
-const WIX = (id: string) => `https://static.wixstatic.com/media/${id}~mv2.jpg/v1/fill/w_700,h_700,al_c,q_85/file.jpg`;
-
-const FALLBACK_PHOTOS = [
-  WIX('b58e91_6fa8a67dc30b47898c29a53a97cf8ba9'),
-  WIX('b58e91_6e113b7ba95f4d81854d2300b10860e8'),
-  WIX('a34b56_88c331613a2942d6bf9ac51c2f3f641c'),
-  WIX('a34b56_4cdb7894efaa4a128d5fb0714b80e743'),
-  WIX('a34b56_1c703913173a458d848ef300b9e954ba'),
-  WIX('a34b56_3a1c36685f104db88a70b86aab6bdb32'),
+const CAMPAIGN_PHOTOS = [
+  '/instagram/ig-05.webp',
+  '/instagram/ig-02.webp',
+  '/instagram/ig-01.webp',
+  '/instagram/ig-07.webp',
+  '/instagram/ig-10.webp',
+  '/instagram/ig-11.webp',
 ];
 
 const FALLBACK_SOCIAL = {
@@ -27,7 +25,10 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
   const t = useTranslations('instagram');
 
   const content = section?.content || {};
-  const photos = (section?.images?.length ? section.images : FALLBACK_PHOTOS.map((u) => ({ url: u, alt: '' })));
+  const photos = [
+    ...CAMPAIGN_PHOTOS.map((url) => ({ url, alt: '' })),
+    ...(section?.images || []),
+  ].slice(0, 12);
   const socials = (section?.socialLinks && Object.keys(section.socialLinks).length) ? section.socialLinks : FALLBACK_SOCIAL;
 
   const titleStart = content.titleStart || t('titleStart');
@@ -36,42 +37,45 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
   const followEyebrow = content.followEyebrow || t('followEyebrow');
 
   return (
-    <section className="py-24 md:py-section bg-warm-white">
+    <section className="bg-warm-white py-24 md:py-32">
       <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8 }}
-          className="text-center max-w-2xl mx-auto mb-14"
+          className="mb-14 grid items-end gap-7 border-t border-soft-black/20 pt-7 text-left md:grid-cols-[0.75fr_1.25fr] md:gap-12 lg:mb-20"
         >
-          <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">
-            @silkincom.official
-          </span>
-          <h2 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-5">
-            {titleStart} <em className="italic text-gold-primary">{titleEmphasis}</em>
+          <div>
+            <span className="mb-4 block text-[9px] uppercase tracking-[0.42em] text-gold-dark">@silkincom.official</span>
+            <p className="max-w-sm text-xs font-light leading-relaxed text-soft-black/55">{description}</p>
+          </div>
+          <h2 className="font-display text-5xl font-light leading-[0.9] tracking-[-0.035em] md:text-6xl lg:text-7xl">
+            {titleStart} <em className="block italic text-gold-dark">{titleEmphasis}</em>
           </h2>
-          <p className="text-sm md:text-base font-light text-soft-black/70 leading-relaxed">
-            {description}
-          </p>
         </motion.div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-1 sm:gap-1.5 md:gap-2">
-          {photos.map((p, i) => {
-            const src = p.url;
-            const alt = p.alt || t('photoAlt', { number: i + 1 });
+        <div className="grid auto-flow-dense grid-cols-2 gap-2 sm:grid-cols-4 md:gap-3 lg:grid-cols-6">
+          {photos.map((photo, index) => {
+            const src = photo.url;
+            const alt = photo.alt || t('photoAlt', { number: index + 1 });
+            const placement = index === 0
+              ? 'col-span-2 row-span-2 aspect-square'
+              : index === 5
+                ? 'col-span-2 aspect-[2/1]'
+                : 'aspect-square';
             return (
               <motion.a
-                key={`${src}-${i}`}
+                key={`${src}-${index}`}
                 href={socials.instagram || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: '-30px' }}
-                transition={{ duration: 0.5, delay: i * 0.04, ease: 'easeOut' }}
-                className="group relative block aspect-square overflow-hidden bg-ivory"
-                aria-label={t('photoAriaLabel', { number: i + 1 })}
+                transition={{ duration: 0.5, delay: index * 0.04, ease: 'easeOut' }}
+                className={`group relative block overflow-hidden bg-ivory ${placement}`}
+                aria-label={t('photoAriaLabel', { number: index + 1 })}
               >
                 <Image
                   src={src}
@@ -96,7 +100,7 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-14"
+          className="mt-14 border-t border-soft-black/15 pt-8 text-center"
         >
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-6">
             {followEyebrow}

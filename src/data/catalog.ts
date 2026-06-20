@@ -114,6 +114,12 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     return source;
   }
 
+  function firstSentence(value: string): string {
+    const text = value.replace(/\s+/g, ' ').trim();
+    const end = text.search(/[.!?](?:\s|$)/);
+    return end >= 0 ? text.slice(0, end + 1) : text;
+  }
+
   // Expose every apparel variant on the storefront. The previous version
   // silently dropped rows with size === null, but most of the time that's
   // a data-entry slip rather than a deliberate decision — the SKU already
@@ -141,16 +147,22 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     .filter((v): v is ProductVariant => v !== null)
     .sort((a, b) => (SIZE_ORDER[a.size] ?? 99) - (SIZE_ORDER[b.size] ?? 99));
 
+  const description = resolve(dbProduct.description_long_i18n, 'description', dbProduct.description_long);
+  const translatedDescription = locale === 'it' || !translations ? '' : pick(translations.description, locale);
+  const descriptionShort = locale === 'it'
+    ? (dbProduct.description_short ?? '')
+    : (dbProduct.description_short_i18n?.[locale]
+      || firstSentence(translatedDescription || description)
+      || dbProduct.description_short
+      || '');
+
   return {
     slug: dbProduct.slug,
     name: resolve(dbProduct.name_i18n, 'name', dbProduct.name),
     sku: dbProduct.sku,
     price: dbProduct.price,
-    description: resolve(dbProduct.description_long_i18n, 'description', dbProduct.description_long),
-    descriptionShort:
-      locale === 'it'
-        ? (dbProduct.description_short ?? '')
-        : (dbProduct.description_short_i18n?.[locale] ?? dbProduct.description_short ?? ''),
+    description,
+    descriptionShort,
     composition: resolve(dbProduct.composition_i18n, 'composition', dbProduct.composition),
     dimensions: dbProduct.dimensions,
     images: [...dbProduct.product_images]

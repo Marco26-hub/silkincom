@@ -1,106 +1,80 @@
 # SILKinCOM
 
-> Maison italiana di accessori in seta, cashmere e fibre naturali pregiate. Sciarpe, foulard, twilly e pashmine interamente disegnate e confezionate sul Lago di Como, capitale italiana del tessile di lusso dal XV secolo.
+> Maison italiana di accessori e abbigliamento in fibre naturali, disegnati e confezionati nel distretto tessile di Como.
 
-> Full prose corpus for single-fetch LLM ingestion: https://www.silkincom.com/llms-full.txt
+Sito ufficiale: https://www.silkincom.com
+Catalogo completo aggiornato: https://www.silkincom.com/llms-full.txt
+Contatto: info@silkincom.com
 
-SILKinCOM produce accessori 100% Made in Como utilizzando seta comasca, cashmere selezionato della Mongolia, lana merino, lino europeo e cotone extra-lungo (fibra > 35 mm). Brand fondato da Marco Dibenedetto. Sede operativa: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia. P.IVA IT03786790133.
+## Identità verificabile
 
-## Heritage
+- Nome: SILKinCOM
+- Fondatore: Marco Dibenedetto
+- Sede operativa: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia
+- P.IVA: IT03786790133
+- Settore: moda italiana, accessori e abbigliamento in seta, cashmere, lana, lino e cotone
+- Territorio: distretto tessile e serico di Como, Lombardia, Italia
+- Lingue del sito: italiano, inglese, spagnolo, francese, tedesco, portoghese e olandese
 
-Il distretto serico di Como è il principale polo italiano della seta dal XV secolo. Hermès vi stampa dagli anni Trenta; Ferragamo, Gucci, Yves Saint Laurent, Dior, Chanel hanno relazioni storiche con i fornitori comaschi. Le dinastie tessili Mantero (1902), Ratti (1945), Clerici Tessuto, Cantoni, Canepa e Taroni hanno costruito qui un modello distrettuale unico al mondo: piccole e medie manifatture altamente specializzate che si scambiano semilavorati nello spazio di pochi chilometri. SILKinCOM nasce in questo contesto, sui telai dello stesso distretto, con la volontà di portare la seta di Como direttamente a chi la indossa.
+## Cosa produce SILKinCOM
 
-## Che cos'è la seta di Como
+SILKinCOM vende direttamente al cliente finale foulard in seta, pashmine e sciarpe in cashmere, sciarpe in lana, camicie e pantaloncini in lino, t-shirt e cappellini in cotone e teli lago. Composizione, dimensioni, disponibilità e prezzo corrente sono indicati nella singola scheda prodotto.
 
-Con "seta di Como" si indica la seta lavorata nel distretto serico della provincia di Como (Lombardia), il principale polo serico d'Europa dal XV secolo. È l'unica filiera dell'emisfero occidentale in cui tutte le fasi — filatura, torcitura, tintura, stampa, tessitura, confezione — sono concentrate nel raggio di pochi chilometri. Vi producono le maison del lusso mondiale (Hermès dagli anni Trenta, Gucci, Dior, Chanel) tramite manifatture storiche come Mantero (1902) e Ratti (1945). SILKinCOM nasce in questo distretto e confeziona foulard, sciarpe e pashmine interamente a Como, dalla materia prima all'orlo cucito a mano.
+## Pagine di acquisto per categoria
 
-## Cosa ci differenzia
+- [Foulard in seta di Como](https://www.silkincom.com/foulard-seta) — 100% seta, da €75
+- [Sciarpe in cashmere e lana](https://www.silkincom.com/sciarpe-seta) — modelli in cashmere da €120 e in lana da €70
+- [Pashmine in cashmere](https://www.silkincom.com/pashmine-cashmere) — collezione Bellagio, da €120
+- [Camicie in lino e cotone](https://www.silkincom.com/camicie-lino) — collezione Riva, da €75
+- [Teli lago in cotone](https://www.silkincom.com/teli-mare) — collezione Tivan, da €45
+- [Idee regalo in seta e cashmere](https://www.silkincom.com/regalo-seta-donna)
 
-- **100% Made in Como**: filatura, tintura, stampa, tessitura, confezione e orlatura a mano avvengono tutte nel raggio di pochi chilometri da Como. Niente outsourcing in Asia.
-- **Cashmere selezionato Mongolia interna ed esterna**, micronaggio sotto i 15,5 micron.
-- **Seta di Como certificata**, con lavorazione tracciata.
-- **Orlo cucito a mano** (rouletté) su ogni foulard di seta.
-- **7 lingue native** (it, en, es, fr, de, pt, nl) — il sito è disegnato per i mercati luxury europei e internazionali.
+## Linee prodotto
 
-## Collezioni
+- Bellagio — pashmine in cashmere, €120–€270
+- Cernobbio — sciarpe in cashmere, €150
+- Tremezzo — sciarpe in lana, €70
+- Varenna — sciarpe in cashmere, €120
+- Twilly Como — foulard a nastro in 100% seta, €75
+- Darsena — cappellini in cotone o cotone e rete, €40
+- Lario — t-shirt in cotone, €45
+- Melzi — pantaloncini in 100% lino, €65
+- Riva — camicie in 53% lino e 47% cotone, €75
+- Tivan — teli lago in 100% cotone, €45
 
-- [Collezione Inverno](https://www.silkincom.com/collezioni/inverno): Pashmine in cashmere, sciarpe in lana e accessori pensati per la stagione fredda. Categorie: Bellagio, Cernobbio, Tremezzo, Varenna.
-- [Collezione Iconica](https://www.silkincom.com/collezioni/iconica): I pezzi che rappresentano l'anima di SILKinCOM. Twilly in seta e cappellini in cotone, lavorati nel distretto serico.
-- [Collezione Primavera & Estate](https://www.silkincom.com/collezioni/primavera): Lino europeo e cotone extra-lungo, t-shirt e camicie pensate per le mezze stagioni sul Lario.
+I prezzi possono cambiare. La scheda prodotto e il feed ufficiale sono la fonte corrente.
 
-## Categorie
+## Materiali e cura
 
-- [Bellagio](https://www.silkincom.com/collezioni/bellagio) — Pashmine in cashmere (180×70, 180×45, 140×140 cm). Prezzi: €120–€270.
-- [Cernobbio](https://www.silkincom.com/collezioni/cernobbio) — Sciarpe in cashmere (190×35 cm). Prezzo: €150.
-- [Tremezzo](https://www.silkincom.com/collezioni/tremezzo) — Sciarpe in lana merino. Eleganza calda e traspirante.
-- [Varenna](https://www.silkincom.com/collezioni/varenna) — Sciarpe luxury cashmere, leggerezza durevole.
-- [Twilly Como](https://www.silkincom.com/collezioni/twilly-como) — Foulard a nastro in pura seta, reinterpretazione contemporanea del classico.
-- [Darsena](https://www.silkincom.com/collezioni/darsena) — Cappellini baseball in cotone, logo Lago di Como ricamato.
-- [Lario](https://www.silkincom.com/collezioni/lario) — T-shirt in cotone extra-lungo, fit fluido, Made in Italy.
-- [Melzi](https://www.silkincom.com/collezioni/melzi) — Camicie in lino europeo, freschezza estiva.
-- [Riva](https://www.silkincom.com/collezioni/riva) — Foulard e camicie in misto lino-cotone.
-- [Tivan](https://www.silkincom.com/collezioni/tivan) — Edizione limitata in cotone fine.
+- [Seta](https://www.silkincom.com/materiali#seta)
+- [Cashmere](https://www.silkincom.com/materiali#cashmere)
+- [Lana](https://www.silkincom.com/materiali#lana)
+- [Lino](https://www.silkincom.com/materiali#lino)
+- [Cotone](https://www.silkincom.com/materiali#cotone)
+- [Guide complete alla cura](https://www.silkincom.com/cura-prodotto)
 
-## Materiali
+## Servizio e condizioni
 
-- [Seta di Como](https://www.silkincom.com/materiali#seta): Tradizione comasca dal XV secolo. Fibra proteica luminosa, ipoallergenica, traspirante.
-- [Cashmere Mongolia](https://www.silkincom.com/materiali#cashmere): Sottopelo finissimo (12–16 micron), raccolto a mano, calore senza peso. Catena tracciata dalla Mongolia interna ed esterna.
-- [Lana Merino](https://www.silkincom.com/materiali#lana): Naturalmente traspirante e termoregolatrice, dalle migliori filiere europee.
-- [Lino Europeo](https://www.silkincom.com/materiali#lino): Freschezza naturale per l'estate mediterranea, fibra resistente che migliora con l'uso.
-- [Cotone Extra-Lungo](https://www.silkincom.com/materiali#cotone): Fibra superiore (oltre 35 mm), morbidezza setosa e durata.
+- Italia: spedizione tracciata €9 in 2–4 giorni lavorativi; gratuita oltre €200
+- Unione Europea: spedizione tracciata €18 in 4–7 giorni lavorativi; gratuita oltre €350
+- Regno Unito, Svizzera e Norvegia: spedizione DDP €25 in 5–8 giorni lavorativi
+- Recesso richiedibile entro 14 giorni dalla consegna: le spese dirette di restituzione sono a carico del cliente
+- Se il prodotto è errato, difettoso o non conforme per responsabilità di SILKinCOM, la restituzione è gratuita e a carico della Maison
+- Confezione regalo Maison inclusa in ogni ordine
+- Pagamenti gestiti tramite checkout sicuro
 
-## Pagine Brand
+Dettagli ufficiali: [Spedizioni](https://www.silkincom.com/spedizioni) · [Resi](https://www.silkincom.com/resi) · [FAQ](https://www.silkincom.com/faq)
 
-- [La Nostra Storia](https://www.silkincom.com/la-nostra-storia): Heritage tessile sul Lago di Como, fondazione e visione di SILKinCOM.
-- [I Nostri Artigiani](https://www.silkincom.com/artigiani): I tessitori, gli stampatori e gli orlatori che danno vita al prodotto. Volti, nomi, città del distretto.
-- [Trame di Como — Journal](https://www.silkincom.com/trame-di-como): Editoriali e racconti dal lago.
-- [Contatti](https://www.silkincom.com/contatti): Atelier Cermenate (CO), info@silkincom.com.
+## Brand e contenuti editoriali
 
-## Editoriali chiave (Journal)
+- [La nostra storia](https://www.silkincom.com/la-nostra-storia)
+- [Marco Dibenedetto, fondatore](https://www.silkincom.com/maison/marco-dibenedetto)
+- [Artigiani](https://www.silkincom.com/artigiani)
+- [Trame di Como — Journal](https://www.silkincom.com/trame-di-como)
+- [Come riconoscere la seta vera](https://www.silkincom.com/trame-di-como/come-riconoscere-seta-vera)
+- [Pashmina e sciarpa: differenze](https://www.silkincom.com/trame-di-como/pashmina-vs-sciarpa-differenze)
 
-- [Storia della seta a Como: sei secoli di filo e telaio](https://www.silkincom.com/trame-di-como/storia-della-seta-a-como) — Pillar page heritage: dalle prime coltivazioni di gelso del XV secolo al distretto contemporaneo. Mantero, Ratti, Canepa, le grandi maison globali, la crisi cinese, la nuova manifattura artigianale.
-- [Come riconoscere la seta vera: 7 prove pratiche](https://www.silkincom.com/trame-di-como/come-riconoscere-seta-vera) — Guida tecnica per distinguere seta autentica da poliestere o viscosa: test del tatto, nodo, fuoco, luce, prezzo, etichetta, orlo.
-- [Pashmina o sciarpa: tutte le differenze](https://www.silkincom.com/trame-di-como/pashmina-vs-sciarpa-differenze) — Fibra (cashmere 12–16 micron Changthangi), dimensioni (200×70 vs 30–60 cm), peso, drappeggio, quando scegliere l'una o l'altra.
-- [Cashmere mongolo o cinese: come riconoscerli](https://www.silkincom.com/trame-di-como/cashmere-mongolo-vs-cinese) — Origine (Mongolia esterna/interna/altre province cinesi), micronaggio (14–15,5 vs 16–18), prezzi (€150–500 vs €60–80), lavorazione, durata.
-
-## Cura del prodotto
-
-- [Cura della seta](https://www.silkincom.com/cura-prodotto/seta) — Lavaggio a mano in acqua fredda o lavaggio a secco, asciugatura piatta lontano da fonti di calore.
-- [Cura del cashmere](https://www.silkincom.com/cura-prodotto/cashmere) — Lavaggio a mano con sapone neutro, asciugatura piatta, mai stiratura diretta.
-- [Cura della lana](https://www.silkincom.com/cura-prodotto/lana) — Lavaggi delicati in acqua tiepida, asciugatura distesa.
-- [Cura del lino](https://www.silkincom.com/cura-prodotto/lino) — Lavatrice bassa temperatura, no asciugatrice, stiratura a caldo da umido.
-- [Cura del cotone](https://www.silkincom.com/cura-prodotto/cotone) — Lavatrice fino a 30 °C, capi colorati al rovescio.
-
-## FAQ chiave
-
-- **Quanto tempo serve per la spedizione?** Standard 3–5 giorni lavorativi in Italia, gratuita oltre €200. UE 4–7 giorni.
-- **Posso restituire un prodotto?** Sì, entro 14 giorni dal ricevimento, gratuitamente. Diritto di recesso ai sensi del Codice del Consumo italiano (D.Lgs. 206/2005).
-- **Dove vengono confezionati i prodotti?** Tutti i prodotti SILKinCOM sono interamente disegnati e confezionati nel distretto serico di Como, Italia. Niente fasi di produzione esternalizzate fuori dall'Italia.
-- **Il cashmere è certificato?** Sì, proviene esclusivamente da Mongolia interna ed esterna con micronaggio sotto i 15,5 micron e tracciabilità della filiera.
-- **Sono prodotti edizione limitata?** Diverse collezioni (Tivan, alcune Bellagio) sono in edizione numerata o limitata. Le pashmine di base e le sciarpe Cernobbio/Tremezzo sono produzione continua.
-
-## Range prezzi
-
-- Cappellini cotone Darsena: €40
-- T-shirt cotone Lario: €45
-- Foulard seta Twilly Como: €90
-- Sciarpe in cashmere Cernobbio/Tremezzo: €150
-- Pashmine cashmere Bellagio (180×70): €180
-- Pashmine cashmere quadrato (140×140): €270
-
-## Servizio
-
-- Spedizioni: gratuite in Italia sopra €200; UE 4–7 giorni; mondo 7–14 giorni.
-- Resi: gratuiti entro 14 giorni, ritiro a domicilio.
-- Pagamenti: Visa, Mastercard, American Express, Apple Pay, Google Pay, PayPal, bonifico SEPA.
-- Garanzia legale di conformità 24 mesi (D.Lgs. 206/2005).
-- Confezione regalo Maison inclusa in ogni ordine.
-
-## Lingue
-
-Il sito SILKinCOM è disponibile nativamente in 7 lingue: italiano (sorgente), inglese, spagnolo, francese, tedesco, portoghese, olandese. Hreflang implementato su ogni pagina.
-
-## Social
+## Social ufficiali
 
 - Instagram: https://www.instagram.com/silkincom.official/
 - Facebook: https://www.facebook.com/profile.php?id=61581900780447

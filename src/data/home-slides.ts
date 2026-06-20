@@ -8,6 +8,35 @@ import type { Locale } from '@/i18n/routing';
 
 type I18nMap = Partial<Record<string, string>> | null;
 
+const SLIDE_TRANSLATION_OVERRIDES: Record<string, { title: Record<string, string>; subtitle: Record<string, string>; alt: Record<string, string> }> = {
+  '5d699b03-9cdb-4a6e-baf1-166bcafe54fb': {
+    title: {
+      it: "Sinfonia d'estate||il candore del cotone.", en: 'A summer symphony||the purity of cotton.',
+      es: 'Sinfonía de verano||la pureza del algodón.', fr: "Symphonie d'été||la pureté du coton.",
+      de: 'Eine Sommersinfonie||die Reinheit der Baumwolle.', pt: 'Sinfonia de verão||a pureza do algodão.',
+      nl: 'Een zomersymfonie||de puurheid van katoen.',
+    },
+    subtitle: {
+      it: "L'essenza del relax sul Lago di Como si svela in un outfit di puro cotone, dove la leggerezza della materia incontra l'atmosfera sospesa di un crepuscolo italiano.",
+      en: 'The essence of relaxation on Lake Como unfolds in pure cotton, where lightness meets the suspended atmosphere of an Italian twilight.',
+      es: 'La esencia del descanso en el Lago de Como se revela en puro algodón, donde la ligereza se encuentra con la atmósfera de un crepúsculo italiano.',
+      fr: "L'essence de la détente sur le lac de Côme se révèle dans le pur coton, où la légèreté rencontre l'atmosphère suspendue d'un crépuscule italien.",
+      de: 'Die Essenz der Entspannung am Comer See zeigt sich in reiner Baumwolle, wo Leichtigkeit auf die schwebende Stimmung einer italienischen Dämmerung trifft.',
+      pt: 'A essência do descanso no Lago de Como revela-se em puro algodão, onde a leveza encontra a atmosfera suspensa de um crepúsculo italiano.',
+      nl: 'De essentie van ontspanning aan het Comomeer ontvouwt zich in puur katoen, waar lichtheid de verstilde sfeer van een Italiaanse schemering ontmoet.',
+    },
+    alt: {
+      it: 'Donna con t-shirt e cappellino in cotone bianco che sorseggia un cocktail in una terrazza sul Lago di Como.',
+      en: 'Woman in a white cotton T-shirt and cap enjoying a cocktail on a Lake Como terrace.',
+      es: 'Mujer con camiseta y gorra de algodón blanco tomando un cóctel en una terraza del Lago de Como.',
+      fr: 'Femme en t-shirt et casquette de coton blanc savourant un cocktail sur une terrasse du lac de Côme.',
+      de: 'Frau in weißem Baumwoll-T-Shirt und Cap mit einem Cocktail auf einer Terrasse am Comer See.',
+      pt: 'Mulher com t-shirt e boné de algodão branco a beber um cocktail num terraço do Lago de Como.',
+      nl: 'Vrouw in een wit katoenen T-shirt en pet met een cocktail op een terras aan het Comomeer.',
+    },
+  },
+};
+
 export type HomeSlideRow = {
   id: string;
   image_url: string;
@@ -57,16 +86,17 @@ const getCachedSlides = unstable_cache(
 );
 
 function localize(row: HomeSlideRow, locale: string): HomeSlide {
-  const rawTitle = pickI18n(row.title_i18n, locale);
+  const override = SLIDE_TRANSLATION_OVERRIDES[row.id];
+  const rawTitle = pickI18n(override?.title ?? row.title_i18n, locale);
   const [titleMain, titleAccent = ''] = rawTitle.split('||').map((s) => s.trim());
   return {
     id: row.id,
     src: row.image_url,
-    alt: pickI18n(row.alt_i18n, locale),
+    alt: pickI18n(override?.alt ?? row.alt_i18n, locale),
     focus: row.focus || 'center',
     titleMain: titleMain || '',
     titleAccent,
-    subtitle: pickI18n(row.subtitle_i18n, locale),
+    subtitle: pickI18n(override?.subtitle ?? row.subtitle_i18n, locale),
   };
 }
 

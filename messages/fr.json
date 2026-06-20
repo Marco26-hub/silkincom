@@ -46,7 +46,9 @@
     "register": "S'inscrire",
     "logout": "Se déconnecter",
     "admin": "Administration",
-    "artigiani": "Artisans"
+    "artigiani": "Artisans",
+    "founder": "Le fondateur",
+    "press": "Presse"
   },
   "footer": {
     "newsletter": {
@@ -131,8 +133,8 @@
         "desc": "Coffret Maison inclus, carte personnalisable."
       },
       "returns": {
-        "title": "Retours offerts",
-        "desc": "14 jours pour changer d'avis, enlèvement à domicile."
+        "title": "Rétractation sous 14 jours",
+        "desc": "Rétractation : retour à la charge du client. Défaut ou erreur SILKinCOM : retour offert."
       }
     },
     "bestsellers": {
@@ -356,7 +358,7 @@
       "madeInComo": "Made in Como, Italie",
       "artisan": "Artisanat 100% italien",
       "shipping": "Livraison offerte dès 200 €",
-      "returns": "Retours sous 14 jours"
+      "returns": "Rétractation sous 14 jours"
     },
     "related": {
       "eyebrow": "Continuer",
@@ -366,7 +368,7 @@
     "taxIncluded": "Taxes incluses — Livraison calculée au paiement",
     "shippingDetails": {
       "standard": "Livraison standard 3–5 jours ouvrés. Offerte pour les commandes supérieures à 200 €.",
-      "returns": "Retours offerts sous 14 jours à compter de la réception.",
+      "returns": "Rétractation sous 14 jours ; retour offert uniquement pour les produits erronés, défectueux ou non conformes.",
       "allDetails": "Tous les détails"
     },
     "wishlistAdd": "Ajouter aux favoris",
@@ -526,14 +528,44 @@
         "cancelled": "Annulée",
         "refunded": "Remboursée",
         "failed": "Échouée"
-      }
+      },
+      "cancelConfirm": "Êtes-vous sûr de vouloir annuler cette commande ? L'action est irréversible.",
+      "cancelError": "La commande n'a pas pu être annulée.",
+      "networkError": "Erreur réseau. Réessayez.",
+      "cancelling": "Annulation…",
+      "cancelOrder": "Annuler la commande",
+      "shippingStatus": "Statut d'expédition",
+      "timeline": {
+        "created": "Commande reçue",
+        "paid": "Paiement confirmé",
+        "shipped": "Expédié",
+        "delivered": "Livré"
+      },
+      "productFallback": "Produit",
+      "leaveReview": "Laisser un avis",
+      "couponDiscount": "Remise avec code"
     },
     "profile": {
       "title": "Profil",
       "fullName": "Nom complet",
       "phone": "Téléphone",
       "email": "E-mail",
-      "saved": "Profil mis à jour."
+      "saved": "Profil mis à jour.",
+      "changePassword": "Changer le mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmez le mot de passe",
+      "passwordMin": "Le mot de passe doit comporter au moins 8 caractères.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "passwordUpdated": "Mot de passe mis à jour.",
+      "updating": "Mise à jour…",
+      "updatePassword": "Mettre à jour le mot de passe",
+      "deleteTitle": "Supprimer le compte",
+      "deleteDescription": "Cette action est permanente. Vos données personnelles seront supprimées. Les commandes sont anonymisées pour les obligations fiscales.",
+      "deletePrompt": "Tapez {word} pour confirmer",
+      "deleteConfirmationWord": "SUPPRIMER",
+      "deleting": "Suppression…",
+      "deleteAction": "Supprimer définitivement le compte",
+      "deleteError": "Le compte n'a pas pu être supprimé."
     },
     "wishlistPage": {
       "title": "Liste d'envies",
@@ -558,8 +590,12 @@
       "phone": "Téléphone",
       "type": "Type",
       "setDefault": "Définir par défaut",
-      "addAddress": "Ajouter une adresse"
-    }
+      "addAddress": "Ajouter une adresse",
+      "editAddress": "Modifier l’adresse",
+      "editAria": "Modifier l’adresse"
+    },
+    "metaTitle": "Mon compte — SILKinCOM",
+    "metaDescription": "Gérez les commandes, les adresses, les listes de souhaits et le profil de votre compte SILKinCOM."
   },
   "auth": {
     "login": {
@@ -574,7 +610,8 @@
       "createAccount": "Créer un compte",
       "invalidCredentials": "Identifiants non valides.",
       "emailNotConfirmed": "E-mail non confirmé. Vérifiez votre boîte de réception et cliquez sur le lien de confirmation.",
-      "missingFields": "Saisissez votre e-mail et votre mot de passe."
+      "missingFields": "Saisissez votre e-mail et votre mot de passe.",
+      "googleSignIn": "Continuer avec Google"
     },
     "register": {
       "title": "Créer un compte",
@@ -593,7 +630,9 @@
       "passwordTooShort": "Mot de passe trop court (8 caractères minimum).",
       "termsRequired": "Veuillez accepter les conditions et la politique de confidentialité.",
       "missingFields": "Veuillez compléter tous les champs obligatoires.",
-      "emailSent": "Compte créé. Vérifiez votre e-mail pour confirmer."
+      "emailSent": "Compte créé. Vérifiez votre e-mail pour confirmer.",
+      "googleSignUp": "S’inscrire avec Google",
+      "errorDefault": "L’inscription a échoué. Réessayez."
     },
     "forgotPassword": {
       "tag": "Récupération d'accès",
@@ -639,7 +678,7 @@
       "Livraison offerte en Italie dès 200 €",
       "Coffret cadeau Maison inclus dans chaque commande",
       "100% Made in Como — Tradition séricicole depuis 1400",
-      "Retours offerts sous 14 jours — Enlèvement à domicile"
+      "Rétractation sous 14 jours après la livraison"
     ]
   },
   "cookies": {
@@ -778,7 +817,7 @@
       },
       {
         "q": "Puis-je retourner un article ?",
-        "a": "Oui, vous avez 14 jours à compter de la réception pour retourner tout article non utilisé. Les retours sont offerts pour les commandes en Italie. Voir <a href=\"/resi\">Retours</a> pour la procédure."
+        "a": "Oui, vous avez 14 jours à compter de la réception pour retourner tout article non utilisé. Les frais de retour sont à la charge du client, sauf pour les produits erronés ou défectueux. Voir <a href=\"/resi\">Retours</a> pour la procédure."
       },
       {
         "q": "Comment trouver la bonne taille ?",
@@ -1383,7 +1422,7 @@
     "requestSent": "Demande envoyée",
     "openButton": "Demander un retour",
     "formTitle": "Demande de retour",
-    "formIntro": "Vous disposez de 14 jours à compter de la livraison pour demander un retour. Le retour est gratuit.",
+    "formIntro": "Vous disposez de 14 jours à compter de la livraison pour demander un retour. Les frais de retour sont à la charge du client, sauf pour les produits erronés ou défectueux.",
     "reasonLabel": "Motif du retour *",
     "reasonPlaceholder": "Sélectionnez un motif",
     "notesLabel": "Notes complémentaires (facultatif)",
@@ -1479,12 +1518,22 @@
     "errorNetwork": "Erreur réseau. Veuillez réessayer."
   },
   "founder": {
-    "metaTitle": "Marco Dibenedetto — Fondateur SILKinCOM",
-    "metaDescription": "Marco Dibenedetto, fondateur de SILKinCOM. Formé à l'ITIS Setificio di Como (1998), il œuvre dans le district de la soie comasque avec une vision direct-to-consumer du luxe italien Made in Como.",
+    "metaTitle": "Marco Dibenedetto — Fondateur de SILKinCOM",
+    "metaDescription": "Marco Dibenedetto, fondateur de SILKinCOM et diplômé en textile de l’ITIS Setificio di Como. Son projet associe culture du produit, district textile de Côme et vente directe.",
     "eyebrow": "La Maison",
     "role": "Fondateur",
     "ctaStory": "Notre histoire",
-    "quote": "Le district de Côme produit pour le luxe mondial aux plus hauts niveaux techniques depuis près d'un siècle. SILKinCOM porte cette qualité directement à celles et ceux qui la portent, sans la médiation des grandes chaînes.",
-    "body": "**Marco Dibenedetto** est le fondateur de SILKinCOM, la Maison italienne d'accessoires en soie, cachemire et fibres naturelles née sur les rives du Lago di Como pour porter le plus important district de la soie d'Europe directement à celles et ceux qui portent ses créations. Une prémisse simple, mais peu fréquente dans le luxe contemporain : l'idée que la qualité technique du tissu comasque — la même qui, depuis des décennies, approvisionne les plus grandes maisons du luxe international — puisse être offerte sans le filtre des grandes chaînes, à travers une relation directe entre la Maison et son client.\n\n## Les origines, au Setificio\nMarco se forme à l'**ITIS Setificio di Como**, où il obtient son diplôme textile en **1998**. Le Setificio, en activité depuis 1869, est l'école technique que le district de la soie a lui-même bâtie pour transmettre son savoir aux générations suivantes : en sont issus les techniciens, les chimistes du textile, les imprimeurs et les tisserands qui ont alimenté les manufactures comasques pendant plus d'un siècle et demi. C'est là que Marco apprend la grammaire du tissu : armures, filés, moulinage, chimie de la soie, impression, finissage. Une formation technique rigoureuse, calibrée sur la réalité du territoire.\n\n## Le district comme école\nLa formation s'achève hors de la salle de classe. Dans les années qui suivent le diplôme, Marco parcourt le tissu manufacturier comasque en se confrontant directement à celles et ceux qui travaillent les fibres : tisserands jacquard, imprimeurs au cadre, ourleuses qui cousent à la main le rouletté du foulard, teinturiers, finisseurs. La pratique du district est en grande partie tacite — elle se transmet dans l'atelier, devant le métier à tisser, près de la table d'impression. C'est un savoir que le Setificio dispense de façon systématique et que les artisans transmettent dans sa dimension concrète, geste après geste. De cet entrelacs entre école technique et atelier naît le réseau d'interlocuteurs artisans qui deviendra, des années plus tard, la base productive de SILKinCOM.\n\n## Le choix du direct-to-consumer\nSILKinCOM naît d'un constat simple : le district de Côme produit pour le luxe mondial à des niveaux techniques très élevés, mais l'essentiel de ce travail finit sous la signature de tiers qui appliquent des marges multiples au coût de production. Le client paie, au bout du compte, deux ou trois fois la valeur intrinsèque du produit. Marco conçoit explicitement SILKinCOM comme une réaction à ce schéma : une Maison italienne qui travaille avec les mêmes métiers à tisser et les mêmes artisans que le luxe international, mais qui vend directement au client final, sans intermédiaires.\n\n## La vision\nLe Made in Como, pour SILKinCOM, n'est pas une accroche marketing : c'est une règle opérationnelle stricte. Filature, teinture, impression, tissage, confection et finition s'effectuent toutes dans un rayon de quelques kilomètres autour de Como. Aucune étape n'est externalisée hors du district. Les fibres sont sélectionnées au cas par cas — cachemire mongol au micronnage inférieur à 15,5 microns, soie de Como, lin européen, coton extra-long, laine mérinos superfine. La transparence sur les sources fait partie intégrante du produit : chaque matière possède une page dédiée qui en explique l'origine, les caractéristiques techniques et l'entretien.\n\n## Le processus\nUne création SILKinCOM naît d'un dialogue entre le designer et le tisserand. Marco travaille en étroite collaboration avec les ateliers comasques dans le choix des armures (twill, satin, jacquard), dans la définition des densités de chaîne et de trame, dans la sélection des palettes chromatiques. L'impression — sur les foulards de soie — passe par des ateliers spécialisés du district. L'ourlet du foulard est cousu à la main : chaque rouletté demande entre 90 et 180 minutes de travail d'une seule artisane expérimentée. C'est le détail qui sépare un foulard haut de gamme d'un accessoire industriel, et que le client reconnaît au toucher avant même de le voir.\n\n## Les personnes\nSILKinCOM n'est pas une marque monolithique : c'est un réseau d'ateliers indépendants, coordonné par Marco depuis son siège opérationnel de Cermenate. Trois artisans en particulier collaborent durablement avec la Maison : **Paolo**, maître tisserand — il conduit le métier jacquard ; **Adriano**, maître teinturier — il prépare les bains de teinture, dose les colorants et contrôle le rendu des couleurs sur les filés de soie et de cachemire ; **Roberta**, confectionneuse — elle coud les ourlets, applique les étiquettes et finit à la main chaque pièce avant la confection. Marco signe personnellement la sélection du projet, mais le produit final est le fruit d'un travail partagé qui reflète la nature districtuelle de l'industrie de la soie comasque. Leurs visages et leurs voix sont réunis sur la page [Artisans](/fr/artigiani).\n\n## Continuité et responsabilité\nSILKinCOM s'inscrit dans une histoire qui traverse six siècles : des premiers mûriers plantés sur les collines lariennes au Quattrocento, aux filatures du XVIIIe siècle, aux dynasties textiles du XXe siècle, jusqu'au district contemporain. La Maison a la responsabilité de maintenir vivante une filière que la mondialisation des années quatre-vingt-dix a affaiblie, sans toutefois l'éteindre. Le choix du direct-to-consumer est aussi, en ce sens, un choix industriel : offrir aux ateliers comasques une alternative au travail pour compte de tiers. Le récit complet est disponible dans [Histoire de la soie à Côme](/fr/trame-di-como/storia-della-seta-a-como).\n\n## Publications\nMarco signe les pages éditoriales du Journal SILKinCOM — [Histoire de la soie à Côme](/fr/trame-di-como/storia-della-seta-a-como), [Comment reconnaître la soie véritable](/fr/trame-di-como/come-riconoscere-seta-vera), [Cachemire mongol ou chinois](/fr/trame-di-como/cashmere-mongolo-vs-cinese), [Pashmina et écharpe : les différences](/fr/trame-di-como/pashmina-vs-sciarpa-differenze) — avec l'intention de rendre accessible au client final le savoir technique que le district de la soie préserve depuis des générations.\n\n## Contacts\nE-mail : [info@silkincom.com](mailto:info@silkincom.com). Siège opérationnel : Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italie. P.IVA : IT03786790133."
+    "quote": "Connaître le tissu, le processus et les personnes qui travaillent avec est le point de départ de chaque collection SILKinCOM.",
+    "body": "**Marco Dibenedetto** est le fondateur de SILKinCOM. Le projet est né de la rencontre entre la formation textile, la connaissance du district textile de Côme et la volonté de construire une relation plus directe entre produit et client. La Maison développe des accessoires et des vêtements en soie, cachemire, laine, lin et coton, en déclarant la composition et les instructions d'entretien dans les fiches produits individuelles.\n\n## Formation textile\nMarco a obtenu son diplôme textile chez **ITIS Setificio di Como en 1998**. La formation technique lui offre les outils pour lire un tissu au-delà de son apparence : fibres, fils, tissages, impression, teinture et finition. Cette expertise reste la référence avec laquelle il évalue les matériaux, la construction et les performances des collections.\n\n## L'idée SILKinCOM\nSILKinCOM choisit un modèle de vente directe au consommateur : elle présente les collections via son site Internet et entretient un dialogue direct avec ceux qui achètent. L'objectif est de rendre plus lisibles les caractéristiques du produit - matériau, main, dimensions, fabrication et entretien déclarés - sans s'appuyer uniquement sur un langage promotionnel.\n\n## Le travail dans le district\nMarco coordonne le projet depuis le siège opérationnel de Cermenate et collabore avec des professionnels et des laboratoires spécialisés de la région de Côme. La page [Artisans](/artigiani) raconte certains de ces savoir-faire à travers le travail de Paolo, tisserand, Adriano, teinturier, et Roberta, confectionneuse de vêtements. Les processus et la composition réels varient d'un produit à l'autre et sont indiqués dans les fiches techniques correspondantes.\n\n## Sélection et développement\nChaque proposition part de l'usage : comment un foulard doit tomber, la chaleur qu’une écharpe doit apporter, quel équilibre faut-il entre légèreté, confort et résistance. À partir de là, le matériau, la construction, la couleur et la finition sont sélectionnés. Le contrôle final porte sur la cohérence du tissu, la qualité de la confection et la présentation du produit.\n\n## Culture produit\nPour SILKinCOM, la connaissance fait partie du service. Les pages [Matériaux](/materiali), [Entretien du produit](/cura-prodotto) et [Glossaire textile](/glossario) expliquent les termes, caractéristiques et précautions utiles sans remplacer les informations spécifiques sur l'étiquette.\n\n## Journal et contacts\nMarco signe le Journal SILKinCOM, dédié à la culture textile, au choix des fibres et à l'utilisation consciente des accessoires. Parmi les articles : [Histoire de la soie à Côme](/trame-di-como/storia-della-seta-a-como), [Comment reconnaître la vraie soie](/trame-di-como/come-riconoscere-seta-vera) et [Pashmina et foulard : les différences](/trame-di-como/pashmina-vs-sciarpa-differenze). Pour toute demande éditoriale ou professionnelle : [info@silkincom.com](mailto:info@silkincom.com)."
+  },
+  "pressPage": {
+    "metaTitle": "Press Room — Media kit SILKinCOM",
+    "metaDescription": "Kit presse, logo, biographie et contacts pour journalistes et médias. SILKinCOM, maison italienne de soie, cachemire et fibres naturelles du district textile de Côme.",
+    "schemaName": "Press Room SILKinCOM",
+    "schemaDescription": "Matériel de presse et media kit de SILKinCOM : profil de marque, contacts pour journalistes, logo et images officiels.",
+    "eyebrow": "Press Room",
+    "h1": "Media kit",
+    "subtitle": "Ressources pour journalistes, médias et partenaires éditoriaux",
+    "body": "## Boilerplate\n\n**SILKinCOM** est une maison italienne d'accessoires et de vêtements en soie, cachemire, laine, lin et coton. Les collections sont conçues et confectionnées dans le district textile de Côme et vendues directement au client final. Fondateur : Marco Dibenedetto. Siège opérationnel : Cermenate (CO), Italie.\n\n## Fact sheet\n\n- **Marque** : SILKinCOM\n- **Fondateur** : [Marco Dibenedetto](/fr/maison/marco-dibenedetto)\n- **Siège opérationnel** : Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia\n- **P.IVA** : IT03786790133\n- **Activité** : design, confection et vente directe depuis le district textile de Côme\n- **Matières** : soie, cachemire, laine, lin et coton ; composition indiquée sur chaque fiche produit\n- **Langues du site** : italien, anglais, espagnol, français, allemand, portugais et néerlandais\n- **Site** : [silkincom.com](https://www.silkincom.com)\n\n## Logo et images\n\n- [Logo SVG (vectoriel)](/logo-official.svg)\n- [Logo PNG (raster)](/logo-official.png)\n- [Logo variante or](/logo-gold.png)\n- [Image de couverture de la marque](/og-image.jpg)\n\n## Contacts presse\n\n- E-mail médias : [info@silkincom.com](mailto:info@silkincom.com)\n- Sujets : le district textile de Côme, les fibres naturelles, la vente directe, la culture produit et le fondateur\n- Disponibilité : interviews du fondateur, éclairages sur le projet et matériel produit\n\n## Histoires pour la rédaction\n\nSujets disponibles sur le Journal SILKinCOM :\n\n- [L'histoire de la soie à Côme](/fr/trame-di-como/storia-della-seta-a-como)\n- [Comment reconnaître la vraie soie](/fr/trame-di-como/come-riconoscere-seta-vera)\n- [Pashmina et écharpe : les différences](/fr/trame-di-como/pashmina-vs-sciarpa-differenze)\n- [Cachemire mongol ou chinois : un guide](/fr/trame-di-como/cashmere-mongolo-vs-cinese)\n\n## Social\n\n- Instagram: [@silkincom.official](https://www.instagram.com/silkincom.official/)\n- Facebook: [SILKinCOM](https://www.facebook.com/profile.php?id=61581900780447)\n- Pinterest: [silkincomofficial](https://it.pinterest.com/silkincomofficial)"
   }
 }

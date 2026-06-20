@@ -4,6 +4,10 @@ export const metadata = {
   title: 'AI Upload Prodotto',
   description:
     'Carica foto da smartphone e genera automaticamente bozza prodotto con layout immagini ottimizzato.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function AiUploadPage() {

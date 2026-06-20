@@ -21,26 +21,31 @@ export function BestsellerContent({ products }: { products: Product[] }) {
   const t = useTranslations('home.bestsellers');
 
   return (
-    <section className="py-24 md:py-section bg-warm-white overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+    <section className="overflow-hidden bg-warm-white py-24 md:py-32">
+      <div className="mx-auto max-w-[1500px] px-6 lg:px-10">
+        <div className="grid gap-12 lg:grid-cols-[0.32fr_0.68fr] lg:gap-14 xl:gap-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7 }}
-          className="flex items-end justify-between mb-12"
+          className="lg:sticky lg:top-32 lg:self-start"
         >
           <div>
-            <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">
+            <span className="mb-5 block h-px w-12 bg-gold-dark" />
+            <span className="mb-5 block text-[9px] uppercase tracking-[0.42em] text-gold-dark">
               {t('eyebrow')}
             </span>
-            <h2 className="font-display font-light text-4xl md:text-5xl">
-              {t('titlePlain')} <em className="italic text-gold-primary">{t('titleAccent')}</em>
+            <h2 className="font-display text-5xl font-light leading-[0.9] tracking-[-0.035em] md:text-6xl lg:text-7xl">
+              {t('titlePlain')} <em className="block italic text-gold-dark">{t('titleAccent')}</em>
             </h2>
+            <p className="mt-7 max-w-xs text-sm font-light leading-[1.8] text-soft-black/60">
+              Disegni essenziali, fibre nobili e proporzioni pensate per durare oltre la stagione.
+            </p>
           </div>
           <Link
             href="/collezioni"
-            className="hidden md:inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-soft-black hover:text-gold-primary transition-colors group border-b border-soft-black hover:border-gold-primary pb-1"
+            className="group mt-9 inline-flex items-center gap-2 border-b border-soft-black pb-1 text-[10px] uppercase tracking-[0.28em] text-soft-black transition-colors hover:border-gold-dark hover:text-gold-dark"
           >
             {t('viewAll')}
             <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -52,14 +57,15 @@ export function BestsellerContent({ products }: { products: Product[] }) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-8"
+          className="grid grid-cols-2 gap-x-4 gap-y-14 sm:gap-x-6 md:gap-x-8 md:gap-y-20"
         >
-          {products.map((p) => (
-            <motion.div key={p.slug} variants={itemVariants}>
-              <ProductCard product={p} />
+          {products.map((product, index) => (
+            <motion.div key={product.slug} variants={itemVariants} className={index % 2 === 1 ? 'md:mt-20' : ''}>
+              <ProductCard product={product} />
             </motion.div>
           ))}
         </motion.div>
+        </div>
       </div>
     </section>
   );

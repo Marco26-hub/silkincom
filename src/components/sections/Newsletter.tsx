@@ -55,36 +55,36 @@ export function Newsletter() {
   }
 
   return (
-    <section className="py-24 md:py-section bg-ivory overflow-hidden">
+    <section className="overflow-hidden border-t border-gold-primary/20 bg-[#11100e] py-24 text-warm-white md:py-32">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
-        className="max-w-2xl mx-auto text-center px-6"
+        className="mx-auto grid max-w-[1300px] gap-12 px-6 md:grid-cols-[0.9fr_1.1fr] md:items-end md:gap-20 lg:px-10"
       >
-        <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
-          {t('eyebrow')}
-        </span>
-        <span className="block w-10 h-px bg-gold-primary mx-auto mb-7" />
-        <h2 className="font-display font-light text-4xl md:text-5xl mb-6 leading-[1.05] tracking-[-0.005em]">
-          {t('titlePlain')}<br />
-          <em className="italic text-gold-primary">{t('titleAccent')}</em>
-        </h2>
-        <p className="text-base font-light text-soft-black/70 mb-10 leading-[1.8]">
-          {t('description')}
-        </p>
+        <div>
+          <span className="mb-6 block h-px w-12 bg-gold-primary" />
+          <span className="mb-5 block text-[9px] uppercase tracking-[0.48em] text-gold-primary">{t('eyebrow')}</span>
+          <h2 className="font-display text-5xl font-light leading-[0.9] tracking-[-0.035em] md:text-6xl lg:text-7xl">
+            {t('titlePlain')}<br />
+            <em className="italic text-gold-primary">{t('titleAccent')}</em>
+          </h2>
+        </div>
+
+        <div>
+          <p className="mb-9 max-w-xl text-sm font-light leading-[1.85] text-warm-white/60 md:text-base">{t('description')}</p>
 
         {submitted ? (
           <motion.p
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="font-display italic text-2xl text-gold-primary"
+            className="font-display text-2xl italic text-gold-primary"
           >
             {t('success')}
           </motion.p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-lg mx-auto" noValidate>
+          <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-3" noValidate>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
@@ -96,18 +96,18 @@ export function Newsletter() {
                 disabled={loading}
                 aria-invalid={isInvalid || undefined}
                 aria-describedby={isInvalid ? 'newsletter-error' : undefined}
-                className={`flex-1 px-5 py-4 bg-warm-white border text-sm focus:outline-none transition-colors disabled:opacity-50 ${
+                className={`flex-1 border-0 border-b bg-transparent px-0 py-4 text-sm text-warm-white placeholder:text-warm-white/30 focus:outline-none transition-colors disabled:opacity-50 ${
                   isInvalid
                     ? 'border-red-500 focus:border-red-500'
                     : isValid
                       ? 'border-gold-primary/60 focus:border-gold-primary'
-                      : 'border-pearl-grey focus:border-gold-primary'
+                      : 'border-warm-white/25 focus:border-gold-primary'
                 }`}
               />
               <button
                 type="submit"
                 disabled={loading || isInvalid}
-                className="px-8 py-4 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.25em] hover:bg-gold-primary hover:text-soft-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gold-primary px-8 py-4 text-[9px] uppercase tracking-[0.3em] text-soft-black transition-all duration-300 hover:bg-warm-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? t('submitting') : t('submit')}
               </button>
@@ -122,7 +122,7 @@ export function Newsletter() {
             )}
           </form>
         )}
-        <p className="text-[11px] text-soft-grey mt-4 max-w-md mx-auto leading-relaxed">
+        <p className="mt-4 max-w-md text-[10px] leading-relaxed text-warm-white/35">
           {t.rich('privacyDisclaimer', {
             link: (chunks) => (
               <Link href="/privacy-policy" className="underline hover:text-gold-primary transition-colors">
@@ -131,6 +131,7 @@ export function Newsletter() {
             ),
           })}
         </p>
+        </div>
       </motion.div>
     </section>
   );

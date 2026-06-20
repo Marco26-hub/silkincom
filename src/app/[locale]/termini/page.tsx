@@ -1,8 +1,14 @@
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { Link } from '@/i18n/navigation';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = { title: 'Termini e Condizioni', description: 'Termini e condizioni di vendita SILKinCOM.' };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations('legalPages.termini');
+  return { title: t('title'), description: t('subtitle'), alternates: localizedAlternates(locale, '/termini') };
+}
 
 type Section = { h: string; body: string };
 

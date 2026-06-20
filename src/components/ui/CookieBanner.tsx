@@ -23,24 +23,28 @@ export function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 bg-soft-black text-warm-white border-t border-gold-primary/30 animate-fade-in">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-5 flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
-        <p className="text-sm font-light leading-relaxed flex-1">
-          {t('description')}
-        </p>
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={() => decide('reject')}
-            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] border border-warm-white/30 hover:border-warm-white transition-colors"
-          >
-            {t('reject')}
-          </button>
-          <button
-            onClick={() => decide('accept')}
-            className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] bg-gold-primary text-soft-black hover:bg-warm-white transition-colors"
-          >
-            {t('accept')}
-          </button>
+    <div className="fixed inset-x-3 bottom-3 z-50 animate-fade-in border border-gold-primary/35 bg-[#11100e] text-warm-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] sm:inset-x-6 sm:bottom-6 md:left-auto md:right-8 md:w-[min(620px,calc(100vw-4rem))]">
+      <div className="relative p-5 sm:p-6">
+        <div className="pointer-events-none absolute inset-2 border border-warm-white/5" />
+        <div className="relative flex flex-col gap-4">
+          <span className="text-[8px] uppercase tracking-[0.4em] text-gold-primary">Privacy · SILKinCOM</span>
+          <p className="text-[12px] font-light leading-[1.65] text-warm-white/75 sm:text-[13px]">
+            {t('description')}
+          </p>
+          <div className="flex items-center gap-2.5 sm:justify-end">
+            <button
+              onClick={() => decide('reject')}
+              className="flex-1 border border-warm-white/25 px-4 py-3 text-[9px] uppercase tracking-[0.24em] transition-colors hover:border-gold-primary hover:text-gold-primary sm:flex-none sm:px-6"
+            >
+              {t('reject')}
+            </button>
+            <button
+              onClick={() => decide('accept')}
+              className="flex-[1.45] bg-gold-primary px-4 py-3 text-[9px] uppercase tracking-[0.24em] text-soft-black transition-colors hover:bg-warm-white sm:flex-none sm:px-7"
+            >
+              {t('accept')}
+            </button>
+          </div>
         </div>
       </div>
     </div>

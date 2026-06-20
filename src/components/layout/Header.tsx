@@ -32,6 +32,7 @@ export function Header() {
     { href: '/materiali', label: t('materials') },
     { href: '/artigiani', label: t('artigiani') },
     { href: '/la-nostra-storia', label: t('story') },
+    { href: '/maison/marco-dibenedetto', label: t('founder') },
     { href: '/trame-di-como', label: 'Journal' },
     { href: '/b2b', label: 'B2B' },
     { href: '/contatti', label: t('contacts') },
@@ -55,8 +56,8 @@ export function Header() {
           overHero
             ? 'bg-transparent py-3 md:py-4'
             : scrolled
-            ? 'bg-warm-white/95 backdrop-blur-md border-b border-pearl-grey/40 py-2.5'
-            : 'bg-warm-white/95 backdrop-blur-md py-3 md:py-4 shadow-[0_1px_0_rgba(212,175,55,0.22)]'
+            ? 'bg-[#11100e]/95 backdrop-blur-xl border-b border-gold-primary/20 py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.2)]'
+            : 'bg-[#11100e]/95 backdrop-blur-xl py-3 md:py-4 border-b border-gold-primary/15 shadow-[0_12px_40px_rgba(0,0,0,0.18)]'
         }`}
       >
         {/* Hero scrim — only over homepage hero, gives links a contrast
@@ -68,7 +69,7 @@ export function Header() {
           />
         ) : null}
 
-        <div className={`relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center ${overHero ? 'text-warm-white' : 'text-soft-black'}`}>
+        <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center text-warm-white">
           {/* Left nav (desktop) */}
           <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             {NAV_LINKS.slice(0, 4).map((l) => (
@@ -85,7 +86,7 @@ export function Header() {
 
           {/* Mobile menu button */}
           <button
-            className={overHero ? 'lg:hidden text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : 'lg:hidden text-soft-black'}
+            className="lg:hidden text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]"
             onClick={() => setMobileOpen(true)}
             aria-label={tc('menu')}
           >
@@ -98,7 +99,7 @@ export function Header() {
           <div className="flex justify-center">
             <Logo
               size={scrolled ? 'md' : 'lg'}
-              variant={overHero ? 'default' : 'solid'}
+              variant={overHero ? 'default' : 'gold'}
               withMark
             />
           </div>
@@ -139,7 +140,7 @@ export function Header() {
           </div>
 
           {/* Mobile right icons */}
-          <div className={`lg:hidden flex justify-end gap-4 ${overHero ? 'text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
+          <div className="lg:hidden flex justify-end gap-4 text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
             <button
               aria-label={`${t('cart')} (${cartCount})`}
               onClick={openCart}
@@ -160,9 +161,9 @@ export function Header() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-warm-white lg:hidden">
-          <div className="flex justify-between items-center p-6 border-b border-pearl-grey">
-            <Logo size="sm" variant="solid" href={null} withMark />
+        <div className="fixed inset-0 z-50 bg-[#11100e] text-warm-white lg:hidden">
+          <div className="flex justify-between items-center p-6 border-b border-gold-primary/20">
+            <Logo size="sm" variant="gold" href={null} withMark />
             <button onClick={() => setMobileOpen(false)} aria-label={tc('close')}>
               <X className="w-6 h-6" />
             </button>
@@ -178,7 +179,7 @@ export function Header() {
                 {l.label}
               </Link>
             ))}
-            <div className="border-t border-pearl-grey pt-6 mt-2 flex flex-col gap-4 text-xs">
+            <div className="border-t border-gold-primary/20 pt-6 mt-2 flex flex-col gap-4 text-xs text-warm-white/75">
               <Link href="/account" onClick={() => setMobileOpen(false)}>
                 {t('account')}
               </Link>

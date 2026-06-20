@@ -98,10 +98,12 @@ export function Footer() {
                 <li key={c.href}><Link href={c.href} className="hover:text-gold-primary transition-colors">{catLabel(c.label)}</Link></li>
               ))}
               <li><Link href="/la-nostra-storia" className="hover:text-gold-primary transition-colors">{tn('story')}</Link></li>
+              <li><Link href="/maison/marco-dibenedetto" className="hover:text-gold-primary transition-colors">{tn('founder')}</Link></li>
               <li><Link href="/materiali" className="hover:text-gold-primary transition-colors">{tn('materials')}</Link></li>
               <li><Link href="/artigiani" className="hover:text-gold-primary transition-colors">{tn('artigiani')}</Link></li>
               <li><Link href="/trame-di-como" className="hover:text-gold-primary transition-colors">Journal</Link></li>
               <li><Link href="/contatti" className="hover:text-gold-primary transition-colors">{tn('contacts')}</Link></li>
+              <li><Link href="/press" className="hover:text-gold-primary transition-colors">{tn('press')}</Link></li>
             </ul>
           </div>
 

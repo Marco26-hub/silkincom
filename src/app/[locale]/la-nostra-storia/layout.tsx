@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
 import { APP_URL } from '@/lib/app-url';
 
@@ -8,39 +9,39 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations('storia');
   return {
-    title: 'La Nostra Storia — Eleganza e Artigianato di Como',
-    description:
-      'SILKinCOM nasce dal cuore del distretto serico di Como. Una tradizione tessile secolare reinterpretata con design contemporaneo.',
+    title: `${t('titleP1')} ${t('titleP2')} ${t('titleAccent')}`,
+    description: t('storyP1'),
     alternates: localizedAlternates(locale, '/la-nostra-storia'),
   };
 }
 
-// AboutPage schema strengthens E-E-A-T signals for AI/GEO crawlers
-// and makes the founder attribution explicit.
-const aboutSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'AboutPage',
-  '@id': `${APP_URL}/la-nostra-storia#aboutpage`,
-  url: `${APP_URL}/la-nostra-storia`,
-  name: 'La Nostra Storia — SILKinCOM',
-  description:
-    'Heritage tessile di SILKinCOM nel distretto serico di Como, fondazione, valori e visione di Marco Dibenedetto.',
-  mainEntity: {
-    '@type': 'Organization',
-    '@id': `${APP_URL}/#organization`,
-    name: 'SILKinCOM',
-    foundingLocation: 'Como, Italia',
-    founder: {
-      '@type': 'Person',
-      name: 'Marco Dibenedetto',
-      jobTitle: 'Fondatore',
-      worksFor: { '@id': `${APP_URL}/#organization` },
+export default async function StoriaLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations('storia');
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const aboutSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    '@id': `${APP_URL}${prefix}/la-nostra-storia#aboutpage`,
+    url: `${APP_URL}${prefix}/la-nostra-storia`,
+    name: `${t('titleP1')} ${t('titleP2')} ${t('titleAccent')}`,
+    description: t('storyP1'),
+    inLanguage: locale,
+    mainEntity: {
+      '@type': 'Organization',
+      '@id': `${APP_URL}/#organization`,
+      name: 'SILKinCOM',
+      foundingLocation: 'Como, Italy',
+      founder: {
+        '@type': 'Person',
+        '@id': `${APP_URL}/maison/marco-dibenedetto#person`,
+        name: 'Marco Dibenedetto',
+        worksFor: { '@id': `${APP_URL}/#organization` },
+      },
     },
-  },
-};
-
-export default function StoriaLayout({ children }: { children: React.ReactNode }) {
+  };
   return (
     <>
       <script

@@ -139,7 +139,7 @@ export default function IndirizziPage() {
                     {a.type === 'billing' ? t('billing') : t('shipping')}{a.is_default && ` • ${t('defaultLabel')}`}
                   </span>
                   <div className="flex items-center gap-1.5">
-                    <button onClick={() => startEdit(a)} aria-label="Modifica" className="text-soft-black/40 hover:text-soft-black">
+                    <button onClick={() => startEdit(a)} aria-label={t('editAria')} className="text-soft-black/40 hover:text-soft-black">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
                     <button onClick={() => remove(a.id)} aria-label={t('deleteAria')} className="text-soft-black/40 hover:text-red-700">
@@ -160,7 +160,7 @@ export default function IndirizziPage() {
 
           {mode !== 'idle' ? (
             <form onSubmit={save} className="border border-pearl-grey/60 p-6 bg-ivory space-y-4">
-              <h3 className="text-sm font-medium mb-2">{mode === 'add' ? t('addAddress') : 'Modifica indirizzo'}</h3>
+              <h3 className="text-sm font-medium mb-2">{mode === 'add' ? t('addAddress') : t('editAddress')}</h3>
               <Field label={t('fullName')} value={form.full_name} onChange={(v) => setForm({ ...form, full_name: v })} />
               <Field label={t('street')} value={form.street_address} onChange={(v) => setForm({ ...form, street_address: v })} />
               <div className="grid grid-cols-2 gap-4">

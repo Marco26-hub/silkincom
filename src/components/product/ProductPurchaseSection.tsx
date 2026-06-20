@@ -21,7 +21,7 @@ type Props = {
 const REASSURE = {
   secure: { it: 'Pagamento sicuro', en: 'Secure checkout', de: 'Sichere Zahlung', fr: 'Paiement sécurisé', es: 'Pago seguro', pt: 'Pagamento seguro', nl: 'Veilig betalen' },
   shipping: { it: 'Spedizione gratuita oltre €200', en: 'Free shipping over €200', de: 'Gratisversand ab €200', fr: 'Livraison gratuite dès €200', es: 'Envío gratis desde €200', pt: 'Portes grátis acima de €200', nl: 'Gratis verzending vanaf €200' },
-  returns: { it: 'Reso gratuito entro 14 giorni', en: 'Free returns within 14 days', de: 'Kostenlose Rückgabe binnen 14 Tagen', fr: 'Retour gratuit sous 14 jours', es: 'Devolución gratis en 14 días', pt: 'Devolução grátis em 14 dias', nl: 'Gratis retour binnen 14 dagen' },
+  returns: { it: 'Recesso 14 gg · difetti a nostro carico', en: '14-day withdrawal · defects covered by us', de: '14 Tage Widerruf · Mängel auf unsere Kosten', fr: 'Rétractation 14 j · défauts à notre charge', es: 'Desistimiento 14 días · defectos a nuestro cargo', pt: 'Livre resolução 14 dias · defeitos a nosso cargo', nl: '14 dagen bedenktijd · gebreken voor onze rekening' },
 } as const;
 
 function fmtPrice(n: number) {

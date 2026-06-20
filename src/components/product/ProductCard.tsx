@@ -87,35 +87,22 @@ export function ProductCard({ product }: { product: Product }) {
   const KNOWN_TYPES = ['pashmina', 'scarf', 'twilly', 'cap', 'tshirt', 'shorts', 'shirt', 'beachTowel'];
   const typeLabel = typeKey && KNOWN_TYPES.includes(typeKey) ? t(`types.${typeKey}`) : '';
   return (
-    <article className="group relative">
+    <article className="group relative min-w-0">
       <Link href={`/prodotto/${product.slug}`} className="block">
-        {/* Image well — luxury gradient bg, soft inner shadow, gold accent */}
         <div
-          className="relative aspect-[4/5] overflow-hidden mb-5 transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:-translate-y-1"
+          className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:-translate-y-1"
           style={{
             background:
-              'radial-gradient(ellipse at 50% 35%, #FFFDF8 0%, #F7F2EA 55%, #EDE3D3 100%)',
+              'radial-gradient(ellipse at 50% 26%, #fdfaf4 0%, #f4eee3 60%, #e7dfd0 116%)',
             boxShadow:
-              '0 1px 2px rgba(23,23,23,0.04), inset 0 0 0 1px rgba(212,175,55,0.06), 0 12px 32px -16px rgba(23,23,23,0.10)',
+              'inset 0 0 0 1px rgba(212,175,55,0.2), 0 18px 42px -28px rgba(23,23,23,0.4)',
           }}
         >
-          {/* Subtle radial spotlight (top) */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-60"
-            style={{
-              background:
-                'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,253,248,0.85) 0%, transparent 70%)',
-            }}
-          />
-
-          {/* Floor shadow under product (subtle ground) */}
-          <div
-            className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[8%] w-[60%] h-3 opacity-40 blur-md"
-            style={{
-              background:
-                'radial-gradient(ellipse at center, rgba(23,23,23,0.35) 0%, transparent 70%)',
-            }}
-          />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.4),transparent_46%,rgba(23,23,23,0.06))]" />
+          <div className="pointer-events-none absolute inset-2.5 border border-warm-white/45 transition-colors duration-700 group-hover:border-gold-primary/65" />
+          <span className="pointer-events-none absolute left-5 top-5 z-10 text-[8px] uppercase tracking-[0.35em] text-soft-black/55">
+            Made in Como
+          </span>
 
           {img1 && (
             <Image
@@ -124,7 +111,7 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className={`object-contain p-7 md:p-9 transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_8px_18px_rgba(23,23,23,0.10)] ${
+              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
                 img2
                   ? 'duration-[1100ms] group-hover:opacity-0 group-hover:scale-[1.02]'
                   : 'duration-[1500ms] group-hover:scale-[1.05]'
@@ -138,66 +125,49 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className="object-contain p-7 md:p-9 transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 group-hover:opacity-100 scale-[1.02] group-hover:scale-100 drop-shadow-[0_8px_18px_rgba(23,23,23,0.10)]"
+              className="object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 group-hover:opacity-100 scale-[1.02] group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]"
             />
           )}
 
-          {/* Gold corner accent — top-left */}
-          <div className="pointer-events-none absolute top-0 left-0 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-            <span className="absolute top-0 left-0 w-full h-px bg-gold-primary" />
-            <span className="absolute top-0 left-0 w-px h-full bg-gold-primary" />
-          </div>
-          {/* Gold corner accent — bottom-right */}
-          <div className="pointer-events-none absolute bottom-0 right-0 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-            <span className="absolute bottom-0 right-0 w-full h-px bg-gold-primary" />
-            <span className="absolute bottom-0 right-0 w-px h-full bg-gold-primary" />
-          </div>
-
-          {/* Gold hairline frame on hover */}
-          <div className="pointer-events-none absolute inset-0 border border-gold-primary/0 group-hover:border-gold-primary/30 transition-colors duration-700" />
-
-          {/* Quick view label — bottom hover */}
-          <div className="absolute left-0 right-0 bottom-0 py-3 bg-gradient-to-t from-soft-black/90 via-soft-black/60 to-transparent text-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-out">
+          <div className="absolute inset-x-2.5 bottom-2.5 hidden translate-y-2 bg-soft-black/90 py-3 text-center opacity-0 backdrop-blur-sm transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 md:block">
             <span className="text-[10px] uppercase tracking-[0.35em] text-warm-white font-medium">
               {t('quickView')}
             </span>
           </div>
         </div>
 
-        {/* Text block — premium hierarchy */}
-        <div className="px-1">
+        <div className="px-0.5">
           {(typeLabel || materialLabel) && (
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className="block w-3 h-px bg-gold-dark" />
+            <div className="mb-2 flex min-h-4 items-center gap-1.5 overflow-hidden">
               {typeLabel && (
-                <span className="text-[10px] uppercase tracking-[0.4em] text-gold-dark font-semibold">
+                <span className="truncate text-[8px] font-medium uppercase tracking-[0.28em] text-gold-dark sm:text-[9px]">
                   {typeLabel}
                 </span>
               )}
               {typeLabel && materialLabel && (
-                <span className="text-[10px] text-soft-black/30">·</span>
+                <span className="text-[9px] text-soft-black/30">/</span>
               )}
               {materialLabel && (
-                <span className="text-[10px] uppercase tracking-[0.4em] text-soft-black/55 font-light">
+                <span className="truncate text-[8px] font-light uppercase tracking-[0.24em] text-soft-black/55 sm:text-[9px]">
                   {materialLabel}
                 </span>
               )}
             </div>
           )}
-          <h3 className="font-display text-lg md:text-[22px] font-normal leading-[1.15] text-soft-black group-hover:text-gold-dark transition-colors duration-500">
+          <h3 className="font-display text-[1.35rem] md:text-[1.7rem] font-normal leading-[1.02] text-soft-black group-hover:text-gold-dark transition-colors duration-500">
             {product.name}
           </h3>
           {product.descriptionShort && (
-            <p className="text-[12px] text-soft-black/65 font-light mt-2 line-clamp-2 leading-relaxed">
+            <p className="mt-2 hidden text-[12px] font-light leading-relaxed text-soft-black/60 lg:line-clamp-2 lg:block">
               {product.descriptionShort}
             </p>
           )}
-          <div className="flex items-baseline justify-between mt-4 pt-2.5 border-t border-pearl-grey/60">
-            <p className="text-[15px] font-medium text-soft-black tracking-wide">
+          <div className="mt-3 flex items-baseline justify-between gap-2 border-t border-soft-black/15 pt-3">
+            <p className="text-[13px] font-medium tracking-wide text-soft-black sm:text-[15px]">
               {formatPrice(product.price)}
             </p>
             {product.dimensions && (
-              <p className="text-[11px] text-soft-black/55 font-light tracking-wide">
+              <p className="truncate text-[9px] font-light tracking-wide text-soft-black/50 sm:text-[10px]">
                 {product.dimensions}
               </p>
             )}
@@ -205,20 +175,19 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {/* Wishlist — refined, minimal */}
       <button
         aria-label={wished ? t('wishlistRemove') : t('wishlistAdd')}
         onClick={(e) => {
           e.preventDefault();
           setWished((w) => !w);
         }}
-        className="absolute top-3.5 right-3.5 w-11 h-11 md:w-9 md:h-9 flex items-center justify-center bg-warm-white/85 backdrop-blur-sm shadow-sm rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-warm-white transition-all duration-500 ease-out"
+        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-warm-white/25 bg-soft-black/75 text-warm-white shadow-sm backdrop-blur-sm transition-all duration-500 ease-out hover:border-gold-primary hover:text-gold-primary md:h-9 md:w-9 md:opacity-0 md:group-hover:opacity-100"
       >
         <Heart
           className={`w-[15px] h-[15px] transition-all duration-300 ${
             wished
               ? 'text-gold-dark fill-gold-primary scale-110'
-              : 'text-soft-black hover:text-gold-dark'
+              : 'text-current'
           }`}
           strokeWidth={1.4}
         />

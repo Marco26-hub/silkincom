@@ -1,10 +1,13 @@
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
+import type { Metadata } from 'next';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = {
-  title: 'Privacy Policy',
-  description: 'Informativa sul trattamento dei dati personali secondo il Regolamento UE 2016/679 (GDPR).',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations('legalPages.privacy');
+  return { title: t('title'), description: t('subtitle'), alternates: localizedAlternates(locale, '/privacy-policy') };
+}
 
 type Section = { h: string; body: string };
 

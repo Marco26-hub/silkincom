@@ -107,7 +107,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   let description = `${lead}. ${base ? base + ' ' : ''}${ship}`.replace(/\s+/g, ' ').trim();
   if (description.length > 160) description = description.slice(0, 157).trimEnd() + '…';
 
-  const url = `${APP_URL}/prodotto/${slug}`;
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const url = `${APP_URL}${prefix}/prodotto/${slug}`;
   const image = p.images?.[0];
   return {
     title,
@@ -148,7 +149,11 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const seoCatSlug = PRODUCT_CAT_TO_SEO[p.category];
   const seoCat = seoCatSlug ? getSeoCategory(seoCatSlug) : undefined;
 
-  const productUrl = `${APP_URL}/prodotto/${p.slug}`;
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const productUrl = `${APP_URL}${prefix}/prodotto/${p.slug}`;
+  const availability = p.variants.length > 0 && p.variants.every((variant) => variant.available <= 0)
+    ? 'https://schema.org/OutOfStock'
+    : 'https://schema.org/InStock';
 
   // Auth check for review form (does not affect render of product details)
   let isAuthenticated = false;
@@ -188,7 +193,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
       url: productUrl,
       priceCurrency: 'EUR',
       price: p.price.toFixed(2),
-      availability: 'https://schema.org/InStock',
+      availability,
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@type': 'Organization', name: 'SILKinCOM' },
       // Merchant listing enhancements (GSC "Schede commercianti": campi mancanti)
@@ -220,9 +225,9 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: APP_URL },
-      { '@type': 'ListItem', position: 2, name: 'Collezioni', item: `${APP_URL}/collezioni` },
-      ...(cat ? [{ '@type': 'ListItem', position: 3, name: collectionLeafName, item: `${APP_URL}/collezioni/${cat.slug}` }] : []),
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: 'Collezioni', item: `${APP_URL}${prefix}/collezioni` },
+      ...(cat ? [{ '@type': 'ListItem', position: 3, name: collectionLeafName, item: `${APP_URL}${prefix}/collezioni/${cat.slug}` }] : []),
       { '@type': 'ListItem', position: cat ? 4 : 3, name: productFullName, item: productUrl },
     ],
   };
@@ -239,37 +244,38 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
         productImage={p.images?.[0]}
         productPrice={p.price}
       />
-      <section className="pt-32 pb-24 bg-warm-white">
+      <section className="bg-[#11100e] pb-24 pt-32">
         <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
           {/* Breadcrumb */}
-          <nav className="text-[10px] uppercase tracking-[0.25em] text-soft-grey mb-10 flex flex-wrap gap-x-2 gap-y-1 font-light">
+          <nav className="mb-10 flex flex-wrap gap-x-2 gap-y-1 text-[9px] font-light uppercase tracking-[0.28em] text-warm-white/45">
             <Link href="/" className="hover:text-gold-primary transition-colors">{tn('home')}</Link>
-            <span className="text-pearl-grey">/</span>
+            <span className="text-gold-primary/35">/</span>
             <Link href="/collezioni" className="hover:text-gold-primary transition-colors">{tn('collections')}</Link>
             {cat && (
               <>
-                <span className="text-pearl-grey">/</span>
+                <span className="text-gold-primary/35">/</span>
                 <Link href={`/collezioni/${cat.slug}`} className="hover:text-gold-primary transition-colors">{cat.name}</Link>
               </>
             )}
-            <span className="text-pearl-grey">/</span>
-            <span className="text-soft-black">{p.name}</span>
+            <span className="text-gold-primary/35">/</span>
+            <span className="text-warm-white/80">{p.name}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-20">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12 xl:gap-16">
             {/* Gallery — 2-col on mobile + desktop, first spans full width */}
             <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4">
               {p.images.map((img, i) => (
                 <div
                   key={i}
-                  className={`relative overflow-hidden group ${
+                  className={`group relative overflow-hidden border border-gold-primary/15 ${
                     i === 0 ? 'col-span-2 aspect-[4/5]' : 'aspect-square'
                   }`}
                   style={{
-                    background: 'radial-gradient(ellipse at 50% 30%, #FFFDF8 0%, #F7F2EA 60%, #EDE3D3 100%)',
-                    boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.06), 0 18px 48px -24px rgba(23,23,23,0.10)',
+                    background: 'radial-gradient(ellipse at 50% 26%, #fdfaf4 0%, #f4eee3 60%, #e7dfd0 116%)',
+                    boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.22), 0 28px 70px -38px rgba(0,0,0,0.8)',
                   }}
                 >
+                  <div className="pointer-events-none absolute inset-3 z-10 border border-warm-white/45 transition-colors duration-700 group-hover:border-gold-primary/65" />
                   {/* Floor shadow under product */}
                   <div
                     className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[8%] w-[55%] h-4 opacity-50 blur-md"
@@ -283,7 +289,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                     fill
                     sizes={i === 0 ? '(max-width: 1024px) 100vw, 60vw' : '(max-width: 1024px) 50vw, 30vw'}
                     quality={95}
-                    className={`object-contain transition-transform duration-[1800ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04] drop-shadow-[0_12px_24px_rgba(23,23,23,0.10)] ${
+                    className={`object-contain mix-blend-multiply brightness-[1.06] transition-transform duration-[1800ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04] drop-shadow-[0_12px_24px_rgba(23,23,23,0.12)] ${
                       i === 0 ? 'p-10 md:p-20 lg:p-24' : 'p-6 md:p-12'
                     }`}
                     priority={i === 0}
@@ -293,7 +299,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
             </div>
 
             {/* Sticky details */}
-            <div className="lg:sticky lg:top-32 lg:self-start lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-2">
+            <div className="bg-warm-white p-6 shadow-[0_30px_90px_-45px_rgba(0,0,0,0.9)] sm:p-8 lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:self-start lg:overflow-y-auto lg:p-10">
               {materialLabel && (
                 <span className="inline-block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-4 font-light">
                   {materialLabel}{cat && ` — ${cat.name}`}
@@ -419,7 +425,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* Reviews */}
-      <section id="review" className="py-20 bg-warm-white border-t border-pearl-grey/40 scroll-mt-24">
+      <section id="review" className="scroll-mt-24 border-t border-gold-primary/15 bg-warm-white py-20">
         <div className="max-w-[1100px] mx-auto px-6 lg:px-10">
           <div className="text-center mb-12">
             <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-4">
@@ -439,7 +445,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="py-24 bg-ivory">
+        <section className="bg-[#f2ede4] py-24">
           <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-4">
               <div>

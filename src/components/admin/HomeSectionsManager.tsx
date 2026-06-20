@@ -27,7 +27,7 @@ const SECTION_META: Record<string, { title: string; description: string; fields:
       { name: 'msg1', label: 'Messaggio 1 (es. spedizione gratuita)', type: 'input' },
       { name: 'msg2', label: 'Messaggio 2 (es. confezione regalo)', type: 'input' },
       { name: 'msg3', label: 'Messaggio 3 (es. Made in Como)', type: 'input' },
-      { name: 'msg4', label: 'Messaggio 4 (es. resi gratuiti)', type: 'input' },
+      { name: 'msg4', label: 'Messaggio 4 (es. resi entro 14 giorni)', type: 'input' },
     ],
   },
   value_props: {

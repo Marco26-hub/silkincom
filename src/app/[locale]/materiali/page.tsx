@@ -52,9 +52,9 @@ const MATERIAL_CONFIG = [
     productHref: '/prodotto/melzi-1', productPrice: '€ 65', dark: false,
     sectionKeys: ['linoOrigine', 'cotoneOrigine', 'caratteristiche', 'beneficio'] as const,
     popupProducts: [
-      { popupKey: 'riva', image: 'https://static.wixstatic.com/media/a34b56_88c331613a2942d6bf9ac51c2f3f641c~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/riva', price: '€ 75', rotate: '-rotate-6', offset: '-translate-y-4 md:-translate-y-10' },
-      { popupKey: 'melzi', image: 'https://static.wixstatic.com/media/a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/melzi-1', price: '€ 65', rotate: 'rotate-0', offset: 'translate-y-4 md:translate-y-8' },
-      { popupKey: 'darsena', image: 'https://static.wixstatic.com/media/a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/darsena-bianco', price: '€ 40', rotate: 'rotate-6', offset: '-translate-y-2 md:-translate-y-6' },
+      { popupKey: 'riva', image: 'https://static.wixstatic.com/media/a34b56_88c331613a2942d6bf9ac51c2f3f641c~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/riva', price: '€ 75', rotate: 'md:-rotate-6', offset: 'md:-translate-y-10' },
+      { popupKey: 'melzi', image: 'https://static.wixstatic.com/media/a34b56_4cdb7894efaa4a128d5fb0714b80e743~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/melzi-1', price: '€ 65', rotate: 'rotate-0', offset: 'md:translate-y-8' },
+      { popupKey: 'darsena', image: 'https://static.wixstatic.com/media/a34b56_0f40416a402e4011a78dba5f2849cf6f~mv2.jpg/v1/fit/w_1400,h_1400,q_92/file.jpg', href: '/prodotto/darsena-bianco', price: '€ 40', rotate: 'md:rotate-6', offset: 'md:-translate-y-6' },
     ],
   },
 ];

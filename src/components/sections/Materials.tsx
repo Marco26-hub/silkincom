@@ -21,7 +21,7 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
 };
 
-function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
+function MaterialCardComponent({ material, index }: { material: HomeMaterialCard; index: number }) {
   const t = useTranslations('home.materials');
   const [activeTab, setActiveTab] = useState<TabKey>('origine');
   const active = material.tabs[activeTab];
@@ -29,13 +29,15 @@ function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="bg-warm-white border border-pearl-grey/40 p-6 sm:p-7 md:p-9 flex flex-col group transition-all duration-500 hover:border-gold-primary/30 overflow-hidden"
+      className={`group flex flex-col overflow-hidden border border-gold-primary/20 bg-[#11100e] p-6 text-warm-white transition-all duration-500 hover:border-gold-primary/55 sm:p-7 md:p-9 ${
+        index < 2 ? 'xl:col-span-3' : 'xl:col-span-2'
+      }`}
       style={{
-        boxShadow: '0 1px 2px rgba(23,23,23,0.04), 0 12px 32px -16px rgba(23,23,23,0.10)',
+        boxShadow: '0 24px 70px -42px rgba(23,23,23,0.65)',
       }}
     >
       <div className="flex items-baseline justify-between mb-6">
-        <h3 className="font-display font-light text-3xl md:text-4xl text-soft-black group-hover:text-gold-dark transition-colors duration-500">
+        <h3 className="font-display text-3xl font-light text-warm-white transition-colors duration-500 group-hover:text-gold-primary md:text-4xl">
           {material.name}
         </h3>
         <span className="text-[10px] uppercase tracking-[0.4em] text-gold-primary">
@@ -44,10 +46,10 @@ function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
       </div>
 
       <div
-        className="relative aspect-[4/3] mb-7 overflow-hidden"
+        className={`relative mb-7 overflow-hidden ${index < 2 ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}
         style={{
-          background: 'radial-gradient(ellipse at 50% 35%, #FFFDF8 0%, #F7F2EA 60%, #EDE3D3 100%)',
-          boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.06)',
+          background: '#1d1a16',
+          boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.12)',
         }}
       >
         {material.image ? (
@@ -60,9 +62,10 @@ function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
             className="object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04]"
           />
         ) : null}
+        <div className="pointer-events-none absolute inset-3 border border-warm-white/15" />
       </div>
 
-      <div role="tablist" className="flex border-b border-pearl-grey/60 mb-6">
+      <div role="tablist" className="mb-6 flex border-b border-warm-white/15">
         {TAB_KEYS.map((key) => {
           const isActive = activeTab === key;
           return (
@@ -72,7 +75,7 @@ function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
               aria-selected={isActive}
               onClick={() => setActiveTab(key)}
               className={`relative flex-1 min-w-0 px-1 pb-3 pt-1 text-[10px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.1em] font-medium whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-300 ${
-                isActive ? 'text-gold-dark' : 'text-soft-black/45 hover:text-soft-black/80'
+                isActive ? 'text-gold-primary' : 'text-warm-white/35 hover:text-warm-white/80'
               }`}
             >
               {t(`tabs.${key}`)}
@@ -91,17 +94,17 @@ function MaterialCardComponent({ material }: { material: HomeMaterialCard }) {
         key={activeTab}
         className="flex-1 animate-[fadeIn_0.4s_ease-out] min-h-[120px]"
       >
-        <h4 className="font-display text-lg md:text-xl text-gold-dark mb-3 italic">
+        <h4 className="mb-3 font-display text-lg italic text-gold-primary md:text-xl">
           {active.title}
         </h4>
-        <p className="text-sm font-light text-soft-black/75 leading-[1.7] line-clamp-3">
+        <p className="line-clamp-3 text-sm font-light leading-[1.7] text-warm-white/60">
           {active.body}
         </p>
       </div>
 
       <Link
         href={material.href}
-        className="inline-flex items-center gap-2 mt-8 text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-gold-primary/40 hover:border-gold-primary self-start pb-1 transition-colors"
+        className="mt-8 inline-flex self-start items-center gap-2 border-b border-gold-primary/40 pb-1 text-[9px] uppercase tracking-[0.32em] text-gold-primary transition-colors hover:border-gold-primary"
       >
         {t('discoverShort')}
         <ArrowRight className="w-3 h-3" />
@@ -116,21 +119,22 @@ export function Materials({ materials }: { materials?: HomeMaterialCard[] }) {
   if (!materials || materials.length === 0) return null;
 
   return (
-    <section className="py-24 md:py-section bg-warm-white text-soft-black overflow-hidden">
+    <section className="overflow-hidden bg-[#f2ede4] py-24 text-soft-black md:py-32">
       <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8 }}
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="mb-16 grid items-end gap-8 border-t border-soft-black/20 pt-7 text-left md:grid-cols-[0.65fr_1.35fr] md:gap-12 lg:mb-20"
         >
-          <span className="block text-[11px] uppercase tracking-[0.4em] text-gold-primary mb-4">
-            {t('eyebrow')}
-          </span>
-          <h2 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-soft-black">
+          <div>
+            <span className="mb-3 block text-[9px] uppercase tracking-[0.42em] text-gold-dark">{t('eyebrow')}</span>
+            <p className="max-w-sm text-xs font-light leading-relaxed text-soft-black/55">{t('description')}</p>
+          </div>
+          <h2 className="font-display text-5xl font-light leading-[0.9] tracking-[-0.035em] text-soft-black md:text-6xl lg:text-7xl">
             {t('titlePlain')}<br />
-            <em className="italic text-gold-primary">{t('titleAccent')}</em>
+            <em className="italic text-gold-dark">{t('titleAccent')}</em>
           </h2>
         </motion.div>
 
@@ -139,10 +143,10 @@ export function Materials({ materials }: { materials?: HomeMaterialCard[] }) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-5"
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-6"
         >
-          {materials.map((m) => (
-            <MaterialCardComponent key={m.id} material={m} />
+          {materials.map((material, index) => (
+            <MaterialCardComponent key={material.id} material={material} index={index} />
           ))}
         </motion.div>
 

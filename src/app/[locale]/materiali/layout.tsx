@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
+import { getMaterials } from '@/data/catalog-meta';
 import { APP_URL } from '@/lib/app-url';
 
 // Server-only layout: the materiali page is 'use client', so metadata +
@@ -10,51 +12,44 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations('materialiPage');
   return {
-    title: 'Materiali — Seta, Cashmere, Lana, Lino, Cotone Made in Como',
-    description:
-      'Le fibre naturali nobili di SILKinCOM: seta comasca, cashmere mongolo, lana merino, lino europeo e cotone extra-lungo. Materie prime tracciate, lavorate sul Lago di Como.',
+    title: `${t('titleP1')} — ${t('titleAccent')}`,
+    description: t('description'),
     alternates: localizedAlternates(locale, '/materiali'),
   };
 }
 
-const MATERIALS_LIST = [
-  { slug: 'seta', name: 'Seta di Como', desc: 'Tradizione comasca dal XV secolo. Fibra proteica luminosa, ipoallergenica, traspirante.' },
-  { slug: 'cashmere', name: 'Cashmere Mongolia', desc: 'Sottopelo finissimo 12–16 micron, raccolto a mano, calore senza peso.' },
-  { slug: 'lana', name: 'Lana Merino', desc: 'Naturalmente traspirante e termoregolatrice.' },
-  { slug: 'lino', name: 'Lino Europeo', desc: "Freschezza naturale per l'estate mediterranea." },
-  { slug: 'cotone', name: 'Cotone Extra-Lungo', desc: 'Fibra superiore oltre 35 mm, morbidezza setosa.' },
-];
-
-const itemListSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  '@id': `${APP_URL}/materiali#itemlist`,
-  name: 'Materiali SILKinCOM',
-  numberOfItems: MATERIALS_LIST.length,
-  itemListElement: MATERIALS_LIST.map((m, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    item: {
-      '@type': 'Product',
-      name: m.name,
-      description: m.desc,
-      category: 'Materiale tessile',
-      url: `${APP_URL}/collezioni/${m.slug}`,
-    },
-  })),
-};
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Materiali', item: `${APP_URL}/materiali` },
-  ],
-};
-
-export default function MaterialiLayout({ children }: { children: React.ReactNode }) {
+export default async function MaterialiLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations('materialiPage');
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const materials = getMaterials(locale);
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    '@id': `${APP_URL}${prefix}/materiali#itemlist`,
+    name: `${t('titleP1')} ${t('titleAccent')}`,
+    numberOfItems: materials.length,
+    itemListElement: materials.map((material, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Thing',
+        name: material.name,
+        description: material.description,
+        url: `${APP_URL}${prefix}/collezioni/${material.slug}`,
+      },
+    })),
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'SILKinCOM', item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: t('titleP1'), item: `${APP_URL}${prefix}/materiali` },
+    ],
+  };
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />

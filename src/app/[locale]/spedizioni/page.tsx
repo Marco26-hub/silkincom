@@ -1,10 +1,13 @@
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { LegalPage } from '@/components/ui/LegalPage';
+import { localizedAlternates } from '@/i18n/routing';
 
-export const metadata = {
-  title: 'Spedizioni — Tempi e costi',
-  description: 'Informazioni su tempi di consegna, costi di spedizione, tracking ordini SILKinCOM.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations('spedizioniPage');
+  return { title: t('title'), description: t('subtitle'), alternates: localizedAlternates(locale, '/spedizioni') };
+}
 
 export default async function SpedizioniPage() {
   const t = await getTranslations('spedizioniPage');

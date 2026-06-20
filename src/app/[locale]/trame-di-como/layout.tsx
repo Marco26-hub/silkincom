@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
 
 // Server-only layout: the trame-di-como page itself is a client component
@@ -10,10 +11,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations('journal');
   return {
-    title: 'Trame di Como — Journal SILKinCOM',
-    description:
-      'Editoriali, racconti e storie dalla Maison SILKinCOM. Tradizione tessile, artigiani e maestria del Lago di Como.',
+    title: `${t('title')} — SILKinCOM`,
+    description: t('intro'),
     alternates: localizedAlternates(locale, '/trame-di-como'),
   };
 }

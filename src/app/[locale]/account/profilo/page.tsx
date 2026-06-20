@@ -23,6 +23,7 @@ export default function ProfiloPage() {
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteMsg, setDeleteMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+  const deleteConfirmationWord = t('deleteConfirmationWord');
 
   useEffect(() => {
     (async () => {
@@ -51,11 +52,11 @@ export default function ProfiloPage() {
     e.preventDefault();
     setPwMsg(null);
     if (pwForm.newPw.length < 8) {
-      setPwMsg({ type: 'err', text: 'La password deve avere almeno 8 caratteri' });
+      setPwMsg({ type: 'err', text: t('passwordMin') });
       return;
     }
     if (pwForm.newPw !== pwForm.confirm) {
-      setPwMsg({ type: 'err', text: 'Le password non corrispondono' });
+      setPwMsg({ type: 'err', text: t('passwordMismatch') });
       return;
     }
     setPwSaving(true);
@@ -64,14 +65,14 @@ export default function ProfiloPage() {
     if (error) {
       setPwMsg({ type: 'err', text: error.message });
     } else {
-      setPwMsg({ type: 'ok', text: 'Password aggiornata' });
+      setPwMsg({ type: 'ok', text: t('passwordUpdated') });
       setPwForm({ current: '', newPw: '', confirm: '' });
     }
   }
 
   async function deleteAccount(e: React.FormEvent) {
     e.preventDefault();
-    if (deleteConfirm !== 'ELIMINA') return;
+    if (deleteConfirm !== deleteConfirmationWord) return;
     setDeleting(true);
     setDeleteMsg(null);
     const res = await fetch('/api/account/delete', { method: 'DELETE' });
@@ -80,7 +81,7 @@ export default function ProfiloPage() {
       window.location.href = '/';
     } else {
       const d = await res.json();
-      setDeleteMsg({ type: 'err', text: d.error ?? 'Errore eliminazione' });
+      setDeleteMsg({ type: 'err', text: d.error ?? t('deleteError') });
       setDeleting(false);
     }
   }
@@ -117,14 +118,14 @@ export default function ProfiloPage() {
           </form>
 
           <div className="border-t border-pearl-grey pt-8">
-            <h2 className="font-display text-xl mb-5">Cambia password</h2>
+            <h2 className="font-display text-xl mb-5">{t('changePassword')}</h2>
             <form onSubmit={changePassword} className="space-y-4">
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.25em] mb-2 text-soft-black/70">Nuova password</label>
+                <label className="block text-[10px] uppercase tracking-[0.25em] mb-2 text-soft-black/70">{t('newPassword')}</label>
                 <input type="password" value={pwForm.newPw} onChange={(e) => setPwForm({ ...pwForm, newPw: e.target.value })} required minLength={8} className={inputCls} />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.25em] mb-2 text-soft-black/70">Conferma password</label>
+                <label className="block text-[10px] uppercase tracking-[0.25em] mb-2 text-soft-black/70">{t('confirmPassword')}</label>
                 <input type="password" value={pwForm.confirm} onChange={(e) => setPwForm({ ...pwForm, confirm: e.target.value })} required minLength={8} className={inputCls} />
               </div>
               {pwMsg && (
@@ -133,25 +134,25 @@ export default function ProfiloPage() {
                 </p>
               )}
               <button type="submit" disabled={pwSaving} className="px-10 py-3 bg-soft-black text-warm-white text-[10px] uppercase tracking-[0.3em] hover:bg-gold-primary hover:text-soft-black transition-all disabled:opacity-60">
-                {pwSaving ? 'Aggiornamento...' : 'Aggiorna password'}
+                {pwSaving ? t('updating') : t('updatePassword')}
               </button>
             </form>
           </div>
           <div className="border-t border-red-100 pt-8">
-            <h2 className="font-display text-xl mb-2 text-red-700">Elimina account</h2>
+            <h2 className="font-display text-xl mb-2 text-red-700">{t('deleteTitle')}</h2>
             <p className="text-xs text-soft-black/60 mb-4">
-              Questa azione è permanente. I tuoi dati personali saranno cancellati. Gli ordini vengono anonimizzati per obblighi fiscali.
+              {t('deleteDescription')}
             </p>
             <form onSubmit={deleteAccount} className="space-y-4">
               <div>
                 <label className="block text-[10px] uppercase tracking-[0.25em] mb-2 text-red-600">
-                  Scrivi ELIMINA per confermare
+                  {t('deletePrompt', { word: deleteConfirmationWord })}
                 </label>
                 <input
                   type="text"
                   value={deleteConfirm}
                   onChange={(e) => setDeleteConfirm(e.target.value)}
-                  placeholder="ELIMINA"
+                  placeholder={deleteConfirmationWord}
                   className="w-full px-4 py-3 border border-red-200 bg-warm-white focus:outline-none focus:border-red-500 text-sm"
                 />
               </div>
@@ -162,10 +163,10 @@ export default function ProfiloPage() {
               )}
               <button
                 type="submit"
-                disabled={deleting || deleteConfirm !== 'ELIMINA'}
+                disabled={deleting || deleteConfirm !== deleteConfirmationWord}
                 className="px-10 py-3 bg-red-700 text-white text-[10px] uppercase tracking-[0.3em] hover:bg-red-800 transition-all disabled:opacity-40"
               >
-                {deleting ? 'Eliminazione...' : 'Elimina account definitivamente'}
+                {deleting ? t('deleting') : t('deleteAction')}
               </button>
             </form>
           </div>

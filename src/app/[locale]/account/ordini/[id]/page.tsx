@@ -61,21 +61,21 @@ export default function OrderDetailPage() {
     Date.now() - new Date(order.created_at).getTime() < CANCEL_WINDOW_MS;
 
   async function handleCancel() {
-    if (!order || !confirm('Sei sicuro di voler cancellare questo ordine? L\'azione è irreversibile.')) return;
+    if (!order || !confirm(t('cancelConfirm'))) return;
     setCancelling(true);
     setCancelError(null);
     try {
       const res = await fetch(`/api/orders/${order.id}/cancel`, { method: 'POST' });
       const data = await res.json();
       if (!res.ok) {
-        setCancelError(data.error || 'Errore cancellazione');
+        setCancelError(data.error || t('cancelError'));
       } else {
         router.refresh();
         const { data: updated } = await supabase.from('orders').select('*').eq('id', order.id).single();
         if (updated) setOrder(updated as OrderDetail);
       }
     } catch {
-      setCancelError('Errore di rete');
+      setCancelError(t('networkError'));
     } finally {
       setCancelling(false);
     }
@@ -147,7 +147,7 @@ export default function OrderDetailPage() {
                     className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-red-700 border-b border-red-300 hover:border-red-700 pb-0.5 disabled:opacity-60"
                   >
                     <X className="w-3 h-3" />
-                    {cancelling ? 'Annullamento…' : 'Cancella ordine'}
+                    {cancelling ? t('cancelling') : t('cancelOrder')}
                   </button>
                 )}
               </div>
@@ -170,26 +170,26 @@ export default function OrderDetailPage() {
           {order.status !== 'cancelled' && (
             <div className="border border-pearl-grey/60 p-6">
               <p className="text-[10px] uppercase tracking-[0.3em] text-gold-primary mb-6">
-                Stato spedizione
+                {t('shippingStatus')}
               </p>
               <ol className="space-y-5">
                 {[
-                  { key: 'created', label: 'Ordine ricevuto', date: order.created_at, reached: true },
+                  { key: 'created', label: t('timeline.created'), date: order.created_at, reached: true },
                   {
                     key: 'paid',
-                    label: 'Pagamento confermato',
+                    label: t('timeline.paid'),
                     date: order.paid_at,
                     reached: !!order.paid_at || ['paid', 'processing', 'shipped', 'delivered'].includes(order.status),
                   },
                   {
                     key: 'shipped',
-                    label: 'Spedito',
+                    label: t('timeline.shipped'),
                     date: order.shipped_at,
                     reached: !!order.shipped_at || ['shipped', 'delivered'].includes(order.status),
                   },
                   {
                     key: 'delivered',
-                    label: 'Consegnato',
+                    label: t('timeline.delivered'),
                     date: order.delivered_at,
                     reached: !!order.delivered_at || order.status === 'delivered',
                   },
@@ -249,7 +249,7 @@ export default function OrderDetailPage() {
                           {item.product_name || item.product_slug}
                         </Link>
                       ) : (
-                        <span className="font-display text-lg">{item.product_name || 'Prodotto'}</span>
+                        <span className="font-display text-lg">{item.product_name || t('productFallback')}</span>
                       )}
                       <p className="text-xs text-soft-black/50 mt-0.5">
                         {tcart('quantity')}: {item.quantity} × {formatPrice(item.price_per_unit)}
@@ -259,7 +259,7 @@ export default function OrderDetailPage() {
                           href={`/prodotto/${item.product_slug}#review`}
                           className="inline-block mt-2 text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-gold-primary/40 hover:border-gold-primary pb-0.5"
                         >
-                          Lascia recensione →
+                          {t('leaveReview')} →
                         </Link>
                       )}
                     </div>
@@ -286,7 +286,7 @@ export default function OrderDetailPage() {
             )}
             {order.discount_amount != null && order.discount_amount > 0 && (
               <div className="flex justify-between text-sm text-gold-dark">
-                <span>Sconto coupon</span>
+                <span>{t('couponDiscount')}</span>
                 <span>−{formatPrice(order.discount_amount)}</span>
               </div>
             )}

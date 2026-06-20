@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import { Link } from '@/i18n/navigation';
+import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
 import { APP_URL } from '@/lib/app-url';
 
@@ -9,109 +11,136 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'pressPage' });
   return {
-    title: 'Press Room — Media kit SILKinCOM',
-    description:
-      'Press kit, logo, biografia e contatti per giornalisti e media. SILKinCOM, maison di seta e cashmere Made in Como.',
+    title: t('metaTitle'),
+    description: t('metaDescription'),
     alternates: localizedAlternates(locale, '/press'),
+    openGraph: {
+      title: t('metaTitle'),
+      description: t('metaDescription'),
+      type: 'website',
+    },
   };
 }
 
-const pressSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  '@id': `${APP_URL}/press#webpage`,
-  url: `${APP_URL}/press`,
-  name: 'Press Room SILKinCOM',
-  description:
-    'Materiali stampa e media kit di SILKinCOM. Contatti per giornalisti, immagini ad alta risoluzione, logo brand.',
-  about: { '@id': `${APP_URL}/#organization` },
-  publisher: { '@id': `${APP_URL}/#organization` },
-};
+// Inline renderer mirroring the founder/blog body renderer so the press kit
+// copy can live in messages and be translated like any other string.
+// **bold** -> <strong>; [text](url) -> locale-aware <Link> for internal routes,
+// plain <a> for http/mailto AND for static assets (paths with a file extension,
+// e.g. /logo-official.svg) which must NOT get a locale prefix.
+function isAsset(url: string): boolean {
+  const seg = url.split('?')[0].split('#')[0];
+  const last = seg.slice(seg.lastIndexOf('/') + 1);
+  return last.includes('.');
+}
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
-    { '@type': 'ListItem', position: 2, name: 'Press', item: `${APP_URL}/press` },
-  ],
-};
+function renderInline(text: string): ReactNode {
+  const parts: ReactNode[] = [];
+  const re = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let k = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    if (m[1] !== undefined) {
+      parts.push(<strong key={k++}>{m[1]}</strong>);
+    } else {
+      const label = m[2];
+      const url = m[3];
+      if (url.startsWith('/') && !isAsset(url)) {
+        parts.push(<Link key={k++} href={url}>{label}</Link>);
+      } else {
+        parts.push(<a key={k++} href={url}>{label}</a>);
+      }
+    }
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
 
-export default function PressPage() {
+// Block renderer: "## " -> h2, a run of "- " lines -> <ul>, else <p>.
+function RichBody({ body }: { body: string }) {
+  const blocks = body.split('\n\n').filter(Boolean);
+  return (
+    <>
+      {blocks.map((b, i) => {
+        if (b.startsWith('## ')) return <h2 key={i}>{b.slice(3)}</h2>;
+        const lines = b.split('\n');
+        if (lines.every((l) => l.startsWith('- '))) {
+          return (
+            <ul key={i}>
+              {lines.map((l, j) => (
+                <li key={j}>{renderInline(l.slice(2))}</li>
+              ))}
+            </ul>
+          );
+        }
+        return <p key={i}>{renderInline(b)}</p>;
+      })}
+    </>
+  );
+}
+
+export default async function PressPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'pressPage' });
+  const nav = await getTranslations({ locale, namespace: 'nav' });
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const pageUrl = `${APP_URL}${prefix}/press`;
+
+  const pressSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: t('schemaName'),
+    description: t('schemaDescription'),
+    inLanguage: locale,
+    about: { '@id': `${APP_URL}/#organization` },
+    publisher: { '@id': `${APP_URL}/#organization` },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: nav('home'), item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: t('eyebrow'), item: pageUrl },
+    ],
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pressSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <section className="pt-28 md:pt-44 pb-16 bg-ivory">
-        <div className="max-w-[900px] mx-auto px-6 lg:px-10 text-center">
+      <section className="relative overflow-hidden bg-soft-black pb-20 pt-32 text-warm-white md:pb-28 md:pt-44">
+        <div className="absolute inset-x-6 top-20 h-px bg-gradient-to-r from-transparent via-gold-primary/50 to-transparent md:inset-x-16" />
+        <div className="absolute -right-24 top-8 size-72 rounded-full border border-gold-primary/10 md:size-[30rem]" />
+        <div className="relative mx-auto max-w-[900px] px-6 text-center lg:px-10">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
-            Press Room
+            {t('eyebrow')}
           </span>
-          <h1 className="font-display font-light text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-soft-black mb-6">
-            Media kit
+          <h1 className="mb-6 font-display text-[3.25rem] font-light leading-[0.96] sm:text-6xl md:text-7xl lg:text-[6.5rem]">
+            {t('h1')}
           </h1>
-          <p className="font-display italic text-xl md:text-2xl text-soft-black/80">
-            Materiali per giornalisti, media e partner editoriali
+          <p className="font-display text-xl italic text-warm-white/70 md:text-2xl">
+            {t('subtitle')}
           </p>
         </div>
       </section>
 
-      <section className="py-20 md:py-28 bg-warm-white">
-        <div className="max-w-3xl mx-auto px-6 prose prose-lg font-light text-soft-black/85 leading-relaxed prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-a:text-gold-primary hover:prose-a:text-gold-dark">
-          <h2>Boilerplate</h2>
-          <p>
-            <strong>SILKinCOM</strong> è una maison italiana di accessori in seta, cashmere e fibre
-            naturali pregiate. Sciarpe, foulard, twilly e pashmine interamente disegnate e
-            confezionate nel distretto serico di Como, capitale italiana del tessile di lusso dal
-            XV secolo. Fondatore: Marco Dibenedetto. Sede: Cermenate (CO), Italia.
-          </p>
-
-          <h2>Fact sheet</h2>
-          <ul>
-            <li><strong>Brand</strong>: SILKinCOM</li>
-            <li><strong>Fondatore</strong>: <Link href="/maison/marco-dibenedetto">Marco Dibenedetto</Link></li>
-            <li><strong>Sede</strong>: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia</li>
-            <li><strong>P.IVA</strong>: IT03786790133</li>
-            <li><strong>Produzione</strong>: 100% Made in Como (distretto serico)</li>
-            <li><strong>Materiali</strong>: seta di Como, cashmere Mongolia (micronaggio &lt; 15,5 micron), lana merino, lino europeo, cotone extra-lungo</li>
-            <li><strong>Lingue del sito</strong>: 7 native (it, en, es, fr, de, pt, nl)</li>
-            <li><strong>Sito</strong>: <a href="https://silkincom.com">silkincom.com</a></li>
-          </ul>
-
-          <h2>Logo e immagini</h2>
-          <ul>
-            <li><a href="/logo-official.svg" target="_blank" rel="noopener">Logo SVG (vettoriale)</a></li>
-            <li><a href="/logo-official.png" target="_blank" rel="noopener">Logo PNG (raster)</a></li>
-            <li><a href="/logo-gold.png" target="_blank" rel="noopener">Logo gold variant</a></li>
-            <li><a href="/og-image.jpg" target="_blank" rel="noopener">Brand cover image</a></li>
-          </ul>
-
-          <h2>Contatti stampa</h2>
-          <ul>
-            <li>Email media: <a href="mailto:info@silkincom.com">info@silkincom.com</a></li>
-            <li>Argomenti: Made in Como, distretto tessile, cashmere/seta, heritage, fondatore</li>
-            <li>Disponibili: interviste con il fondatore, visite all'atelier, sample prodotti</li>
-          </ul>
-
-          <h2>Storie a portata di mano</h2>
-          <p>
-            Approfondimenti pronti per uso editoriale, disponibili sul Journal SILKinCOM:
-          </p>
-          <ul>
-            <li><Link href="/trame-di-como/storia-della-seta-a-como">Storia della seta a Como: sei secoli di filo e telaio</Link> — pillar heritage</li>
-            <li><Link href="/trame-di-como/come-riconoscere-seta-vera">Come riconoscere la seta vera: 7 prove pratiche</Link></li>
-            <li><Link href="/trame-di-como/pashmina-vs-sciarpa-differenze">Pashmina o sciarpa: tutte le differenze</Link></li>
-            <li><Link href="/trame-di-como/cashmere-mongolo-vs-cinese">Cashmere mongolo o cinese: come riconoscerli</Link></li>
-          </ul>
-
-          <h2>Social</h2>
-          <ul>
-            <li>Instagram: <a href="https://www.instagram.com/silkincom.official/" target="_blank" rel="noopener">@silkincom.official</a></li>
-            <li>Facebook: <a href="https://www.facebook.com/profile.php?id=61581900780447" target="_blank" rel="noopener">SILKinCOM</a></li>
-            <li>Pinterest: <a href="https://it.pinterest.com/silkincomofficial" target="_blank" rel="noopener">silkincomofficial</a></li>
-          </ul>
+      <section className="bg-ivory py-16 md:py-24">
+        <div className="mx-auto max-w-4xl border border-soft-black/10 bg-warm-white px-7 py-12 shadow-[0_24px_80px_rgba(25,22,18,0.06)] md:px-14 md:py-16">
+          <div className="prose prose-lg max-w-none font-light leading-relaxed text-soft-black/85 prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-h2:mt-14 prose-h2:border-t prose-h2:border-soft-black/10 prose-h2:pt-10 prose-a:text-gold-dark hover:prose-a:text-gold-primary prose-strong:font-medium prose-strong:text-soft-black">
+            <RichBody body={t('body')} />
+          </div>
         </div>
       </section>
     </>

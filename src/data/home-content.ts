@@ -12,6 +12,37 @@ import type { Locale } from '@/i18n/routing';
 
 type I18nMap = Partial<Record<string, string>> | null;
 
+const VERIFIED_HOME_COPY: Record<string, Record<string, string>> = {
+  madeInComoDesc: {
+    it: 'Design e confezione nel distretto tessile di Como.', en: 'Design and making in the Como textile district.',
+    es: 'Diseño y confección en el distrito textil de Como.', fr: 'Design et confection dans le district textile de Côme.',
+    de: 'Design und Fertigung im Textilbezirk von Como.', pt: 'Design e confeção no distrito têxtil de Como.',
+    nl: 'Ontwerp en vervaardiging in het textieldistrict van Como.',
+  },
+  returnsTitle: {
+    it: 'Recesso entro 14 giorni', en: '14-day right of withdrawal', es: 'Desistimiento en 14 días', fr: 'Rétractation sous 14 jours',
+    de: '14 Tage Widerrufsrecht', pt: 'Livre resolução em 14 dias', nl: '14 dagen bedenktijd',
+  },
+  returnsDesc: {
+    it: 'Recesso: spedizione a carico del cliente. Difetti o errori SILKinCOM: reso gratuito.', en: 'Withdrawal: return shipping is paid by the customer. SILKinCOM faults or errors: free return.',
+    es: 'Desistimiento: envío a cargo del cliente. Defectos o errores de SILKinCOM: devolución gratuita.', fr: 'Rétractation : retour à la charge du client. Défaut ou erreur SILKinCOM : retour offert.',
+    de: 'Widerruf: Rücksendung auf Kosten des Kunden. SILKinCOM-Mängel oder -Fehler: kostenlose Rückgabe.', pt: 'Livre resolução: envio a cargo do cliente. Defeitos ou erros SILKinCOM: devolução gratuita.',
+    nl: 'Bedenktijd: retourzending voor rekening van de klant. SILKinCOM-gebrek of -fout: gratis retour.',
+  },
+  announcementOrigin: {
+    it: 'Design e confezione nel distretto tessile di Como', en: 'Designed and made in the Como textile district',
+    es: 'Diseñado y confeccionado en el distrito textil de Como', fr: 'Dessiné et confectionné dans le district textile de Côme',
+    de: 'Entworfen und gefertigt im Textilbezirk von Como', pt: 'Desenhado e confecionado no distrito têxtil de Como',
+    nl: 'Ontworpen en gemaakt in het textieldistrict van Como',
+  },
+  announcementReturns: {
+    it: 'Recesso entro 14 giorni dalla consegna', en: 'Right of withdrawal within 14 days of delivery',
+    es: 'Desistimiento en 14 días desde la entrega', fr: 'Rétractation sous 14 jours après la livraison',
+    de: 'Widerrufsrecht innerhalb von 14 Tagen nach Lieferung', pt: 'Livre resolução em 14 dias após a entrega',
+    nl: '14 dagen bedenktijd na levering',
+  },
+};
+
 function pickI18n(map: I18nMap, locale: string, fallback = ''): string {
   if (!map) return fallback;
   return map[locale] || map.en || map.it || fallback;
@@ -54,7 +85,23 @@ async function fetchSection(section_key: string): Promise<HomeSectionRow | null>
     console.error(`home_sections fetch (${section_key})`, error);
     return null;
   }
-  return (data as HomeSectionRow) || null;
+  const row = (data as HomeSectionRow) || null;
+  if (!row) return null;
+
+  // Sanitize the full CMS payload before it enters Next's data cache. This
+  // prevents stale claims from appearing even inside the serialized RSC data
+  // read by crawlers, not only in the visible localized copy.
+  const contentI18n = { ...(row.content_i18n || {}) };
+  if (section_key === 'announcement_bar') {
+    contentI18n.msg3 = VERIFIED_HOME_COPY.announcementOrigin;
+    contentI18n.msg4 = VERIFIED_HOME_COPY.announcementReturns;
+  }
+  if (section_key === 'value_props') {
+    contentI18n.madeInComoDesc = VERIFIED_HOME_COPY.madeInComoDesc;
+    contentI18n.returnsTitle = VERIFIED_HOME_COPY.returnsTitle;
+    contentI18n.returnsDesc = VERIFIED_HOME_COPY.returnsDesc;
+  }
+  return { ...row, content_i18n: contentI18n };
 }
 
 const getCachedSection = (key: string) =>
@@ -67,13 +114,23 @@ const getCachedSection = (key: string) =>
 export async function getHomeSection(section_key: string, locale: Locale | string): Promise<HomeSectionLocalized | null> {
   const row = await getCachedSection(section_key);
   if (!row) return null;
+  const localeKey = String(locale);
   const content: Record<string, string> = {};
   for (const [k, v] of Object.entries(row.content_i18n || {})) {
-    content[k] = pickI18n(v, String(locale));
+    content[k] = pickI18n(v, localeKey);
+  }
+  if (section_key === 'announcement_bar') {
+    content.msg3 = pickI18n(VERIFIED_HOME_COPY.announcementOrigin, localeKey);
+    content.msg4 = pickI18n(VERIFIED_HOME_COPY.announcementReturns, localeKey);
+  }
+  if (section_key === 'value_props') {
+    content.madeInComoDesc = pickI18n(VERIFIED_HOME_COPY.madeInComoDesc, localeKey);
+    content.returnsTitle = pickI18n(VERIFIED_HOME_COPY.returnsTitle, localeKey);
+    content.returnsDesc = pickI18n(VERIFIED_HOME_COPY.returnsDesc, localeKey);
   }
   const images = (row.images || []).map((img) => ({
     url: img.url,
-    alt: pickI18n(img.alt_i18n, String(locale)),
+    alt: pickI18n(img.alt_i18n, localeKey),
   }));
   return {
     id: row.id,

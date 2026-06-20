@@ -1,9 +1,61 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import Image from 'next/image';
+import { ArrowUpRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
+import { getStaticPage } from '@/data/static-pages';
 import { APP_URL } from '@/lib/app-url';
+
+const PROFILE_UI: Record<string, Record<string, string>> = {
+  it: {
+    chapter: 'Profilo del fondatore', education: 'Formazione', educationValue: 'Setificio di Como · Diploma tessile, 1998',
+    territory: 'Territorio', territoryValue: 'Distretto tessile di Como', approach: 'Approccio', approachValue: 'Maison direct-to-consumer',
+    imageAlt: 'Telaio e lavorazione tessile nel distretto di Como', imageCaption: 'Il distretto tessile di Como',
+    collections: 'Esplora le collezioni', story: 'La storia della Maison', signature: 'Conoscenza tecnica. Cultura del prodotto. Rapporto diretto.',
+  },
+  en: {
+    chapter: 'Founder profile', education: 'Education', educationValue: 'Setificio di Como · Textile diploma, 1998',
+    territory: 'Territory', territoryValue: 'Como textile district', approach: 'Approach', approachValue: 'Direct-to-consumer Maison',
+    imageAlt: 'Loom and textile making in the Como district', imageCaption: 'The Como textile district',
+    collections: 'Explore the collections', story: 'The Maison story', signature: 'Technical knowledge. Product culture. A direct relationship.',
+  },
+  es: {
+    chapter: 'Perfil del fundador', education: 'Formación', educationValue: 'Setificio di Como · Diploma textil, 1998',
+    territory: 'Territorio', territoryValue: 'Distrito textil de Como', approach: 'Enfoque', approachValue: 'Maison direct-to-consumer',
+    imageAlt: 'Telar y elaboración textil en el distrito de Como', imageCaption: 'El distrito textil de Como',
+    collections: 'Explora las colecciones', story: 'La historia de la Maison', signature: 'Conocimiento técnico. Cultura de producto. Relación directa.',
+  },
+  fr: {
+    chapter: 'Profil du fondateur', education: 'Formation', educationValue: 'Setificio di Como · Diplôme textile, 1998',
+    territory: 'Territoire', territoryValue: 'District textile de Côme', approach: 'Approche', approachValue: 'Maison direct-to-consumer',
+    imageAlt: 'Métier à tisser et fabrication textile dans le district de Côme', imageCaption: 'Le district textile de Côme',
+    collections: 'Explorer les collections', story: "L’histoire de la Maison", signature: 'Connaissance technique. Culture du produit. Relation directe.',
+  },
+  de: {
+    chapter: 'Gründerprofil', education: 'Ausbildung', educationValue: 'Setificio di Como · Textildiplom, 1998',
+    territory: 'Herkunft', territoryValue: 'Textilbezirk von Como', approach: 'Ansatz', approachValue: 'Direct-to-Consumer Maison',
+    imageAlt: 'Webstuhl und Textilfertigung im Bezirk von Como', imageCaption: 'Der Textilbezirk von Como',
+    collections: 'Kollektionen entdecken', story: 'Die Geschichte der Maison', signature: 'Technisches Wissen. Produktkultur. Direkte Beziehung.',
+  },
+  pt: {
+    chapter: 'Perfil do fundador', education: 'Formação', educationValue: 'Setificio di Como · Diploma têxtil, 1998',
+    territory: 'Território', territoryValue: 'Distrito têxtil de Como', approach: 'Abordagem', approachValue: 'Maison direct-to-consumer',
+    imageAlt: 'Tear e confeção têxtil no distrito de Como', imageCaption: 'O distrito têxtil de Como',
+    collections: 'Explorar as coleções', story: 'A história da Maison', signature: 'Conhecimento técnico. Cultura do produto. Relação direta.',
+  },
+  nl: {
+    chapter: 'Oprichtersprofiel', education: 'Opleiding', educationValue: 'Setificio di Como · Textieldiploma, 1998',
+    territory: 'Herkomst', territoryValue: 'Textieldistrict van Como', approach: 'Benadering', approachValue: 'Direct-to-consumer Maison',
+    imageAlt: 'Weefgetouw en textielproductie in het district van Como', imageCaption: 'Het textieldistrict van Como',
+    collections: 'Ontdek de collecties', story: 'Het verhaal van de Maison', signature: 'Technische kennis. Productcultuur. Directe relatie.',
+  },
+};
+
+function profileCopy(locale: string, key: string): string {
+  return PROFILE_UI[locale]?.[key] ?? PROFILE_UI.en[key] ?? '';
+}
 
 export async function generateMetadata({
   params,
@@ -12,130 +64,227 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations('founder');
+  const page = await getStaticPage('maison-marco-dibenedetto', locale);
+  const title = page?.metaTitle || t('metaTitle');
+  const description = page?.metaDescription || t('metaDescription');
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const url = `${APP_URL}${prefix}/maison/marco-dibenedetto`;
+
   return {
-    title: t('metaTitle'),
-    description: t('metaDescription'),
+    title,
+    description,
     alternates: localizedAlternates(locale, '/maison/marco-dibenedetto'),
+    openGraph: {
+      type: 'profile',
+      title,
+      description,
+      url,
+      images: [{
+        url: '/artisans/telaio-artigiano-principale.webp',
+        width: 857,
+        height: 1221,
+        alt: profileCopy(locale, 'imageAlt'),
+      }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/artisans/telaio-artigiano-principale.webp'],
+    },
   };
 }
 
-// Inline renderer: paragraphs split by blank line; "## " -> h2; inline
-// **bold** -> <strong> and [text](/url) -> locale-aware <Link> (internal) or
-// <a> (http/mailto). Mirrors the blog body renderer so editorial copy can live
-// in messages and be translated like any other string.
 function renderInline(text: string): ReactNode {
   const parts: ReactNode[] = [];
-  const re = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+  const pattern = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
   let last = 0;
-  let m: RegExpExecArray | null;
-  let k = 0;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > last) parts.push(text.slice(last, m.index));
-    if (m[1] !== undefined) {
-      parts.push(<strong key={k++}>{m[1]}</strong>);
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    if (match[1] !== undefined) {
+      parts.push(<strong key={key++}>{match[1]}</strong>);
     } else {
-      const label = m[2];
-      const url = m[3];
+      const label = match[2];
+      const url = match[3];
       if (url.startsWith('/')) {
-        parts.push(<Link key={k++} href={url}>{label}</Link>);
+        parts.push(<Link key={key++} href={url}>{label}</Link>);
       } else {
-        parts.push(<a key={k++} href={url}>{label}</a>);
+        parts.push(<a key={key++} href={url}>{label}</a>);
       }
     }
-    last = m.index + m[0].length;
+    last = match.index + match[0].length;
   }
   if (last < text.length) parts.push(text.slice(last));
   return parts;
 }
 
 function RichBody({ body }: { body: string }) {
-  const blocks = body.split('\n\n').filter(Boolean);
+  const blocks = body.split('\n').map((block) => block.trim()).filter(Boolean);
   return (
     <>
-      {blocks.map((b, i) =>
-        b.startsWith('## ') ? (
-          <h2 key={i}>{b.slice(3)}</h2>
+      {blocks.map((block, index) =>
+        block.startsWith('## ') ? (
+          <h2 key={index}>{block.slice(3)}</h2>
         ) : (
-          <p key={i}>{renderInline(b)}</p>
+          <p key={index}>{renderInline(block)}</p>
         )
       )}
     </>
   );
 }
 
-export default async function MarcoDibenedettoPage() {
+export default async function MarcoDibenedettoPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const t = await getTranslations('founder');
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const profileUrl = `${APP_URL}${prefix}/maison/marco-dibenedetto`;
 
   const personSchema = {
-    '@context': 'https://schema.org',
     '@type': 'Person',
     '@id': `${APP_URL}/maison/marco-dibenedetto#person`,
     name: 'Marco Dibenedetto',
     jobTitle: t('role'),
+    description: t('metaDescription'),
+    url: profileUrl,
+    nationality: { '@type': 'Country', name: 'Italy' },
     worksFor: { '@id': `${APP_URL}/#organization` },
     affiliation: { '@id': `${APP_URL}/#organization` },
-    url: `${APP_URL}/maison/marco-dibenedetto`,
-    nationality: { '@type': 'Country', name: 'Italia' },
     alumniOf: {
       '@type': 'EducationalOrganization',
-      name: 'ITIS Setificio di Como (Istituto di Istruzione Superiore "Paolo Carcano")',
-      description:
-        'Storica scuola tessile fondata nel 1869 nel distretto serico di Como, formazione tecnica in chimica tessile, tessitura, stampa e finissaggio.',
+      name: 'ITIS Setificio di Como — I.S.I.S. Paolo Carcano',
     },
     knowsAbout: [
-      'Seta di Como', 'Cashmere', 'Made in Italy', 'Tessile di lusso',
-      'Distretto serico comasco', 'Chimica tessile', 'Tessitura jacquard',
-      'Stampa serigrafica', 'Orlatura rouletté', 'Finissaggio tessile',
+      'Como silk', 'Natural fibres', 'Textile chemistry', 'Jacquard weaving',
+      'Textile printing', 'Textile finishing', 'Made in Italy', 'Direct-to-consumer fashion',
     ],
+    workLocation: { '@type': 'Place', name: 'Como, Italy' },
+    mainEntityOfPage: { '@id': `${profileUrl}#profile` },
+  };
+  const profileSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': `${profileUrl}#profile`,
+    url: profileUrl,
+    name: t('metaTitle'),
     description: t('metaDescription'),
-    homeLocation: { '@type': 'Place', name: 'Cermenate, Como, Italia' },
+    inLanguage: locale,
+    isPartOf: { '@id': `${APP_URL}${prefix}/#website` },
+    mainEntity: personSchema,
   };
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'Maison', item: `${APP_URL}/maison/marco-dibenedetto` },
-      { '@type': 'ListItem', position: 3, name: 'Marco Dibenedetto', item: `${APP_URL}/maison/marco-dibenedetto` },
+      { '@type': 'ListItem', position: 1, name: 'SILKinCOM', item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: t('eyebrow'), item: `${APP_URL}${prefix}/la-nostra-storia` },
+      { '@type': 'ListItem', position: 3, name: 'Marco Dibenedetto', item: profileUrl },
     ],
   };
 
+  const facts = [
+    [profileCopy(locale, 'education'), profileCopy(locale, 'educationValue')],
+    [profileCopy(locale, 'territory'), profileCopy(locale, 'territoryValue')],
+    [profileCopy(locale, 'approach'), profileCopy(locale, 'approachValue')],
+  ];
+
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profileSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <section className="pt-28 md:pt-44 pb-16 bg-ivory">
-        <div className="max-w-[900px] mx-auto px-6 lg:px-10 text-center">
-          <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
-            {t('eyebrow')}
-          </span>
-          <h1 className="font-display font-light text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-soft-black mb-6">
-            Marco Dibenedetto
-          </h1>
-          <p className="font-display italic text-xl md:text-2xl text-soft-black/80">
-            {t('role')} — SILKinCOM
-          </p>
+      <section className="relative overflow-hidden bg-[#11100e] pt-32 text-warm-white md:pt-36">
+        <div className="mx-auto grid min-h-[76svh] max-w-[1500px] md:grid-cols-[0.92fr_1.08fr]">
+          <div className="relative z-10 flex flex-col justify-end px-7 pb-14 pt-14 sm:px-10 md:px-14 md:pb-20 lg:px-20">
+            <span className="mb-7 block h-px w-14 bg-gold-primary" />
+            <span className="mb-5 text-[9px] uppercase tracking-[0.46em] text-gold-primary">
+              SILKinCOM · {t('role')}
+            </span>
+            <h1 className="max-w-3xl font-display text-[3.55rem] font-light leading-[0.84] tracking-[-0.045em] sm:text-7xl lg:text-[6.6rem]">
+              Marco <em className="block font-light italic text-gold-primary">Dibenedetto</em>
+            </h1>
+            <p className="mt-8 max-w-xl text-sm font-light leading-[1.85] text-warm-white/68 md:text-base">
+              {t('metaDescription')}
+            </p>
+            <div className="mt-9 flex flex-wrap gap-x-7 gap-y-4">
+              <Link href="/la-nostra-storia" className="inline-flex items-center gap-2 border-b border-gold-primary/55 pb-1 text-[9px] uppercase tracking-[0.3em] text-gold-primary transition-colors hover:border-gold-primary hover:text-warm-white">
+                {profileCopy(locale, 'story')} <ArrowUpRight className="h-3 w-3" />
+              </Link>
+              <Link href="/collezioni" className="inline-flex items-center gap-2 border-b border-warm-white/25 pb-1 text-[9px] uppercase tracking-[0.3em] text-warm-white/65 transition-colors hover:border-gold-primary hover:text-gold-primary">
+                {profileCopy(locale, 'collections')} <ArrowUpRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </div>
+
+          <figure className="relative min-h-[56svh] overflow-hidden border-l border-gold-primary/15 md:min-h-0">
+            <Image
+              src="/artisans/telaio-artigiano-principale.webp"
+              alt={profileCopy(locale, 'imageAlt')}
+              fill
+              priority
+              sizes="(max-width: 767px) 100vw, 55vw"
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-black/15 md:bg-gradient-to-r md:from-[#11100e]/35 md:via-transparent md:to-transparent" />
+            <div className="absolute inset-4 border border-gold-primary/25 sm:inset-6" />
+            <figcaption className="absolute bottom-8 right-8 text-[8px] uppercase tracking-[0.35em] text-warm-white/70">
+              {profileCopy(locale, 'imageCaption')}
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      <section className="py-20 md:py-28 bg-warm-white">
-        <article className="max-w-3xl mx-auto px-6 prose prose-lg font-light text-soft-black/85 leading-relaxed prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-headings:mt-14 prose-headings:mb-5 prose-a:text-gold-primary hover:prose-a:text-gold-dark prose-p:leading-[1.85]">
-          <p className="text-xl font-display italic text-soft-black/90 mb-12 pb-10 border-b border-pearl-grey/50 text-center">
-            &ldquo;{t('quote')}&rdquo;
-          </p>
+      <section className="border-y border-gold-primary/20 bg-[#181613] text-warm-white">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-1 divide-y divide-gold-primary/15 px-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0 lg:px-10">
+          {facts.map(([label, value]) => (
+            <div key={label} className="px-5 py-7 text-center sm:py-9">
+              <span className="block text-[8px] uppercase tracking-[0.35em] text-gold-primary">{label}</span>
+              <span className="mt-2 block font-display text-lg font-light text-warm-white/85 sm:text-xl">{value}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          <RichBody body={t('body')} />
+      <section className="bg-[#f2ede4] py-20 md:py-28">
+        <div className="mx-auto grid max-w-[1180px] gap-14 px-6 lg:grid-cols-[0.31fr_0.69fr] lg:gap-20 lg:px-10">
+          <aside className="lg:sticky lg:top-32 lg:self-start">
+            <span className="mb-4 block h-px w-12 bg-gold-primary" />
+            <span className="text-[9px] uppercase tracking-[0.4em] text-gold-dark">{profileCopy(locale, 'chapter')}</span>
+            <p className="mt-7 font-display text-3xl font-light leading-[1.12] text-soft-black">
+              {profileCopy(locale, 'signature')}
+            </p>
+            <div className="mt-9 border-t border-soft-black/15 pt-6 text-[10px] font-light leading-[1.8] text-soft-black/55">
+              <p>SILKinCOM</p>
+              <p>Cermenate · Como · Italia</p>
+              <a href="mailto:info@silkincom.com" className="transition-colors hover:text-gold-primary">info@silkincom.com</a>
+            </div>
+          </aside>
 
-          <p className="mt-12 text-center not-prose">
-            <Link
-              href="/la-nostra-storia"
-              className="inline-block px-8 py-3 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.25em] hover:bg-gold-primary hover:text-soft-black transition-colors no-underline"
-            >
-              {t('ctaStory')}
-            </Link>
-          </p>
-        </article>
+          <article className="min-w-0">
+            <blockquote className="relative mb-14 border-y border-gold-primary/25 py-10 md:py-12">
+              <span aria-hidden="true" className="absolute -top-4 left-0 font-display text-7xl font-light text-gold-primary/30">“</span>
+              <p className="font-display text-2xl font-light italic leading-[1.45] text-soft-black md:text-3xl">
+                {t('quote')}
+              </p>
+              <footer className="mt-5 text-[9px] uppercase tracking-[0.34em] text-gold-dark">Marco Dibenedetto · SILKinCOM</footer>
+            </blockquote>
+
+            <div className="prose prose-lg max-w-none break-words font-light leading-relaxed text-soft-black/80 prose-headings:mt-14 prose-headings:mb-5 prose-headings:font-display prose-headings:text-3xl prose-headings:font-light prose-headings:text-soft-black prose-p:leading-[1.9] prose-strong:font-medium prose-strong:text-soft-black prose-a:text-gold-dark hover:prose-a:text-gold-primary">
+              <RichBody body={t('body')} />
+            </div>
+
+            <div className="mt-16 flex flex-wrap gap-4 border-t border-soft-black/15 pt-10">
+              <Link href="/collezioni" className="inline-flex items-center gap-3 bg-soft-black px-7 py-4 text-[9px] uppercase tracking-[0.28em] text-warm-white transition-colors hover:bg-gold-primary hover:text-soft-black">
+                {profileCopy(locale, 'collections')} <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+              <Link href="/la-nostra-storia" className="inline-flex items-center gap-3 border border-soft-black/20 px-7 py-4 text-[9px] uppercase tracking-[0.28em] text-soft-black transition-colors hover:border-gold-primary hover:text-gold-dark">
+                {t('ctaStory')} <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </article>
+        </div>
       </section>
     </>
   );

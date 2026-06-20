@@ -39,24 +39,22 @@ export function ValueProps({ section }: { section?: HomeSectionLocalized | null 
   ];
 
   return (
-    <section className="py-16 bg-warm-white border-y border-pearl-grey/40 overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-2 md:grid-cols-4 gap-8">
-        {VALUES.map((v, i) => (
+    <section className="overflow-hidden border-y border-gold-primary/20 bg-[#11100e] py-5 text-warm-white md:py-0">
+      <div className="mx-auto grid max-w-[1500px] grid-cols-2 px-6 md:grid-cols-4 lg:px-10">
+        {VALUES.map((value, index) => (
           <motion.div
-            key={v.key}
+            key={value.key}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-            className="flex flex-col items-center text-center"
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+            className="grid grid-cols-[auto_1fr] items-start gap-3 border-gold-primary/15 px-2 py-5 odd:border-r md:border-r md:px-6 md:py-8 md:last:border-r-0"
           >
-            <v.icon className="w-7 h-7 text-gold-primary mb-3 stroke-1" />
-            <h3 className="text-[11px] uppercase tracking-[0.2em] text-soft-black mb-1.5 font-medium">
-              {v.title}
-            </h3>
-            <p className="text-xs text-soft-black/75 font-normal leading-relaxed max-w-[200px]">
-              {v.desc}
-            </p>
+            <value.icon className="mt-0.5 h-4 w-4 stroke-1 text-gold-primary" />
+            <div>
+              <h3 className="mb-1 text-[9px] font-medium uppercase tracking-[0.2em] text-warm-white">{value.title}</h3>
+              <p className="max-w-[210px] text-[10px] font-light leading-relaxed text-warm-white/50 md:text-[11px]">{value.desc}</p>
+            </div>
           </motion.div>
         ))}
       </div>
