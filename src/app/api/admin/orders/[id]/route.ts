@@ -77,14 +77,20 @@ export async function PATCH(
       if (!existingJob || existingJob.length === 0) {
         const { data: items } = await supabase
           .from('order_items')
-          .select('product_name, product_slug, products(images)')
+          .select('product_name, product_slug, products(product_images(image_url, display_order))')
           .eq('order_id', id);
 
-        const reviewItems = (items || []).slice(0, 4).map((it: any) => ({
-          name: it.product_name,
-          slug: it.product_slug,
-          image: Array.isArray(it.products?.images) ? it.products.images[0] : undefined,
-        }));
+        const reviewItems = (items || []).slice(0, 4).map((it: any) => {
+          const imgs = it.products?.product_images;
+          const primary = Array.isArray(imgs)
+            ? (imgs.find((im: any) => im.display_order === 0) ?? imgs[0])
+            : undefined;
+          return {
+            name: it.product_name,
+            slug: it.product_slug,
+            image: primary?.image_url ?? undefined,
+          };
+        });
 
         const scheduledAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
         await supabase.from('email_lifecycle_jobs').insert({
