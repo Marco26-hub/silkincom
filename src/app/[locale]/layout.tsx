@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Cormorant_Garamond, Inter, Libre_Baskerville } from 'next/font/google';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import '../globals.css';
@@ -22,13 +22,6 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-inter',
-  display: 'swap',
-});
-
-const baskerville = Libre_Baskerville({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-baskerville',
   display: 'swap',
 });
 
@@ -213,7 +206,7 @@ export default async function LocaleLayout({
   };
 
   return (
-    <html lang={locale} className={`${cormorant.variable} ${inter.variable} ${baskerville.variable}`}>
+    <html lang={locale} className={`${cormorant.variable} ${inter.variable}`}>
       <head>
         {/* Preconnect critical third-party origins */}
         <link rel="preconnect" href="https://fjudulhxsafjizcmrifw.supabase.co" crossOrigin="anonymous" />
