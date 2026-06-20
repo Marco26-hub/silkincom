@@ -20,10 +20,10 @@ const CATEGORY_EDITORIAL_IMAGES: Record<string, string> = {
   tremezzo: '/instagram/ig-03.webp',
   varenna: '/instagram/ig-10.webp',
   'twilly-como': '/instagram/ig-02.webp',
-  darsena: '/instagram/ig-01.webp',
-  lario: '/instagram/ig-01.webp',
-  melzi: '/instagram/ig-01.webp',
-  riva: '/instagram/ig-01.webp',
+  darsena: '/categorie/darsena-cappellino.webp',
+  lario: '/categorie/lario-tshirt.webp',
+  melzi: '/categorie/melzi-shorts.webp',
+  riva: '/categorie/riva-camicia.webp',
   tivan: '/editorial/estate-lago-di-como-silkincom.webp',
 };
 

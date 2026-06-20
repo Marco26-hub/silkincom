@@ -10,45 +10,45 @@ import { APP_URL } from '@/lib/app-url';
 
 const PROFILE_UI: Record<string, Record<string, string>> = {
   it: {
-    chapter: 'Profilo del fondatore', education: 'Formazione', educationValue: 'Setificio di Como · Diploma tessile, 1998',
+    chapter: 'Profilo del fondatore', education: 'Formazione', educationValue: 'Setificio di Como · Perito chimico tessile, 1998',
     territory: 'Territorio', territoryValue: 'Distretto tessile di Como', approach: 'Approccio', approachValue: 'Maison direct-to-consumer',
-    imageAlt: 'Telaio e lavorazione tessile nel distretto di Como', imageCaption: 'Il distretto tessile di Como',
+    imageAlt: 'Marco Dibenedetto, fondatore di SILKinCOM', imageCaption: 'Marco Dibenedetto · Fondatore',
     collections: 'Esplora le collezioni', story: 'La storia della Maison', signature: 'Conoscenza tecnica. Cultura del prodotto. Rapporto diretto.',
   },
   en: {
-    chapter: 'Founder profile', education: 'Education', educationValue: 'Setificio di Como · Textile diploma, 1998',
+    chapter: 'Founder profile', education: 'Education', educationValue: 'Setificio di Como · Textile chemistry technician, 1998',
     territory: 'Territory', territoryValue: 'Como textile district', approach: 'Approach', approachValue: 'Direct-to-consumer Maison',
-    imageAlt: 'Loom and textile making in the Como district', imageCaption: 'The Como textile district',
+    imageAlt: 'Marco Dibenedetto, founder of SILKinCOM', imageCaption: 'Marco Dibenedetto · Founder',
     collections: 'Explore the collections', story: 'The Maison story', signature: 'Technical knowledge. Product culture. A direct relationship.',
   },
   es: {
-    chapter: 'Perfil del fundador', education: 'Formación', educationValue: 'Setificio di Como · Diploma textil, 1998',
+    chapter: 'Perfil del fundador', education: 'Formación', educationValue: 'Setificio di Como · Perito químico textil, 1998',
     territory: 'Territorio', territoryValue: 'Distrito textil de Como', approach: 'Enfoque', approachValue: 'Maison direct-to-consumer',
-    imageAlt: 'Telar y elaboración textil en el distrito de Como', imageCaption: 'El distrito textil de Como',
+    imageAlt: 'Marco Dibenedetto, fundador de SILKinCOM', imageCaption: 'Marco Dibenedetto · Fundador',
     collections: 'Explora las colecciones', story: 'La historia de la Maison', signature: 'Conocimiento técnico. Cultura de producto. Relación directa.',
   },
   fr: {
-    chapter: 'Profil du fondateur', education: 'Formation', educationValue: 'Setificio di Como · Diplôme textile, 1998',
+    chapter: 'Profil du fondateur', education: 'Formation', educationValue: 'Setificio di Como · Technicien chimiste textile, 1998',
     territory: 'Territoire', territoryValue: 'District textile de Côme', approach: 'Approche', approachValue: 'Maison direct-to-consumer',
-    imageAlt: 'Métier à tisser et fabrication textile dans le district de Côme', imageCaption: 'Le district textile de Côme',
+    imageAlt: 'Marco Dibenedetto, fondateur de SILKinCOM', imageCaption: 'Marco Dibenedetto · Fondateur',
     collections: 'Explorer les collections', story: "L’histoire de la Maison", signature: 'Connaissance technique. Culture du produit. Relation directe.',
   },
   de: {
-    chapter: 'Gründerprofil', education: 'Ausbildung', educationValue: 'Setificio di Como · Textildiplom, 1998',
+    chapter: 'Gründerprofil', education: 'Ausbildung', educationValue: 'Setificio di Como · Textilchemie-Techniker, 1998',
     territory: 'Herkunft', territoryValue: 'Textilbezirk von Como', approach: 'Ansatz', approachValue: 'Direct-to-Consumer Maison',
-    imageAlt: 'Webstuhl und Textilfertigung im Bezirk von Como', imageCaption: 'Der Textilbezirk von Como',
+    imageAlt: 'Marco Dibenedetto, Gründer von SILKinCOM', imageCaption: 'Marco Dibenedetto · Gründer',
     collections: 'Kollektionen entdecken', story: 'Die Geschichte der Maison', signature: 'Technisches Wissen. Produktkultur. Direkte Beziehung.',
   },
   pt: {
-    chapter: 'Perfil do fundador', education: 'Formação', educationValue: 'Setificio di Como · Diploma têxtil, 1998',
+    chapter: 'Perfil do fundador', education: 'Formação', educationValue: 'Setificio di Como · Perito químico têxtil, 1998',
     territory: 'Território', territoryValue: 'Distrito têxtil de Como', approach: 'Abordagem', approachValue: 'Maison direct-to-consumer',
-    imageAlt: 'Tear e confeção têxtil no distrito de Como', imageCaption: 'O distrito têxtil de Como',
+    imageAlt: 'Marco Dibenedetto, fundador da SILKinCOM', imageCaption: 'Marco Dibenedetto · Fundador',
     collections: 'Explorar as coleções', story: 'A história da Maison', signature: 'Conhecimento técnico. Cultura do produto. Relação direta.',
   },
   nl: {
-    chapter: 'Oprichtersprofiel', education: 'Opleiding', educationValue: 'Setificio di Como · Textieldiploma, 1998',
+    chapter: 'Oprichtersprofiel', education: 'Opleiding', educationValue: 'Setificio di Como · Textielchemisch technicus, 1998',
     territory: 'Herkomst', territoryValue: 'Textieldistrict van Como', approach: 'Benadering', approachValue: 'Direct-to-consumer Maison',
-    imageAlt: 'Weefgetouw en textielproductie in het district van Como', imageCaption: 'Het textieldistrict van Como',
+    imageAlt: 'Marco Dibenedetto, oprichter van SILKinCOM', imageCaption: 'Marco Dibenedetto · Oprichter',
     collections: 'Ontdek de collecties', story: 'Het verhaal van de Maison', signature: 'Technische kennis. Productcultuur. Directe relatie.',
   },
 };
@@ -80,7 +80,7 @@ export async function generateMetadata({
       description,
       url,
       images: [{
-        url: '/artisans/telaio-artigiano-principale.webp',
+        url: '/maison/marco-dibenedetto.webp',
         width: 857,
         height: 1221,
         alt: profileCopy(locale, 'imageAlt'),
@@ -90,7 +90,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: ['/artisans/telaio-artigiano-principale.webp'],
+      images: ['/maison/marco-dibenedetto.webp'],
     },
   };
 }
@@ -149,6 +149,7 @@ export default async function MarcoDibenedettoPage({ params }: { params: Promise
     jobTitle: t('role'),
     description: t('metaDescription'),
     url: profileUrl,
+    image: `${APP_URL}/maison/marco-dibenedetto.webp`,
     nationality: { '@type': 'Country', name: 'Italy' },
     worksFor: { '@id': `${APP_URL}/#organization` },
     affiliation: { '@id': `${APP_URL}/#organization` },
@@ -220,12 +221,12 @@ export default async function MarcoDibenedettoPage({ params }: { params: Promise
 
           <figure className="relative min-h-[56svh] overflow-hidden border-l border-gold-primary/15 md:min-h-0">
             <Image
-              src="/artisans/telaio-artigiano-principale.webp"
+              src="/maison/marco-dibenedetto.webp"
               alt={profileCopy(locale, 'imageAlt')}
               fill
               priority
               sizes="(max-width: 767px) 100vw, 55vw"
-              className="object-cover object-center"
+              className="object-cover object-[center_28%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-black/15 md:bg-gradient-to-r md:from-[#11100e]/35 md:via-transparent md:to-transparent" />
             <div className="absolute inset-4 border border-gold-primary/25 sm:inset-6" />
