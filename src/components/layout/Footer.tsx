@@ -10,12 +10,12 @@ import { Logo } from './Logo';
 // Typed commercial category links — surfaced site-wide for internal linking +
 // discoverability of the buyer-intent landing pages. Labels localized it/en.
 const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
-  { href: '/foulard-seta', label: { it: 'Foulard di seta', en: 'Silk foulards' } },
-  { href: '/sciarpe-seta', label: { it: 'Sciarpe in cashmere', en: 'Cashmere scarves' } },
-  { href: '/pashmine-cashmere', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas' } },
-  { href: '/camicie-lino', label: { it: 'Camicie in lino', en: 'Linen shirts' } },
-  { href: '/teli-mare', label: { it: 'Teli mare', en: 'Beach towels' } },
-  { href: '/regalo-seta-donna', label: { it: 'Idee regalo', en: 'Gift ideas' } },
+  { href: '/foulard-seta', label: { it: 'Foulard di seta', en: 'Silk foulards', de: 'Seidentücher', fr: 'Foulards en soie', es: 'Fulares de seda', pt: 'Lenços de seda', nl: 'Zijden sjaals' } },
+  { href: '/sciarpe-seta', label: { it: 'Sciarpe in cashmere', en: 'Cashmere scarves', de: 'Kaschmirschals', fr: 'Écharpes en cachemire', es: 'Bufandas de cachemir', pt: 'Cachecóis de caxemira', nl: 'Kasjmier sjaals' } },
+  { href: '/pashmine-cashmere', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas', de: 'Kaschmir-Pashminas', fr: 'Pashminas en cachemire', es: 'Pashminas de cachemir', pt: 'Pashminas de caxemira', nl: 'Kasjmier pashminas' } },
+  { href: '/camicie-lino', label: { it: 'Camicie in lino', en: 'Linen shirts', de: 'Leinenhemden', fr: 'Chemises en lin', es: 'Camisas de lino', pt: 'Camisas de linho', nl: 'Linnen overhemden' } },
+  { href: '/teli-mare', label: { it: 'Teli mare', en: 'Beach towels', de: 'Strandtücher', fr: 'Serviettes de plage', es: 'Toallas de playa', pt: 'Toalhas de praia', nl: 'Stranddoeken' } },
+  { href: '/regalo-seta-donna', label: { it: 'Idee regalo', en: 'Gift ideas', de: 'Geschenkideen', fr: 'Idées cadeaux', es: 'Ideas de regalo', pt: 'Ideias de presente', nl: 'Cadeau-ideeën' } },
 ];
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CERTIFICATIONS } from '@/data/credentials';
