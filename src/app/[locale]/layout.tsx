@@ -159,6 +159,8 @@ const organizationSchema = {
     'https://www.instagram.com/silkincom.official/',
     'https://www.facebook.com/profile.php?id=61581900780447',
     'https://it.pinterest.com/silkincomofficial',
+    'https://www.youtube.com/@SILKINCOM',
+    'https://www.tiktok.com/@silkincom',
   ],
 };
 
