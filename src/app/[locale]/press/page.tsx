@@ -60,26 +60,54 @@ function renderInline(text: string): ReactNode {
   return parts;
 }
 
-// Block renderer: "## " -> h2, a run of "- " lines -> <ul>, else <p>.
+// Premium press-kit renderer: group blocks under each "## " heading and render
+// every section as a gold eyebrow (hairline + small-caps gold label) over its
+// paragraphs / gold-bulleted lists — the editorial cadence used Maison-wide.
 function RichBody({ body }: { body: string }) {
   const blocks = body.split('\n\n').filter(Boolean);
+  const sections: { title: string; blocks: string[] }[] = [];
+  for (const b of blocks) {
+    if (b.startsWith('## ')) sections.push({ title: b.slice(3), blocks: [] });
+    else if (sections.length) sections[sections.length - 1].blocks.push(b);
+    else sections.push({ title: '', blocks: [b] });
+  }
   return (
-    <>
-      {blocks.map((b, i) => {
-        if (b.startsWith('## ')) return <h2 key={i}>{b.slice(3)}</h2>;
-        const lines = b.split('\n');
-        if (lines.every((l) => l.startsWith('- '))) {
-          return (
-            <ul key={i}>
-              {lines.map((l, j) => (
-                <li key={j}>{renderInline(l.slice(2))}</li>
-              ))}
-            </ul>
-          );
-        }
-        return <p key={i}>{renderInline(b)}</p>;
-      })}
-    </>
+    <div className="space-y-11 md:space-y-14 [&_a]:text-gold-dark [&_a]:underline [&_a]:decoration-gold-primary/40 [&_a]:underline-offset-4 hover:[&_a]:text-gold-primary [&_strong]:font-medium [&_strong]:text-soft-black">
+      {sections.map((s, i) => (
+        <section key={i}>
+          {s.title && (
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-9 shrink-0 bg-gold-primary" />
+              <h2 className="m-0 text-[11px] font-normal uppercase tracking-[0.4em] text-gold-dark">{s.title}</h2>
+            </div>
+          )}
+          <div className="space-y-3.5">
+            {s.blocks.map((b, j) => {
+              const lines = b.split('\n');
+              if (lines.every((l) => l.startsWith('- '))) {
+                return (
+                  <ul key={j} className="space-y-2.5">
+                    {lines.map((l, k) => (
+                      <li
+                        key={k}
+                        className="relative pl-5 font-light leading-[1.8] text-soft-black/80 before:absolute before:left-0 before:top-[0.72em] before:h-[5px] before:w-[5px] before:rounded-full before:bg-gold-primary"
+                      >
+                        {renderInline(l.slice(2))}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              }
+              return (
+                <p key={j} className="font-light leading-[1.95] text-soft-black/80">
+                  {renderInline(b)}
+                </p>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -137,10 +165,10 @@ export default async function PressPage({
       </section>
 
       <section className="bg-ivory py-16 md:py-24">
-        <div className="mx-auto max-w-4xl border border-soft-black/10 bg-warm-white px-7 py-12 shadow-[0_24px_80px_rgba(25,22,18,0.06)] md:px-14 md:py-16">
-          <div className="prose prose-lg max-w-none font-light leading-relaxed text-soft-black/85 prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-h2:mt-14 prose-h2:border-t prose-h2:border-soft-black/10 prose-h2:pt-10 prose-a:text-gold-dark hover:prose-a:text-gold-primary prose-strong:font-medium prose-strong:text-soft-black">
-            <RichBody body={t('body')} />
-          </div>
+        <div className="relative mx-auto max-w-4xl overflow-hidden border border-gold-primary/15 bg-warm-white px-7 py-12 shadow-[0_24px_80px_rgba(25,22,18,0.06)] md:px-14 md:py-16">
+          {/* Thin gold rule across the top of the kit card — Maison accent. */}
+          <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-primary/60 to-transparent" />
+          <RichBody body={t('body')} />
         </div>
       </section>
     </>
