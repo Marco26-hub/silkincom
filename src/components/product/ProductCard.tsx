@@ -67,6 +67,12 @@ function deriveMaterialEyebrow(composition: string, fallback: string): string {
   return `${norm(fibres[0].name)} / ${norm(fibres[1].name)}`;
 }
 
+// Bellagio Cipria ships in three embroidered-logo colourways on the same
+// powder-pink pashmina — the thumbnail can't show the tiny logo, so the SKUs
+// look identical. Surface the logo colour as a swatch to tell them apart.
+const LOGO_SWATCH: Record<string, string> = { bianco: '#ECE3D6', bordeaux: '#7A1F2B', marrone: '#6B4423' };
+const LOGO_LABEL: Record<string, string> = { bianco: 'Bianco', bordeaux: 'Bordeaux', marrone: 'Marrone' };
+
 export function ProductCard({ product }: { product: Product }) {
   const img1 = product.images[0] || '';
   const img2 = product.images[1] || '';
@@ -86,6 +92,9 @@ export function ProductCard({ product }: { product: Product }) {
   // type doesn't map to a known key so we don't render an empty chip.
   const KNOWN_TYPES = ['pashmina', 'scarf', 'twilly', 'cap', 'tshirt', 'shorts', 'shirt', 'beachTowel'];
   const typeLabel = typeKey && KNOWN_TYPES.includes(typeKey) ? t(`types.${typeKey}`) : '';
+  // Bellagio variants embed their colourway in the name ("… logo marrone").
+  const logoMatch = product.name.match(/logo\s+(bianco|bordeaux|marrone)/i);
+  const logoColor = logoMatch ? logoMatch[1].toLowerCase() : '';
   return (
     <article className="group relative min-w-0">
       <Link href={`/prodotto/${product.slug}`} className="block">
@@ -157,6 +166,18 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="font-display text-[1.35rem] md:text-[1.7rem] font-normal leading-[1.02] text-soft-black group-hover:text-gold-dark transition-colors duration-500">
             {product.name}
           </h3>
+          {logoColor && (
+            <div className="mt-1.5 flex items-center gap-1.5">
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-full ring-1 ring-soft-black/25"
+                style={{ backgroundColor: LOGO_SWATCH[logoColor] }}
+                aria-hidden
+              />
+              <span className="text-[9px] font-light uppercase tracking-[0.22em] text-soft-black/70">
+                {LOGO_LABEL[logoColor]}
+              </span>
+            </div>
+          )}
           {product.descriptionShort && (
             <p className="mt-2 hidden text-[12px] font-light leading-relaxed text-soft-black/60 lg:line-clamp-2 lg:block">
               {product.descriptionShort}
