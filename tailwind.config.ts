@@ -14,7 +14,7 @@ const config: Config = {
         'gold-dark': '#B8941C',
         'lake-blue': '#1F3A4A',
         'pearl-grey': '#D8D5CF',
-        'soft-grey': '#A9A6A0',
+        'soft-grey': '#6F6C65',
         'soft-black': '#171717',
         'warm-white': '#FFFDF8',
       },

@@ -60,7 +60,7 @@ export function Footer() {
   function ColumnHeading({ children }: { children: React.ReactNode }) {
     return (
       <div className="mb-6">
-        <h4 className="text-[10px] uppercase tracking-[0.4em] text-gold-primary">{children}</h4>
+        <p className="text-[10px] uppercase tracking-[0.4em] text-gold-primary">{children}</p>
         <span className="block w-8 h-px bg-gold-primary/60 mt-3" />
       </div>
     );
@@ -222,13 +222,13 @@ export function Footer() {
         )}
 
         {/* Legal */}
-        <div className="pt-10 flex flex-col items-center gap-4 text-center text-[10px] text-warm-white/40 uppercase tracking-[0.3em] md:flex-row md:items-center md:justify-between md:gap-4 md:text-left">
+        <div className="pt-10 flex flex-col items-center gap-4 text-center text-[10px] text-warm-white/70 uppercase tracking-[0.3em] md:flex-row md:items-center md:justify-between md:gap-4 md:text-left">
           <p>© {new Date().getFullYear()} SILKinCOM — {t('madeIn')}</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:justify-end">
             <Link href="/privacy-policy" className="hover:text-gold-primary transition-colors">{t('links.privacy')}</Link>
             <Link href="/cookie-policy" className="hover:text-gold-primary transition-colors">{t('links.cookies')}</Link>
             <Link href="/termini" className="hover:text-gold-primary transition-colors">{t('links.terms')}</Link>
-            <span className="text-warm-white/30">P.IVA 03786790133</span>
+            <span className="text-warm-white/60">P.IVA 03786790133</span>
           </div>
         </div>
       </div>
