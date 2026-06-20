@@ -102,18 +102,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       'max-video-preview': -1,
     },
   },
-  icons: {
-    // Official Lake Como mark (gold #D4AF37 on soft-black) from the brand PDF.
-    // SVG first — modern browsers prefer it and it scales crisp at any DPR.
-    // .ico (16/32/48) is the legacy fallback; icon.png the hi-res raster
-    // fallback; apple-icon.png the iOS home-screen tile (iOS ignores SVG).
-    icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
-      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
-    ],
-    apple: '/apple-icon.png',
-  },
+  // Icons are auto-detected from src/app/{icon.svg,icon.png,favicon.ico,apple-icon.png}
+  // by the App Router — no metadata.icons block (the old one pointed at /public
+  // files that don't exist → 404s + duplicate <link> tags). The Lake Como mark
+  // (gold #E8C76A on #11100e) lives in those app/ files as the single source.
   verification: {
     google: 'LBplwrKCDJvhwLKGVo1iCSoJt9NUa1Anw5Fpk1KmcdA',
     other: {
