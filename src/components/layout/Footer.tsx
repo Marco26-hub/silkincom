@@ -20,6 +20,9 @@ const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CERTIFICATIONS } from '@/data/credentials';
 
+// Footer nav link: gold on hover with a subtle rightward glide — quiet luxury.
+const LINK = 'inline-block hover:text-gold-primary hover:translate-x-1 transition-all duration-300';
+
 export function Footer() {
   const t = useTranslations('footer');
   const tn = useTranslations('nav');
@@ -73,9 +76,9 @@ export function Footer() {
       <div className="h-px bg-gradient-to-r from-transparent via-gold-primary/40 to-transparent" />
 
       <div className="max-w-[1400px] mx-auto px-5 sm:px-6 lg:px-10 pt-14 sm:pt-20 md:pt-24 pb-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12 md:gap-14 pb-14 sm:pb-16 border-b border-warm-white/10">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-12 sm:gap-x-12 md:grid-cols-12 md:gap-x-8 md:gap-y-12 pb-14 sm:pb-16 border-b border-warm-white/10">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-3">
             <div className="mb-7">
               <Logo size="2xl" variant="gold" withMark />
             </div>
@@ -90,39 +93,46 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Maison */}
-          <div>
-            <ColumnHeading>{t('sections.maison')}</ColumnHeading>
+          {/* Boutique — buyer-intent product categories */}
+          <nav aria-label={t('sections.boutique')} className="col-span-1 md:col-span-2">
+            <ColumnHeading>{t('sections.boutique')}</ColumnHeading>
             <ul className="space-y-3.5 text-[13px] font-light text-warm-white/80">
               {SHOP_CATEGORIES.map((c) => (
-                <li key={c.href}><Link href={c.href} className="hover:text-gold-primary transition-colors">{catLabel(c.label)}</Link></li>
+                <li key={c.href}><Link href={c.href} className={LINK}>{catLabel(c.label)}</Link></li>
               ))}
-              <li><Link href="/la-nostra-storia" className="hover:text-gold-primary transition-colors">{tn('story')}</Link></li>
-              <li><Link href="/maison/marco-dibenedetto" className="hover:text-gold-primary transition-colors">{tn('founder')}</Link></li>
-              <li><Link href="/materiali" className="hover:text-gold-primary transition-colors">{tn('materials')}</Link></li>
-              <li><Link href="/artigiani" className="hover:text-gold-primary transition-colors">{tn('artigiani')}</Link></li>
-              <li><Link href="/trame-di-como" className="hover:text-gold-primary transition-colors">Journal</Link></li>
-              <li><Link href="/contatti" className="hover:text-gold-primary transition-colors">{tn('contacts')}</Link></li>
-              <li><Link href="/press" className="hover:text-gold-primary transition-colors">{tn('press')}</Link></li>
             </ul>
-          </div>
+          </nav>
 
-          {/* Support */}
-          <div>
+          {/* Maison — brand & editorial */}
+          <nav aria-label={t('sections.maison')} className="col-span-1 md:col-span-2">
+            <ColumnHeading>{t('sections.maison')}</ColumnHeading>
+            <ul className="space-y-3.5 text-[13px] font-light text-warm-white/80">
+              <li><Link href="/la-nostra-storia" className={LINK}>{tn('story')}</Link></li>
+              <li><Link href="/maison/marco-dibenedetto" className={LINK}>{tn('founder')}</Link></li>
+              <li><Link href="/materiali" className={LINK}>{tn('materials')}</Link></li>
+              <li><Link href="/artigiani" className={LINK}>{tn('artigiani')}</Link></li>
+              <li><Link href="/trame-di-como" className={LINK}>Journal</Link></li>
+              <li><Link href="/contatti" className={LINK}>{tn('contacts')}</Link></li>
+              <li><Link href="/press" className={LINK}>{tn('press')}</Link></li>
+            </ul>
+          </nav>
+
+          {/* Assistenza — help & policies */}
+          <nav aria-label={t('sections.support')} className="col-span-2 md:col-span-2">
             <ColumnHeading>{t('sections.support')}</ColumnHeading>
             <ul className="space-y-3.5 text-[13px] font-light text-warm-white/80">
-              <li><Link href="/spedizioni" className="hover:text-gold-primary transition-colors">{t('links.shipping')}</Link></li>
-              <li><Link href="/resi" className="hover:text-gold-primary transition-colors">{t('links.returns')}</Link></li>
-              <li><Link href="/recesso" className="hover:text-gold-primary transition-colors">{t('links.withdrawal')}</Link></li>
-              <li><Link href="/cura-prodotto" className="hover:text-gold-primary transition-colors">{t('links.care')}</Link></li>
-              <li><Link href="/faq" className="hover:text-gold-primary transition-colors">{t('links.faq')}</Link></li>
-              <li><Link href="/recensioni" className="hover:text-gold-primary transition-colors">{t('links.reviews')}</Link></li>
-              <li><Link href="/b2b" className="hover:text-gold-primary transition-colors">B2B</Link></li>
+              <li><Link href="/spedizioni" className={LINK}>{t('links.shipping')}</Link></li>
+              <li><Link href="/resi" className={LINK}>{t('links.returns')}</Link></li>
+              <li><Link href="/recesso" className={LINK}>{t('links.withdrawal')}</Link></li>
+              <li><Link href="/cura-prodotto" className={LINK}>{t('links.care')}</Link></li>
+              <li><Link href="/faq" className={LINK}>{t('links.faq')}</Link></li>
+              <li><Link href="/recensioni" className={LINK}>{t('links.reviews')}</Link></li>
+              <li><Link href="/b2b" className={LINK}>B2B</Link></li>
             </ul>
-          </div>
+          </nav>
 
           {/* Newsletter + language */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-3">
             <ColumnHeading>{t('newsletter.title')}</ColumnHeading>
             <p className="text-[13px] text-warm-white/55 mb-5 font-light leading-[1.85]">{t('newsletter.description')}</p>
             <form
