@@ -196,7 +196,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.youtube.com/@SILKINCOM"
+                href="https://www.youtube.com/channel/UCg7ATWu5glDOuDydp6t4m7g"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
