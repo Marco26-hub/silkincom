@@ -25,10 +25,12 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
   const t = useTranslations('instagram');
 
   const content = section?.content || {};
+  // 14 tiles → with the 2×2 hero (idx 0) + 2×1 wide (idx 5) that's 18 grid
+  // cells = exactly three full rows on the 6-col desktop grid (no trailing gap).
   const photos = [
     ...CAMPAIGN_PHOTOS.map((url) => ({ url, alt: '' })),
     ...(section?.images || []),
-  ].slice(0, 12);
+  ].slice(0, 14);
   const socials = (section?.socialLinks && Object.keys(section.socialLinks).length) ? section.socialLinks : FALLBACK_SOCIAL;
 
   const titleStart = content.titleStart || t('titleStart');
