@@ -138,8 +138,10 @@ export function ProductCard({ product }: { product: Product }) {
             />
           )}
 
-          <div className="absolute inset-x-2.5 bottom-2.5 hidden translate-y-2 bg-soft-black/90 py-3 text-center opacity-0 backdrop-blur-sm transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 md:block">
-            <span className="text-[10px] uppercase tracking-[0.35em] text-warm-white font-medium">
+          {/* Mobile: always-visible "view product" CTA (no hover). Desktop:
+              revealed on hover. */}
+          <div className="absolute inset-x-2.5 bottom-2.5 block translate-y-0 bg-soft-black/90 py-2.5 text-center opacity-100 backdrop-blur-sm transition-all duration-700 ease-out md:translate-y-2 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+            <span className="text-[9px] uppercase tracking-[0.3em] text-warm-white font-medium sm:text-[10px] sm:tracking-[0.35em]">
               {t('quickView')}
             </span>
           </div>
@@ -202,10 +204,10 @@ export function ProductCard({ product }: { product: Product }) {
           e.preventDefault();
           setWished((w) => !w);
         }}
-        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-warm-white/25 bg-soft-black/75 text-warm-white shadow-sm backdrop-blur-sm transition-all duration-500 ease-out hover:border-gold-primary hover:text-gold-primary md:h-9 md:w-9 md:opacity-0 md:group-hover:opacity-100"
+        className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-warm-white/25 bg-soft-black/75 text-warm-white shadow-sm backdrop-blur-sm transition-all duration-500 ease-out hover:border-gold-primary hover:text-gold-primary md:right-4 md:top-4 md:h-9 md:w-9 md:opacity-0 md:group-hover:opacity-100"
       >
         <Heart
-          className={`w-[15px] h-[15px] transition-all duration-300 ${
+          className={`w-[13px] h-[13px] transition-all duration-300 ${
             wished
               ? 'text-gold-dark fill-gold-primary scale-110'
               : 'text-current'
