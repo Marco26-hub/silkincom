@@ -3,7 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { getMaterials, type Product } from '@/data/catalog-meta';
 
@@ -77,6 +77,26 @@ export function ProductCard({ product }: { product: Product }) {
   const img1 = product.images[0] || '';
   const img2 = product.images[1] || '';
   const [wished, setWished] = useState(false);
+  // Mobile has no hover, so reveal the gold "view product" CTA with a fade as
+  // the card scrolls into view — the touch-device equivalent of the desktop
+  // hover dissolve. Desktop keeps the hover reveal (md: classes below).
+  const cardRef = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -12% 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const t = useTranslations('product');
   const locale = useLocale();
   const taxonomyName = product.material
@@ -96,7 +116,7 @@ export function ProductCard({ product }: { product: Product }) {
   const logoMatch = product.name.match(/logo\s+(bianco|bordeaux|marrone)/i);
   const logoColor = logoMatch ? logoMatch[1].toLowerCase() : '';
   return (
-    <article className="group relative min-w-0">
+    <article ref={cardRef} className="group relative min-w-0">
       <Link href={`/prodotto/${product.slug}`} className="block">
         <div
           className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:-translate-y-1"
@@ -139,8 +159,13 @@ export function ProductCard({ product }: { product: Product }) {
           )}
 
           {/* Premium gold "view product" CTA: gold label + hairline on a dark
-              translucent bar. Mobile: always visible. Desktop: fades up on hover. */}
-          <div className="absolute inset-x-2.5 bottom-2.5 block translate-y-0 border-t border-gold-primary/45 bg-soft-black/85 py-2.5 text-center opacity-100 backdrop-blur-sm transition-all duration-[800ms] ease-out md:translate-y-3 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+              translucent bar. Mobile: fades up as the card scrolls into view.
+              Desktop: fades up on hover. */}
+          <div
+            className={`absolute inset-x-2.5 bottom-2.5 block border-t border-gold-primary/45 bg-soft-black/85 py-2.5 text-center backdrop-blur-sm transition-all duration-[800ms] ease-out ${
+              revealed ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
+            } md:translate-y-3 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100`}
+          >
             <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.32em] text-gold-primary font-medium sm:text-[10px] sm:tracking-[0.42em]">
               {t('quickView')}
             </span>
