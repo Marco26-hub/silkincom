@@ -14,6 +14,9 @@ const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   { href: '/sciarpe-seta', label: { it: 'Sciarpe in cashmere', en: 'Cashmere scarves', de: 'Kaschmirschals', fr: 'Écharpes en cachemire', es: 'Bufandas de cachemir', pt: 'Cachecóis de caxemira', nl: 'Kasjmier sjaals' } },
   { href: '/pashmine-cashmere', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas', de: 'Kaschmir-Pashminas', fr: 'Pashminas en cachemire', es: 'Pashminas de cachemir', pt: 'Pashminas de caxemira', nl: 'Kasjmier pashminas' } },
   { href: '/camicie-lino', label: { it: 'Camicie in lino', en: 'Linen shirts', de: 'Leinenhemden', fr: 'Chemises en lin', es: 'Camisas de lino', pt: 'Camisas de linho', nl: 'Linnen overhemden' } },
+  { href: '/collezioni/lario', label: { it: 'T-shirt in cotone', en: 'Cotton t-shirts', de: 'Baumwoll-T-Shirts', fr: 'T-shirts en coton', es: 'Camisetas de algodón', pt: 'T-shirts de algodão', nl: 'Katoenen T-shirts' } },
+  { href: '/collezioni/melzi', label: { it: 'Pantaloncini in cotone', en: 'Cotton shorts', de: 'Baumwoll-Shorts', fr: 'Shorts en coton', es: 'Pantalones de algodón', pt: 'Calções de algodão', nl: 'Katoenen shorts' } },
+  { href: '/collezioni/darsena', label: { it: 'Cappellini in cotone', en: 'Cotton caps', de: 'Baumwollmützen', fr: 'Casquettes en coton', es: 'Gorras de algodón', pt: 'Bonés de algodão', nl: 'Katoenen petten' } },
   { href: '/teli-mare', label: { it: 'Teli mare', en: 'Beach towels', de: 'Strandtücher', fr: 'Serviettes de plage', es: 'Toallas de playa', pt: 'Toalhas de praia', nl: 'Stranddoeken' } },
   { href: '/regalo-seta-donna', label: { it: 'Idee regalo', en: 'Gift ideas', de: 'Geschenkideen', fr: 'Idées cadeaux', es: 'Ideas de regalo', pt: 'Ideias de presente', nl: 'Cadeau-ideeën' } },
 ];
