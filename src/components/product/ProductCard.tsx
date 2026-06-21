@@ -138,10 +138,10 @@ export function ProductCard({ product }: { product: Product }) {
             />
           )}
 
-          {/* Mobile: always-visible "view product" CTA (no hover). Desktop:
-              revealed on hover. */}
-          <div className="absolute inset-x-2.5 bottom-2.5 block translate-y-0 bg-soft-black/90 py-2.5 text-center opacity-100 backdrop-blur-sm transition-all duration-700 ease-out md:translate-y-2 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-            <span className="text-[9px] uppercase tracking-[0.3em] text-warm-white font-medium sm:text-[10px] sm:tracking-[0.35em]">
+          {/* Premium gold "view product" CTA: gold label + hairline on a dark
+              translucent bar. Mobile: always visible. Desktop: fades up on hover. */}
+          <div className="absolute inset-x-2.5 bottom-2.5 block translate-y-0 border-t border-gold-primary/45 bg-soft-black/85 py-2.5 text-center opacity-100 backdrop-blur-sm transition-all duration-[800ms] ease-out md:translate-y-3 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+            <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.32em] text-gold-primary font-medium sm:text-[10px] sm:tracking-[0.42em]">
               {t('quickView')}
             </span>
           </div>
