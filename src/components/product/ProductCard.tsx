@@ -109,7 +109,7 @@ export function ProductCard({ product }: { product: Product }) {
         >
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.4),transparent_46%,rgba(23,23,23,0.06))]" />
           <div className="pointer-events-none absolute inset-2.5 border border-warm-white/45 transition-colors duration-700 md:group-hover:border-gold-primary/65" />
-          <span className="pointer-events-none absolute left-4 top-4 z-10 whitespace-nowrap text-[8px] uppercase tracking-[0.2em] text-soft-black/55 sm:left-5 sm:top-5 sm:tracking-[0.32em]">
+          <span className="pointer-events-none absolute left-4 top-4 z-10 whitespace-nowrap text-[8px] uppercase tracking-[0.28em] text-soft-black/65 [text-shadow:0_1px_5px_rgba(255,253,248,0.85),0_0_2px_rgba(255,253,248,0.7)] sm:left-5 sm:top-5 sm:tracking-[0.32em]">
             Made in Como
           </span>
 
