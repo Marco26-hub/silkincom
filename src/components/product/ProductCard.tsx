@@ -142,7 +142,7 @@ export function ProductCard({ product }: { product: Product }) {
               quality={92}
               className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
                 img2
-                  ? 'duration-[1100ms] group-hover:opacity-0 group-hover:scale-[1.02]'
+                  ? `duration-[1100ms] group-hover:opacity-0 group-hover:scale-[1.02] ${revealed ? 'max-md:opacity-0' : ''}`
                   : 'duration-[1500ms] group-hover:scale-[1.05]'
               }`}
             />
@@ -154,7 +154,9 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className="object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 group-hover:opacity-100 scale-[1.02] group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]"
+              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 group-hover:opacity-100 scale-[1.02] group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
+                revealed ? 'max-md:opacity-100 max-md:scale-100' : ''
+              }`}
             />
           )}
 
@@ -166,7 +168,7 @@ export function ProductCard({ product }: { product: Product }) {
               revealed ? 'opacity-100' : 'opacity-0'
             } md:opacity-0 md:group-hover:opacity-100`}
           >
-            <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.34em] text-gold-primary font-medium [text-shadow:0_1px_5px_rgba(0,0,0,0.65)] sm:text-[10px] sm:tracking-[0.44em]">
+            <span className="inline-flex items-center gap-2 pl-[0.34em] text-[9px] uppercase tracking-[0.34em] text-gold-primary font-medium [text-shadow:0_1px_5px_rgba(0,0,0,0.65)] sm:pl-[0.44em] sm:text-[10px] sm:tracking-[0.44em]">
               {t('quickView')}
               <span aria-hidden className="text-gold-primary/80">→</span>
             </span>
