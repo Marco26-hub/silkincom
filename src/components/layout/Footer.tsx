@@ -76,7 +76,7 @@ export function Footer() {
       <div className="h-px bg-gradient-to-r from-transparent via-gold-primary/40 to-transparent" />
 
       <div className="max-w-[1400px] mx-auto px-5 sm:px-6 lg:px-10 pt-14 sm:pt-20 md:pt-24 pb-10">
-        <div className="grid grid-cols-2 gap-x-10 gap-y-12 sm:gap-x-12 md:grid-cols-12 md:gap-x-8 md:gap-y-12 pb-14 sm:pb-16 border-b border-warm-white/10">
+        <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-12 md:grid-cols-12 md:gap-x-8 md:gap-y-12 pb-14 sm:pb-16 border-b border-warm-white/10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-3">
             <div className="mb-7">
