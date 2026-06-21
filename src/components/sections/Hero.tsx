@@ -105,7 +105,10 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
-  const opacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.4, 0]);
+  // Stay fully opaque while the hero is on screen, fade only in the last leg
+  // as it scrolls off — otherwise on short (mobile) viewports a small scroll
+  // already dimmed the editorial image ("disappears immediately").
+  const opacity = useTransform(scrollYProgress, [0, 0.85, 1], [1, 1, 0]);
   // Scroll parallax tightened from 1.05 → 1.02 so the subject does not drift
   // out of frame during the user's natural scroll-down gesture.
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.02]);
