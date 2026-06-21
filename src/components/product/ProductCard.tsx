@@ -119,7 +119,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article ref={cardRef} className="group relative min-w-0">
       <Link href={`/prodotto/${product.slug}`} className="block">
         <div
-          className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:-translate-y-1"
+          className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] md:group-hover:-translate-y-1"
           style={{
             background:
               'radial-gradient(ellipse at 50% 26%, #fdfaf4 0%, #f4eee3 60%, #e7dfd0 116%)',
@@ -128,7 +128,7 @@ export function ProductCard({ product }: { product: Product }) {
           }}
         >
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.4),transparent_46%,rgba(23,23,23,0.06))]" />
-          <div className="pointer-events-none absolute inset-2.5 border border-warm-white/45 transition-colors duration-700 group-hover:border-gold-primary/65" />
+          <div className="pointer-events-none absolute inset-2.5 border border-warm-white/45 transition-colors duration-700 md:group-hover:border-gold-primary/65" />
           <span className="pointer-events-none absolute left-4 top-4 z-10 whitespace-nowrap text-[8px] uppercase tracking-[0.2em] text-soft-black/55 sm:left-5 sm:top-5 sm:tracking-[0.32em]">
             Made in Como
           </span>
@@ -142,8 +142,8 @@ export function ProductCard({ product }: { product: Product }) {
               quality={92}
               className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
                 img2
-                  ? `duration-[1100ms] group-hover:opacity-0 group-hover:scale-[1.02] ${revealed ? 'max-md:opacity-0' : ''}`
-                  : 'duration-[1500ms] group-hover:scale-[1.05]'
+                  ? `duration-[1100ms] md:group-hover:opacity-0 md:group-hover:scale-[1.02] ${revealed ? 'max-md:opacity-0' : ''}`
+                  : 'duration-[1500ms] md:group-hover:scale-[1.05]'
               }`}
             />
           )}
@@ -154,7 +154,7 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 group-hover:opacity-100 scale-[1.02] group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
+              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 md:group-hover:opacity-100 scale-[1.02] md:group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
                 revealed ? 'max-md:opacity-100 max-md:scale-100' : ''
               }`}
             />
@@ -193,7 +193,7 @@ export function ProductCard({ product }: { product: Product }) {
               )}
             </div>
           )}
-          <h3 className="font-display text-[1.35rem] md:text-[1.7rem] font-normal leading-[1.02] text-soft-black group-hover:text-gold-dark transition-colors duration-500">
+          <h3 className="font-display text-[1.35rem] md:text-[1.7rem] font-normal leading-[1.02] text-soft-black md:group-hover:text-gold-dark transition-colors duration-500">
             {product.name}
           </h3>
           {logoColor && (
