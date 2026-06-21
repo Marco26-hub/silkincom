@@ -125,7 +125,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
   return (
     <section
       ref={containerRef}
-      className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-soft-black"
+      className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-soft-black max-lg:landscape:min-h-[440px]"
     >
       <motion.div
         style={{ y, opacity, scale }}

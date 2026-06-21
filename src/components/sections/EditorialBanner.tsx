@@ -24,7 +24,7 @@ export function EditorialBanner({ section }: { section?: HomeSectionLocalized | 
   const cta = content.cta || t('cta');
 
   return (
-    <section ref={ref} className="relative h-[82svh] min-h-[620px] overflow-hidden bg-[#11100e]">
+    <section ref={ref} className="relative h-[82svh] min-h-[620px] overflow-hidden bg-[#11100e] max-lg:landscape:min-h-[400px]">
       <motion.div style={{ y }} className="absolute inset-0 scale-110">
         <div
           className="absolute inset-0 bg-cover bg-center"
