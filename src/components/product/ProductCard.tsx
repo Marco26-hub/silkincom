@@ -158,16 +158,17 @@ export function ProductCard({ product }: { product: Product }) {
             />
           )}
 
-          {/* Premium gold "view product" CTA: gold label + hairline on a dark
-              translucent bar. Mobile: fades up as the card scrolls into view.
-              Desktop: fades up on hover. */}
+          {/* Elite "view product" CTA: a soft gradient scrim (product stays
+              visible) with a floating gold label. Mobile: fades in as the card
+              scrolls into view. Desktop: fades in on hover. */}
           <div
-            className={`absolute inset-x-2.5 bottom-2.5 block border-t border-gold-primary/45 bg-soft-black/85 py-2.5 text-center backdrop-blur-sm transition-all duration-[800ms] ease-out ${
-              revealed ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
-            } md:translate-y-3 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100`}
+            className={`pointer-events-none absolute inset-x-2.5 bottom-2.5 flex items-end justify-center bg-gradient-to-t from-soft-black/85 via-soft-black/30 to-transparent pb-3.5 pt-14 transition-opacity duration-[900ms] ease-out ${
+              revealed ? 'opacity-100' : 'opacity-0'
+            } md:opacity-0 md:group-hover:opacity-100`}
           >
-            <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.32em] text-gold-primary font-medium sm:text-[10px] sm:tracking-[0.42em]">
+            <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.34em] text-gold-primary font-medium [text-shadow:0_1px_5px_rgba(0,0,0,0.65)] sm:text-[10px] sm:tracking-[0.44em]">
               {t('quickView')}
+              <span aria-hidden className="text-gold-primary/80">→</span>
             </span>
           </div>
         </div>
