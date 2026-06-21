@@ -77,9 +77,9 @@ export function ProductCard({ product }: { product: Product }) {
   const img1 = product.images[0] || '';
   const img2 = product.images[1] || '';
   const [wished, setWished] = useState(false);
-  // Touch has no hover, so mirror the desktop hover reveal (2nd photo + gold
-  // CTA) by triggering it when the card scrolls into view. All gold/hover
-  // styling stays on md: so mobile never fires :hover (no sticky gold wash).
+  // Touch has no hover, so reveal the gold CTA + frame as the card scrolls into
+  // view (the touch equivalent of the desktop hover). Gold/swap styling stays
+  // on md: so mobile never fires :hover; the 1st photo never swaps out.
   const cardRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
   useEffect(() => {
@@ -119,7 +119,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article ref={cardRef} className="group relative min-w-0">
       <Link href={`/prodotto/${product.slug}`} className="block">
         <div
-          className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] md:group-hover:-translate-y-1"
+          className="relative isolate mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] md:group-hover:-translate-y-1"
           style={{
             background:
               'radial-gradient(ellipse at 50% 26%, #fdfaf4 0%, #f4eee3 60%, #e7dfd0 116%)',
@@ -144,7 +144,7 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
+              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transform-gpu [backface-visibility:hidden] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
                 img2
                   ? 'duration-[1100ms] md:group-hover:opacity-0 md:group-hover:scale-[1.02]'
                   : 'duration-[1500ms] md:group-hover:scale-[1.05]'
@@ -158,7 +158,7 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className="object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 md:group-hover:opacity-100 scale-[1.02] md:group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]"
+              className="object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transform-gpu [backface-visibility:hidden] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 md:group-hover:opacity-100 scale-[1.02] md:group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]"
             />
           )}
 
