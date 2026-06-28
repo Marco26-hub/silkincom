@@ -296,7 +296,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                         }}
                         className="inline-block mr-[0.25em]"
                       >
-                        {word}{i < arr.length - 1 ? ' ' : ''}
+                        {word}{' '}
                       </motion.span>
                     ))}
                   </span>
