@@ -10,15 +10,28 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 import { computeShipping } from '@/config/shipping';
-import { ArrowLeft, Lock } from 'lucide-react';
+import { ArrowLeft, Lock, MessageCircle } from 'lucide-react';
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
   : null;
+
+// Customer-facing WhatsApp help link at the payment step (reduces checkout
+// abandonment by giving a human a tap away). 7-locale label, self-contained.
+const CHECKOUT_WHATSAPP = 'https://wa.me/393477196603';
+const HELP_LABEL: Record<string, string> = {
+  it: 'Serve aiuto? Scrivici su WhatsApp',
+  en: 'Need help? Message us on WhatsApp',
+  de: 'Brauchst du Hilfe? Schreib uns auf WhatsApp',
+  fr: "Besoin d'aide ? Écrivez-nous sur WhatsApp",
+  es: '¿Necesitas ayuda? Escríbenos por WhatsApp',
+  pt: 'Precisa de ajuda? Fale connosco no WhatsApp',
+  nl: 'Hulp nodig? App ons op WhatsApp',
+};
 
 type ShippingAddress = {
   full_name: string;
@@ -39,6 +52,7 @@ type InitData = {
 
 function PaymentForm({ orderId, orderNumber, customerEmail }: { orderId: string; orderNumber: string; customerEmail: string }) {
   const t = useTranslations('checkout');
+  const locale = useLocale();
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -95,6 +109,17 @@ function PaymentForm({ orderId, orderNumber, customerEmail }: { orderId: string;
       </button>
       <p className="text-center text-xs text-soft-grey">
         {t('security.stripe')} · {t('security.ssl')}
+      </p>
+      <p className="text-center text-xs text-soft-grey">
+        <a
+          href={CHECKOUT_WHATSAPP}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 hover:text-gold-dark transition-colors"
+        >
+          <MessageCircle className="w-3.5 h-3.5" />
+          {HELP_LABEL[locale] ?? HELP_LABEL.en}
+        </a>
       </p>
     </form>
   );

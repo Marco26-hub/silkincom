@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Check, Lock, Truck, RotateCcw } from 'lucide-react';
+import { Check, Lock, Truck, RotateCcw, MessageCircle } from 'lucide-react';
 import { useCart } from '@/store/cart';
 import { WishlistButton } from './WishlistButton';
 import { SizeGuideModal } from './SizeGuideModal';
@@ -22,7 +22,11 @@ const REASSURE = {
   secure: { it: 'Pagamento sicuro', en: 'Secure checkout', de: 'Sichere Zahlung', fr: 'Paiement sécurisé', es: 'Pago seguro', pt: 'Pagamento seguro', nl: 'Veilig betalen' },
   shipping: { it: 'Spedizione gratuita oltre €200', en: 'Free shipping over €200', de: 'Gratisversand ab €200', fr: 'Livraison gratuite dès €200', es: 'Envío gratis desde €200', pt: 'Portes grátis acima de €200', nl: 'Gratis verzending vanaf €200' },
   returns: { it: 'Recesso 14 gg · difetti a nostro carico', en: '14-day withdrawal · defects covered by us', de: '14 Tage Widerruf · Mängel auf unsere Kosten', fr: 'Rétractation 14 j · défauts à notre charge', es: 'Desistimiento 14 días · defectos a nuestro cargo', pt: 'Livre resolução 14 dias · defeitos a nosso cargo', nl: '14 dagen bedenktijd · gebreken voor onze rekening' },
+  whatsapp: { it: 'Domande? Scrivici su WhatsApp', en: 'Questions? Message us on WhatsApp', de: 'Fragen? Schreib uns auf WhatsApp', fr: 'Des questions ? Écrivez-nous sur WhatsApp', es: '¿Dudas? Escríbenos por WhatsApp', pt: 'Dúvidas? Fale connosco no WhatsApp', nl: 'Vragen? App ons op WhatsApp' },
 } as const;
+
+// Customer-facing WhatsApp (owner business line) for the "message us" trust link.
+const WHATSAPP_URL = 'https://wa.me/393477196603';
 
 function fmtPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
@@ -176,6 +180,7 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
         <li className="flex items-center gap-2"><Lock className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.secure)}</li>
         <li className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.shipping)}</li>
         <li className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.returns)}</li>
+        <li><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-gold-dark transition-colors"><MessageCircle className="w-3.5 h-3.5 text-gold-primary flex-shrink-0" />{r(REASSURE.whatsapp)}</a></li>
       </ul>
 
       <WishlistButton productSlug={slug} />
