@@ -284,7 +284,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               {activeSlide === 0 ? (
                 <>
                   <span className="block overflow-hidden pb-[0.12em]">
-                    {title.split(' ').map((word, i) => (
+                    {title.split(' ').map((word, i, arr) => (
                       <motion.span
                         key={`w1-0-${i}`}
                         initial={{ y: '110%', opacity: 0 }}
@@ -296,13 +296,13 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                         }}
                         className="inline-block mr-[0.25em]"
                       >
-                        {word}
+                        {word}{i < arr.length - 1 ? ' ' : ''}
                       </motion.span>
                     ))}
                   </span>
                   {accent ? (
                     <span className="block overflow-hidden mt-1 pb-[0.18em]">
-                      {accent.split(' ').map((word, i) => (
+                      {accent.split(' ').map((word, i, arr) => (
                         <motion.em
                           key={`w2-0-${i}`}
                           initial={{ y: '110%', opacity: 0 }}
@@ -314,7 +314,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                           }}
                           className="inline-block mr-[0.25em] italic font-light text-gold-primary"
                         >
-                          {word}
+                          {word}{i < arr.length - 1 ? ' ' : ''}
                         </motion.em>
                       ))}
                     </span>
