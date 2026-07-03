@@ -171,29 +171,30 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       {howToSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
       )}
-      {/* Clean full-bleed hero image — no text overlaid on the photo. The
-          title lives below, in the editorial text block, so it never sits on
-          the subject's face. Only a light top scrim keeps the nav legible. */}
-      <section className="relative h-[60vh] min-h-[420px] overflow-hidden">
+      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         {post.image && (
-          <Image src={post.image} alt={post.title} fill priority sizes="100vw" className="object-cover object-center scale-105 animate-[heroZoom_20s_ease-out_forwards]" />
+          <Image src={post.image} alt={post.title} fill priority sizes="100vw" className="object-cover object-[center_32%] scale-105 animate-[heroZoom_20s_ease-out_forwards]" />
         )}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-soft-black/70 via-soft-black/20 to-transparent" />
-      </section>
-
-      <section className="py-16 md:py-24 bg-warm-white relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16 bg-gradient-to-b from-pearl-grey to-transparent" />
-        <article className="max-w-3xl mx-auto px-6 prose prose-lg md:prose-xl font-light text-soft-black/85 leading-relaxed prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-p:text-soft-black/80 prose-a:text-gold-primary hover:prose-a:text-gold-dark">
-          {/* Title block — eyebrow + date + headline, centred below the photo */}
-          <div className="not-prose text-center mb-10">
-            <span className="inline-block text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-5">
+        {/* Bottom scrim carries the title; the image recedes into soft-black. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-soft-black/85 via-soft-black/25 to-transparent" />
+        {/* Top scrim so the nav + gold wordmark stay legible over any hero image. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-soft-black/80 via-soft-black/30 to-transparent" />
+        <div className="relative z-10 h-full flex items-end pb-20">
+          <div className="max-w-[1100px] w-full mx-auto px-6 lg:px-10 text-warm-white animate-[fadeUp_1s_ease-out_forwards]">
+            <span className="inline-block px-3 py-1 bg-warm-white/10 backdrop-blur-md text-[10px] uppercase tracking-[0.4em] text-gold-primary mb-6 border border-warm-white/20">
               {t('eyebrow')}
               {post.date && ' • ' + new Date(post.date).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
-            <h1 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-soft-black">
+            <h1 className="font-display font-light text-5xl md:text-6xl lg:text-8xl leading-[1.05] max-w-4xl drop-shadow-md">
               {post.title}
             </h1>
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 md:py-32 bg-warm-white relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16 bg-gradient-to-b from-pearl-grey to-transparent" />
+        <article className="max-w-3xl mx-auto px-6 prose prose-lg md:prose-xl font-light text-soft-black/85 leading-relaxed prose-headings:font-display prose-headings:font-light prose-headings:text-soft-black prose-p:text-soft-black/80 prose-a:text-gold-primary hover:prose-a:text-gold-dark">
           {/* Author byline — E-E-A-T signal for search and AI engines */}
           <div className="not-prose flex items-center justify-center gap-3 mb-12 text-[11px] uppercase tracking-[0.3em] text-soft-grey">
             <span>di</span>
