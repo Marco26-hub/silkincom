@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
+import { antibotGate } from '@/lib/antibot';
 import { verifyReviewToken } from '@/lib/review-token';
 import { sendOwnerReviewNotificationEmail } from '@/lib/email';
 
@@ -24,6 +25,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    // Anti-bot: honeypot + signed timing token (see src/lib/antibot.ts).
+    const gate = antibotGate(body);
+    if (gate) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
     const productSlug = (body?.product_slug || '').toString().trim();
     const rating = Number(body?.rating);
     const title = body?.title

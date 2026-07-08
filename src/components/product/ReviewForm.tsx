@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Star, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useAntibot } from '@/components/antibot/useAntibot';
 
 type Props = {
   productSlug: string;
@@ -21,6 +22,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
   const [comment, setComment] = useState('');
   const [authorName, setAuthorName] = useState('');
   const [loading, setLoading] = useState(false);
+  const { fields: antibotFields, Honeypot } = useAntibot();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Signed token from the post-delivery review email — lets an account-less
@@ -77,6 +79,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
           title,
           comment,
           ...(reviewToken ? { rt: reviewToken, author_name: authorName } : {}),
+          ...antibotFields(),
         }),
       });
       const data = await res.json();
@@ -94,6 +97,7 @@ export function ReviewForm({ productSlug, isAuthenticated }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="border border-pearl-grey/60 p-8 bg-warm-white space-y-6">
+      <Honeypot />
       <div>
         <label className="block text-[10px] uppercase tracking-[0.3em] text-soft-black/60 mb-3">
           {t('ratingLabel')}

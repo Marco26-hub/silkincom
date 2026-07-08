@@ -22,6 +22,7 @@ const SHOP_CATEGORIES: { href: string; label: Record<string, string> }[] = [
 ];
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CERTIFICATIONS } from '@/data/credentials';
+import { useAntibot } from '@/components/antibot/useAntibot';
 
 // Footer nav link: gold on hover with a subtle rightward glide — quiet luxury.
 const LINK = 'inline-block hover:text-gold-primary hover:translate-x-1 transition-all duration-300';
@@ -34,6 +35,7 @@ export function Footer() {
   const [email, setEmail] = useState('');
   const [nlState, setNlState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [nlMsg, setNlMsg] = useState<string | null>(null);
+  const { fields: antibotFields, Honeypot } = useAntibot();
 
   async function handleNewsletterSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,7 +46,7 @@ export function Footer() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), source: 'footer' }),
+        body: JSON.stringify({ email: email.trim().toLowerCase(), source: 'footer', ...antibotFields() }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -142,6 +144,7 @@ export function Footer() {
               onSubmit={handleNewsletterSubmit}
               className="flex items-stretch border-b border-warm-white/25 focus-within:border-gold-primary transition-colors"
             >
+              <Honeypot />
               <input
                 type="email"
                 required

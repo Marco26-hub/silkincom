@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { useAntibot } from '@/components/antibot/useAntibot';
 
 // Basic RFC-5322-ish email validation. Enough for live feedback; final
 // validation still happens server-side at /api/newsletter.
@@ -17,6 +18,7 @@ export function Newsletter() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { fields, Honeypot } = useAntibot();
 
   const isInvalid = touched && email.length > 0 && !EMAIL_RX.test(email);
   const isValid = email.length > 0 && EMAIL_RX.test(email);
@@ -35,7 +37,7 @@ export function Newsletter() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, ...fields() }),
       });
 
       const data = await res.json();
@@ -85,6 +87,7 @@ export function Newsletter() {
           </motion.p>
         ) : (
           <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-3" noValidate>
+            <Honeypot />
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"

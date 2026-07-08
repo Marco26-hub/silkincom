@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { getStripe } from '@/lib/stripe';
 import { createServiceClient, createServerClient } from '@/lib/supabase/server';
 import { computeShipping } from '@/config/shipping';
+import { rateLimit } from '@/lib/rate-limit';
+import { antibotGate } from '@/lib/antibot';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -33,6 +35,15 @@ const paymentIntentSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.json();
+
+    // Anti-bot gate — bots were POSTing here directly and creating junk
+    // "pending" orders before any payment. Rate limit + honeypot + signed
+    // timing token (minted on checkout page load). See src/lib/antibot.ts.
+    const limited = rateLimit(req, 5, 60_000);
+    if (limited) return limited;
+    const gate = antibotGate(rawBody);
+    if (gate) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
     const parsed = paymentIntentSchema.safeParse(rawBody);
     if (!parsed.success) {
       return NextResponse.json(

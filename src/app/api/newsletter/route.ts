@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { randomBytes } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
+import { antibotGate } from '@/lib/antibot';
 import { sendNewsletterConfirmationEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
@@ -12,6 +13,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    // Anti-bot: honeypot + signed timing token (see src/lib/antibot.ts).
+    const gate = antibotGate(body);
+    if (gate) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
     const email = (body?.email || '').toString().trim().toLowerCase();
     const fullName = body?.fullName ? String(body.fullName).trim() : null;
     const source = body?.source ? String(body.source).slice(0, 50) : 'website';

@@ -1,6 +1,7 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limit';
+import { antibotGate } from '@/lib/antibot';
 import { sendContactNotification } from '@/lib/email';
 
 type ContactData = {
@@ -18,6 +19,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    // Anti-bot: honeypot + signed timing token (see src/lib/antibot.ts).
+    const gate = antibotGate(body);
+    if (gate) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
     const { nome, cognome, email, telefono, numero_ordine, messaggio } = body;
 
     // Validate required fields

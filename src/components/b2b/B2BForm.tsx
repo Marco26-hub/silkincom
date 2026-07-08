@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ArrowRight } from 'lucide-react';
+import { useAntibot } from '@/components/antibot/useAntibot';
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -36,6 +37,7 @@ export function B2BForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { fields: antibotFields, Honeypot } = useAntibot();
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setData((d) => ({ ...d, [key]: value }));
@@ -63,6 +65,7 @@ export function B2BForm() {
           tipo: data.tipo || null,
           volume: data.volume.trim() || null,
           messaggio: data.messaggio.trim(),
+          ...antibotFields(),
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -92,6 +95,7 @@ export function B2BForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto text-left" noValidate>
+      <Honeypot />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         <div>
           <label htmlFor="b2b-nome" className={labelCls}>{t('nomeLabel')} *</label>

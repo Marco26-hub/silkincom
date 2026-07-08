@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
+import { useAntibot } from '@/components/antibot/useAntibot';
 
 export function ContattiClient() {
   const t = useTranslations('contatti');
@@ -22,6 +23,7 @@ export function ContattiClient() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const { fields, Honeypot } = useAntibot();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -33,7 +35,7 @@ export function ContattiClient() {
       const res = await fetch('/api/contatti', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, ...fields() }),
       });
 
       const data = await res.json();
@@ -108,6 +110,7 @@ export function ContattiClient() {
         <div className="max-w-5xl mx-auto px-6 lg:px-10 grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            <Honeypot />
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-[11px] uppercase tracking-[0.2em] mb-2 text-soft-grey">{t('firstName')}</label>

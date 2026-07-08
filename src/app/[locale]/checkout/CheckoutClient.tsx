@@ -15,6 +15,7 @@ import { useCart } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 import { computeShipping } from '@/config/shipping';
 import { ArrowLeft, Lock, MessageCircle } from 'lucide-react';
+import { useAntibot } from '@/components/antibot/useAntibot';
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
@@ -136,6 +137,7 @@ export function CheckoutClient() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [deliveryMethod, setDeliveryMethod] = useState<'standard' | 'hand_delivery'>('standard');
+  const { fields: antibotFields, Honeypot } = useAntibot();
 
   const [form, setForm] = useState({
     first_name: '',
@@ -217,6 +219,7 @@ export function CheckoutClient() {
           shipping_address: shippingAddress,
           delivery_method: deliveryMethod,
           ...(coupon ? { coupon_code: coupon.code } : {}),
+          ...antibotFields(),
         }),
       });
 
@@ -280,6 +283,7 @@ export function CheckoutClient() {
 
             {step === 'info' && (
               <form onSubmit={handleInfoSubmit} className="space-y-8">
+                <Honeypot />
                 <section className="space-y-5">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark border-b border-pearl-grey/60 pb-2">
                     {t('sections.contact')}
