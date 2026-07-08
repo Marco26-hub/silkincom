@@ -2,10 +2,25 @@
  * ProductReviews — server component on PDP.
  * Lists approved reviews + renders ReviewForm (client) below.
  */
-import { Star } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { Star, ShieldCheck, RotateCcw, MapPin, BadgeCheck } from 'lucide-react';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { ReviewForm } from './ReviewForm';
+
+// Trust panel copy — shown while a product has no reviews yet, so the empty
+// state builds confidence instead of signalling "nobody bought this". Every
+// claim is true (heritage, returns policy, Stripe, registered company).
+// Hardcoded per-locale like ProductPurchaseSection's REASSURE, to avoid
+// threading 7 message files for a handful of strings.
+const TRUST: Record<string, Record<string, string>> = {
+  eyebrow: { it: 'La nostra garanzia', en: 'Our guarantee', es: 'Nuestra garantía', fr: 'Notre garantie', de: 'Unsere Garantie', pt: 'A nossa garantia', nl: 'Onze garantie' },
+  title: { it: 'Acquista con serenità', en: 'Shop with confidence', es: 'Compra con confianza', fr: 'Achetez en toute confiance', de: 'Kaufen mit Vertrauen', pt: 'Compre com confiança', nl: 'Winkel met vertrouwen' },
+  heritage: { it: 'Made in Como, nel distretto tessile dal 1400', en: 'Made in Como, in the textile district since 1400', es: 'Made in Como, en el distrito textil desde 1400', fr: 'Made in Como, dans le district textile depuis 1400', de: 'Made in Como, im Textilbezirk seit 1400', pt: 'Made in Como, no distrito têxtil desde 1400', nl: 'Made in Como, in het textieldistrict sinds 1400' },
+  guarantee: { it: 'Recesso 14 giorni · difetti a nostro carico', en: '14-day returns · defects covered by us', es: 'Devoluciones 14 días · defectos a nuestro cargo', fr: 'Retour 14 jours · défauts à notre charge', de: '14 Tage Rückgabe · Mängel auf unsere Kosten', pt: 'Devoluções 14 dias · defeitos a nosso cargo', nl: '14 dagen retour · gebreken voor onze rekening' },
+  secure: { it: 'Pagamento sicuro con Stripe', en: 'Secure payment via Stripe', es: 'Pago seguro con Stripe', fr: 'Paiement sécurisé via Stripe', de: 'Sichere Zahlung mit Stripe', pt: 'Pagamento seguro com Stripe', nl: 'Veilig betalen via Stripe' },
+  company: { it: 'Azienda reale registrata · atelier a Cermenate (CO)', en: 'A real registered company · atelier in Cermenate (CO)', es: 'Empresa real registrada · atelier en Cermenate (CO)', fr: 'Entreprise réelle enregistrée · atelier à Cermenate (CO)', de: 'Echtes registriertes Unternehmen · Atelier in Cermenate (CO)', pt: 'Empresa real registada · atelier em Cermenate (CO)', nl: 'Een echt geregistreerd bedrijf · atelier in Cermenate (CO)' },
+  beFirst: { it: 'Sii la prima voce: racconta la tua esperienza qui sotto.', en: 'Be the first voice: share your experience below.', es: 'Sé la primera voz: comparte tu experiencia abajo.', fr: 'Soyez la première voix : partagez votre expérience ci-dessous.', de: 'Sei die erste Stimme: Teile unten deine Erfahrung.', pt: 'Seja a primeira voz: partilhe a sua experiência abaixo.', nl: 'Wees de eerste stem: deel hieronder je ervaring.' },
+};
 
 type Props = {
   productSlug: string;
@@ -24,6 +39,8 @@ type Review = {
 
 export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
   const t = await getTranslations('product');
+  const locale = await getLocale();
+  const tr = (m: Record<string, string>) => m[locale] ?? m.en ?? m.it;
   let reviews: Review[] = [];
   let stats = { count: 0, average: 0 };
 
@@ -71,9 +88,31 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
           </p>
         </div>
       ) : (
-        <p className="text-center font-display italic text-lg text-soft-black/60">
-          {t('reviews.empty')}
-        </p>
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="mb-5 block text-[10px] uppercase tracking-[0.4em] text-gold-primary">
+            {tr(TRUST.eyebrow)}
+          </span>
+          <h3 className="font-display font-light text-2xl md:text-3xl leading-tight mb-8">
+            {tr(TRUST.title)}
+          </h3>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 text-left mb-8">
+            {[
+              { Icon: MapPin, text: tr(TRUST.heritage) },
+              { Icon: RotateCcw, text: tr(TRUST.guarantee) },
+              { Icon: ShieldCheck, text: tr(TRUST.secure) },
+              { Icon: BadgeCheck, text: tr(TRUST.company) },
+            ].map(({ Icon, text }, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <Icon className="w-4 h-4 text-gold-primary flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                <span className="text-sm font-light leading-relaxed text-soft-black/75">{text}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mx-auto h-px w-12 bg-gold-primary/40 mb-5" />
+          <p className="font-display italic text-lg text-soft-black/60">
+            {tr(TRUST.beFirst)}
+          </p>
+        </div>
       )}
 
       {reviews.length > 0 && (
