@@ -87,6 +87,9 @@ const OWNER_EMAIL =
 // with B2B_NOTIFICATION_EMAIL once the silkincom.com MX is configured.
 const B2B_EMAIL =
   process.env.B2B_NOTIFICATION_EMAIL || 'silkincom.business@gmail.com';
+const B2B_FROM_EMAIL = DOMAIN_VERIFIED
+  ? 'Marco Di Benedetto · SILKinCOM <partnerships@silkincom.com>'
+  : 'SILKinCOM Partnerships <onboarding@resend.dev>';
 
 export type B2BInquiry = {
   nome: string;
@@ -893,8 +896,9 @@ export async function sendB2BLeadOutreachEmail(params: {
   text?: string;
 }) {
   return sendEmail({
-    from: FROM_EMAIL,
+    from: B2B_FROM_EMAIL,
     to: params.to,
+    replyTo: B2B_EMAIL,
     subject: params.subject,
     html: params.html,
     text: params.text,

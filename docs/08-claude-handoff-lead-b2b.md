@@ -12,6 +12,9 @@ Aggiornato: 14 luglio 2026
 - Ricerca OpenStreetMap collegata agli ID delle sottocategorie, con rotazione automatica delle istanze Overpass e perimetro geografico limitato alla zona richiesta.
 - Webhook inbound `/api/email/inbound` per tracciare risposte e richieste `stop`.
 - Template email SILKinCOM più premium/maison con focus per canale.
+- Outreach ridisegnato come proposta istituzionale del Partnership Office: apertura personale del Founder, executive brief, vetrina prodotto dinamica e cliccabile, piano operativo in tre fasi per tutti i 16 focus, dossier commerciale, invito riservato all’approfondimento e opt-out `STOP`.
+- Per i focus hospitality, B&B, hotel boutique, resort e spa la selezione è dinamica: Telo Lago Tivan per piscina, spa, suite e accesso al Lago; Twilly Como per hall, reception, concierge, boutique e gifting. Il riferimento visivo è quello delle hall degli hotel iconici del Lago, senza utilizzare nomi di strutture terze nell’outreach.
+- Mittente B2B dedicato `Marco Di Benedetto · SILKinCOM <partnerships@silkincom.com>` quando il dominio Resend è verificato; le risposte vengono indirizzate alla casella B2B configurata.
 - Focus B2B ampliati: hospitality, B&B charme, hotel boutique, resort, spa, wedding, corporate gifting, concept store, museum shop, yacht/golf club, personal shopper, interior, luxury travel, retail, gifting, wholesale.
 - Playbook operativo in `docs/07-b2b-sbocchi-360.md`.
 

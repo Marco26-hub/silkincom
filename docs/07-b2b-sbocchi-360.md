@@ -8,15 +8,19 @@ Usare l’area admin `Lead B2B` per trovare contatti pubblici, qualificarli e pr
 
 ## Formato newsletter collaborazione
 
-Il messaggio deve restare breve, premium e commerciale:
+Il messaggio deve avere il tono di un Partnership Office di alto livello: selettivo, concreto, personale e privo di formule da vendita massiva.
 
-1. **Eyebrow maison** — `SILKinCOM · Como Textile Maison`
-2. **Apertura personale** — proposta specifica per il canale del lead
-3. **Credibilità** — seta, cashmere, lino, cotone e distretto tessile di Como
-4. **Angolo vendita** — come il partner può rivendere, regalare o valorizzare il prodotto
-5. **Prodotti consigliati** — 3 righe concrete, non catalogo infinito
-6. **CTA semplice** — listino riservato, campioni, line sheet o proposta budget
-7. **Opt-out chiaro** — se risponde `stop`, il sistema blocca il contatto
+1. **Identità istituzionale** — `SILKinCOM · Partnership Office · Como, Italia`
+2. **Apertura del Founder** — azienda, località e ragione della proposta
+3. **Executive brief** — progetto, materia, modalità di attivazione e obiettivo
+4. **Prodotto identitario per settore** — negli hotel: Telo Lago Tivan in cotone e Twilly Como in pura seta; negli altri canali: selezione Twilly dedicata
+5. **Selezione introduttiva** — Tivan, Como Puro, Como Elegante o Como Fluido con immagini, specifiche e link UTM alle schede live
+6. **Rilevanza per il partner** — motivazione commerciale coerente con il settore
+7. **Architettura della collaborazione** — tre fasi operative diverse per hospitality, retail, gifting, travel, club e wholesale
+8. **Dossier riservato** — line sheet, disponibilità, condizioni, assortimento, materiali e calendario operativo
+9. **CTA executive** — dossier commerciale, campioni o incontro introduttivo riservato
+10. **Firma personale** — Marco Di Benedetto, Founder SILKinCOM
+11. **Opt-out chiaro** — se risponde `STOP`, il sistema blocca il contatto
 
 ## Sbocchi prioritari
 
@@ -34,6 +38,13 @@ Il messaggio deve restare breve, premium e commerciale:
 | Interior / architetti hospitality | Welcome gift per suite e progetti hotel | Interior designer, procurement | `hospitality interior design luxury hotel Italy` |
 | Luxury travel / DMC / concierge | Welcome gift per itinerari VIP | Travel designer, concierge, DMC owner | `luxury travel advisor Italy VIP clients` |
 | Department store / showroom | Wholesale selettivo | Buyer, wholesale manager | `luxury department store accessories buyer Europe` |
+
+## Proposta dedicata hotel
+
+- **Telo Lago Tivan** — 100% cotone, 154 × 100 cm, logo ricamato; utilizzo per piscina, spa, pontile, suite, accesso al Lago e guest gifting.
+- **Twilly Como in hall** — Como Puro ed Elegante presentati su console, teca o corner concierge con scheda Made in Como e collegamento alle schede prodotto.
+- **Modello espositivo** — linguaggio sobrio da hotel iconico del Lago di Como; non citare marchi o strutture terze nell’email per evitare associazioni non autorizzate.
+- **Attivazione** — prima dotazione selettiva, monitoraggio dell’interesse degli ospiti e riassortimento per hall, boutique e gifting VIP.
 
 ## Procedura admin
 

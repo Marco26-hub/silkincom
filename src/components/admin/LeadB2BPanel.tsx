@@ -147,9 +147,7 @@ export function LeadB2BPanel({
     notes: "",
   });
   const [focus, setFocus] = useState("bed_breakfast");
-  const [campaignNotes, setCampaignNotes] = useState(
-    "Se desidera, possiamo inviare una proposta riservata con selezione prodotto e condizioni dedicate.",
-  );
+  const [campaignNotes, setCampaignNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -993,13 +991,14 @@ export function LeadB2BPanel({
             </div>
             <div className="space-y-2">
               <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-                Nota campagna
+                Personalizzazione messaggio
               </label>
               <textarea
                 value={campaignNotes}
                 onChange={(e) => setCampaignNotes(e.target.value)}
                 rows={5}
                 className="w-full border border-pearl-grey px-3 py-3 bg-warm-white text-sm focus:outline-none focus:border-soft-black resize-y"
+                placeholder="Opzionale: aggiungi un riferimento reale alla struttura, alla stagione o al tipo di clientela."
               />
             </div>
             <button
@@ -1012,8 +1011,10 @@ export function LeadB2BPanel({
               Invia a {selectedIds.length} lead
             </button>
             <p className="text-[11px] text-soft-grey leading-relaxed">
-              Il sistema usa solo contatti business pubblici, traccia invii e
-              risposte, e blocca automaticamente chi risponde “stop”.
+              Per hotel, resort e spa la mail presenta Tivan come Telo Lago per
+              piscina e ospitalità, con i Twilly Como destinati a hall,
+              concierge e boutique. Gli altri settori ricevono la selezione
+              seta dedicata. Chi risponde “stop” viene bloccato automaticamente.
             </p>
           </div>
         </section>
