@@ -18,7 +18,7 @@ const COLLECTION_FALLBACK_IMAGES: Record<string, string> = {
 const CATEGORY_EDITORIAL_IMAGES: Record<string, string> = {
   bellagio: '/instagram/ig-05.webp',
   cernobbio: '/instagram/ig-06.webp',
-  tremezzo: '/instagram/ig-03.webp',
+  tremezzo: '/editorial/sciarpa-tremezzo-azzurra-como.webp',
   varenna: '/instagram/ig-10.webp',
   'twilly-como': '/instagram/ig-02.webp',
   darsena: '/categorie/darsena-cappellino.webp',
