@@ -38,9 +38,9 @@ Il messaggio deve restare breve, premium e commerciale:
 ## Procedura admin
 
 1. Aprire `Admin → Lead B2B`.
-2. Scegliere un focus tra gli sbocchi 360°.
+2. Aprire il menu categorie e selezionare fino a 6 sottocategorie coerenti.
 3. Cercare live con query mirata e zona.
-4. Scansionare i siti trovati per email e pagina contatti pubblica.
+4. Il sistema importa i contatti business OpenStreetMap disponibili e scansiona i siti per email e pagina contatti pubblica.
 5. Qualificare solo contatti con fit alto e canale coerente.
 6. Selezionare i lead con email e inviare la campagna.
 7. Monitorare `Risposte recenti`; se arriva `stop`, non ricontattare.

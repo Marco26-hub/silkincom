@@ -107,6 +107,11 @@ export const leadSearchSchema = z.object({
   location: z.string().trim().max(120).optional().default('Italia'),
   industry: z.string().trim().optional().default('hospitality'),
   notes: z.string().trim().max(500).optional().default(''),
+  segmentIds: z
+    .array(z.string().trim().min(1).max(60))
+    .max(6, 'Seleziona massimo 6 tipologie')
+    .optional()
+    .default([]),
   maxResults: z.coerce.number().int().min(1).max(10).optional().default(6),
 });
 

@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { forbidden, requireAdminApi } from "@/lib/admin-api";
 import {
   discoverLeadFromWebsite,
+  normalizeLeadUrl,
   searchLeadCandidates,
 } from "@/lib/lead-discovery";
 import { leadSearchSchema } from "@/lib/validations";
@@ -33,6 +34,8 @@ export async function POST(req: NextRequest) {
     candidates = await searchLeadCandidates({
       query: input.query,
       location: input.location,
+      industry: input.industry,
+      segmentIds: input.segmentIds,
       maxResults: input.maxResults,
     });
   } catch (error) {
@@ -46,52 +49,66 @@ export async function POST(req: NextRequest) {
 
   const results = await Promise.allSettled(
     candidates.slice(0, input.maxResults).map(async (candidate) => {
+      let lead: Awaited<ReturnType<typeof discoverLeadFromWebsite>> | null =
+        null;
+      let scanWarning: string | null = null;
       try {
-        const lead = await discoverLeadFromWebsite(candidate.link, {
+        lead = await discoverLeadFromWebsite(candidate.link, {
           industry: input.industry,
           notes: input.notes,
           query: queryLabel,
         });
-
-        const { data, error } = await supabase
-          .from("lead_accounts")
-          .upsert(
-            {
-              company_name: lead.company_name || candidate.title,
-              website_url: lead.website_url,
-              industry: input.industry || "hospitality",
-              city: lead.city,
-              country: lead.country || "IT",
-              contact_email: lead.contact_email,
-              contact_phone: lead.contact_phone,
-              source_url: candidate.link,
-              public_contact_page: lead.public_contact_page,
-              discovery_query: queryLabel,
-              notes: input.notes || candidate.snippet || lead.notes || "",
-              status: lead.contact_email ? "qualified" : "scanned",
-              score: lead.score,
-              last_scanned_at: new Date().toISOString(),
-            },
-            { onConflict: "website_url" },
-          )
-          .select()
-          .single();
-
-        if (error) {
-          throw new Error(error.message);
-        }
-        return data;
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Errore discovery";
-        throw new Error(`${candidate.link}: ${message}`);
+        scanWarning = `${candidate.link}: ${message}`;
       }
+
+      const websiteUrl = lead?.website_url || normalizeLeadUrl(candidate.link);
+      if (!websiteUrl) throw new Error(`${candidate.link}: URL non valido`);
+      const contactEmail =
+        lead?.contact_email || candidate.contactEmail || null;
+      const contactPhone =
+        lead?.contact_phone || candidate.contactPhone || null;
+      const score = Math.max(
+        lead?.score || 10,
+        contactEmail ? 70 : contactPhone ? 35 : 20,
+      );
+
+      const { data, error } = await supabase
+        .from("lead_accounts")
+        .upsert(
+          {
+            company_name: lead?.company_name || candidate.title,
+            website_url: websiteUrl,
+            industry: input.industry || "hospitality",
+            city: lead?.city || candidate.city || null,
+            country: lead?.country || candidate.country || "IT",
+            contact_email: contactEmail,
+            contact_phone: contactPhone,
+            source_url: candidate.sourceUrl || candidate.link,
+            public_contact_page: lead?.public_contact_page || null,
+            discovery_query: queryLabel,
+            notes: input.notes || candidate.snippet || lead?.notes || "",
+            status: contactEmail ? "qualified" : "scanned",
+            score,
+            last_scanned_at: new Date().toISOString(),
+          },
+          { onConflict: "website_url" },
+        )
+        .select()
+        .single();
+
+      if (error) throw new Error(error.message);
+      return { data, warning: scanWarning };
     }),
   );
 
   for (const result of results) {
-    if (result.status === "fulfilled") saved.push(result.value);
-    else
+    if (result.status === "fulfilled") {
+      saved.push(result.value.data);
+      if (result.value.warning) warnings.push(result.value.warning);
+    } else
       warnings.push(
         result.reason instanceof Error
           ? result.reason.message

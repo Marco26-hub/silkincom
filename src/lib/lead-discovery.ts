@@ -25,7 +25,35 @@ type SearchLeadCandidate = {
   title: string;
   link: string;
   snippet: string;
-  source: "google_cse" | "duckduckgo";
+  source: "google_cse" | "openstreetmap" | "duckduckgo";
+  sourceUrl?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  city?: string | null;
+  country?: string | null;
+};
+
+type GeocodedLeadLocation = {
+  latitude: number;
+  longitude: number;
+  radiusMeters: number;
+  boundingBox: [number, number, number, number] | null;
+  label: string;
+  countryCode: string | null;
+};
+
+type NominatimResult = {
+  lat?: string;
+  lon?: string;
+  display_name?: string;
+  boundingbox?: string[];
+  address?: Record<string, string | undefined>;
+};
+
+type OverpassElement = {
+  type?: "node" | "way" | "relation";
+  id?: number;
+  tags?: Record<string, string | undefined>;
 };
 
 export const LEAD_OUTREACH_FOCUS_VALUES = [
@@ -54,6 +82,145 @@ const PHONE_RE = /(?:\+?\d[\d\s()./-]{6,}\d)/g;
 const MAX_HTML_BYTES = 1_500_000;
 const SEARCH_TIMEOUT_MS = 15_000;
 const FETCH_TIMEOUT_MS = 12_000;
+const OSM_SEARCH_TIMEOUT_MS = 12_000;
+const OSM_USER_AGENT =
+  "SILKinCOM-Lead-Discovery/1.0 (https://www.silkincom.com; admin@silkincom.com)";
+const DEFAULT_NOMINATIM_URL = "https://nominatim.openstreetmap.org";
+const DEFAULT_OVERPASS_ENDPOINTS = [
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
+];
+const geocodeCache = new Map<
+  string,
+  { expiresAt: number; value: GeocodedLeadLocation }
+>();
+
+const OSM_SEGMENT_SELECTORS: Record<string, string[]> = {
+  bed_breakfast: [
+    '["tourism"="guest_house"]',
+    '["guest_house"="bed_and_breakfast"]',
+  ],
+  relais_dimore: [
+    '["tourism"~"^(hotel|guest_house)$"]["name"~"(relais|dimora|villa|palazzo|castello)",i]',
+  ],
+  boutique_hotel: ['["tourism"="hotel"]'],
+  hotel_luxury: [
+    '["tourism"="hotel"]["stars"~"^[45]$"]',
+    '["tourism"="hotel"]',
+  ],
+  resort: ['["tourism"="resort"]', '["tourism"="hotel"]["name"~"resort",i]'],
+  agriturismo_premium: [
+    '["guest_house"="agritourism"]',
+    '["tourism"~"^(hotel|guest_house)$"]["name"~"(agriturismo|country house|farm stay)",i]',
+  ],
+  ville_aparthotel: [
+    '["tourism"~"^(apartment|chalet)$"]',
+    '["tourism"~"^(hotel|guest_house)$"]["name"~"(villa|aparthotel|residence)",i]',
+  ],
+  resort_shop: [
+    '["tourism"~"^(hotel|resort)$"]',
+    '["shop"~"^(gift|clothes|fashion|boutique)$"]',
+  ],
+  spa_hotel: [
+    '["tourism"="hotel"]["spa"="yes"]',
+    '["tourism"="hotel"]["name"~"(spa|wellness)",i]',
+    '["leisure"="spa"]',
+  ],
+  medical_spa: ['["leisure"="spa"]', '["name"~"(medical spa|med spa)",i]'],
+  wellness_club: [
+    '["leisure"~"^(spa|fitness_centre)$"]',
+    '["name"~"wellness",i]',
+  ],
+  beach_club: ['["leisure"="beach_resort"]', '["name"~"beach club",i]'],
+  yacht_club: [
+    '["leisure"="marina"]',
+    '["sport"="sailing"]',
+    '["name"~"yacht club",i]',
+  ],
+  golf_club: ['["leisure"="golf_course"]', '["shop"="golf"]'],
+  private_club: [
+    '["club"]',
+    '["name"~"(private club|members club|circolo)",i]',
+  ],
+  concept_store: [
+    '["shop"~"^(boutique|clothes|fashion|gift|interior_decoration|design)$"]',
+  ],
+  multibrand_boutique: ['["shop"~"^(boutique|clothes|fashion)$"]'],
+  department_store: ['["shop"="department_store"]'],
+  fashion_showroom: [
+    '["shop"~"^(boutique|clothes|fashion)$"]',
+    '["name"~"(fashion showroom|showroom moda)",i]',
+  ],
+  museum_shop: ['["tourism"="museum"]', '["shop"~"^(books|gift)$"]'],
+  design_store: ['["shop"~"^(design|gift|furniture|interior_decoration)$"]'],
+  personal_shopper: [
+    '["name"~"personal shopper",i]',
+    '["office"="personal_service"]',
+  ],
+  stylist_private_client: [
+    '["name"~"(fashion stylist|image consultant|style consultant)",i]',
+    '["craft"~"^(dressmaker|tailor)$"]',
+  ],
+  wedding_planner: [
+    '["office"="event_management"]',
+    '["shop"="wedding"]',
+    '["name"~"wedding",i]',
+  ],
+  event_venue: ['["amenity"="events_venue"]'],
+  event_agency: [
+    '["office"="event_management"]',
+    '["name"~"(eventi|events|event agency)",i]',
+  ],
+  corporate_gifting: [
+    '["shop"="gift"]',
+    '["name"~"(corporate gift|regali aziendali|promotional)",i]',
+  ],
+  executive_gifting: [
+    '["shop"="gift"]',
+    '["name"~"(executive gift|business gift|regali aziendali)",i]',
+  ],
+  luxury_gift_shop: ['["shop"="gift"]'],
+  hospitality_amenities: [
+    '["tourism"~"^(hotel|resort)$"]',
+    '["name"~"(hotel amenities|hospitality supply)",i]',
+  ],
+  luxury_travel: ['["shop"="travel_agency"]', '["office"="travel_agent"]'],
+  dmc: [
+    '["office"="travel_agent"]',
+    '["name"~"(destination management|\\bDMC\\b|incoming)",i]',
+  ],
+  concierge: ['["name"~"concierge",i]'],
+  tour_operator: [
+    '["shop"="travel_agency"]',
+    '["office"="travel_agent"]',
+    '["name"~"tour operator",i]',
+  ],
+  interior_hospitality: [
+    '["office"~"^(architect|interior_design)$"]',
+    '["name"~"hospitality design",i]',
+  ],
+  hotel_procurement: [
+    '["name"~"(hotel procurement|hospitality supply|contract furniture)",i]',
+  ],
+  architect_studio: ['["office"="architect"]'],
+  distributor: ['["name"~"(distribut|distribution)",i]'],
+  importer: ['["name"~"(import|importazione)",i]'],
+  sales_agent: [
+    '["office"~"^(company|sales)$"]["name"~"(agenzia|agent|rappresentanze)",i]',
+  ],
+  wholesale_showroom: ['["name"~"(showroom|wholesale)",i]'],
+  premium_marketplace: [
+    '["shop"="department_store"]',
+    '["name"~"marketplace",i]',
+  ],
+  private_label: [
+    '["office"="company"]["name"~"(textile|fashion|moda|tessile)",i]',
+  ],
+  corporate_supplier: [
+    '["name"~"(corporate gift|business gift|promotional|regali aziendali)",i]',
+  ],
+};
 const BLOCKED_SEARCH_HOSTS = [
   "booking.com",
   "tripadvisor.com",
@@ -608,9 +775,316 @@ async function searchGoogleCustomSearch(
     );
 }
 
+function distanceMeters(
+  latitudeA: number,
+  longitudeA: number,
+  latitudeB: number,
+  longitudeB: number,
+): number {
+  const toRadians = (value: number) => (value * Math.PI) / 180;
+  const earthRadius = 6_371_000;
+  const latitudeDelta = toRadians(latitudeB - latitudeA);
+  const longitudeDelta = toRadians(longitudeB - longitudeA);
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(toRadians(latitudeA)) *
+      Math.cos(toRadians(latitudeB)) *
+      Math.sin(longitudeDelta / 2) ** 2;
+  return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+async function geocodeLeadLocation(
+  location: string,
+): Promise<GeocodedLeadLocation | null> {
+  const cacheKey = location.trim().toLocaleLowerCase("it");
+  const cached = geocodeCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+  const baseUrl = (
+    process.env.NOMINATIM_API_URL || DEFAULT_NOMINATIM_URL
+  ).replace(/\/$/, "");
+  const url = new URL(`${baseUrl}/search`);
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("limit", "1");
+  url.searchParams.set("addressdetails", "1");
+  url.searchParams.set("q", location.trim());
+
+  const response = await fetch(url.toString(), {
+    signal: AbortSignal.timeout(OSM_SEARCH_TIMEOUT_MS),
+    headers: {
+      accept: "application/json",
+      "accept-language": "it-IT,it;q=0.9,en;q=0.8",
+      referer: "https://www.silkincom.com/admin/lead-b2b",
+      "user-agent": OSM_USER_AGENT,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Geocodifica non disponibile (${response.status})`);
+  }
+
+  const payload = (await response.json()) as NominatimResult[];
+  const result = payload[0];
+  const latitude = Number(result?.lat);
+  const longitude = Number(result?.lon);
+  if (!result || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return null;
+  }
+
+  const boundingBox = result.boundingbox?.map(Number) || [];
+  const [south, north, west, east] = boundingBox;
+  const corners = [
+    [south, west],
+    [south, east],
+    [north, west],
+    [north, east],
+  ].filter(([cornerLatitude, cornerLongitude]) =>
+    [cornerLatitude, cornerLongitude].every(Number.isFinite),
+  );
+  const boundingRadius = corners.reduce(
+    (largest, [cornerLatitude, cornerLongitude]) =>
+      Math.max(
+        largest,
+        distanceMeters(latitude, longitude, cornerLatitude, cornerLongitude),
+      ),
+    0,
+  );
+  const localBoundingBox =
+    corners.length === 4 && boundingRadius <= 40_000
+      ? ([
+          south - Math.max(0.02, (0.1 - (north - south)) / 2),
+          west - Math.max(0.025, (0.14 - (east - west)) / 2),
+          north + Math.max(0.02, (0.1 - (north - south)) / 2),
+          east + Math.max(0.025, (0.14 - (east - west)) / 2),
+        ] as [number, number, number, number])
+      : null;
+  const value: GeocodedLeadLocation = {
+    latitude,
+    longitude,
+    radiusMeters: Math.round(
+      Math.min(30_000, Math.max(8_000, boundingRadius || 12_000)),
+    ),
+    boundingBox: localBoundingBox,
+    label: result.display_name || location.trim(),
+    countryCode: result.address?.country_code?.toUpperCase() || null,
+  };
+
+  if (geocodeCache.size >= 50) {
+    const oldestKey = geocodeCache.keys().next().value;
+    if (oldestKey) geocodeCache.delete(oldestKey);
+  }
+  geocodeCache.set(cacheKey, {
+    expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+    value,
+  });
+  return value;
+}
+
+function inferOsmSegmentIds(query: string, industry?: string): string[] {
+  const normalized = `${query} ${industry || ""}`.toLocaleLowerCase("it");
+  const inferred: string[] = [];
+  const add = (...ids: string[]) => inferred.push(...ids);
+
+  if (/\b(b&b|bed.{0,4}breakfast|guest house)\b/.test(normalized))
+    add("bed_breakfast");
+  if (/\b(hotel|relais|resort|hospitality|ospitalit)/.test(normalized))
+    add("boutique_hotel");
+  if (/\b(spa|wellness)\b/.test(normalized)) add("spa_hotel");
+  if (/\b(yacht|marina)\b/.test(normalized)) add("yacht_club");
+  if (/\bgolf\b/.test(normalized)) add("golf_club");
+  if (/\b(concept store|boutique|retail|negozi)/.test(normalized))
+    add("concept_store");
+  if (/\b(museum|museo|bookshop)\b/.test(normalized)) add("museum_shop");
+  if (/\b(wedding|eventi|events?)\b/.test(normalized))
+    add("wedding_planner", "event_venue");
+  if (/\b(gift|gifting|regal)/.test(normalized)) add("corporate_gifting");
+  if (/\b(travel|tour operator|dmc|incoming|concierge)\b/.test(normalized))
+    add("luxury_travel");
+  if (/\b(architect|interior|architett)/.test(normalized))
+    add("architect_studio");
+  if (/\b(distribut|wholesale|import|showroom)/.test(normalized))
+    add("distributor", "wholesale_showroom");
+
+  if (inferred.length === 0) add("boutique_hotel", "bed_breakfast");
+  return [...new Set(inferred)].slice(0, 6);
+}
+
+function buildOverpassQuery(params: {
+  location: GeocodedLeadLocation;
+  segmentIds: string[];
+  maxResults: number;
+}): string {
+  const selectors = [
+    ...new Set(
+      params.segmentIds.flatMap(
+        (segmentId) => OSM_SEGMENT_SELECTORS[segmentId] || [],
+      ),
+    ),
+  ];
+  const spatialFilter = params.location.boundingBox
+    ? `(${params.location.boundingBox.join(",")})`
+    : `(around:${params.location.radiusMeters},${params.location.latitude},${params.location.longitude})`;
+  const statements = selectors.flatMap((selector) => [
+    `nwr${spatialFilter}${selector}["website"];`,
+    `nwr${spatialFilter}${selector}["contact:website"];`,
+  ]);
+  const outputLimit = Math.min(80, Math.max(30, params.maxResults * 8));
+  return `[out:json][timeout:12];(${statements.join("")});out tags center ${outputLimit};`;
+}
+
+function getOverpassEndpoints(): string[] {
+  return [process.env.OVERPASS_API_URL, ...DEFAULT_OVERPASS_ENDPOINTS].filter(
+    (endpoint, index, endpoints): endpoint is string =>
+      Boolean(endpoint) && endpoints.indexOf(endpoint) === index,
+  );
+}
+
+async function fetchOverpassElements(
+  query: string,
+): Promise<OverpassElement[]> {
+  let lastError: Error | null = null;
+  for (const endpoint of getOverpassEndpoints()) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        signal: AbortSignal.timeout(OSM_SEARCH_TIMEOUT_MS),
+        headers: {
+          accept: "application/json",
+          "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+          referer: "https://www.silkincom.com/admin/lead-b2b",
+          "user-agent": OSM_USER_AGENT,
+        },
+        body: new URLSearchParams({ data: query }).toString(),
+      });
+      if (!response.ok) {
+        throw new Error(`Overpass non disponibile (${response.status})`);
+      }
+      const payload = (await response.json()) as {
+        elements?: OverpassElement[];
+      };
+      if (!Array.isArray(payload.elements)) {
+        throw new Error("Risposta Overpass non valida");
+      }
+      return payload.elements;
+    } catch (error) {
+      lastError =
+        error instanceof Error ? error : new Error("Errore ricerca Overpass");
+    }
+  }
+  throw lastError || new Error("Ricerca OpenStreetMap non disponibile");
+}
+
+function firstTag(
+  tags: Record<string, string | undefined>,
+  keys: string[],
+): string | null {
+  for (const key of keys) {
+    const value = tags[key]?.trim();
+    if (value) return value;
+  }
+  return null;
+}
+
+function normalizeOsmContactEmail(value: string | null): string | null {
+  const email = value?.split(";")[0]?.trim().toLowerCase() || "";
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : null;
+}
+
+async function searchOpenStreetMap(
+  params: {
+    query: string;
+    location: string;
+    industry?: string;
+    segmentIds?: string[];
+  },
+  maxResults: number,
+): Promise<SearchLeadCandidate[]> {
+  const location = await geocodeLeadLocation(params.location);
+  if (!location) return [];
+
+  const selectedSegmentIds = (params.segmentIds || []).filter(
+    (segmentId) => OSM_SEGMENT_SELECTORS[segmentId],
+  );
+  const segmentIds =
+    selectedSegmentIds.length > 0
+      ? selectedSegmentIds
+      : inferOsmSegmentIds(params.query, params.industry);
+  const query = buildOverpassQuery({ location, segmentIds, maxResults });
+  const elements = await fetchOverpassElements(query);
+  const ranked: Array<{ candidate: SearchLeadCandidate; score: number }> = [];
+  const seenOrigins = new Set<string>();
+
+  for (const element of elements) {
+    const tags = element.tags || {};
+    const rawWebsite = firstTag(tags, [
+      "website",
+      "contact:website",
+      "operator:website",
+      "url",
+    ]);
+    const website = normalizeLeadUrl(rawWebsite?.split(";")[0] || "");
+    if (!website || isBlockedSearchHost(website)) continue;
+
+    const parsedWebsite = new URL(website);
+    const originKey = `${parsedWebsite.protocol}//${parsedWebsite.hostname.replace(/^www\./, "")}`;
+    if (seenOrigins.has(originKey)) continue;
+    seenOrigins.add(originKey);
+
+    const email = normalizeOsmContactEmail(
+      firstTag(tags, ["contact:email", "email"]),
+    );
+    const phone = firstTag(tags, ["contact:phone", "phone", "mobile"]);
+    const city = firstTag(tags, [
+      "addr:city",
+      "addr:town",
+      "addr:village",
+      "addr:place",
+    ]);
+    const category = firstTag(tags, [
+      "tourism",
+      "shop",
+      "leisure",
+      "amenity",
+      "office",
+      "club",
+    ]);
+    const title =
+      firstTag(tags, ["name", "brand", "operator"]) ||
+      parsedWebsite.hostname.replace(/^www\./, "");
+    const sourceUrl =
+      element.type && element.id
+        ? `https://www.openstreetmap.org/${element.type}/${element.id}`
+        : "https://www.openstreetmap.org";
+    const stars = Number(tags.stars || 0);
+
+    ranked.push({
+      candidate: {
+        title,
+        link: website,
+        snippet: [category?.replaceAll("_", " "), city, location.label]
+          .filter(Boolean)
+          .join(" · "),
+        source: "openstreetmap",
+        sourceUrl,
+        contactEmail: email,
+        contactPhone: phone,
+        city,
+        country: firstTag(tags, ["addr:country"]) || location.countryCode,
+      },
+      score: (email ? 50 : 0) + (phone ? 20 : 0) + stars * 3,
+    });
+  }
+
+  return ranked
+    .sort((entryA, entryB) => entryB.score - entryA.score)
+    .slice(0, maxResults)
+    .map(({ candidate }) => candidate);
+}
+
 export async function searchLeadCandidates(params: {
   query: string;
   location?: string;
+  industry?: string;
+  segmentIds?: string[];
   maxResults?: number;
 }): Promise<SearchLeadCandidate[]> {
   const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
@@ -632,13 +1106,39 @@ export async function searchLeadCandidates(params: {
     }
   }
 
-  const fallbackResults = await searchDuckDuckGo(liveQuery, maxResults);
-  if (fallbackResults.length === 0) {
-    throw new Error(
-      "Nessun sito aziendale trovato. Prova una query o una zona più specifica.",
-    );
+  let openStreetMapCompleted = false;
+  if (params.location?.trim()) {
+    try {
+      const openStreetMapResults = await searchOpenStreetMap(
+        {
+          query: params.query,
+          location: params.location,
+          industry: params.industry,
+          segmentIds: params.segmentIds,
+        },
+        maxResults,
+      );
+      openStreetMapCompleted = true;
+      if (openStreetMapResults.length > 0) return openStreetMapResults;
+    } catch {
+      // The final fallback can still serve results if an OSM instance is busy.
+    }
   }
-  return fallbackResults;
+
+  try {
+    const fallbackResults = await searchDuckDuckGo(liveQuery, maxResults);
+    if (fallbackResults.length > 0) return fallbackResults;
+  } catch {
+    if (!openStreetMapCompleted) {
+      throw new Error(
+        "I servizi di ricerca sono temporaneamente occupati. Riprova tra pochi secondi.",
+      );
+    }
+  }
+
+  throw new Error(
+    "Nessuna azienda con sito pubblico trovata. Prova una zona più precisa o altre categorie.",
+  );
 }
 
 function buildFocusCopy(focus: LeadOutreachFocus) {

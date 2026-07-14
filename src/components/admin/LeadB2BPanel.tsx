@@ -248,6 +248,7 @@ export function LeadB2BPanel({
           query,
           location: liveLocation,
           industry: selectedSegments[0]?.focus || scanIndustry,
+          segmentIds: selectedSegmentIds,
           notes: [
             scanNotes,
             selectedSegments.length
@@ -262,7 +263,11 @@ export function LeadB2BPanel({
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Ricerca live fallita");
       const provider =
-        data.provider === "duckduckgo" ? "motore pubblico" : "Google";
+        data.provider === "openstreetmap"
+          ? "OpenStreetMap"
+          : data.provider === "duckduckgo"
+            ? "motore pubblico"
+            : "Google";
       const warningText = data.warnings?.length
         ? ` ${data.warnings.length} siti non leggibili.`
         : "";
@@ -547,6 +552,10 @@ export function LeadB2BPanel({
               </select>
             </div>
           </div>
+          <p className="text-[11px] leading-relaxed text-soft-grey">
+            Ricerca geografica su dati © OpenStreetMap contributors (ODbL),
+            integrata con scansione dei siti business pubblici.
+          </p>
         </section>
 
         <section className="border border-pearl-grey bg-white p-5 space-y-4">
