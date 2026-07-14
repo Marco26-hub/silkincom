@@ -364,3 +364,18 @@ export async function sendAbandonedCartEmail(
     html: luxuryShell(inner, 'I suoi articoli sono ancora a disposizione.'),
   });
 }
+
+export async function sendB2BLeadOutreachEmail(params: {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+}) {
+  return getResend().emails.send({
+    from: FROM_EMAIL,
+    to: params.to,
+    subject: params.subject,
+    html: params.html,
+    text: params.text,
+  });
+}

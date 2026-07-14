@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { Search, X } from 'lucide-react';
 import { createBrowserClient } from '@/lib/supabase/client';
 
-type ResultType = 'prodotto' | 'categoria' | 'collezione' | 'colore' | 'materiale';
+type ResultType = 'prodotto' | 'categoria' | 'collezione' | 'colore' | 'materiale' | 'lead';
 
 type Result = {
   type: ResultType;
@@ -21,6 +21,7 @@ const TYPE_LABELS: Record<ResultType, string> = {
   collezione: 'Collezione',
   colore: 'Colore',
   materiale: 'Materiale',
+  lead: 'Lead',
 };
 
 export function AdminSearch() {
@@ -64,6 +65,11 @@ export function AdminSearch() {
       sb.from('colors').select('id, name').ilike('name', pattern).limit(3),
       sb.from('materials').select('id, name').ilike('name', pattern).limit(3),
     ]);
+    const { data: leads } = await sb
+      .from('lead_accounts')
+      .select('id, company_name, website_url, contact_email, city')
+      .or(`company_name.ilike.${pattern},website_url.ilike.${pattern},contact_email.ilike.${pattern},city.ilike.${pattern}`)
+      .limit(5);
 
     const res: Result[] = [
       ...(products.data ?? []).map((p: any) => ({
@@ -96,6 +102,13 @@ export function AdminSearch() {
         id: m.id,
         name: m.name,
         href: '/admin/materiali',
+      })),
+      ...(leads ?? []).map((lead: any) => ({
+        type: 'lead' as const,
+        id: lead.id,
+        name: lead.company_name,
+        href: '/admin/lead-b2b',
+        sub: lead.contact_email || lead.website_url,
       })),
     ];
 

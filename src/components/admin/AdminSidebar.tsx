@@ -24,6 +24,7 @@ import {
   ClipboardList,
   ScrollText,
   LogOut,
+  Building2,
 } from 'lucide-react';
 
 type NavItem = {
@@ -67,6 +68,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: 'Marketing',
     items: [
       { href: '/admin/coupon', label: 'Coupon', icon: Tag, roles: ADMIN },
+      { href: '/admin/lead-b2b', label: 'Lead B2B', icon: Building2, roles: ADMIN },
       { href: '/admin/recensioni', label: 'Recensioni', icon: Star, roles: EDITOR },
     ],
   },
