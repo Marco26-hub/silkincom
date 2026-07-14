@@ -94,9 +94,86 @@ export const contactFormSchema = z.object({
   consent_privacy: z.boolean().refine((v) => v === true, 'Consenso privacy richiesto'),
 });
 
+// ========== B2B LEADS ==========
+
+export const leadDiscoverySchema = z.object({
+  urls: z.array(z.string().trim().min(1)).min(1, 'Inserisci almeno un URL'),
+  industry: z.string().trim().optional().default('hospitality'),
+  notes: z.string().trim().max(500).optional().default(''),
+});
+
+export const leadSearchSchema = z.object({
+  query: z.string().trim().min(3, 'Inserisci una ricerca valida'),
+  location: z.string().trim().max(120).optional().default('Italia'),
+  industry: z.string().trim().optional().default('hospitality'),
+  notes: z.string().trim().max(500).optional().default(''),
+  maxResults: z.coerce.number().int().min(1).max(10).optional().default(6),
+});
+
+export const leadCreateSchema = z.object({
+  company_name: z.string().trim().min(2, 'Nome azienda richiesto'),
+  website_url: z.string().trim().url('URL non valido'),
+  industry: z.string().trim().optional().default('hospitality'),
+  city: z.string().trim().optional().nullable(),
+  country: z.string().trim().length(2).optional().default('IT'),
+  contact_name: z.string().trim().optional().nullable(),
+  contact_role: z.string().trim().optional().nullable(),
+  contact_email: z.string().trim().email('Email non valida').optional().nullable(),
+  contact_phone: z.string().trim().optional().nullable(),
+  source_url: z.string().trim().url('URL fonte non valido').optional().nullable(),
+  public_contact_page: z.string().trim().url('URL pagina contatti non valido').optional().nullable(),
+  notes: z.string().trim().max(1000).optional().default(''),
+});
+
+export const leadPatchSchema = z.object({
+  company_name: z.string().trim().min(2).optional(),
+  website_url: z.string().trim().url().optional(),
+  industry: z.string().trim().optional(),
+  city: z.string().trim().nullable().optional(),
+  country: z.string().trim().length(2).nullable().optional(),
+  contact_name: z.string().trim().nullable().optional(),
+  contact_role: z.string().trim().nullable().optional(),
+  contact_email: z.string().trim().email().nullable().optional(),
+  contact_phone: z.string().trim().nullable().optional(),
+  source_url: z.string().trim().url().nullable().optional(),
+  public_contact_page: z.string().trim().url().nullable().optional(),
+  notes: z.string().trim().max(1000).optional(),
+  status: z.enum(['new', 'scanned', 'qualified', 'contacted', 'replied', 'do_not_contact']).optional(),
+  score: z.coerce.number().int().min(0).max(100).optional(),
+  do_not_contact: z.boolean().optional(),
+});
+
+export const leadOutreachSchema = z.object({
+  leadIds: z.array(z.string().uuid()).min(1, 'Seleziona almeno un lead'),
+  focus: z.enum([
+    'hospitality',
+    'bed_breakfast',
+    'hotel_boutique',
+    'resort_beach_club',
+    'spa_wellness',
+    'wedding_events',
+    'corporate_gifting',
+    'concept_store',
+    'museum_bookshop',
+    'yacht_golf_club',
+    'personal_shopper',
+    'interior_architect',
+    'tour_operator_luxury',
+    'retail',
+    'gifting',
+    'wholesale',
+  ]).default('hospitality'),
+  notes: z.string().trim().max(1000).optional().default(''),
+});
+
 export type ProductInput = z.infer<typeof productSchema>;
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 export type CustomerAddressInput = z.infer<typeof customerAddressSchema>;
 export type CouponInput = z.infer<typeof couponSchema>;
 export type NewsletterInput = z.infer<typeof newsletterSubscribeSchema>;
 export type ContactInput = z.infer<typeof contactFormSchema>;
+export type LeadDiscoveryInput = z.infer<typeof leadDiscoverySchema>;
+export type LeadSearchInput = z.infer<typeof leadSearchSchema>;
+export type LeadCreateInput = z.infer<typeof leadCreateSchema>;
+export type LeadPatchInput = z.infer<typeof leadPatchSchema>;
+export type LeadOutreachInput = z.infer<typeof leadOutreachSchema>;

@@ -885,3 +885,18 @@ export async function sendFinancialReport(opts: {
     attachments: [{ filename: opts.csvFilename, content: Buffer.from(opts.csv, 'utf-8') }],
   });
 }
+
+export async function sendB2BLeadOutreachEmail(params: {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+}) {
+  return sendEmail({
+    from: FROM_EMAIL,
+    to: params.to,
+    subject: params.subject,
+    html: params.html,
+    text: params.text,
+  });
+}
