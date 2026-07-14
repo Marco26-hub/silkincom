@@ -16,6 +16,9 @@ import {
   MapPin,
   Filter,
   X,
+  Eye,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import {
   buildLeadSegmentQuery,
@@ -61,6 +64,20 @@ type LeadReply = {
   intent: "reply" | "stop" | "bounce" | "unknown";
   received_at: string;
   lead_accounts?: { company_name?: string | null } | null;
+};
+
+type OutreachPreview = {
+  leadId: string;
+  companyName: string;
+  recipientEmail: string | null;
+  subject: string;
+  html: string;
+  text: string;
+  valid: boolean;
+  checks: Array<{
+    label: string;
+    ok: boolean;
+  }>;
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -111,6 +128,157 @@ const SALES_OUTLET_GUIDE = [
   "Luxury travel advisor, DMC e personal shopper",
 ];
 
+const RECOMMENDED_OUTREACH_BATCH_SIZE = 10;
+
+const CONVERSION_PLAYBOOK = [
+  "Batch piccoli: 5-10 strutture realmente coerenti, non invii massivi.",
+  "Priorità a lead con email diretta, pagina contatti, note reali e score alto.",
+  "CTA unica: concept riservato o call di 15 minuti con il referente corretto.",
+  "Personalizzazione obbligatoria: canale, prodotto luxury, occasione d’uso e cliente finale.",
+  "Follow-up solo manuale e solo su lead coerenti, mai su STOP o contatti freddi già sollecitati.",
+];
+
+const FOCUS_TARGETING_GUIDE: Record<string, string[]> = {
+  hospitality: [
+    "Hall, suite, spa, piscina o boutique interna",
+    "Clientela internazionale, gifting VIP o guest experience",
+    "Referente: direzione, procurement, concierge o retail",
+  ],
+  bed_breakfast: [
+    "Relais, dimora di charme, terrazza o accesso al Lago",
+    "Welcome gift, ricordo ospite o acquisto in reception",
+    "Referente: owner, host o guest experience",
+  ],
+  hotel_boutique: [
+    "Hall, suite, resort shop, concierge o boutique interna",
+    "Telo Lago, Twilly, Darsena, Riva, Melzi e packaging Maison",
+    "Referente: general manager, concierge o retail manager",
+  ],
+  resort_beach_club: [
+    "Piscina, beach area, pontile, barca o resort shop",
+    "Telo Lago, Darsena, Riva, Melzi, Twilly e riassortimento estivo",
+    "Referente: club manager, retail o guest experience",
+  ],
+  spa_wellness: [
+    "Spa, area relax, membership o gift corner",
+    "Telo Lago, Twilly Como e pashmine per ospiti VIP",
+    "Referente: spa manager, membership o retail",
+  ],
+  wedding_events: [
+    "Wedding, welcome desk, cadeau ospiti o evento privato",
+    "Palette, quantità, timing e packaging dedicato",
+    "Referente: wedding planner, event director o venue manager",
+  ],
+  corporate_gifting: [
+    "Clienti VIP, board, partner o ricorrenza aziendale",
+    "Budget, quantità, packaging e messaggio dedicato",
+    "Referente: marketing, HR, direzione o executive assistant",
+  ],
+  concept_store: [
+    "Store curato, corner luxury, lifestyle o gifting",
+    "Assortimento Twilly, cashmere, Darsena, Riva, Melzi e storytelling",
+    "Referente: buyer, owner o store director",
+  ],
+  museum_bookshop: [
+    "Bookshop, fondazione, mostra, territorio o pubblico internazionale",
+    "Souvenir alto, capsule colore e racconto culturale",
+    "Referente: retail manager, bookshop o curatela",
+  ],
+  yacht_golf_club: [
+    "Club shop, soci, torneo, regata o evento privato",
+    "Darsena, Riva, Melzi, gift discreto, pashmine e capsule soci",
+    "Referente: club manager, pro shop o eventi",
+  ],
+  personal_shopper: [
+    "Private client, guardaroba viaggio, styling o gifting",
+    "Colori, occasioni d’uso e disponibilità verificata",
+    "Referente: personal shopper, stylist o private client advisor",
+  ],
+  interior_architect: [
+    "Suite, opening, hospitality project o welcome experience",
+    "Palette, campionatura, materiali e budget progetto",
+    "Referente: interior designer, architect o procurement",
+  ],
+  tour_operator_luxury: [
+    "Itinerario VIP, concierge, DMC o gruppo privato",
+    "Darsena, Riva, Melzi, welcome gift e calendario consegne",
+    "Referente: travel designer, concierge o DMC owner",
+  ],
+  retail: [
+    "Boutique luxury, target cliente, margine e rotazione",
+    "Line sheet, Darsena, Riva, Melzi, primo ordine e materiali vendita",
+    "Referente: buyer, owner o store manager",
+  ],
+  gifting: [
+    "Ospitalità, cliente VIP, ricorrenza o relazione importante",
+    "Budget, quantità, Darsena/Riva/Melzi se travel-leisure e tempi",
+    "Referente: marketing, hospitality, HR o direzione",
+  ],
+  wholesale: [
+    "Mercato, canale, buyer, margine e riassortimento",
+    "Line sheet, campionario e condizioni riservate",
+    "Referente: distributore, buyer o wholesale manager",
+  ],
+};
+
+const OUTREACH_IMAGE_PRODUCTS = [
+  { slug: "tivan", name: "Tivan", role: "Telo Lago" },
+  { slug: "darsena-navy", name: "Darsena", role: "Cappellino Lago" },
+  { slug: "riva", name: "Riva", role: "Camicia resort" },
+  { slug: "melzi", name: "Melzi", role: "Pantaloncino lino" },
+  { slug: "como-puro", name: "Como Puro", role: "Twilly seta" },
+  { slug: "como-elegante", name: "Como Elegante", role: "Twilly seta" },
+  { slug: "como-fluido", name: "Como Fluido", role: "Twilly seta" },
+];
+
+function getLeadConversionScore(lead: Lead): number {
+  if (lead.do_not_contact || lead.status === "do_not_contact") return 0;
+
+  let score = Math.min(45, Math.max(0, lead.score || 0) * 0.45);
+  if (lead.contact_email) score += 22;
+  if (lead.public_contact_page) score += 8;
+  if (lead.contact_name) score += 6;
+  if (lead.contact_role) score += 7;
+  if (hasSpecificTargetingNote(lead.notes)) score += 7;
+  if (lead.status === "qualified") score += 10;
+  if (lead.status === "replied") score += 12;
+  if (lead.last_contacted_at && !lead.last_reply_at) score -= 12;
+  if ((lead.email_sent_count || 0) > 0 && !lead.last_reply_at) score -= 8;
+  return Math.round(Math.max(0, Math.min(100, score)));
+}
+
+function hasSpecificTargetingNote(value: string | null | undefined): boolean {
+  const note = (value || "")
+    .split(" · ")
+    .filter((part) => !/^segmenti\s*:/i.test(part.trim()))
+    .join(" · ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return note.length >= 24 && /[a-zà-ÿ]{4,}/i.test(note);
+}
+
+function getLeadConversionTier(score: number): {
+  label: string;
+  className: string;
+} {
+  if (score >= 72) {
+    return {
+      label: "Alta",
+      className: "bg-green-100 text-green-800",
+    };
+  }
+  if (score >= 50) {
+    return {
+      label: "Media",
+      className: "bg-amber-100 text-amber-800",
+    };
+  }
+  return {
+    label: "Bassa",
+    className: "bg-pearl-grey text-soft-grey",
+  };
+}
+
 export function LeadB2BPanel({
   initialLeads,
   initialReplies,
@@ -150,6 +318,21 @@ export function LeadB2BPanel({
   const [campaignNotes, setCampaignNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [outreachPreviews, setOutreachPreviews] = useState<OutreachPreview[]>(
+    [],
+  );
+  const [previewLeadId, setPreviewLeadId] = useState("");
+  const [previewLeadIds, setPreviewLeadIds] = useState<string[]>([]);
+  const [reviewedPreviewIds, setReviewedPreviewIds] = useState<string[]>([]);
+  const [previewConfirmed, setPreviewConfirmed] = useState(false);
+  const [productImageOverrides, setProductImageOverrides] = useState<
+    Record<string, string>
+  >({});
+  const [uploadingProductSlug, setUploadingProductSlug] = useState<
+    string | null
+  >(null);
 
   const stats = useMemo(() => {
     const qualified = leads.filter(
@@ -179,6 +362,43 @@ export function LeadB2BPanel({
     () => getLeadSegments(selectedSegmentIds),
     [selectedSegmentIds],
   );
+  const rankedConversionLeads = useMemo(
+    () =>
+      leads
+        .filter(
+          (lead) =>
+            Boolean(lead.contact_email) &&
+            !lead.do_not_contact &&
+            lead.status !== "do_not_contact",
+        )
+        .map((lead) => ({
+          lead,
+          conversionScore: getLeadConversionScore(lead),
+        }))
+        .sort(
+          (leadA, leadB) =>
+            leadB.conversionScore - leadA.conversionScore ||
+            (leadB.lead.score || 0) - (leadA.lead.score || 0),
+        ),
+    [leads],
+  );
+  const selectedConversionStats = useMemo(() => {
+    const selected = leads.filter((lead) => selectedIds.includes(lead.id));
+    const average =
+      selected.length > 0
+        ? Math.round(
+            selected.reduce(
+              (total, lead) => total + getLeadConversionScore(lead),
+              0,
+            ) / selected.length,
+          )
+        : 0;
+    const missingNotes = selected.filter(
+      (lead) => !hasSpecificTargetingNote(lead.notes),
+    ).length;
+    return { count: selected.length, average, missingNotes };
+  }, [leads, selectedIds]);
+  const targetingGuide = FOCUS_TARGETING_GUIDE[focus] || [];
 
   useEffect(() => {
     setLeads(initialLeads);
@@ -199,6 +419,18 @@ export function LeadB2BPanel({
       leads
         .filter((lead) => (withEmailsOnly ? Boolean(lead.contact_email) : true))
         .map((lead) => lead.id),
+    );
+  }
+
+  function selectTopConversionLeads() {
+    const leadIds = rankedConversionLeads
+      .slice(0, RECOMMENDED_OUTREACH_BATCH_SIZE)
+      .map(({ lead }) => lead.id);
+    setSelectedIds(leadIds);
+    setMessage(
+      leadIds.length
+        ? `Selezionati ${leadIds.length} lead con priorità conversione più alta.`
+        : "Nessun lead con email disponibile per il lotto conversione.",
     );
   }
 
@@ -399,10 +631,98 @@ export function LeadB2BPanel({
     await refresh();
   }
 
-  async function sendOutreach(overrideIds?: string[]) {
+  async function openOutreachPreview(overrideIds?: string[]) {
     const ids = overrideIds?.length ? overrideIds : selectedIds;
     if (ids.length === 0) {
       setMessage("Seleziona almeno un lead.");
+      return;
+    }
+
+    if (ids.length > RECOMMENDED_OUTREACH_BATCH_SIZE) {
+      setMessage(
+        `Per massimizzare conversione usa lotti da massimo ${RECOMMENDED_OUTREACH_BATCH_SIZE} lead. Ho aperto comunque l’anteprima: valuta se ridurre il batch.`,
+      );
+    }
+
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewConfirmed(false);
+    setOutreachPreviews([]);
+    setReviewedPreviewIds([]);
+    setPreviewLeadIds(ids);
+    setMessage(null);
+    try {
+      const response = await fetch("/api/admin/leads/outreach/preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadIds: ids,
+          focus,
+          notes: campaignNotes,
+          productImageOverrides,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Anteprima non disponibile");
+      const previews = (data.previews || []) as OutreachPreview[];
+      setOutreachPreviews(previews);
+      setPreviewLeadId(previews[0]?.leadId || "");
+      setReviewedPreviewIds(previews[0]?.leadId ? [previews[0].leadId] : []);
+    } catch (error) {
+      setPreviewOpen(false);
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Errore generazione anteprima",
+      );
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
+
+  function openPreviewInNewTab(preview: OutreachPreview) {
+    const previewBlob = new Blob([preview.html], { type: "text/html" });
+    const previewUrl = URL.createObjectURL(previewBlob);
+    window.open(previewUrl, "_blank", "noopener,noreferrer");
+    window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60_000);
+  }
+
+  async function uploadProductOverride(slug: string, file: File | null) {
+    if (!file) return;
+    setUploadingProductSlug(slug);
+    setMessage(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("alt_text", `Foto proposta B2B ${slug}`);
+      const response = await fetch("/api/admin/media", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Upload immagine fallito");
+      }
+      const uploadedUrl = data.media?.url as string | undefined;
+      if (!uploadedUrl) throw new Error("URL immagine non ricevuto");
+      setProductImageOverrides((previous) => ({
+        ...previous,
+        [slug]: uploadedUrl,
+      }));
+      setPreviewConfirmed(false);
+      setMessage("Foto proposta aggiornata. Riapri l’anteprima per validarla.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Errore upload immagine",
+      );
+    } finally {
+      setUploadingProductSlug(null);
+    }
+  }
+
+  async function sendOutreach(ids: string[]) {
+    if (ids.length === 0 || !previewConfirmed) {
+      setMessage("Apri e conferma l’anteprima prima dell’invio.");
       return;
     }
 
@@ -412,7 +732,13 @@ export function LeadB2BPanel({
       const response = await fetch("/api/admin/leads/outreach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leadIds: ids, focus, notes: campaignNotes }),
+        body: JSON.stringify({
+          leadIds: ids,
+          focus,
+          notes: campaignNotes,
+          productImageOverrides,
+          previewConfirmed: true,
+        }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Invio fallito");
@@ -424,6 +750,11 @@ export function LeadB2BPanel({
         `Invio completato: ${sent} inviati${failed ? `, ${failed} saltati` : ""}.`,
       );
       setSelectedIds([]);
+      setPreviewOpen(false);
+      setPreviewConfirmed(false);
+      setOutreachPreviews([]);
+      setPreviewLeadIds([]);
+      setReviewedPreviewIds([]);
       await refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Errore invio email");
@@ -433,6 +764,16 @@ export function LeadB2BPanel({
   }
 
   const selectedLeads = leads.filter((lead) => selectedIds.includes(lead.id));
+  const activePreview = outreachPreviews.find(
+    (preview) => preview.leadId === previewLeadId,
+  );
+  const allPreviewsValid =
+    previewLeadIds.length > 0 &&
+    outreachPreviews.length === previewLeadIds.length &&
+    outreachPreviews.every((preview) => preview.valid);
+  const allPreviewsReviewed =
+    previewLeadIds.length > 0 &&
+    previewLeadIds.every((leadId) => reviewedPreviewIds.includes(leadId));
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
@@ -757,6 +1098,13 @@ export function LeadB2BPanel({
             <div className="flex gap-2">
               <button
                 type="button"
+                onClick={selectTopConversionLeads}
+                className="px-3 py-2 text-sm border border-gold-primary bg-ivory text-soft-black"
+              >
+                Top conversione
+              </button>
+              <button
+                type="button"
                 onClick={() => selectVisible(false)}
                 className="px-3 py-2 text-sm border border-pearl-grey"
               >
@@ -898,6 +1246,20 @@ export function LeadB2BPanel({
                       </td>
                       <td className="px-4 py-4 align-top text-sm">
                         <div className="space-y-1">
+                          {(() => {
+                            const conversionScore =
+                              getLeadConversionScore(lead);
+                            const tier = getLeadConversionTier(conversionScore);
+                            return (
+                              <div className="mb-2">
+                                <span
+                                  className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] rounded ${tier.className}`}
+                                >
+                                  Conv. {tier.label} · {conversionScore}
+                                </span>
+                              </div>
+                            );
+                          })()}
                           <p className="font-medium">{lead.score ?? 0}</p>
                           <p className="text-xs text-soft-grey">
                             Email: {lead.email_sent_count ?? 0}
@@ -922,13 +1284,13 @@ export function LeadB2BPanel({
                         <div className="flex flex-wrap items-center gap-2">
                           <button
                             type="button"
-                            onClick={() => sendOutreach([lead.id])}
-                            disabled={busy}
-                            className="inline-flex items-center gap-2 px-3 py-2 bg-soft-black text-warm-white text-xs disabled:opacity-50"
-                            title="Invia outreach ai lead selezionati"
+                            onClick={() => openOutreachPreview([lead.id])}
+                            disabled={busy || previewLoading}
+                            className="inline-flex items-center gap-2 border border-gold-primary/70 bg-soft-black px-3 py-2 text-xs uppercase tracking-[0.14em] text-warm-white shadow-sm transition hover:bg-gold-primary hover:text-soft-black disabled:opacity-50"
+                            title="Apri anteprima Maison e valida l’email prima dell’invio"
                           >
-                            <Send className="w-3.5 h-3.5" />
-                            Invia
+                            <Eye className="w-3.5 h-3.5" />
+                            Valida
                           </button>
                           <button
                             type="button"
@@ -967,6 +1329,56 @@ export function LeadB2BPanel({
       </div>
 
       <aside className="space-y-6">
+        <section className="border border-gold-primary/50 bg-ivory p-5 space-y-3">
+          <h3 className="font-medium">Strategia conversione</h3>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="border border-gold-primary/30 bg-white px-3 py-2">
+              <p className="text-[9px] uppercase tracking-[0.18em] text-soft-grey">
+                Batch
+              </p>
+              <p className="font-display text-xl">
+                {selectedConversionStats.count || 0}
+              </p>
+            </div>
+            <div className="border border-gold-primary/30 bg-white px-3 py-2">
+              <p className="text-[9px] uppercase tracking-[0.18em] text-soft-grey">
+                Media
+              </p>
+              <p className="font-display text-xl">
+                {selectedConversionStats.average || 0}
+              </p>
+            </div>
+            <div className="border border-gold-primary/30 bg-white px-3 py-2">
+              <p className="text-[9px] uppercase tracking-[0.18em] text-soft-grey">
+                Note
+              </p>
+              <p className="font-display text-xl">
+                {selectedConversionStats.missingNotes}
+              </p>
+            </div>
+          </div>
+          <ul className="space-y-2">
+            {CONVERSION_PLAYBOOK.map((item) => (
+              <li key={item} className="flex gap-2 text-xs leading-relaxed text-soft-black/75">
+                <span className="mt-2 h-px w-4 flex-shrink-0 bg-gold-primary" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          {selectedConversionStats.count > RECOMMENDED_OUTREACH_BATCH_SIZE && (
+            <p className="border border-amber-200 bg-white px-3 py-2 text-xs leading-relaxed text-amber-800">
+              Lotto troppo ampio per outreach premium: riduci a massimo{" "}
+              {RECOMMENDED_OUTREACH_BATCH_SIZE} lead prima dell’invio.
+            </p>
+          )}
+          {selectedConversionStats.missingNotes > 0 && selectedIds.length > 0 && (
+            <p className="border border-pearl-grey bg-white px-3 py-2 text-xs leading-relaxed text-soft-grey">
+              Alcuni selezionati non hanno note reali: aggiungi un motivo
+              specifico prima di inviare a strutture iconiche.
+            </p>
+          )}
+        </section>
+
         <section className="border border-pearl-grey bg-white p-5">
           <h2 className="font-medium text-lg mb-4 flex items-center gap-2">
             <Send className="w-4 h-4 text-gold-primary" />
@@ -991,30 +1403,140 @@ export function LeadB2BPanel({
             </div>
             <div className="space-y-2">
               <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-                Personalizzazione messaggio
+                Motivo specifico della proposta
               </label>
               <textarea
                 value={campaignNotes}
                 onChange={(e) => setCampaignNotes(e.target.value)}
                 rows={5}
                 className="w-full border border-pearl-grey px-3 py-3 bg-warm-white text-sm focus:outline-none focus:border-soft-black resize-y"
-                placeholder="Opzionale: aggiungi un riferimento reale alla struttura, alla stagione o al tipo di clientela."
+                placeholder="Obbligatorio per invio premium: es. struttura Lago di Como con spa e suite, hall adatta a corner Twilly, clientela internazionale e gifting VIP."
               />
+              <p className="text-[11px] leading-relaxed text-soft-grey">
+                L’anteprima blocca l’invio se manca un motivo reale o se il
+                focus scelto non è coerente con il settore del lead.
+              </p>
+              {targetingGuide.length > 0 && (
+                <div className="border border-pearl-grey bg-white px-3 py-3">
+                  <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+                    Deve essere mirato a
+                  </p>
+                  <ul className="space-y-1.5">
+                    {targetingGuide.map((item) => (
+                      <li
+                        key={item}
+                        className="flex gap-2 text-[11px] leading-relaxed text-soft-black/75"
+                      >
+                        <span className="mt-2 h-px w-4 flex-shrink-0 bg-gold-primary" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div className="space-y-3 border border-gold-primary/30 bg-[#fbf8f1] p-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.22em] text-gold-primary">
+                  Foto proposta
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-soft-grey">
+                  Di default la mail usa la foto primaria dal DB prodotto.
+                  Carica qui una foto manuale solo per questa campagna.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {OUTREACH_IMAGE_PRODUCTS.map((product) => {
+                  const overrideUrl = productImageOverrides[product.slug];
+                  const inputId = `outreach-image-${product.slug}`;
+                  return (
+                    <div
+                      key={product.slug}
+                      className="border border-pearl-grey bg-white p-3"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium text-sm">{product.name}</p>
+                          <p className="text-[10px] uppercase tracking-[0.16em] text-soft-grey">
+                            {product.role}
+                          </p>
+                        </div>
+                        <span
+                          className={`text-[9px] uppercase tracking-[0.14em] ${
+                            overrideUrl ? "text-gold-primary" : "text-soft-grey"
+                          }`}
+                        >
+                          {overrideUrl ? "Manuale" : "DB"}
+                        </span>
+                      </div>
+                      {overrideUrl && (
+                        <img
+                          src={overrideUrl}
+                          alt=""
+                          className="mt-3 h-24 w-full border border-pearl-grey object-cover"
+                        />
+                      )}
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <input
+                          id={inputId}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(event) => {
+                            const file = event.target.files?.[0] || null;
+                            void uploadProductOverride(product.slug, file);
+                            event.currentTarget.value = "";
+                          }}
+                        />
+                        <label
+                          htmlFor={inputId}
+                          className="inline-flex cursor-pointer items-center justify-center border border-soft-black px-3 py-2 text-[10px] uppercase tracking-[0.14em] transition hover:bg-soft-black hover:text-warm-white"
+                        >
+                          {uploadingProductSlug === product.slug
+                            ? "Upload…"
+                            : "Sostituisci"}
+                        </label>
+                        {overrideUrl && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProductImageOverrides((previous) => {
+                                const next = { ...previous };
+                                delete next[product.slug];
+                                return next;
+                              });
+                              setPreviewConfirmed(false);
+                            }}
+                            className="border border-pearl-grey px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-soft-grey transition hover:border-red-200 hover:text-red-700"
+                          >
+                            Usa DB
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <button
               type="button"
-              onClick={() => sendOutreach()}
-              disabled={busy || selectedIds.length === 0}
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gold-primary text-soft-black text-sm font-medium disabled:opacity-50"
+              onClick={() => openOutreachPreview()}
+              disabled={busy || previewLoading || selectedIds.length === 0}
+              className="w-full inline-flex items-center justify-center gap-2 border border-gold-primary/70 bg-soft-black px-4 py-3 text-sm font-medium uppercase tracking-[0.14em] text-warm-white shadow-sm transition hover:bg-gold-primary hover:text-soft-black disabled:opacity-50"
             >
-              <Send className="w-4 h-4" />
-              Invia a {selectedIds.length} lead
+              <Eye className="w-4 h-4" />
+              Anteprima Maison · {selectedIds.length} email
             </button>
             <p className="text-[11px] text-soft-grey leading-relaxed">
-              Per hotel, resort e spa la mail presenta Tivan come Telo Lago per
-              piscina e ospitalità, con i Twilly Como destinati a hall,
-              concierge e boutique. Gli altri settori ricevono la selezione
-              seta dedicata. Chi risponde “stop” viene bloccato automaticamente.
+              L’invio viene abilitato solo dopo aver aperto l’anteprima,
+              superato i controlli automatici e confermato il contenuto.
+              <br />
+              Per hotel 5 stelle, resort e strutture Lago di Como la mail
+              presenta Tivan come Telo Lago per piscina, suite e guest
+              experience, con Twilly, Darsena, Riva e Melzi destinati a hall,
+              concierge, boutique, resort shop e gifting VIP. Ogni proposta offre Maison Selection,
+              Co-Branded Edition o Exclusive Signature Capsule. Chi risponde
+              “stop” viene bloccato automaticamente.
             </p>
           </div>
         </section>
@@ -1106,6 +1628,256 @@ export function LeadB2BPanel({
           </div>
         </section>
       </aside>
+
+      {previewOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[radial-gradient(circle_at_top,#3b3326_0%,#111_42%,#050505_100%)]/95 p-3 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="outreach-preview-title"
+        >
+          <section className="flex max-h-[95vh] w-full max-w-[1500px] flex-col overflow-hidden border border-gold-primary/50 bg-[#f8f4ec] shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+            <header className="relative overflow-hidden border-b border-gold-primary/30 bg-soft-black px-5 py-5 text-warm-white sm:px-7">
+              <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_center,rgba(216,180,80,0.28),transparent_58%)] sm:block" />
+              <div className="relative flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="hidden h-16 w-24 items-center justify-center border border-gold-primary/40 bg-warm-white px-3 sm:flex">
+                    <img
+                      src="/logo-official.png"
+                      alt="SILKinCOM"
+                      className="max-h-12 w-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-[9px] uppercase tracking-[0.32em] text-gold-primary">
+                      Partnership Office · Maison proofing
+                    </p>
+                    <h2
+                      id="outreach-preview-title"
+                      className="mt-2 font-display text-3xl leading-none sm:text-4xl"
+                    >
+                      Anteprima proposta premium
+                    </h2>
+                    <p className="mt-2 max-w-2xl text-xs leading-relaxed text-warm-white/70">
+                      Controllo visuale, coerenza settore, CTA e consenso finale
+                      prima di inviare una comunicazione SILKinCOM.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => !busy && setPreviewOpen(false)}
+                  disabled={busy}
+                  className="relative border border-warm-white/20 p-2 text-warm-white/70 transition hover:border-gold-primary hover:text-gold-primary disabled:opacity-40"
+                  aria-label="Chiudi anteprima"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </header>
+
+            {previewLoading ? (
+              <div className="flex min-h-[520px] items-center justify-center gap-3 text-sm text-soft-grey">
+                <RefreshCw className="h-4 w-4 animate-spin text-gold-primary" />
+                Generazione dell’anteprima reale in corso…
+              </div>
+            ) : activePreview ? (
+              <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[380px_minmax(0,1fr)]">
+                <aside className="overflow-y-auto border-b border-gold-primary/20 bg-[#fbf8f1] p-5 lg:border-b-0 lg:border-r">
+                  {outreachPreviews.length > 1 && (
+                    <div className="mb-5 space-y-2 border border-gold-primary/25 bg-white p-4">
+                      <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+                        Selezione destinatario
+                      </label>
+                      <select
+                        value={previewLeadId}
+                        onChange={(event) => {
+                          const nextLeadId = event.target.value;
+                          setPreviewLeadId(nextLeadId);
+                          setReviewedPreviewIds((previous) =>
+                            previous.includes(nextLeadId)
+                              ? previous
+                              : [...previous, nextLeadId],
+                          );
+                          setPreviewConfirmed(false);
+                        }}
+                        className="w-full border border-pearl-grey bg-warm-white px-3 py-3 text-sm focus:border-gold-primary focus:outline-none"
+                      >
+                        {outreachPreviews.map((preview) => (
+                          <option key={preview.leadId} value={preview.leadId}>
+                            {preview.valid ? "✓" : "!"} {preview.companyName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="space-y-4 border border-gold-primary/25 bg-white p-4 shadow-sm">
+                    <div className="border-b border-pearl-grey pb-4">
+                      <p className="text-[9px] uppercase tracking-[0.2em] text-soft-grey">
+                        Destinatario Maison
+                      </p>
+                      <p className="mt-1 font-medium">
+                        {activePreview.companyName}
+                      </p>
+                      <p className="mt-1 break-all text-xs text-soft-grey">
+                        {activePreview.recipientEmail || "Email mancante"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-[0.2em] text-soft-grey">
+                        Oggetto email
+                      </p>
+                      <p className="mt-1 font-display text-lg leading-snug text-soft-black">
+                        {activePreview.subject}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="my-5 grid grid-cols-3 border border-gold-primary/25 bg-soft-black text-center text-warm-white">
+                    <div className="border-r border-warm-white/10 px-2 py-3">
+                      <p className="text-lg font-medium tabular-nums">
+                        {previewLeadIds.length}
+                      </p>
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-warm-white/55">
+                        Lead
+                      </p>
+                    </div>
+                    <div className="border-r border-warm-white/10 px-2 py-3">
+                      <p className="text-lg font-medium tabular-nums">
+                        {reviewedPreviewIds.length}
+                      </p>
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-warm-white/55">
+                        Visti
+                      </p>
+                    </div>
+                    <div className="px-2 py-3">
+                      <p className="text-lg font-medium tabular-nums">
+                        {outreachPreviews.filter((preview) => preview.valid).length}
+                      </p>
+                      <p className="text-[8px] uppercase tracking-[0.18em] text-warm-white/55">
+                        Validi
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 border border-pearl-grey bg-white p-4">
+                    <div className="flex items-center justify-between gap-3 border-b border-pearl-grey pb-3">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+                        Checklist qualità
+                      </p>
+                      <span className="text-[10px] tabular-nums text-gold-primary">
+                        {reviewedPreviewIds.length}/{previewLeadIds.length} aperte
+                      </span>
+                    </div>
+                    {activePreview.checks.map((check) => (
+                      <div
+                        key={check.label}
+                        className="flex items-start gap-2 text-xs leading-relaxed"
+                      >
+                        {check.ok ? (
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-700" />
+                        ) : (
+                          <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-700" />
+                        )}
+                        <span className={check.ok ? "text-soft-black/75" : "text-red-700"}>
+                          {check.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => openPreviewInNewTab(activePreview)}
+                    className="my-5 inline-flex w-full items-center justify-center gap-2 border border-soft-black bg-white px-4 py-3 text-xs font-medium uppercase tracking-[0.14em] transition hover:bg-soft-black hover:text-warm-white"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Apri preview full-screen
+                  </button>
+
+                  {allPreviewsValid && allPreviewsReviewed ? (
+                    <label className="flex cursor-pointer items-start gap-3 border border-gold-primary/70 bg-[#efe1b3] p-4 text-sm leading-relaxed shadow-sm">
+                      <input
+                        type="checkbox"
+                        checked={previewConfirmed}
+                        onChange={(event) =>
+                          setPreviewConfirmed(event.target.checked)
+                        }
+                        className="mt-1 h-4 w-4 flex-shrink-0 accent-black"
+                      />
+                      <span>
+                        Ho verificato destinatari, oggetto, contenuto, prodotti,
+                        logo, CTA e tono maison. Autorizzo l’invio.
+                      </span>
+                    </label>
+                  ) : !allPreviewsValid ? (
+                    <div className="border border-red-200 bg-red-50 p-4 text-xs leading-relaxed text-red-700">
+                      Correggi o rimuovi i contatti con errori prima di procedere.
+                      Nessuna email verrà inviata.
+                    </div>
+                  ) : (
+                    <div className="border border-gold-primary/50 bg-ivory p-4 text-xs leading-relaxed text-soft-black/75">
+                      Apri ogni destinatario dal menu per verificare tutte le
+                      personalizzazioni prima di autorizzare la campagna.
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => sendOutreach(previewLeadIds)}
+                    disabled={
+                      !previewConfirmed ||
+                      !allPreviewsValid ||
+                      !allPreviewsReviewed ||
+                      busy
+                    }
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-gold-primary px-4 py-3 text-sm font-medium text-soft-black disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {busy ? (
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                    Autorizza e invia {previewLeadIds.length} email
+                  </button>
+                </aside>
+
+                <div className="min-h-[55vh] overflow-hidden bg-[linear-gradient(135deg,#e6dccb_0%,#f8f4ec_42%,#d5c49c_100%)] p-3 sm:p-6 lg:min-h-0">
+                  <div className="mx-auto flex h-full max-w-5xl flex-col overflow-hidden border border-gold-primary/40 bg-soft-black shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-warm-white/10 px-4 py-3 text-warm-white">
+                      <div>
+                        <p className="text-[9px] uppercase tracking-[0.24em] text-gold-primary">
+                          SILKinCOM email preview
+                        </p>
+                        <p className="mt-1 max-w-2xl truncate text-xs text-warm-white/60">
+                          {activePreview.subject}
+                        </p>
+                      </div>
+                      <span className="border border-gold-primary/40 px-3 py-1 text-[9px] uppercase tracking-[0.18em] text-gold-primary">
+                        {activePreview.valid ? "Ready" : "Check"}
+                      </span>
+                    </div>
+                    <div className="min-h-0 flex-1 bg-[#d9d0c2] p-3 sm:p-5">
+                      <iframe
+                        key={activePreview.leadId}
+                        srcDoc={activePreview.html}
+                        title={`Anteprima email per ${activePreview.companyName}`}
+                        sandbox=""
+                        className="h-[65vh] w-full border border-pearl-grey bg-white shadow-xl lg:h-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex min-h-[420px] items-center justify-center p-8 text-sm text-red-700">
+                Nessuna anteprima disponibile per i contatti selezionati.
+              </div>
+            )}
+          </section>
+        </div>
+      )}
     </div>
   );
 }

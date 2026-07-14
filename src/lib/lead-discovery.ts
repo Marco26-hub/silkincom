@@ -1157,6 +1157,8 @@ type OutreachProduct = {
   alt: string;
 };
 
+export type LeadOutreachProductImages = Record<string, string>;
+
 const TWILLY_OUTREACH_PRODUCTS: readonly OutreachProduct[] = [
   {
     name: "Como Puro",
@@ -1205,6 +1207,50 @@ const TIVAN_OUTREACH_PRODUCT: OutreachProduct = {
   alt: "Tivan Telo Lago in cotone Made in Como",
 };
 
+const DARSENA_OUTREACH_PRODUCT: OutreachProduct = {
+  name: "Darsena · Cappellino Lago",
+  slug: "darsena-navy",
+  image:
+    "https://static.wixstatic.com/media/a34b56_b921b778e24c442a9a59be2c5e50ca27~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
+  eyebrow: "Cappellino · 100% cotone",
+  detail:
+    "Cappellino unisex Made in Italy con struttura sei pannelli, visiera curva e logo Lago di Como ricamato: pensato per resort shop, club, travel kit e gifting leisure.",
+  specs: "100% cotone · Taglia unica regolabile · Retail €40",
+  alt: "Darsena cappellino in cotone Made in Italy con logo Lago di Como",
+};
+
+const RIVA_OUTREACH_PRODUCT: OutreachProduct = {
+  name: "Riva · Camicia Resort",
+  slug: "riva",
+  image:
+    "https://static.wixstatic.com/media/a34b56_c6824eec98ab4f7cbe4ff88b8c4594bf~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
+  eyebrow: "Camicia · Lino e cotone",
+  detail:
+    "Camicia Made in Italy con collo alla coreana, bottoni frontali e logo ricamato: pensata per resortwear, boutique interne, travel capsule e guardaroba leisure elegante.",
+  specs: "53% lino · 47% cotone · Retail €75",
+  alt: "Riva camicia in lino e cotone Made in Italy con logo ricamato",
+};
+
+const MELZI_OUTREACH_PRODUCT: OutreachProduct = {
+  name: "Melzi · Pantaloncino Lino",
+  slug: "melzi",
+  image:
+    "https://static.wixstatic.com/media/a34b56_a341e8d4e66442e4bc33fcd2476368af~mv2.jpg/v1/fit/w_1200,h_1200,q_90/file.jpg",
+  eyebrow: "Pantaloncino · 100% lino",
+  detail:
+    "Pantaloncino estivo in puro lino, fresco e traspirante: ideale per resort shop, beach club, yacht club, travel wardrobe e capsule leisure Made in Como.",
+  specs: "100% lino · Retail €65",
+  alt: "Melzi pantaloncino in puro lino Made in Italy per resortwear",
+};
+
+export const LEAD_OUTREACH_PRODUCT_SLUGS = [
+  TIVAN_OUTREACH_PRODUCT.slug,
+  DARSENA_OUTREACH_PRODUCT.slug,
+  RIVA_OUTREACH_PRODUCT.slug,
+  MELZI_OUTREACH_PRODUCT.slug,
+  ...TWILLY_OUTREACH_PRODUCTS.map((product) => product.slug),
+];
+
 const HOSPITALITY_PRODUCT_FOCUSES = new Set<LeadOutreachFocus>([
   "hospitality",
   "bed_breakfast",
@@ -1213,10 +1259,72 @@ const HOSPITALITY_PRODUCT_FOCUSES = new Set<LeadOutreachFocus>([
   "spa_wellness",
 ]);
 
+const FOCUS_COMPATIBILITY: Record<LeadOutreachFocus, readonly string[]> = {
+  hospitality: [
+    "hospitality",
+    "bed_breakfast",
+    "hotel_boutique",
+    "resort_beach_club",
+    "spa_wellness",
+  ],
+  bed_breakfast: ["bed_breakfast", "hospitality"],
+  hotel_boutique: ["hotel_boutique", "hospitality", "resort_beach_club"],
+  resort_beach_club: ["resort_beach_club", "hotel_boutique", "hospitality"],
+  spa_wellness: ["spa_wellness", "hospitality", "resort_beach_club"],
+  wedding_events: ["wedding_events", "gifting"],
+  corporate_gifting: ["corporate_gifting", "gifting", "wholesale"],
+  concept_store: ["concept_store", "retail", "wholesale"],
+  museum_bookshop: ["museum_bookshop", "concept_store", "retail"],
+  yacht_golf_club: ["yacht_golf_club", "resort_beach_club", "gifting"],
+  personal_shopper: ["personal_shopper", "retail", "gifting"],
+  interior_architect: ["interior_architect", "hospitality", "gifting"],
+  tour_operator_luxury: ["tour_operator_luxury", "hospitality", "gifting"],
+  retail: ["retail", "concept_store", "wholesale"],
+  gifting: ["gifting", "corporate_gifting", "hospitality"],
+  wholesale: ["wholesale", "retail", "concept_store"],
+};
+
+function normalizeTargetingNote(value: string | null | undefined): string {
+  return (value || "")
+    .split(" · ")
+    .filter((part) => !/^segmenti\s*:/i.test(part.trim()))
+    .join(" · ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function composeLeadTargetingNotes(
+  leadNotes: string | null | undefined,
+  campaignNotes: string | null | undefined,
+): string {
+  const leadSpecificNotes = normalizeTargetingNote(leadNotes);
+  const campaignSpecificNotes = normalizeTargetingNote(campaignNotes);
+  return [campaignSpecificNotes, leadSpecificNotes]
+    .filter(Boolean)
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .join(" · ");
+}
+
+export function isTargetingNoteSpecific(
+  value: string | null | undefined,
+): boolean {
+  const note = normalizeTargetingNote(value);
+  return note.length >= 24 && /[a-zà-ÿ]{4,}/i.test(note);
+}
+
+export function isLeadFocusCoherent(
+  leadIndustry: string | null | undefined,
+  focus: LeadOutreachFocus,
+): boolean {
+  const normalizedIndustry = (leadIndustry || "").trim();
+  if (!normalizedIndustry) return false;
+  return FOCUS_COMPATIBILITY[focus].includes(normalizedIndustry);
+}
+
 const SECTOR_OUTREACH_ACTIVATIONS: Record<LeadOutreachFocus, string> = {
-  hospitality: "Hall, boutique, piscina e gifting",
+  hospitality: "Hall, suite, piscina, concierge e gifting",
   bed_breakfast: "Reception, camere e guest gifting",
-  hotel_boutique: "Hall, concierge, boutique e piscina",
+  hotel_boutique: "Hall, suite, concierge, boutique e piscina",
   resort_beach_club: "Pool, beach, resort shop e gifting",
   spa_wellness: "Spa, pool, gift corner e membership",
   wedding_events: "Evento, welcome desk e cadeau ospiti",
@@ -1233,7 +1341,7 @@ const SECTOR_OUTREACH_ACTIVATIONS: Record<LeadOutreachFocus, string> = {
 };
 
 const SECTOR_OUTREACH_OBJECTIVES: Record<LeadOutreachFocus, string> = {
-  hospitality: "Hall, Telo Lago ed esperienza ospite",
+  hospitality: "Guest experience, retail e gifting VIP",
   bed_breakfast: "Accoglienza, Lago e gifting ospite",
   hotel_boutique: "Hall, piscina, concierge e ospiti VIP",
   resort_beach_club: "Pool experience, resort retail e gifting",
@@ -1258,14 +1366,39 @@ type OutreachProductStory = {
   text: string;
 };
 
+type PartnershipModel = {
+  title: string;
+  eyebrow: string;
+  body: string;
+};
+
 function getOutreachProducts(
   focus: LeadOutreachFocus,
 ): readonly OutreachProduct[] {
   if (focus === "resort_beach_club") {
     return [
       TIVAN_OUTREACH_PRODUCT,
-      TWILLY_OUTREACH_PRODUCTS[2],
+      DARSENA_OUTREACH_PRODUCT,
+      RIVA_OUTREACH_PRODUCT,
+      MELZI_OUTREACH_PRODUCT,
+    ];
+  }
+
+  if (focus === "yacht_golf_club" || focus === "tour_operator_luxury") {
+    return [
+      DARSENA_OUTREACH_PRODUCT,
+      RIVA_OUTREACH_PRODUCT,
+      MELZI_OUTREACH_PRODUCT,
       TWILLY_OUTREACH_PRODUCTS[1],
+    ];
+  }
+
+  if (focus === "retail" || focus === "concept_store" || focus === "gifting") {
+    return [
+      TWILLY_OUTREACH_PRODUCTS[0],
+      TWILLY_OUTREACH_PRODUCTS[1],
+      DARSENA_OUTREACH_PRODUCT,
+      RIVA_OUTREACH_PRODUCT,
     ];
   }
 
@@ -1281,7 +1414,8 @@ function getOutreachProducts(
     return [
       TIVAN_OUTREACH_PRODUCT,
       TWILLY_OUTREACH_PRODUCTS[0],
-      TWILLY_OUTREACH_PRODUCTS[1],
+      DARSENA_OUTREACH_PRODUCT,
+      RIVA_OUTREACH_PRODUCT,
     ];
   }
 
@@ -1298,18 +1432,36 @@ function buildOutreachProductStory(
   ) {
     return {
       eyebrow: "Capsule hotel · Telo Lago & Twilly Como",
-      title: "Il Lago di Como, dalla piscina alla hall.",
-      html: "Il <strong>Telo Lago Tivan</strong>, in 100% cotone con logo ricamato, è pensato per piscina, spa, accesso al Lago, suite e guest gifting. I <strong>Twilly Como</strong>, in pura seta, diventano invece una presenza distintiva in hall, reception o concierge: esposti su console, teca o corner boutique nel linguaggio degli hotel iconici del Lago.",
-      text: "Il Telo Lago Tivan, in 100% cotone con logo ricamato, è pensato per piscina, spa, accesso al Lago, suite e guest gifting. I Twilly Como, in pura seta, diventano invece una presenza distintiva in hall, reception o concierge: esposti su console, teca o corner boutique nel linguaggio degli hotel iconici del Lago.",
+      title: "Dal Lago alla suite, fino alla hall.",
+      html: "Il <strong>Telo Lago Tivan</strong>, in 100% cotone con logo ricamato, è pensato per piscina, spa, accesso al Lago, suite e guest gifting. I <strong>Twilly Como</strong>, in pura seta, diventano invece un oggetto di rappresentanza per hall, reception, concierge e boutique: esposti su console, teca o corner selezionato, con una presenza coerente con le strutture luxury del Lago di Como.",
+      text: "Il Telo Lago Tivan, in 100% cotone con logo ricamato, è pensato per piscina, spa, accesso al Lago, suite e guest gifting. I Twilly Como, in pura seta, diventano invece un oggetto di rappresentanza per hall, reception, concierge e boutique: esposti su console, teca o corner selezionato, con una presenza coerente con le strutture luxury del Lago di Como.",
     };
   }
 
   if (focus === "resort_beach_club") {
     return {
-      eyebrow: "Capsule resort · Telo Lago & Twilly Como",
+      eyebrow: "Capsule resort · Tivan, Darsena, Riva & Melzi",
       title: "Dalla piscina al resort shop, un solo racconto del Lago.",
-      html: "Il <strong>Telo Lago Tivan</strong> accompagna piscina, beach area, pontile e suite; i <strong>Twilly Como</strong> completano resort shop, concierge e gifting con un accessorio in pura seta leggero e riconoscibile.",
-      text: "Il Telo Lago Tivan accompagna piscina, beach area, pontile e suite; i Twilly Como completano resort shop, concierge e gifting con un accessorio in pura seta leggero e riconoscibile.",
+      html: "Il <strong>Telo Lago Tivan</strong> accompagna piscina, beach area, pontile e suite; il <strong>cappellino Darsena</strong> porta il logo Lago di Como in resort shop, barca, pool bar e travel kit; <strong>Riva</strong> e <strong>Melzi</strong> costruiscono una capsule resortwear in lino e cotone per boutique, yacht club e destinazioni estive.",
+      text: "Il Telo Lago Tivan accompagna piscina, beach area, pontile e suite; il cappellino Darsena porta il logo Lago di Como in resort shop, barca, pool bar e travel kit; Riva e Melzi costruiscono una capsule resortwear in lino e cotone per boutique, yacht club e destinazioni estive.",
+    };
+  }
+
+  if (focus === "yacht_golf_club") {
+    return {
+      eyebrow: "Capsule club · Darsena, Riva & Melzi",
+      title: "Dal pro shop alla regata, un accessorio riconoscibile.",
+      html: "Il <strong>cappellino Darsena</strong>, in cotone con logo Lago di Como ricamato, è pensato per club shop, pro shop, tornei, regate e travel kit dei soci. La <strong>camicia Riva</strong> e il <strong>pantaloncino Melzi</strong> completano una proposta leisure elegante per club, yacht e soggiorni estivi.",
+      text: "Il cappellino Darsena, in cotone con logo Lago di Como ricamato, è pensato per club shop, pro shop, tornei, regate e travel kit dei soci. La camicia Riva e il pantaloncino Melzi completano una proposta leisure elegante per club, yacht e soggiorni estivi.",
+    };
+  }
+
+  if (focus === "tour_operator_luxury") {
+    return {
+      eyebrow: "Capsule travel · Darsena, Riva & Melzi",
+      title: "Un ricordo del Lago che accompagna il viaggio.",
+      html: "Il <strong>cappellino Darsena</strong> rende immediata la memoria del Lago di Como nei welcome kit estivi; <strong>Riva</strong> e <strong>Melzi</strong> estendono la proposta a una travel capsule leggera, fresca e coerente con itinerari premium, yacht day e soggiorni resort.",
+      text: "Il cappellino Darsena rende immediata la memoria del Lago di Como nei welcome kit estivi; Riva e Melzi estendono la proposta a una travel capsule leggera, fresca e coerente con itinerari premium, yacht day e soggiorni resort.",
     };
   }
 
@@ -1324,14 +1476,58 @@ function buildOutreachProductStory(
 
   return {
     eyebrow: "Il prodotto identitario · Twilly Como",
-    title: "Il Lago di Como tradotto in un accessorio di pura seta.",
-    html: "Un foulard a nastro in <strong>100% seta</strong>, Made in Como, 120 × 7,5 cm, con orlo rifinito a mano e logo jacquard SILKinCOM ispirato alle onde del Lago. Un oggetto riconoscibile, versatile e ad alto valore percepito, pensato per essere indossato, regalato e ricordato.",
-    text: "Foulard a nastro in 100% seta, Made in Como, 120 × 7,5 cm, con orlo rifinito a mano e logo jacquard SILKinCOM ispirato alle onde del Lago. Un oggetto riconoscibile, versatile e ad alto valore percepito.",
+    title: "Il Lago di Como tradotto in un accessorio luxury di pura seta.",
+    html: "Un foulard a nastro in <strong>100% seta</strong>, Made in Como, 120 × 7,5 cm, con orlo rifinito a mano e logo jacquard SILKinCOM ispirato alle onde del Lago. Un oggetto luxury riconoscibile, versatile e ad alto valore percepito, pensato per boutique, gifting, private client e collaborazioni selettive.",
+    text: "Foulard a nastro in 100% seta, Made in Como, 120 × 7,5 cm, con orlo rifinito a mano e logo jacquard SILKinCOM ispirato alle onde del Lago. Un oggetto luxury riconoscibile, versatile e ad alto valore percepito, pensato per boutique, gifting, private client e collaborazioni selettive.",
   };
+}
+
+function buildPartnershipModels(
+  usesHospitalityProducts: boolean,
+): readonly PartnershipModel[] {
+  const productSelection = usesHospitalityProducts
+    ? "Telo Lago Tivan, Darsena, Riva, Melzi e Twilly Como"
+    : "Twilly Como e accessori selezionati";
+
+  return [
+    {
+      title: "Maison Selection",
+      eyebrow: "La firma SILKinCOM",
+      body: `${productSelection} nella configurazione Maison, con logo SILKinCOM, packaging e materiali di racconto pronti per boutique, gifting e clientela privata.`,
+    },
+    {
+      title: "Co-Branded Edition",
+      eyebrow: "SILKinCOM × Partner",
+      body: "Una doppia firma costruita insieme: logo del partner e logo SILKinCOM possono essere integrati, previa verifica tecnica, su prodotto, etichetta, packaging o card dedicata.",
+    },
+    {
+      title: "Exclusive Signature Capsule",
+      eyebrow: "Sviluppo riservato",
+      body: "Palette, dettaglio grafico, ricamo, applicazione del logo e presentazione vengono sviluppati per il partner, con possibilità di esclusiva definita per prodotto, variante, territorio, canale e durata.",
+    },
+  ];
 }
 
 function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
   switch (focus) {
+    case "hospitality":
+      return {
+        title: "Piano hotel luxury e guest experience",
+        steps: [
+          {
+            title: "Valutazione direzione e procurement",
+            body: "Presentazione sintetica per direzione, guest experience, concierge o procurement, con concept, prodotti, uso previsto e condizioni riservate.",
+          },
+          {
+            title: "Capsule Lago per struttura",
+            body: "Telo Lago Tivan per piscina, spa, suite, accesso al Lago e gift ospite; Twilly Como in pura seta per hall, concierge, boutique e vendita selettiva.",
+          },
+          {
+            title: "Pilota controllato",
+            body: "Avvio con piccola dotazione, prova espositiva in hall o boutique, raccolta feedback e successivo riassortimento su prodotti e colori più coerenti.",
+          },
+        ],
+      };
     case "bed_breakfast":
       return {
         title: "Piano B&B, relais e dimore di charme",
@@ -1352,10 +1548,10 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
       };
     case "hotel_boutique":
       return {
-        title: "Piano boutique hotel e resort shop",
+        title: "Piano boutique hotel, hall e resort shop",
         steps: [
           {
-            title: "Hall e concierge curation",
+            title: "Curatela hall e concierge",
             body: "Twilly Como Puro ed Elegante presentati su console, teca o corner boutique, con racconto Made in Como e accesso diretto alle schede prodotto.",
           },
           {
@@ -1373,12 +1569,12 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
         title: "Piano resort, beach club e destinazioni leisure",
         steps: [
           {
-            title: "Telo Lago e pool experience",
-            body: "Tivan per piscina, beach area, pontile, barca e suite, con logo ricamato e formato leggero da portare in viaggio.",
+            title: "Tivan, Darsena, Riva e Melzi",
+            body: "Tivan per piscina, beach area, pontile, barca e suite; Darsena per resort shop e travel kit; Riva e Melzi per capsule resortwear in lino e cotone.",
           },
           {
             title: "Resort shop e concierge",
-            body: "Twilly Como presentati in boutique o hall come accessorio di seta Made in Como, da indossare o regalare durante il soggiorno.",
+            body: "Una proposta completa per boutique interna: telo, cappellino, camicia, pantaloncino e Twilly, con racconto Made in Como e possibilità di co-branding su progetto.",
           },
           {
             title: "Attivazione stagionale",
@@ -1482,11 +1678,11 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
         steps: [
           {
             title: "Club edit",
-            body: "Selezione di Twilly eleganti per pro shop, boutique del club e guardaroba viaggio dei soci.",
+            body: "Darsena per club shop, pro shop, tornei e regate; Riva e Melzi per il guardaroba leisure dei soci; Twilly eleganti per boutique e gifting.",
           },
           {
             title: "Occasioni dedicate",
-            body: "Premi, welcome gift, tornei, regate e serate sociali con un accessorio leggero e riconoscibile.",
+            body: "Premi, welcome gift, tornei, regate e serate sociali con accessori leggeri, riconoscibili e coerenti con una membership privata.",
           },
           {
             title: "Servizio continuativo",
@@ -1536,11 +1732,11 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
         steps: [
           {
             title: "Welcome gift",
-            body: "Twilly Como come ricordo elegante e facilmente trasportabile per viaggiatori premium sul Lago di Como.",
+            body: "Darsena per welcome kit estivi, itinerari sul Lago e travel gifting; Riva e Melzi per capsule viaggio; Twilly Como come ricordo elegante e facilmente trasportabile.",
           },
           {
             title: "Integrazione itinerario",
-            body: "Inserimento nel welcome kit, nella suite o come proposta concierge durante l’esperienza.",
+            body: "Inserimento nel welcome kit, nella suite o come proposta concierge durante l’esperienza, con packaging Maison e messaggio dedicato.",
           },
           {
             title: "Programma per partenze",
@@ -1627,10 +1823,10 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
   switch (focus) {
     case "bed_breakfast":
       return {
-        subject: "Telo Lago e seta di Como per la vostra ospitalità",
-        eyebrow: "B&B charme · Lake hospitality",
+        subject: "Capsule luxury per accoglienza e gifting ospite",
+        eyebrow: "B&B charme · Luxury hospitality",
         intro:
-          "Vi sottoponiamo una capsule dedicata a B&B, relais e dimore di charme: il Telo Lago per accompagnare il soggiorno e i Twilly Como per reception, gifting e acquisto ospite.",
+          "Vi sottoponiamo una capsule luxury dedicata a B&B, relais e dimore di charme: il Telo Lago per accompagnare il soggiorno e i Twilly Como per reception, gifting e acquisto ospite.",
         angle:
           "Per una struttura intima, il tessile può diventare parte dell’accoglienza: utile durante il soggiorno, distintivo negli spazi comuni e memorabile come ricordo del Lago.",
         products: [
@@ -1638,45 +1834,60 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "Twilly Como per reception e gifting",
           "pashmine cashmere per camere e ospiti VIP",
         ],
-        cta: "Possiamo predisporre una proposta dedicata con condizioni riservate, quantità iniziali calibrate e indicazioni di presentazione.",
+        cta: "Possiamo inviare un concept riservato con prodotti, quantità iniziali, presentazione in struttura e condizioni dedicate. In alternativa, possiamo fissare 15 minuti per capire quale formato è più coerente con la vostra accoglienza.",
       };
     case "hotel_boutique":
       return {
-        subject: "Una capsule Lago di Como per hall e guest experience",
-        eyebrow: "Hotel iconici · Hall & guest experience",
+        subject: "Capsule riservata per hall, suite e guest experience",
+        eyebrow: "Luxury hotel · Hall & guest experience",
         intro:
-          "Vi proponiamo una capsule hospitality costruita su due gesti complementari: il Telo Lago Tivan per piscina, spa, suite e accesso al Lago; i Twilly Como in pura seta per hall, concierge, boutique e gifting.",
+          "Vi proponiamo una capsule hospitality costruita per strutture di alta gamma: il Telo Lago Tivan per piscina, spa, suite e accesso al Lago; i Twilly Como in pura seta per hall, concierge, boutique e gifting.",
         angle:
-          "Una selezione Made in Como può abitare la hall con la stessa cura riservata ad arte e design, estendendo poi il racconto del Lago alla piscina, alla suite e al momento del dono.",
+          "Una selezione Made in Como può abitare la hall con la stessa cura riservata ad arte, design e servizio, estendendo poi il racconto del Lago alla piscina, alla suite e al momento del dono.",
         products: [
           "Telo Lago Tivan per piscina, spa e suite",
           "Twilly Como per hall, concierge e boutique",
-          "packaging Maison per gifting e ospiti VIP",
+          "Darsena, Riva e Melzi per resort shop e travel kit ospite",
         ],
-        cta: "Possiamo inviarvi una selezione iniziale con listino riservato e proposta visual per il vostro spazio.",
+        cta: "Possiamo inviare una proposta visual riservata per hall, suite o boutique interna, con selezione prodotti, condizioni e possibile sviluppo co-branded. In alternativa, possiamo fissare 15 minuti con il referente guest experience o retail.",
+      };
+    case "hospitality":
+      return {
+        subject: "Proposta riservata per guest experience e gifting VIP",
+        eyebrow: "Luxury hospitality · Lago di Como",
+        intro:
+          "Vi proponiamo una capsule hospitality pensata per hotel, resort e strutture iconiche: il Telo Lago Tivan per piscina, spa, suite e accesso al Lago; i Twilly Como in pura seta per hall, concierge, boutique e gifting VIP.",
+        angle:
+          "Per una struttura luxury, il prodotto tessile non è un semplice articolo da vendere: diventa parte dell’esperienza ospite, del racconto territoriale e della memoria del soggiorno.",
+        products: [
+          "Telo Lago Tivan per piscina, spa, suite e accesso al Lago",
+          "Twilly Como per hall, concierge, boutique e gifting VIP",
+          "Darsena, Riva e Melzi per resort shop, pool e travel kit ospite",
+        ],
+        cta: "Possiamo inviare un concept riservato per direzione, procurement o guest experience, con selezione prodotti, ipotesi espositiva, condizioni e opzione co-branding. In alternativa, possiamo fissare un confronto di 15 minuti per capire se il progetto è coerente con la vostra struttura.",
       };
     case "resort_beach_club":
       return {
         subject:
-          "Una selezione resortwear Made in Como per la vostra clientela",
+          "Capsule luxury Made in Como per resort e club",
         eyebrow: "Resortwear · Beach club · Luxury travel",
         intro:
-          "Stiamo curando collaborazioni con resort e club in cui il tessile accompagna l’esperienza dalla piscina al pontile, fino alla boutique e al concierge.",
+          "Stiamo curando collaborazioni luxury con resort, beach club e destinazioni leisure in cui il tessile accompagna l’esperienza dalla piscina al pontile, fino alla boutique e al concierge.",
         angle:
-          "Tivan introduce un Telo Lago Made in Como negli spazi leisure; i Twilly in pura seta ne proseguono il racconto nel resort shop, nel gifting e nel guardaroba viaggio.",
+          "Tivan introduce un Telo Lago Made in Como negli spazi leisure; Darsena aggiunge un cappellino Lago elegante per pool, barca e resort shop; Riva e Melzi costruiscono la parte resortwear della capsule.",
         products: [
           "Telo Lago Tivan per piscina, beach area e barca",
-          "Twilly Como per resort shop e gifting",
-          "lino e cashmere leggero per estensioni stagionali",
+          "cappellino Darsena per resort shop, pool bar e travel kit",
+          "camicia Riva e pantaloncino Melzi per capsule resortwear",
         ],
-        cta: "Possiamo predisporre una proposta stagionale con assortimento, condizioni commerciali e calendario di consegna.",
+        cta: "Possiamo inviare un concept stagionale riservato con assortimento, ipotesi di esposizione, condizioni e calendario di consegna. In alternativa, possiamo fissare 15 minuti per valutare vendita, gifting o co-branding.",
       };
     case "spa_wellness":
       return {
-        subject: "Una proposta SILKinCOM per spa, wellness e rituali premium",
+        subject: "Capsule luxury per spa, wellness e rituali premium",
         eyebrow: "Wellness gifting · Spa retail",
         intro:
-          "Per spa e luoghi wellness proponiamo una capsule naturale e tattile: Telo Lago Tivan negli spazi relax e Twilly Como nel gift corner e nei programmi membership.",
+          "Per spa e luoghi wellness proponiamo una capsule luxury naturale e tattile: Telo Lago Tivan negli spazi relax e Twilly Como nel gift corner e nei programmi membership.",
         angle:
           "100% cotone e pura seta costruiscono un percorso coerente tra utilizzo, benessere e gifting, mantenendo riconoscibile l’origine comasca della proposta.",
         products: [
@@ -1684,15 +1895,15 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "Twilly Como per gift corner e membership",
           "pashmine cashmere per suite e ospiti VIP",
         ],
-        cta: "Possiamo preparare una selezione per gift corner o pacchetti ospite con minimi sostenibili.",
+        cta: "Possiamo inviare una selezione riservata per gift corner, membership o pacchetti ospite, con minimi sostenibili e packaging Maison. In alternativa, possiamo fissare 15 minuti con spa manager o guest experience.",
       };
     case "wedding_events":
       return {
         subject:
-          "Gift e dettagli Made in Como per eventi e wedding di fascia alta",
+          "Gift luxury Made in Como per wedding ed eventi",
         eyebrow: "Wedding · Event gifting",
         intro:
-          "Vi proponiamo una linea di accessori premium per eventi, wedding, welcome gift e ospiti internazionali.",
+          "Vi proponiamo una linea di accessori luxury Made in Como per eventi, wedding, welcome gift e ospiti internazionali.",
         angle:
           "Il valore risiede nel dettaglio: materiali nobili, packaging Maison e una selezione costruita sull’identità dell’occasione.",
         products: [
@@ -1700,14 +1911,14 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "pashmine per cerimonie e serate",
           "gift set corporate o wedding con nota dedicata",
         ],
-        cta: "Possiamo inviare una proposta per budget, quantità e timing del prossimo evento.",
+        cta: "Possiamo inviare un concept riservato per evento, palette, budget, quantità e timing, con opzione packaging dedicato. In alternativa, possiamo fissare 15 minuti per valutare la prossima occasione utile.",
       };
     case "corporate_gifting":
       return {
-        subject: "Corporate gifting premium Made in Como",
+        subject: "Corporate gifting luxury Made in Como",
         eyebrow: "Corporate gifting · Executive clients",
         intro:
-          "SILKinCOM propone regali aziendali premium per clienti importanti, board, partner e hospitality business.",
+          "SILKinCOM propone regali aziendali luxury per clienti importanti, board, partner e hospitality business.",
         angle:
           "Un dono tessile Made in Como ha percezione alta, uso reale e una narrazione più elegante del gadget tradizionale.",
         products: [
@@ -1715,29 +1926,29 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "pashmine cashmere per executive gift",
           "packaging e biglietto dedicato alla vostra maison",
         ],
-        cta: "Possiamo preparare una griglia per budget, quantità e personalizzazione leggera.",
+        cta: "Possiamo inviare una griglia riservata per budget, quantità, packaging e personalizzazione leggera. In alternativa, possiamo fissare 15 minuti con marketing, HR o direzione per definire il perimetro.",
       };
     case "concept_store":
       return {
-        subject: "Una proposta SILKinCOM per il vostro concept store",
-        eyebrow: "Concept store · Curated retail",
+        subject: "Capsule luxury SILKinCOM per concept store",
+        eyebrow: "Concept store · Luxury curated retail",
         intro:
-          "Abbiamo selezionato una proposta per store curati che cercano prodotti con storia, materiali nobili e rotazione agile.",
+          "Abbiamo selezionato una proposta luxury per store curati che cercano prodotti con storia, materiali nobili e rotazione agile.",
         angle:
-          "SILKinCOM unisce accessibilità selettiva e racconto di filiera comasca: ideale per corner moda, lifestyle e gifting.",
+          "SILKinCOM unisce accessibilità selettiva e racconto di filiera comasca: seta, cashmere, Darsena, Riva e Melzi creano un corner moda, lifestyle e gifting con identità precisa.",
         products: [
           "foulard seta come accessorio identitario",
-          "sciarpe cashmere come prodotto continuativo",
-          "camicie lino/cotone per capsule stagionali",
+          "cappellini Darsena per capsule leisure luxury",
+          "camicie Riva e pantaloncini Melzi per resortwear estivo",
         ],
-        cta: "Se vi interessa, inviamo line sheet e selezione consigliata per primo ordine.",
+        cta: "Possiamo inviare line sheet riservato, selezione consigliata per primo ordine e materiali di storytelling. In alternativa, possiamo fissare 15 minuti con buyer o store director.",
       };
     case "museum_bookshop":
       return {
-        subject: "Accessori Made in Como per bookshop e spazi culturali",
-        eyebrow: "Culture retail · Museum shop",
+        subject: "Accessori luxury Made in Como per spazi culturali",
+        eyebrow: "Culture retail · Luxury museum shop",
         intro:
-          "Per bookshop, fondazioni e spazi culturali proponiamo accessori tessili con forte valore narrativo e gifting.",
+          "Per bookshop, fondazioni e spazi culturali proponiamo accessori tessili luxury con forte valore narrativo e gifting.",
         angle:
           "Seta e Como dialogano bene con cultura, viaggio e memoria: una proposta elegante per visitatori e clienti internazionali.",
         products: [
@@ -1745,29 +1956,29 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "gift set con storytelling maison",
           "capsule colore coerenti con mostre o stagioni",
         ],
-        cta: "Possiamo condividere una proposta editoriale/prodotto pensata per il vostro pubblico.",
+        cta: "Possiamo condividere una proposta editoriale e prodotto pensata per il vostro pubblico, con capsule colore e storytelling dedicato. In alternativa, possiamo fissare 15 minuti con retail manager o curatela shop.",
       };
     case "yacht_golf_club":
       return {
-        subject: "Una selezione SILKinCOM per club privati e ospiti premium",
+        subject: "Selezione luxury SILKinCOM per club privati",
         eyebrow: "Private clubs · Yacht · Golf",
         intro:
-          "Stiamo proponendo capsule tessili per club privati, yacht club, golf club e luoghi dove il gifting deve restare discreto e alto.",
+          "Stiamo proponendo capsule tessili luxury per club privati, yacht club, golf club e luoghi dove il gifting deve restare discreto e alto.",
         angle:
-          "Accessori leggeri, nobili e versatili, con una presenza discreta e coerente in boutique e pro shop.",
+          "Accessori leggeri, nobili e versatili, con Darsena come prodotto club immediato e Riva/Melzi come capsule leisure elegante per soci, regate e weekend.",
         products: [
-          "pashmine cashmere per club e travel",
-          "foulard seta per gifting soci",
-          "camicie lino per capsule leisure",
+          "cappellino Darsena per club shop, tornei e regate",
+          "camicia Riva e pantaloncino Melzi per capsule club",
+          "foulard seta per gifting soci e premi",
         ],
-        cta: "Possiamo inviare una selezione club con quantità contenute e packaging dedicato.",
+        cta: "Possiamo inviare una selezione club riservata con quantità contenute, packaging dedicato e opzione capsule soci. In alternativa, possiamo fissare 15 minuti con club manager o retail/pro shop.",
       };
     case "personal_shopper":
       return {
-        subject: "Una selezione SILKinCOM per clienti privati e styling",
-        eyebrow: "Personal shopping · Private client",
+        subject: "Selezione luxury SILKinCOM per private client",
+        eyebrow: "Personal shopping · Luxury private client",
         intro:
-          "Vi proponiamo SILKinCOM come selezione accessori per clienti privati, styling, guardaroba viaggio e gifting.",
+          "Vi proponiamo SILKinCOM come selezione luxury di accessori per clienti privati, styling, guardaroba viaggio e gifting.",
         angle:
           "Foulard, cashmere e lino si integrano con naturalezza in consulenze di stile, guardaroba viaggio e gifting per clientela privata.",
         products: [
@@ -1775,15 +1986,15 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "pashmine cashmere per guardaroba viaggio",
           "camicie lino/cotone per capsule estive",
         ],
-        cta: "Possiamo preparare una selezione privata con prodotti consigliati e condizioni dedicate.",
+        cta: "Possiamo preparare una selezione privata con prodotti consigliati, condizioni dedicate e disponibilità verificata. In alternativa, possiamo fissare 15 minuti per capire profilo clienti, colori e occasioni d’uso.",
       };
     case "interior_architect":
       return {
         subject:
-          "Textile gifting Made in Como per progetti hospitality e interior",
-        eyebrow: "Interior · Hospitality procurement",
+          "Textile gifting luxury per hospitality e interior",
+        eyebrow: "Interior · Luxury hospitality procurement",
         intro:
-          "Per studi interior e architettura proponiamo accessori tessili premium da integrare in progetti hospitality, suite e gift experience.",
+          "Per studi interior e architettura proponiamo accessori tessili luxury da integrare in progetti hospitality, suite e gift experience.",
         angle:
           "Un prodotto tessile selezionato completa il racconto dello spazio: non arredo, ma gesto finale di accoglienza.",
         products: [
@@ -1791,59 +2002,59 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "foulard seta per welcome experience",
           "selezioni colore coordinate al progetto",
         ],
-        cta: "Possiamo condividere una proposta per progetto, palette e budget.",
+        cta: "Possiamo condividere una proposta riservata per progetto, palette, budget e campionatura. In alternativa, possiamo fissare 15 minuti per valutare mood, struttura e timing operativo.",
       };
     case "tour_operator_luxury":
       return {
-        subject: "Welcome gift Made in Como per viaggi luxury",
+        subject: "Welcome gift luxury Made in Como per viaggiatori VIP",
         eyebrow: "Luxury travel · Concierge gifting",
         intro:
-          "SILKinCOM può diventare un welcome gift o una proposta concierge per viaggiatori premium in Italia e sul Lago di Como.",
+          "SILKinCOM può diventare un welcome gift luxury o una proposta concierge per viaggiatori premium in Italia e sul Lago di Como.",
         angle:
-          "Un accessorio Made in Como crea memoria del viaggio e aumenta il valore percepito dell’esperienza.",
+          "Un accessorio Made in Como crea memoria del viaggio e aumenta il valore percepito dell’esperienza: Darsena per il giorno, Riva e Melzi per la travel capsule, Twilly per il gesto più raffinato.",
         products: [
-          "foulard seta per welcome gift",
-          "pashmine cashmere per itinerari serali",
-          "gift set viaggio con packaging maison",
+          "cappellino Darsena per welcome kit e itinerari estivi",
+          "camicia Riva e pantaloncino Melzi per capsule viaggio",
+          "foulard seta per gift concierge",
         ],
-        cta: "Possiamo preparare una proposta per itinerari, gruppi privati e clienti VIP.",
+        cta: "Possiamo preparare una proposta riservata per itinerari, gruppi privati e clienti VIP, con packaging viaggio e calendario consegne. In alternativa, possiamo fissare 15 minuti con travel designer o concierge.",
       };
     case "retail":
       return {
-        subject: "Una proposta per la vostra boutique firmata SILKinCOM",
-        eyebrow: "Boutique retail · Premium accessories",
+        subject: "Selezione luxury SILKinCOM per boutique",
+        eyebrow: "Boutique retail · Luxury accessories",
         intro:
-          "Abbiamo selezionato una proposta adatta a boutique indipendenti, spazi retail selettivi e corner di stile.",
+          "Abbiamo selezionato una proposta luxury adatta a boutique indipendenti, spazi retail selettivi e corner di stile.",
         angle:
-          "Una linea Made in Como con materiali nobili, una narrazione di origine riconoscibile e un assortimento calibrato tra seta, cashmere e lino.",
+          "Una linea Made in Como con materiali nobili, narrazione d’origine riconoscibile e un assortimento calibrato tra seta, cashmere, Darsena, Riva e Melzi.",
         products: [
           "foulard in seta",
           "sciarpe e pashmine in cashmere",
-          "camicie in lino e cotone",
+          "Darsena, Riva e Melzi per rotazione resortwear",
         ],
-        cta: "Possiamo inviarvi line sheet e selezione consigliata per primo ordine.",
+        cta: "Possiamo inviare line sheet riservato, selezione consigliata per primo ordine e materiali vendita. In alternativa, possiamo fissare 15 minuti con buyer o owner per definire assortimento e margini.",
       };
     case "gifting":
       return {
-        subject: "Una proposta per gifting e ospitalità firmata SILKinCOM",
-        eyebrow: "Gifting · Hospitality amenities",
+        subject: "Gifting luxury e ospitalità firmati SILKinCOM",
+        eyebrow: "Luxury gifting · Hospitality amenities",
         intro:
-          "Sviluppiamo capsule selettive per ospitalità, relazioni aziendali e clientela VIP.",
+          "Sviluppiamo capsule luxury selettive per ospitalità, relazioni aziendali e clientela VIP.",
         angle:
-          "Il regalo diventa memorabile quando è utile, tattile e racconta una provenienza autentica.",
+          "Il regalo diventa memorabile quando è utile, tattile e racconta una provenienza autentica: seta per il gesto istituzionale, Darsena per progetti travel o leisure.",
         products: [
           "foulard seta per cadeau",
           "pashmine cashmere per VIP gift",
-          "packaging e biglietto dedicato",
+          "cappellino Darsena per capsule viaggio, eventi e club",
         ],
-        cta: "Possiamo preparare una proposta per budget e quantità con tempi rapidi.",
+        cta: "Possiamo preparare una proposta riservata per budget, quantità, packaging e timing. In alternativa, possiamo fissare 15 minuti per scegliere la fascia regalo più coerente.",
       };
     case "wholesale":
       return {
-        subject: "Proposta di collaborazione wholesale con SILKinCOM",
-        eyebrow: "Wholesale · B2B selection",
+        subject: "Collaborazione wholesale luxury con SILKinCOM",
+        eyebrow: "Wholesale · Luxury B2B selection",
         intro:
-          "Se cercate una fornitura affidabile di accessori Made in Como, possiamo preparare una selezione dedicata.",
+          "Se cercate una fornitura selettiva di accessori luxury Made in Como, possiamo preparare una selezione dedicata.",
         angle:
           "La proposta è pensata per partner che richiedono un assortimento selettivo, una struttura commerciale chiara, documentazione prodotto e continuità di riassortimento.",
         products: [
@@ -1851,7 +2062,7 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
           "cashmere come continuativo alto",
           "lino/cotone per capsule stagionali",
         ],
-        cta: "Possiamo inviare condizioni wholesale e campionario iniziale.",
+        cta: "Possiamo inviare condizioni wholesale riservate, line sheet e proposta campionario iniziale. In alternativa, possiamo fissare 15 minuti con buyer o distributore per valutare mercato, margini e riassortimento.",
       };
     default:
       return {
@@ -1881,6 +2092,10 @@ export function buildLeadOutreachCopy(
   },
   focus: LeadOutreachFocus,
   notes = "",
+  options: {
+    productImages?: LeadOutreachProductImages;
+    productImageOverrides?: LeadOutreachProductImages;
+  } = {},
 ) {
   const focusCopy = buildFocusCopy(focus);
   const sectorProposal = buildSectorProposal(focus);
@@ -1891,11 +2106,18 @@ export function buildLeadOutreachCopy(
   const sectorObjective = SECTOR_OUTREACH_OBJECTIVES[focus];
   const sectorActivation = SECTOR_OUTREACH_ACTIVATIONS[focus];
   const usesHospitalityProducts = HOSPITALITY_PRODUCT_FOCUSES.has(focus);
-  const outreachProducts = getOutreachProducts(focus);
+  const outreachProducts = getOutreachProducts(focus).map((product) => ({
+    ...product,
+    image:
+      options.productImageOverrides?.[product.slug] ||
+      options.productImages?.[product.slug] ||
+      product.image,
+  }));
   const productStory = buildOutreachProductStory(focus);
+  const partnershipModels = buildPartnershipModels(usesHospitalityProducts);
   const executiveProject = usesHospitalityProducts
-    ? "Capsule Hospitality Lago di Como"
-    : "Capsule Twilly Como";
+    ? "Hospitality Signature Capsule"
+    : "Luxury Signature Capsule SILKinCOM";
   const executiveMaterial = usesHospitalityProducts
     ? "Pura seta · 100% cotone · Made in Como"
     : "100% seta · Made in Como";
@@ -1912,11 +2134,12 @@ export function buildLeadOutreachCopy(
   const towelCollectionParams = new URLSearchParams(trackingParams);
   towelCollectionParams.set("utm_content", "telo_lago_collection");
   const towelCollectionUrl = `${APP_URL}/it/teli-mare?${towelCollectionParams.toString()}`;
+  const officialLogoUrl = `${APP_URL}/logo-official.png`;
   const collectionLinksHtml = usesHospitalityProducts
     ? `<a href="${escapeHtml(towelCollectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Scopri il Telo Lago</a><a href="${escapeHtml(collectionUrl)}" style="display:inline-block;border:1px solid #17130F;color:#17130F;text-decoration:none;padding:12px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Esplora i Twilly Como</a>`
     : `<a href="${escapeHtml(collectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 22px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;">Esplora la collezione Twilly Como</a>`;
-  const replySubject = `Approfondimento partnership — ${lead.company_name} × SILKinCOM`;
-  const replyBody = `Gentile Marco,\n\nla ringraziamo per averci presentato la proposta SILKinCOM. Desideriamo approfondire una possibile collaborazione con ${lead.company_name}.\n\nSaremmo interessati a ricevere:\n- dossier commerciale e condizioni riservate\n- selezione campioni\n- disponibilità per un incontro introduttivo\n\nCordiali saluti,`;
+  const replySubject = `Concept riservato — ${lead.company_name} × SILKinCOM`;
+  const replyBody = `Gentile Marco,\n\nla ringraziamo per averci presentato la proposta SILKinCOM. Desideriamo valutare un progetto dedicato per ${lead.company_name}.\n\nIl modello di maggiore interesse è:\n□ Maison Selection con logo SILKinCOM\n□ Co-Branded Edition SILKinCOM × ${lead.company_name}\n□ Exclusive Signature Capsule\n\nSaremmo lieti di ricevere il concept preliminare e le condizioni di sviluppo.\nIn alternativa, possiamo fissare un confronto di 15 minuti con il referente più adatto.\n\nCordiali saluti,`;
   const replyUrl = `mailto:b2b@silkincom.com?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
   const noteBlock = notes.trim()
     ? `<div style="margin:24px 0 0 0;padding:18px 20px;background:#F8F3EA;border-left:2px solid #D8B443;">
@@ -1963,11 +2186,28 @@ export function buildLeadOutreachCopy(
       </table>`,
     )
     .join("");
+  const partnershipModelsHtml = partnershipModels
+    .map((model, index) => {
+      const isExclusive = index === partnershipModels.length - 1;
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 10px 0;border:1px solid ${isExclusive ? "#D8B443" : "#E8DFD0"};background:${isExclusive ? "#17130F" : "#FFFDF8"};">
+        <tr>
+          <td width="54" valign="top" style="width:54px;padding:18px 0 18px 18px;">
+            <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1;color:${isExclusive ? "#D8B443" : "#A87F1E"};margin:0;">0${index + 1}</p>
+          </td>
+          <td valign="top" style="padding:17px 18px 18px 12px;">
+            <p style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:${isExclusive ? "#D8B443" : "#A87F1E"};margin:0 0 5px 0;">${escapeHtml(model.eyebrow)}</p>
+            <h3 style="font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:400;line-height:1.3;color:${isExclusive ? "#FFFDF8" : "#17130F"};margin:0 0 7px 0;">${escapeHtml(model.title)}</h3>
+            <p style="font-size:13px;line-height:1.7;color:${isExclusive ? "#D8D1C6" : "#625B52"};margin:0;">${escapeHtml(model.body)}</p>
+          </td>
+        </tr>
+      </table>`;
+    })
+    .join("");
   const extensionsHtml = focusCopy.products
     .map((product) => escapeHtml(product))
     .join(" · ");
   const subject = sanitizeEmailHeader(
-    `Proposta riservata di partnership | SILKinCOM × ${lead.company_name}`,
+    `${focusCopy.subject} | SILKinCOM × ${lead.company_name}`,
   );
   const html = `<!DOCTYPE html>
 <html lang="it">
@@ -1988,18 +2228,21 @@ export function buildLeadOutreachCopy(
   </style>
 </head>
 <body style="margin:0;padding:0;background:#F3EEE5;font-family:Arial,Helvetica,sans-serif;color:#17130F;">
-  <div style="display:none;max-height:0;overflow:hidden;color:#F3EEE5;">${usesHospitalityProducts ? `Telo Lago Tivan e Twilly Como per hall, ospitalità e gifting di ${escapeHtml(lead.company_name)}.` : `Una proposta di partnership costruita per ${escapeHtml(lead.company_name)}, con una capsule Twilly in pura seta Made in Como.`}</div>
+  <div style="display:none;max-height:0;overflow:hidden;color:#F3EEE5;">SILKinCOM × ${escapeHtml(lead.company_name)}: prodotti firmati Maison, edizione co-branded o capsule esclusiva.</div>
   <div style="max-width:680px;margin:0 auto;padding:28px 12px;">
-    <div style="background:#11100E;color:#F8F3EA;padding:17px 22px;text-align:center;">
-      <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:23px;letter-spacing:.08em;color:#F8F3EA;">SILKinCOM</p>
-      <p style="margin:6px 0 0 0;font-size:8px;letter-spacing:.34em;text-transform:uppercase;color:#D8B443;">Partnership Office · Como, Italia</p>
+    <div style="background:#11100E;color:#F8F3EA;padding:18px 22px 16px;text-align:center;">
+      <a href="${APP_URL}" style="display:inline-block;text-decoration:none;" aria-label="SILKinCOM">
+        <img src="${escapeHtml(officialLogoUrl)}" width="112" alt="SILKinCOM" style="display:block;width:112px;max-width:112px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;" />
+      </a>
+      <p style="margin:4px 0 0 0;font-size:8px;letter-spacing:.34em;text-transform:uppercase;color:#D8B443;">Partnership Office · Como, Italia</p>
     </div>
     <div class="email-content" style="background:#FFFDF8;border:1px solid #E5D8BE;border-top:0;padding:40px 34px;">
       <p style="font-size:14px;line-height:1.7;color:#4A443C;margin:0 0 20px 0;">${escapeHtml(greeting)}</p>
       <p style="font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:#A87F1E;margin:0 0 14px 0;">Proposta riservata · ${escapeHtml(focusCopy.eyebrow)}</p>
-      <h1 class="email-title" style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:36px;line-height:1.13;letter-spacing:-.015em;margin:0 0 20px 0;color:#17130F;">Una collaborazione dedicata,<br /><span style="color:#A87F1E;font-style:italic;">firmata Lago di Como.</span></h1>
+      <h1 class="email-title" style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:36px;line-height:1.13;letter-spacing:-.015em;margin:0 0 20px 0;color:#17130F;">Una firma condivisa,<br /><span style="color:#A87F1E;font-style:italic;">creata sul Lago di Como.</span></h1>
       <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 14px 0;">Sono <strong>Marco Di Benedetto</strong>, Founder di SILKinCOM. Le scrivo per sottoporre alla sua attenzione una possibile collaborazione tra la nostra Maison e <strong>${escapeHtml(lead.company_name)}</strong>${location ? `, con riferimento a ${escapeHtml(location)}` : ""}.</p>
-      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 24px 0;">${escapeHtml(focusCopy.intro)} La proposta non nasce come catalogo standard, ma come progetto calibrato sul vostro posizionamento, sulla clientela e sul contesto di vendita o accoglienza.</p>
+      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 14px 0;">${escapeHtml(focusCopy.intro)} La proposta non nasce come catalogo standard, ma come progetto calibrato sul vostro posizionamento, sulla clientela e sul contesto di vendita o accoglienza.</p>
+      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 24px 0;">Possiamo partire da prodotti già firmati con il <strong>logo SILKinCOM</strong>, sviluppare una <strong>doppia firma SILKinCOM × ${escapeHtml(lead.company_name)}</strong> oppure creare una capsule riservata con un perimetro di esclusiva definito insieme. Se il tema non rientra nella sua area, sarà sufficiente inoltrare questa nota al referente guest experience, procurement, concierge o retail.</p>
 
       <div style="background:#17130F;color:#FFFDF8;padding:22px 24px;margin:0 0 26px 0;">
         <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#D8B443;margin:0 0 14px 0;">Executive brief</p>
@@ -2037,6 +2280,13 @@ export function buildLeadOutreachCopy(
       ${productsHtml}
       <p style="text-align:center;margin:18px 0 30px 0;">${collectionLinksHtml}</p>
 
+      <div style="background:#F4EFE6;border:1px solid #E5D8BE;padding:22px;margin:0 0 12px 0;">
+        <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#A87F1E;margin:0 0 9px 0;">Partnership editions</p>
+        <h2 style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:27px;line-height:1.25;color:#17130F;margin:0 0 10px 0;">Tre livelli di collaborazione.<br />Una sola garanzia di origine.</h2>
+        <p style="font-size:13px;line-height:1.75;color:#5A534B;margin:0;">Il logo SILKinCOM tutela l’identità della Maison e la provenienza del progetto. Il partner può scegliere una selezione esistente, una doppia firma oppure uno sviluppo esclusivo.</p>
+      </div>
+      ${partnershipModelsHtml}
+
       <div style="border-left:2px solid #D8B443;padding:2px 0 2px 18px;margin:0 0 28px 0;">
         <p style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:#A87F1E;margin:0 0 8px 0;">Rilevanza per ${escapeHtml(lead.company_name)}</p>
         <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.42;color:#17130F;margin:0;">${escapeHtml(focusCopy.angle)}</p>
@@ -2048,18 +2298,18 @@ export function buildLeadOutreachCopy(
       <p style="font-size:12px;line-height:1.7;color:#7B7369;margin:14px 0 0 0;"><strong style="color:#4A443C;">${usesHospitalityProducts ? "Applicazioni previste" : "Estensioni possibili"}:</strong> ${extensionsHtml}.</p>
       ${noteBlock}
 
-      <div style="background:#F4EFE6;border:1px solid #E5D8BE;padding:22px;margin:28px 0 0 0;">
-        <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#A87F1E;margin:0 0 12px 0;">Dossier di partnership</p>
-        <p style="font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.4;color:#17130F;margin:0 0 12px 0;">Una proposta completa per una decisione chiara.</p>
-        <p style="font-size:13px;line-height:1.75;color:#5A534B;margin:0;">Su richiesta predisponiamo una selezione prodotti dedicata, line sheet, disponibilità, condizioni commerciali riservate, ipotesi di assortimento, materiali di presentazione e calendario operativo. La fase iniziale può essere impostata come progetto pilota, con successiva verifica dei risultati e riassortimento mirato.</p>
+      <div style="background:#F4EFE6;border:1px solid #D8B443;padding:22px;margin:28px 0 0 0;">
+        <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#A87F1E;margin:0 0 12px 0;">Esclusiva su progetto</p>
+        <p style="font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.4;color:#17130F;margin:0 0 12px 0;">Un valore reale, definito con precisione.</p>
+        <p style="font-size:13px;line-height:1.75;color:#5A534B;margin:0;">L’esclusiva può riguardare prodotto, variante, territorio, canale e durata. Viene formalizzata solo dopo verifica di fattibilità, approvazione del campione, definizione delle quantità minime, piano produttivo e accordo commerciale. Il dossier riservato include concept, applicazione dei loghi, condizioni e calendario.</p>
       </div>
 
       <div style="background:#17130F;color:#FFFDF8;padding:26px 24px;margin:30px 0 26px 0;text-align:center;">
         <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#D8B443;margin:0 0 10px 0;">Invito riservato</p>
-        <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;line-height:1.3;color:#FFFDF8;margin:0 0 12px 0;">Valutiamo insieme il formato più adatto a ${escapeHtml(lead.company_name)}.</h2>
-        <p style="font-size:13px;line-height:1.7;color:#DED8CE;margin:0 0 12px 0;">Il primo confronto è finalizzato a verificare coerenza, applicazione, assortimento e condizioni dell’eventuale fase pilota.</p>
-        <p style="font-size:13px;line-height:1.7;color:#FFFDF8;margin:0 0 18px 0;">Sarei lieto di presentarvi il progetto in un incontro introduttivo riservato. In alternativa, possiamo trasmettere direttamente il <strong style="color:#D8B443;">dossier commerciale</strong> o predisporre una <strong style="color:#D8B443;">selezione campioni</strong>.</p>
-        <a href="${escapeHtml(replyUrl)}" style="display:inline-block;background:#D8B443;color:#17130F;text-decoration:none;padding:13px 21px;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;">Richiedi un approfondimento</a>
+        <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;line-height:1.3;color:#FFFDF8;margin:0 0 12px 0;">Creiamo una capsule che possa appartenere soltanto a ${escapeHtml(lead.company_name)}.</h2>
+        <p style="font-size:13px;line-height:1.7;color:#DED8CE;margin:0 0 12px 0;">Il primo confronto richiede circa 15 minuti e serve solo a capire coerenza, referente corretto, modello di partnership, applicazione dei loghi e possibile perimetro di esclusiva.</p>
+        <p style="font-size:13px;line-height:1.7;color:#FFFDF8;margin:0 0 18px 0;">${escapeHtml(focusCopy.cta)}</p>
+        <a href="${escapeHtml(replyUrl)}" style="display:inline-block;background:#D8B443;color:#17130F;text-decoration:none;padding:13px 21px;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;">Richiedi il concept riservato</a>
       </div>
 
       <p style="font-size:14px;line-height:1.7;color:#3B362F;margin:0;">Cordiali saluti,</p>
@@ -2084,9 +2334,11 @@ export function buildLeadOutreachCopy(
       `SILKinCOM · ${focusCopy.eyebrow}`,
       "",
       "PROPOSTA RISERVATA DI PARTNERSHIP",
-      "UNA COLLABORAZIONE DEDICATA, FIRMATA LAGO DI COMO",
+      "UNA FIRMA CONDIVISA, CREATA SUL LAGO DI COMO",
       `Sono Marco Di Benedetto, Founder di SILKinCOM. Le scrivo per sottoporre alla sua attenzione una possibile collaborazione tra la nostra Maison e ${lead.company_name}${location ? `, con riferimento a ${location}` : ""}.`,
       `${focusCopy.intro} La proposta non nasce come catalogo standard, ma come progetto calibrato sul vostro posizionamento, sulla clientela e sul contesto di vendita o accoglienza.`,
+      `Possiamo partire da prodotti già firmati con il logo SILKinCOM, sviluppare una doppia firma SILKinCOM × ${lead.company_name} oppure creare una capsule riservata con un perimetro di esclusiva definito insieme.`,
+      "Se il tema non rientra nella sua area, sarà sufficiente inoltrare questa nota al referente guest experience, procurement, concierge o retail.",
       "",
       "EXECUTIVE BRIEF",
       `Progetto: ${executiveProject}`,
@@ -2115,6 +2367,14 @@ export function buildLeadOutreachCopy(
           ]
         : [`Collezione completa: ${collectionUrl}`]),
       "",
+      "PARTNERSHIP EDITIONS",
+      "Tre livelli di collaborazione. Una sola garanzia di origine.",
+      "Il logo SILKinCOM tutela l’identità della Maison e la provenienza del progetto. Il partner può scegliere una selezione esistente, una doppia firma oppure uno sviluppo esclusivo.",
+      ...partnershipModels.flatMap((model, index) => [
+        `${index + 1}. ${model.title} — ${model.eyebrow}`,
+        `   ${model.body}`,
+      ]),
+      "",
       focusCopy.angle,
       "",
       sectorProposalTitle.toUpperCase(),
@@ -2124,12 +2384,13 @@ export function buildLeadOutreachCopy(
       `${usesHospitalityProducts ? "Applicazioni previste" : "Estensioni possibili"}: ${focusCopy.products.join(" · ")}.`,
       notes.trim() ? `Perché vi contattiamo: ${notes.trim()}` : null,
       "",
-      "DOSSIER DI PARTNERSHIP",
-      "Su richiesta predisponiamo selezione prodotti, line sheet, disponibilità, condizioni commerciali riservate, ipotesi di assortimento, materiali di presentazione e calendario operativo. La fase iniziale può essere impostata come progetto pilota, con verifica dei risultati e riassortimento mirato.",
+      "ESCLUSIVA SU PROGETTO",
+      "L’esclusiva può riguardare prodotto, variante, territorio, canale e durata. Viene formalizzata solo dopo verifica di fattibilità, approvazione del campione, definizione delle quantità minime, piano produttivo e accordo commerciale. Il dossier riservato include concept, applicazione dei loghi, condizioni e calendario.",
       "",
-      "Il primo confronto è finalizzato a verificare coerenza, applicazione, assortimento e condizioni dell’eventuale fase pilota.",
-      `Sarei lieto di presentare il progetto a ${lead.company_name} in un incontro introduttivo riservato. In alternativa, possiamo trasmettere il dossier commerciale o predisporre una selezione campioni.`,
-      "Per approfondire, è sufficiente rispondere a questa email.",
+      `Creiamo una capsule che possa appartenere soltanto a ${lead.company_name}.`,
+      "Il primo confronto richiede circa 15 minuti e serve solo a capire coerenza, referente corretto, modello di partnership, applicazione dei loghi e possibile perimetro di esclusiva.",
+      focusCopy.cta,
+      "Per richiedere il concept, è sufficiente rispondere a questa email.",
       "",
       "Cordiali saluti,",
       "Marco Di Benedetto",

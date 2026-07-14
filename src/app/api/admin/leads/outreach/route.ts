@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { forbidden, requireAdminApi } from '@/lib/admin-api';
 import { logAdminAction } from '@/lib/audit';
-import { buildLeadOutreachCopy } from '@/lib/lead-discovery';
+import {
+  buildLeadOutreachCopy,
+  composeLeadTargetingNotes,
+  isLeadFocusCoherent,
+  isTargetingNoteSpecific,
+} from '@/lib/lead-discovery';
+import { loadLeadOutreachProductImages } from '@/lib/lead-outreach-images';
 import { sendB2BLeadOutreachEmail } from '@/lib/email';
 import { leadOutreachSchema } from '@/lib/validations';
 
@@ -20,6 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = createServiceClient();
+  const productImages = await loadLeadOutreachProductImages(supabase);
   const { data: leads, error: leadError } = await supabase
     .from('lead_accounts')
     .select('*')
@@ -40,6 +47,18 @@ export async function POST(req: NextRequest) {
       results.push({ leadId: lead.id, ok: false, error: 'Manca email di contatto' });
       continue;
     }
+    const targetingNotes = composeLeadTargetingNotes(
+      lead.notes,
+      parsed.data.notes
+    );
+    if (!isLeadFocusCoherent(lead.industry, parsed.data.focus)) {
+      results.push({ leadId: lead.id, ok: false, error: 'Focus non coerente con il settore del lead' });
+      continue;
+    }
+    if (!isTargetingNoteSpecific(targetingNotes)) {
+      results.push({ leadId: lead.id, ok: false, error: 'Manca un motivo specifico per il contatto' });
+      continue;
+    }
 
     const copy = buildLeadOutreachCopy(
       {
@@ -50,7 +69,11 @@ export async function POST(req: NextRequest) {
         website_url: lead.website_url,
       },
       parsed.data.focus,
-      parsed.data.notes
+      targetingNotes,
+      {
+        productImages,
+        productImageOverrides: parsed.data.productImageOverrides,
+      },
     );
 
     try {
@@ -118,6 +141,8 @@ export async function POST(req: NextRequest) {
     leadIds: parsed.data.leadIds,
     focus: parsed.data.focus,
     notes: parsed.data.notes,
+    previewConfirmed: parsed.data.previewConfirmed,
+    productImageOverrides: parsed.data.productImageOverrides,
   });
 
   return NextResponse.json({ ok: true, results });

@@ -148,7 +148,7 @@ export const leadPatchSchema = z.object({
   do_not_contact: z.boolean().optional(),
 });
 
-export const leadOutreachSchema = z.object({
+export const leadOutreachPreviewSchema = z.object({
   leadIds: z.array(z.string().uuid()).min(1, 'Seleziona almeno un lead'),
   focus: z.enum([
     'hospitality',
@@ -169,6 +169,16 @@ export const leadOutreachSchema = z.object({
     'wholesale',
   ]).default('hospitality'),
   notes: z.string().trim().max(1000).optional().default(''),
+  productImageOverrides: z
+    .record(z.string().trim().min(1), z.string().trim().url())
+    .optional()
+    .default({}),
+});
+
+export const leadOutreachSchema = leadOutreachPreviewSchema.extend({
+  previewConfirmed: z.literal(true, {
+    errorMap: () => ({ message: 'Apri e conferma l’anteprima prima dell’invio' }),
+  }),
 });
 
 export type ProductInput = z.infer<typeof productSchema>;
@@ -181,4 +191,5 @@ export type LeadDiscoveryInput = z.infer<typeof leadDiscoverySchema>;
 export type LeadSearchInput = z.infer<typeof leadSearchSchema>;
 export type LeadCreateInput = z.infer<typeof leadCreateSchema>;
 export type LeadPatchInput = z.infer<typeof leadPatchSchema>;
+export type LeadOutreachPreviewInput = z.infer<typeof leadOutreachPreviewSchema>;
 export type LeadOutreachInput = z.infer<typeof leadOutreachSchema>;
