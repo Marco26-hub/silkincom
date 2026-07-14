@@ -69,7 +69,7 @@ export function Header() {
           />
         ) : null}
 
-        <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-3 items-center text-warm-white">
+        <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-warm-white">
           {/* Left nav (desktop) */}
           <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             {NAV_LINKS.slice(0, 4).map((l) => (
