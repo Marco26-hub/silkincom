@@ -59,6 +59,10 @@ const CITATIONS: Record<string, Array<{ label: string; url: string }>> = {
     { label: 'Seta — Wikipedia', url: 'https://it.wikipedia.org/wiki/Seta' },
     { label: 'Bombyx mori — Wikipedia', url: 'https://it.wikipedia.org/wiki/Bombyx_mori' },
   ],
+  'come-annodare-un-twilly': [
+    { label: 'Foulard — Wikipedia', url: 'https://it.wikipedia.org/wiki/Foulard' },
+    { label: 'Seta — Wikipedia', url: 'https://it.wikipedia.org/wiki/Seta' },
+  ],
 };
 
 // Posts that follow a step-by-step structure also emit schema.org HowTo
@@ -74,6 +78,16 @@ const HOWTO_POSTS: Record<string, { totalTime: string; steps: Array<{ name: stri
       { name: 'Prova del prezzo', text: 'Servono circa 2.500 bozzoli per un metro di tessuto: un foulard di pura seta sotto i €40–50 è statisticamente improbabile.' },
       { name: "Prova dell'etichetta", text: 'Cerca "100% seta" o "100% silk". Etichette generiche come "seta naturale" o "seta-poliestere" sono campanelli d\'allarme.' },
       { name: "Prova dell'orlo", text: "Una seta di qualità ha l'orlo cucito a mano (rouletté arrotolato verso l'interno), non tagliato a macchina o termo-sigillato." },
+    ],
+  },
+  'come-annodare-un-twilly': {
+    totalTime: 'PT2M',
+    steps: [
+      { name: 'Al collo, il nodo scivolato', text: 'Piega il twilly a nastro stretto, appoggialo dietro il collo con le estremità davanti, incrocia una volta e fai scivolare le code sotto il colletto.' },
+      { name: 'Sul manico della borsa', text: "Avvolgi il twilly attorno al manico con spire regolari e sovrapposte, poi chiudi con un piccolo fiocco piatto vicino all'attacco." },
+      { name: 'Tra i capelli', text: "Raccogli i capelli in una coda bassa, avvolgi il twilly due volte attorno all'elastico e chiudi con un nodo semplice." },
+      { name: 'Al polso, come bracciale', text: 'Piega il twilly a nastro sottile, gira due o tre volte attorno al polso e chiudi con un nodo piatto sul dorso della mano.' },
+      { name: 'Come cravatta morbida', text: 'Passa il twilly sotto il colletto della camicia, incrocia le estremità come una cravatta e ferma con un nodo largo e morbido.' },
     ],
   },
 };
