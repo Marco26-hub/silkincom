@@ -1702,7 +1702,8 @@ export function LeadB2BPanel({
                   Foto proposta
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-soft-grey">
-                  Di default la mail usa la foto primaria dal DB prodotto.
+                  Di default la mail usa la foto primaria dal DB prodotto; se
+                  manca, usa la foto editoriale Maison corretta per quello SKU.
                   Carica qui una foto manuale solo per questa campagna.
                 </p>
               </div>

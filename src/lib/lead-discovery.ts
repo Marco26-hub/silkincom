@@ -1249,6 +1249,21 @@ type OutreachProduct = {
 
 export type LeadOutreachProductImages = Record<string, string>;
 
+export function isMeaningfulLeadOutreachImage(
+  url: string | null | undefined,
+): url is string {
+  if (!url) return false;
+  const normalized = url.trim().toLowerCase();
+  if (!normalized) return false;
+  return !normalized.includes("/logo-official.");
+}
+
+export function resolveLeadOutreachImage(
+  ...candidates: Array<string | null | undefined>
+): string | null {
+  return candidates.find((candidate) => isMeaningfulLeadOutreachImage(candidate)) || null;
+}
+
 const TWILLY_OUTREACH_PRODUCTS: readonly OutreachProduct[] = [
   {
     name: "Como Puro",
@@ -1340,6 +1355,23 @@ export const LEAD_OUTREACH_PRODUCT_SLUGS = [
   MELZI_OUTREACH_PRODUCT.slug,
   ...TWILLY_OUTREACH_PRODUCTS.map((product) => product.slug),
 ];
+
+export const LEAD_OUTREACH_PRODUCT_IMAGE_ALIASES: Record<string, string[]> = {
+  "darsena-navy": ["darsena"],
+  "como-puro": ["twilly-como"],
+  "como-elegante": ["twilly-como"],
+  "como-fluido": ["twilly-como"],
+};
+
+export const LEAD_OUTREACH_FALLBACK_IMAGES: LeadOutreachProductImages = {
+  [TIVAN_OUTREACH_PRODUCT.slug]: TIVAN_OUTREACH_PRODUCT.image,
+  [DARSENA_OUTREACH_PRODUCT.slug]: DARSENA_OUTREACH_PRODUCT.image,
+  [RIVA_OUTREACH_PRODUCT.slug]: RIVA_OUTREACH_PRODUCT.image,
+  [MELZI_OUTREACH_PRODUCT.slug]: MELZI_OUTREACH_PRODUCT.image,
+  ...Object.fromEntries(
+    TWILLY_OUTREACH_PRODUCTS.map((product) => [product.slug, product.image]),
+  ),
+};
 
 const HOSPITALITY_PRODUCT_FOCUSES = new Set<LeadOutreachFocus>([
   "hospitality",
@@ -2223,9 +2255,11 @@ export function buildLeadOutreachCopy(
   const outreachProducts = getOutreachProducts(focus).map((product) => ({
     ...product,
     image:
-      options.productImageOverrides?.[product.slug] ||
-      options.productImages?.[product.slug] ||
-      product.image,
+      resolveLeadOutreachImage(
+        options.productImageOverrides?.[product.slug],
+        options.productImages?.[product.slug],
+        product.image,
+      ) || product.image,
   }));
   const productStory = buildOutreachProductStory(focus);
   const partnershipModels = buildPartnershipModels(usesHospitalityProducts);

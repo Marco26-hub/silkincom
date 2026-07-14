@@ -4,11 +4,13 @@ import { forbidden, requireAdminApi } from '@/lib/admin-api';
 import { logAdminAction } from '@/lib/audit';
 import {
   buildLeadOutreachCopy,
+  LEAD_OUTREACH_FALLBACK_IMAGES,
   composeLeadTargetingNotes,
   getLeadOutreachProductSlugs,
   isLeadFocusCoherent,
   isSafeLeadOutreachLink,
   isTargetingNoteSpecific,
+  resolveLeadOutreachImage,
 } from '@/lib/lead-discovery';
 import { loadLeadOutreachProductImages } from '@/lib/lead-outreach-images';
 import { sendB2BLeadOutreachEmail } from '@/lib/email';
@@ -46,7 +48,11 @@ export async function POST(req: NextRequest) {
     parsed.data.focus,
   ).filter(
     (slug) =>
-      !parsed.data.productImageOverrides?.[slug] && !productImages[slug],
+      !resolveLeadOutreachImage(
+        parsed.data.productImageOverrides?.[slug],
+        productImages[slug],
+        LEAD_OUTREACH_FALLBACK_IMAGES[slug],
+      ),
   );
   if (missingProductImages.length > 0) {
     return NextResponse.json(

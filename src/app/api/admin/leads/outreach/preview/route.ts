@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { forbidden, requireAdminApi } from '@/lib/admin-api';
 import {
   buildLeadOutreachCopy,
+  LEAD_OUTREACH_FALLBACK_IMAGES,
   composeLeadTargetingNotes,
   getLeadOutreachProductSlugs,
   isLeadFocusCoherent,
+  isMeaningfulLeadOutreachImage,
   isSafeLeadOutreachLink,
   isTargetingNoteSpecific,
+  resolveLeadOutreachImage,
 } from '@/lib/lead-discovery';
 import { loadLeadOutreachProductImages } from '@/lib/lead-outreach-images';
 import { createServiceClient } from '@/lib/supabase/server';
@@ -94,7 +97,22 @@ export async function POST(req: NextRequest) {
       parsed.data.focus,
     ).filter(
       (slug) =>
-        !parsed.data.productImageOverrides?.[slug] && !productImages[slug],
+        !resolveLeadOutreachImage(
+          parsed.data.productImageOverrides?.[slug],
+          productImages[slug],
+          LEAD_OUTREACH_FALLBACK_IMAGES[slug],
+        ),
+    );
+    const placeholderProductImages = getLeadOutreachProductSlugs(
+      parsed.data.focus,
+    ).filter((slug) =>
+      !isMeaningfulLeadOutreachImage(
+        resolveLeadOutreachImage(
+          parsed.data.productImageOverrides?.[slug],
+          productImages[slug],
+          LEAD_OUTREACH_FALLBACK_IMAGES[slug],
+        ),
+      ),
     );
     const invalidLinks = copy.links.filter(
       (link) =>
@@ -131,9 +149,16 @@ export async function POST(req: NextRequest) {
       {
         label:
           missingProductImages.length === 0
-            ? 'Foto prodotto presenti da DB o override manuale'
+            ? 'Foto prodotto presenti da DB, editoriale Maison o override manuale'
             : `Foto mancanti: ${missingProductImages.join(', ')}`,
         ok: missingProductImages.length === 0,
+      },
+      {
+        label:
+          placeholderProductImages.length === 0
+            ? 'Nessun placeholder logo al posto delle foto'
+            : `Placeholder da sostituire: ${placeholderProductImages.join(', ')}`,
+        ok: placeholderProductImages.length === 0,
       },
       {
         label:
