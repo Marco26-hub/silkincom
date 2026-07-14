@@ -747,7 +747,7 @@ async function searchGoogleCustomSearch(
   url.searchParams.set("key", apiKey);
   url.searchParams.set("cx", searchEngineId);
   url.searchParams.set("q", liveQuery);
-  url.searchParams.set("num", String(maxResults));
+  url.searchParams.set("num", String(Math.min(maxResults, 10)));
   url.searchParams.set("safe", "active");
 
   const response = await fetch(url.toString(), {
@@ -1091,7 +1091,7 @@ export async function searchLeadCandidates(params: {
   const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
   const searchEngineId = process.env.GOOGLE_CSE_ID;
   const liveQuery = [params.query, params.location].filter(Boolean).join(" ");
-  const maxResults = Math.min(params.maxResults || 6, 10);
+  const maxResults = Math.min(params.maxResults || 15, 30);
 
   if (apiKey && searchEngineId) {
     try {

@@ -296,10 +296,12 @@ export function LeadB2BPanel({
   ]);
   const [liveQuery, setLiveQuery] = useState("");
   const [liveLocation, setLiveLocation] = useState("Lago di Como Italia");
-  const [liveMaxResults, setLiveMaxResults] = useState("6");
+  const [liveMaxResults, setLiveMaxResults] = useState("15");
   const [scanUrls, setScanUrls] = useState("");
   const [scanNotes, setScanNotes] = useState("");
   const [scanIndustry, setScanIndustry] = useState("bed_breakfast");
+  const [scanProgress, setScanProgress] = useState(0);
+  const [scanningSites, setScanningSites] = useState(false);
   const [manual, setManual] = useState({
     company_name: "",
     website_url: "",
@@ -487,7 +489,7 @@ export function LeadB2BPanel({
           ]
             .filter(Boolean)
             .join(" · "),
-          maxResults: Number(liveMaxResults) || 6,
+          maxResults: Number(liveMaxResults) || 15,
         }),
       });
       const data = await response.json();
@@ -526,7 +528,16 @@ export function LeadB2BPanel({
     }
 
     setBusy(true);
+    setScanningSites(true);
+    setScanProgress(5);
     setMessage(null);
+    const progressTimer = window.setInterval(() => {
+      setScanProgress((previous) => {
+        if (previous >= 92) return previous;
+        const step = urls.length > 12 ? 3 : 5;
+        return Math.min(92, previous + step);
+      });
+    }, 900);
     try {
       const response = await fetch("/api/admin/leads/discover", {
         method: "POST",
@@ -539,6 +550,7 @@ export function LeadB2BPanel({
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Discovery fallita");
+      setScanProgress(100);
       const warningText = data.warnings?.length
         ? ` ${data.warnings.length} siti non leggibili.`
         : "";
@@ -552,7 +564,10 @@ export function LeadB2BPanel({
         error instanceof Error ? error.message : "Errore di scansione",
       );
     } finally {
+      window.clearInterval(progressTimer);
       setBusy(false);
+      setScanningSites(false);
+      window.setTimeout(() => setScanProgress(0), 1200);
     }
   }
 
@@ -885,9 +900,10 @@ export function LeadB2BPanel({
                 onChange={(e) => setLiveMaxResults(e.target.value)}
                 className="w-full border border-pearl-grey px-3 py-3 bg-warm-white text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-soft-black"
               >
-                <option value="3">3</option>
-                <option value="6">6</option>
                 <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
               </select>
             </div>
           </div>
@@ -913,10 +929,16 @@ export function LeadB2BPanel({
               type="button"
               onClick={runDiscovery}
               disabled={busy}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-soft-black text-warm-white text-sm disabled:opacity-60"
+              className="group inline-flex items-center gap-2 border border-gold-primary/70 bg-soft-black px-4 py-2 text-sm font-medium text-warm-white shadow-sm transition hover:bg-gold-primary hover:text-soft-black disabled:opacity-60"
+              title="Scansiona gli URL inseriti e salva/aggiorna i lead trovati"
             >
-              <RefreshCw className="w-4 h-4" />
-              Scansiona
+              <RefreshCw className={`w-4 h-4 ${scanningSites ? "animate-spin" : ""}`} />
+              {scanningSites ? "Scansione…" : "Scansiona URL"}
+              {scanningSites && (
+                <span className="ml-1 border-l border-warm-white/30 pl-2 text-xs tabular-nums text-gold-primary group-hover:text-soft-black">
+                  {scanProgress}%
+                </span>
+              )}
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -928,7 +950,7 @@ export function LeadB2BPanel({
                 value={scanUrls}
                 onChange={(e) => setScanUrls(e.target.value)}
                 rows={4}
-                placeholder="https://hotel-example.com\nhttps://another-hotel.com"
+                placeholder="https://hotel-example.com\nhttps://another-hotel.com\nMassimo 30 URL per scansione"
                 className="w-full border border-pearl-grey px-3 py-3 bg-warm-white text-sm focus:outline-none focus:border-soft-black resize-y"
               />
             </div>
@@ -1286,11 +1308,15 @@ export function LeadB2BPanel({
                             type="button"
                             onClick={() => openOutreachPreview([lead.id])}
                             disabled={busy || previewLoading}
-                            className="inline-flex items-center gap-2 border border-gold-primary/70 bg-soft-black px-3 py-2 text-xs uppercase tracking-[0.14em] text-warm-white shadow-sm transition hover:bg-gold-primary hover:text-soft-black disabled:opacity-50"
+                            className="group inline-flex items-center gap-2 border border-gold-primary/70 bg-soft-black px-3 py-2 text-xs uppercase tracking-[0.14em] text-warm-white shadow-sm transition hover:bg-gold-primary hover:text-soft-black disabled:opacity-50"
                             title="Apri anteprima Maison e valida l’email prima dell’invio"
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            Valida
+                            Anteprima
+                            <span className="text-gold-primary group-hover:text-soft-black">
+                              /
+                            </span>
+                            Invia
                           </button>
                           <button
                             type="button"

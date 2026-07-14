@@ -97,7 +97,10 @@ export const contactFormSchema = z.object({
 // ========== B2B LEADS ==========
 
 export const leadDiscoverySchema = z.object({
-  urls: z.array(z.string().trim().min(1)).min(1, 'Inserisci almeno un URL'),
+  urls: z
+    .array(z.string().trim().min(1))
+    .min(1, 'Inserisci almeno un URL')
+    .max(30, 'Scansiona massimo 30 URL alla volta'),
   industry: z.string().trim().optional().default('hospitality'),
   notes: z.string().trim().max(500).optional().default(''),
 });
@@ -112,7 +115,7 @@ export const leadSearchSchema = z.object({
     .max(6, 'Seleziona massimo 6 tipologie')
     .optional()
     .default([]),
-  maxResults: z.coerce.number().int().min(1).max(10).optional().default(6),
+  maxResults: z.coerce.number().int().min(1).max(30).optional().default(15),
 });
 
 export const leadCreateSchema = z.object({

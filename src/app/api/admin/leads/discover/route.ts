@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   const warnings: string[] = [];
 
   const results = await Promise.allSettled(
-    urls.slice(0, 10).map(async (url) => {
+    urls.slice(0, 30).map(async (url) => {
       try {
         const lead = await discoverLeadFromWebsite(url, {
           industry: parsed.data.industry,

@@ -15,7 +15,7 @@ export async function GET() {
     .from('lead_accounts')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(200);
+    .limit(500);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
