@@ -8,6 +8,7 @@ export default async function AdminLeadB2BPage() {
   const { data: leads } = await supabase
     .from('lead_accounts')
     .select('*')
+    .order('score', { ascending: false })
     .order('created_at', { ascending: false })
     .limit(200);
   const { data: replies } = await supabase

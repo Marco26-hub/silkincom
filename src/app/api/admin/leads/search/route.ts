@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { forbidden, requireAdminApi } from "@/lib/admin-api";
 import {
   discoverLeadFromWebsite,
+  LeadSearchError,
   normalizeLeadUrl,
   searchLeadCandidates,
 } from "@/lib/lead-discovery";
@@ -30,18 +31,28 @@ export async function POST(req: NextRequest) {
   const warnings: string[] = [];
 
   let candidates;
+  let providerDiagnostics;
   try {
-    candidates = await searchLeadCandidates({
+    const searchResult = await searchLeadCandidates({
       query: input.query,
       location: input.location,
       industry: input.industry,
       segmentIds: input.segmentIds,
       maxResults: input.maxResults,
     });
+    candidates = searchResult.candidates;
+    providerDiagnostics = searchResult.diagnostics;
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Ricerca live non disponibile";
-    return NextResponse.json({ error: message }, { status: 503 });
+    return NextResponse.json(
+      {
+        error: message,
+        providerDiagnostics:
+          error instanceof LeadSearchError ? error.diagnostics : [],
+      },
+      { status: 503 },
+    );
   }
 
   const saved = [];
@@ -122,5 +133,6 @@ export async function POST(req: NextRequest) {
     candidates: candidates.length,
     saved: saved.length,
     warnings,
+    providerDiagnostics,
   });
 }

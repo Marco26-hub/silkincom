@@ -131,6 +131,7 @@ export const leadCreateSchema = z.object({
   source_url: z.string().trim().url('URL fonte non valido').optional().nullable(),
   public_contact_page: z.string().trim().url('URL pagina contatti non valido').optional().nullable(),
   notes: z.string().trim().max(1000).optional().default(''),
+  priority_high: z.boolean().optional().default(false),
 });
 
 export const leadPatchSchema = z.object({
@@ -148,11 +149,15 @@ export const leadPatchSchema = z.object({
   notes: z.string().trim().max(1000).optional(),
   status: z.enum(['new', 'scanned', 'qualified', 'contacted', 'replied', 'do_not_contact']).optional(),
   score: z.coerce.number().int().min(0).max(100).optional(),
+  priority_high: z.boolean().optional(),
   do_not_contact: z.boolean().optional(),
 });
 
 export const leadOutreachPreviewSchema = z.object({
-  leadIds: z.array(z.string().uuid()).min(1, 'Seleziona almeno un lead'),
+  leadIds: z
+    .array(z.string().uuid())
+    .min(1, 'Seleziona almeno un lead')
+    .max(6, 'Per proteggere la reputazione del dominio invia massimo 6 email per lotto'),
   focus: z.enum([
     'hospitality',
     'bed_breakfast',
@@ -174,6 +179,10 @@ export const leadOutreachPreviewSchema = z.object({
   notes: z.string().trim().max(1000).optional().default(''),
   productImageOverrides: z
     .record(z.string().trim().min(1), z.string().trim().url())
+    .optional()
+    .default({}),
+  recipientEmailOverrides: z
+    .record(z.string().uuid(), z.string().trim().email('Email di recapito non valida'))
     .optional()
     .default({}),
 });

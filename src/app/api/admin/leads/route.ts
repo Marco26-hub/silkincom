@@ -14,6 +14,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('lead_accounts')
     .select('*')
+    .order('score', { ascending: false })
     .order('created_at', { ascending: false })
     .limit(500);
 
@@ -36,6 +37,9 @@ export async function POST(req: NextRequest) {
 
   const supabase = createServiceClient();
   const input = parsed.data;
+  const priorityFields = input.priority_high
+    ? { priority_high: true }
+    : {};
   const { data, error } = await supabase
     .from('lead_accounts')
     .upsert(
@@ -52,6 +56,7 @@ export async function POST(req: NextRequest) {
         source_url: input.source_url || input.website_url,
         public_contact_page: input.public_contact_page || null,
         notes: input.notes || '',
+        ...priorityFields,
         status: 'new',
         score: input.contact_email ? 60 : 25,
         last_scanned_at: new Date().toISOString(),
@@ -62,6 +67,15 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
+    if (/priority_high/i.test(error.message)) {
+      return NextResponse.json(
+        {
+          error:
+            'Priorità alta non ancora disponibile sul database live. Applica la migrazione 052_lead_priority.sql e riprova.',
+        },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

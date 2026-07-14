@@ -32,6 +32,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .single();
 
   if (error) {
+    if (/priority_high/i.test(error.message)) {
+      return NextResponse.json(
+        {
+          error:
+            'Priorità alta non ancora disponibile sul database live. Applica la migrazione 052_lead_priority.sql e riprova.',
+        },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

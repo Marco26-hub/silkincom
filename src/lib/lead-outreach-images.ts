@@ -19,7 +19,12 @@ export async function loadLeadOutreachProductImages(
     .select("slug, product_images(image_url, is_primary, display_order)")
     .in("slug", LEAD_OUTREACH_PRODUCT_SLUGS);
 
-  if (error || !data) return {};
+  if (error) {
+    throw new Error(`Catalogo immagini B2B non disponibile: ${error.message}`);
+  }
+  if (!data) {
+    throw new Error("Catalogo immagini B2B senza risposta");
+  }
 
   return (data as ProductRow[]).reduce<LeadOutreachProductImages>(
     (imagesBySlug, product) => {

@@ -34,6 +34,27 @@ type SearchLeadCandidate = {
   country?: string | null;
 };
 
+export type LeadSearchProviderDiagnostic = {
+  provider: "google_cse" | "openstreetmap" | "duckduckgo";
+  status: "success" | "empty" | "failed" | "not_configured" | "skipped";
+  message: string;
+};
+
+export type LeadSearchResult = {
+  candidates: SearchLeadCandidate[];
+  diagnostics: LeadSearchProviderDiagnostic[];
+};
+
+export class LeadSearchError extends Error {
+  diagnostics: LeadSearchProviderDiagnostic[];
+
+  constructor(message: string, diagnostics: LeadSearchProviderDiagnostic[]) {
+    super(message);
+    this.name = "LeadSearchError";
+    this.diagnostics = diagnostics;
+  }
+}
+
 type GeocodedLeadLocation = {
   latitude: number;
   longitude: number;
@@ -459,9 +480,14 @@ async function readLimitedText(response: Response): Promise<string> {
 
 async function fetchHtml(
   url: string,
+  strict = false,
 ): Promise<{ html: string; finalUrl: string } | null> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const fail = (message: string): null => {
+    if (strict) throw new Error(message);
+    return null;
+  };
   try {
     let currentUrl = url;
     for (let redirectCount = 0; redirectCount <= 4; redirectCount += 1) {
@@ -479,24 +505,33 @@ async function fetchHtml(
 
       if (response.status >= 300 && response.status < 400) {
         const location = response.headers.get("location");
-        if (!location) return null;
+        if (!location) return fail(`Redirect ${response.status} senza destinazione`);
         currentUrl = new URL(location, currentUrl).toString();
         continue;
       }
 
-      if (!response.ok) return null;
+      if (!response.ok) return fail(`Risposta HTTP ${response.status}`);
       const contentType = response.headers.get("content-type") || "";
       if (
         !contentType.includes("text/html") &&
         !contentType.includes("application/xhtml+xml")
       )
-        return null;
+        return fail(`Contenuto non HTML (${contentType || "tipo sconosciuto"})`);
       const contentLength = Number(response.headers.get("content-length") || 0);
-      if (contentLength > MAX_HTML_BYTES * 2) return null;
+      if (contentLength > MAX_HTML_BYTES * 2)
+        return fail("Pagina troppo grande per la scansione sicura");
       return { html: await readLimitedText(response), finalUrl: currentUrl };
     }
-    return null;
-  } catch {
+    return fail("Troppi redirect consecutivi");
+  } catch (error) {
+    if (strict) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error(`Timeout dopo ${FETCH_TIMEOUT_MS / 1000} secondi`);
+      }
+      throw new Error(
+        error instanceof Error ? error.message : "Errore di rete sconosciuto",
+      );
+    }
     return null;
   } finally {
     clearTimeout(timeout);
@@ -528,7 +563,7 @@ export async function discoverLeadFromWebsite(
     throw new Error(`URL non valido: ${url}`);
   }
 
-  const homepageResult = await fetchHtml(normalizedUrl);
+  const homepageResult = await fetchHtml(normalizedUrl, true);
   if (!homepageResult) {
     throw new Error(`Impossibile leggere il sito: ${normalizedUrl}`);
   }
@@ -1087,11 +1122,12 @@ export async function searchLeadCandidates(params: {
   industry?: string;
   segmentIds?: string[];
   maxResults?: number;
-}): Promise<SearchLeadCandidate[]> {
+}): Promise<LeadSearchResult> {
   const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
   const searchEngineId = process.env.GOOGLE_CSE_ID;
   const liveQuery = [params.query, params.location].filter(Boolean).join(" ");
   const maxResults = Math.min(params.maxResults || 15, 30);
+  const diagnostics: LeadSearchProviderDiagnostic[] = [];
 
   if (apiKey && searchEngineId) {
     try {
@@ -1101,10 +1137,29 @@ export async function searchLeadCandidates(params: {
         apiKey,
         searchEngineId,
       );
-      if (googleResults.length > 0) return googleResults;
-    } catch {
-      // The public fallback keeps lead discovery operational if Google quota or configuration fails.
+      diagnostics.push({
+        provider: "google_cse",
+        status: googleResults.length > 0 ? "success" : "empty",
+        message: googleResults.length > 0
+          ? `${googleResults.length} risultati`
+          : "nessun risultato pertinente",
+      });
+      if (googleResults.length > 0) {
+        return { candidates: googleResults, diagnostics };
+      }
+    } catch (error) {
+      diagnostics.push({
+        provider: "google_cse",
+        status: "failed",
+        message: error instanceof Error ? error.message : "errore Google CSE",
+      });
     }
+  } else {
+    diagnostics.push({
+      provider: "google_cse",
+      status: "not_configured",
+      message: "GOOGLE_SEARCH_API_KEY o GOOGLE_CSE_ID mancanti",
+    });
   }
 
   let openStreetMapCompleted = false;
@@ -1120,25 +1175,60 @@ export async function searchLeadCandidates(params: {
         maxResults,
       );
       openStreetMapCompleted = true;
-      if (openStreetMapResults.length > 0) return openStreetMapResults;
-    } catch {
-      // The final fallback can still serve results if an OSM instance is busy.
+      diagnostics.push({
+        provider: "openstreetmap",
+        status: openStreetMapResults.length > 0 ? "success" : "empty",
+        message: openStreetMapResults.length > 0
+          ? `${openStreetMapResults.length} risultati`
+          : "nessun risultato con sito pubblico",
+      });
+      if (openStreetMapResults.length > 0) {
+        return { candidates: openStreetMapResults, diagnostics };
+      }
+    } catch (error) {
+      diagnostics.push({
+        provider: "openstreetmap",
+        status: "failed",
+        message: error instanceof Error ? error.message : "errore OpenStreetMap",
+      });
     }
+  } else {
+    diagnostics.push({
+      provider: "openstreetmap",
+      status: "skipped",
+      message: "zona non inserita",
+    });
   }
 
   try {
     const fallbackResults = await searchDuckDuckGo(liveQuery, maxResults);
-    if (fallbackResults.length > 0) return fallbackResults;
-  } catch {
+    diagnostics.push({
+      provider: "duckduckgo",
+      status: fallbackResults.length > 0 ? "success" : "empty",
+      message: fallbackResults.length > 0
+        ? `${fallbackResults.length} risultati`
+        : "nessun risultato pertinente",
+    });
+    if (fallbackResults.length > 0) {
+      return { candidates: fallbackResults, diagnostics };
+    }
+  } catch (error) {
+    diagnostics.push({
+      provider: "duckduckgo",
+      status: "failed",
+      message: error instanceof Error ? error.message : "errore motore pubblico",
+    });
     if (!openStreetMapCompleted) {
-      throw new Error(
+      throw new LeadSearchError(
         "I servizi di ricerca sono temporaneamente occupati. Riprova tra pochi secondi.",
+        diagnostics,
       );
     }
   }
 
-  throw new Error(
+  throw new LeadSearchError(
     "Nessuna azienda con sito pubblico trovata. Prova una zona più precisa o altre categorie.",
+    diagnostics,
   );
 }
 
@@ -1420,6 +1510,30 @@ function getOutreachProducts(
   }
 
   return TWILLY_OUTREACH_PRODUCTS;
+}
+
+export function getLeadOutreachProductSlugs(
+  focus: LeadOutreachFocus,
+): string[] {
+  return getOutreachProducts(focus).map((product) => product.slug);
+}
+
+export function isSafeLeadOutreachLink(value: string): boolean {
+  if (value.startsWith("mailto:")) {
+    return /^mailto:b2b@silkincom\.com\?/i.test(value);
+  }
+
+  try {
+    const url = new URL(value);
+    return (
+      url.protocol === "https:" &&
+      ["silkincom.com", "www.silkincom.com"].includes(
+        url.hostname.toLowerCase(),
+      )
+    );
+  } catch {
+    return false;
+  }
 }
 
 function buildOutreachProductStory(
@@ -2118,13 +2232,12 @@ export function buildLeadOutreachCopy(
   const executiveProject = usesHospitalityProducts
     ? "Hospitality Signature Capsule"
     : "Luxury Signature Capsule SILKinCOM";
-  const executiveMaterial = usesHospitalityProducts
-    ? "Pura seta · 100% cotone · Made in Como"
-    : "100% seta · Made in Como";
+  const executiveMaterial = "Seta · Cashmere · Lana · Cotone · Lino";
   const greeting = lead.contact_name
     ? `Gentile ${lead.contact_name},`
     : `Gentile Team ${lead.company_name},`;
   const location = [lead.city, lead.country].filter(Boolean).join(" - ");
+  const founderName = "Marco Dibenedetto";
   const trackingParams = new URLSearchParams({
     utm_source: "b2b_outreach",
     utm_medium: "email",
@@ -2135,11 +2248,16 @@ export function buildLeadOutreachCopy(
   towelCollectionParams.set("utm_content", "telo_lago_collection");
   const towelCollectionUrl = `${APP_URL}/it/teli-mare?${towelCollectionParams.toString()}`;
   const officialLogoUrl = `${APP_URL}/logo-official.png`;
+  const productUrlFor = (slug: string) => {
+    const productParams = new URLSearchParams(trackingParams);
+    productParams.set("utm_content", slug.replaceAll("-", "_"));
+    return `${APP_URL}/it/prodotto/${slug}?${productParams.toString()}`;
+  };
   const collectionLinksHtml = usesHospitalityProducts
     ? `<a href="${escapeHtml(towelCollectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Scopri il Telo Lago</a><a href="${escapeHtml(collectionUrl)}" style="display:inline-block;border:1px solid #17130F;color:#17130F;text-decoration:none;padding:12px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Esplora i Twilly Como</a>`
     : `<a href="${escapeHtml(collectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 22px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;">Esplora la collezione Twilly Como</a>`;
   const replySubject = `Concept riservato — ${lead.company_name} × SILKinCOM`;
-  const replyBody = `Gentile Marco,\n\nla ringraziamo per averci presentato la proposta SILKinCOM. Desideriamo valutare un progetto dedicato per ${lead.company_name}.\n\nIl modello di maggiore interesse è:\n□ Maison Selection con logo SILKinCOM\n□ Co-Branded Edition SILKinCOM × ${lead.company_name}\n□ Exclusive Signature Capsule\n\nSaremmo lieti di ricevere il concept preliminare e le condizioni di sviluppo.\nIn alternativa, possiamo fissare un confronto di 15 minuti con il referente più adatto.\n\nCordiali saluti,`;
+  const replyBody = `Gentile ${founderName},\n\nla ringraziamo per averci presentato la proposta SILKinCOM. Desideriamo valutare un progetto dedicato per ${lead.company_name}.\n\nIl modello di maggiore interesse è:\n□ Maison Selection con logo SILKinCOM\n□ Co-Branded Edition SILKinCOM × ${lead.company_name}\n□ Exclusive Signature Capsule\n\nSaremmo lieti di ricevere il dossier riservato, il concept preliminare e le condizioni di sviluppo.\nIn alternativa, possiamo fissare un confronto di 15 minuti con il referente più adatto.\n\nCon stima,`;
   const replyUrl = `mailto:b2b@silkincom.com?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
   const noteBlock = notes.trim()
     ? `<div style="margin:24px 0 0 0;padding:18px 20px;background:#F8F3EA;border-left:2px solid #D8B443;">
@@ -2148,9 +2266,7 @@ export function buildLeadOutreachCopy(
       </div>`
     : "";
   const productsHtml = outreachProducts.map((product) => {
-    const productParams = new URLSearchParams(trackingParams);
-    productParams.set("utm_content", product.slug.replaceAll("-", "_"));
-    const productUrl = `${APP_URL}/it/prodotto/${product.slug}?${productParams.toString()}`;
+    const productUrl = productUrlFor(product.slug);
     return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 12px 0;border:1px solid #E8DFD0;background:#FFFDF8;">
       <tr>
         <td class="product-image-cell" width="148" valign="top" style="width:148px;padding:12px;">
@@ -2228,7 +2344,7 @@ export function buildLeadOutreachCopy(
   </style>
 </head>
 <body style="margin:0;padding:0;background:#F3EEE5;font-family:Arial,Helvetica,sans-serif;color:#17130F;">
-  <div style="display:none;max-height:0;overflow:hidden;color:#F3EEE5;">SILKinCOM × ${escapeHtml(lead.company_name)}: prodotti firmati Maison, edizione co-branded o capsule esclusiva.</div>
+  <div style="display:none;max-height:0;overflow:hidden;color:#F3EEE5;">Un progetto riservato SILKinCOM × ${escapeHtml(lead.company_name)}, concepito sul Lago di Como.</div>
   <div style="max-width:680px;margin:0 auto;padding:28px 12px;">
     <div style="background:#11100E;color:#F8F3EA;padding:18px 22px 16px;text-align:center;">
       <a href="${APP_URL}" style="display:inline-block;text-decoration:none;" aria-label="SILKinCOM">
@@ -2239,10 +2355,10 @@ export function buildLeadOutreachCopy(
     <div class="email-content" style="background:#FFFDF8;border:1px solid #E5D8BE;border-top:0;padding:40px 34px;">
       <p style="font-size:14px;line-height:1.7;color:#4A443C;margin:0 0 20px 0;">${escapeHtml(greeting)}</p>
       <p style="font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:#A87F1E;margin:0 0 14px 0;">Proposta riservata · ${escapeHtml(focusCopy.eyebrow)}</p>
-      <h1 class="email-title" style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:36px;line-height:1.13;letter-spacing:-.015em;margin:0 0 20px 0;color:#17130F;">Una firma condivisa,<br /><span style="color:#A87F1E;font-style:italic;">creata sul Lago di Como.</span></h1>
-      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 14px 0;">Sono <strong>Marco Di Benedetto</strong>, Founder di SILKinCOM. Le scrivo per sottoporre alla sua attenzione una possibile collaborazione tra la nostra Maison e <strong>${escapeHtml(lead.company_name)}</strong>${location ? `, con riferimento a ${escapeHtml(location)}` : ""}.</p>
-      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 14px 0;">${escapeHtml(focusCopy.intro)} La proposta non nasce come catalogo standard, ma come progetto calibrato sul vostro posizionamento, sulla clientela e sul contesto di vendita o accoglienza.</p>
-      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 24px 0;">Possiamo partire da prodotti già firmati con il <strong>logo SILKinCOM</strong>, sviluppare una <strong>doppia firma SILKinCOM × ${escapeHtml(lead.company_name)}</strong> oppure creare una capsule riservata con un perimetro di esclusiva definito insieme. Se il tema non rientra nella sua area, sarà sufficiente inoltrare questa nota al referente guest experience, procurement, concierge o retail.</p>
+      <h1 class="email-title" style="font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:36px;line-height:1.13;letter-spacing:-.015em;margin:0 0 20px 0;color:#17130F;">Un progetto esclusivo,<br /><span style="color:#A87F1E;font-style:italic;">concepito sul Lago di Como.</span></h1>
+      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 14px 0;">Sono <strong>${escapeHtml(founderName)}</strong>, Founder di SILKinCOM. Desidero sottoporre alla sua attenzione un progetto riservato, ideato per esplorare una collaborazione tra la nostra Maison e <strong>${escapeHtml(lead.company_name)}</strong>${location ? `, con riferimento a ${escapeHtml(location)}` : ""}.</p>
+      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 14px 0;">${escapeHtml(focusCopy.intro)} La proposta nasce come una selezione essenziale e distintiva: prodotti scelti, materiali nobili, manifattura italiana e una presentazione sviluppata in armonia con l’identità e il livello di servizio della vostra struttura.</p>
+      <p style="font-size:15px;line-height:1.8;color:#3B362F;margin:0 0 24px 0;">Il percorso può iniziare con una <strong>Maison Selection firmata SILKinCOM</strong>, evolvere in una <strong>Co-Branded Edition SILKinCOM × ${escapeHtml(lead.company_name)}</strong> oppure culminare in una <strong>Exclusive Signature Capsule</strong>, definita per prodotto, canale, territorio e durata. Se la proposta fosse di competenza di un altro ufficio, le sarei grato se volesse condividerla con il referente guest experience, procurement, concierge o retail.</p>
 
       <div style="background:#17130F;color:#FFFDF8;padding:22px 24px;margin:0 0 26px 0;">
         <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#D8B443;margin:0 0 14px 0;">Executive brief</p>
@@ -2253,7 +2369,7 @@ export function buildLeadOutreachCopy(
               <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.4;color:#FFFDF8;margin:0;">${escapeHtml(executiveProject)}</p>
             </td>
             <td class="brief-cell" valign="top" style="padding:0 0 12px 12px;border-bottom:1px solid #3B3832;">
-              <p style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#AFA79C;margin:0 0 5px 0;">Materia</p>
+              <p style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#AFA79C;margin:0 0 5px 0;">Materiali</p>
               <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.4;color:#FFFDF8;margin:0;">${escapeHtml(executiveMaterial)}</p>
             </td>
           </tr>
@@ -2306,14 +2422,14 @@ export function buildLeadOutreachCopy(
 
       <div style="background:#17130F;color:#FFFDF8;padding:26px 24px;margin:30px 0 26px 0;text-align:center;">
         <p style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#D8B443;margin:0 0 10px 0;">Invito riservato</p>
-        <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;line-height:1.3;color:#FFFDF8;margin:0 0 12px 0;">Creiamo una capsule che possa appartenere soltanto a ${escapeHtml(lead.company_name)}.</h2>
-        <p style="font-size:13px;line-height:1.7;color:#DED8CE;margin:0 0 12px 0;">Il primo confronto richiede circa 15 minuti e serve solo a capire coerenza, referente corretto, modello di partnership, applicazione dei loghi e possibile perimetro di esclusiva.</p>
+        <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;line-height:1.3;color:#FFFDF8;margin:0 0 12px 0;">Condividiamo un concept riservato, disegnato per ${escapeHtml(lead.company_name)}.</h2>
+        <p style="font-size:13px;line-height:1.7;color:#DED8CE;margin:0 0 12px 0;">Un primo confronto ci permetterà di definire interlocutore, contesto d’impiego, selezione prodotto, personalizzazione, campionatura ed eventuale perimetro di esclusiva.</p>
         <p style="font-size:13px;line-height:1.7;color:#FFFDF8;margin:0 0 18px 0;">${escapeHtml(focusCopy.cta)}</p>
         <a href="${escapeHtml(replyUrl)}" style="display:inline-block;background:#D8B443;color:#17130F;text-decoration:none;padding:13px 21px;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;">Richiedi il concept riservato</a>
       </div>
 
-      <p style="font-size:14px;line-height:1.7;color:#3B362F;margin:0;">Cordiali saluti,</p>
-      <p style="font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:1.4;color:#17130F;margin:8px 0 2px 0;">Marco Di Benedetto</p>
+      <p style="font-size:14px;line-height:1.7;color:#3B362F;margin:0;">Con stima,</p>
+      <p style="font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:1.4;color:#17130F;margin:8px 0 2px 0;">${escapeHtml(founderName)}</p>
       <p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#A87F1E;margin:0 0 18px 0;">Founder · SILKinCOM</p>
       <p style="font-size:12px;line-height:1.7;color:#7B7369;margin:0;">Cermenate (Como) · <a href="mailto:b2b@silkincom.com" style="color:#7B7369;">b2b@silkincom.com</a> · <a href="${APP_URL}/it/b2b" style="color:#7B7369;">Programma B2B</a></p>
 
@@ -2334,15 +2450,15 @@ export function buildLeadOutreachCopy(
       `SILKinCOM · ${focusCopy.eyebrow}`,
       "",
       "PROPOSTA RISERVATA DI PARTNERSHIP",
-      "UNA FIRMA CONDIVISA, CREATA SUL LAGO DI COMO",
-      `Sono Marco Di Benedetto, Founder di SILKinCOM. Le scrivo per sottoporre alla sua attenzione una possibile collaborazione tra la nostra Maison e ${lead.company_name}${location ? `, con riferimento a ${location}` : ""}.`,
-      `${focusCopy.intro} La proposta non nasce come catalogo standard, ma come progetto calibrato sul vostro posizionamento, sulla clientela e sul contesto di vendita o accoglienza.`,
-      `Possiamo partire da prodotti già firmati con il logo SILKinCOM, sviluppare una doppia firma SILKinCOM × ${lead.company_name} oppure creare una capsule riservata con un perimetro di esclusiva definito insieme.`,
-      "Se il tema non rientra nella sua area, sarà sufficiente inoltrare questa nota al referente guest experience, procurement, concierge o retail.",
+      "UN PROGETTO ESCLUSIVO, CONCEPITO SUL LAGO DI COMO",
+      `Sono ${founderName}, Founder di SILKinCOM. Desidero sottoporre alla sua attenzione un progetto riservato, ideato per esplorare una collaborazione tra la nostra Maison e ${lead.company_name}${location ? `, con riferimento a ${location}` : ""}.`,
+      `${focusCopy.intro} La proposta nasce come una selezione essenziale e distintiva: prodotti scelti, materiali nobili, manifattura italiana e una presentazione sviluppata in armonia con l’identità e il livello di servizio della vostra struttura.`,
+      `Il percorso può iniziare con una Maison Selection firmata SILKinCOM, evolvere in una Co-Branded Edition SILKinCOM × ${lead.company_name} oppure culminare in una Exclusive Signature Capsule, definita per prodotto, canale, territorio e durata.`,
+      "Se la proposta fosse di competenza di un altro ufficio, le sarei grato se volesse condividerla con il referente guest experience, procurement, concierge o retail.",
       "",
       "EXECUTIVE BRIEF",
       `Progetto: ${executiveProject}`,
-      `Materia: ${executiveMaterial}`,
+      `Materiali: ${executiveMaterial}`,
       `Attivazione: ${sectorActivation}`,
       `Obiettivo: ${sectorObjective}`,
       "",
@@ -2352,12 +2468,10 @@ export function buildLeadOutreachCopy(
       "",
       "Prodotti da valutare:",
       ...outreachProducts.flatMap((product) => {
-        const productParams = new URLSearchParams(trackingParams);
-        productParams.set("utm_content", product.slug.replaceAll("-", "_"));
         return [
           `- ${product.name}: ${product.detail}`,
           `  ${product.specs}`,
-          `  ${APP_URL}/it/prodotto/${product.slug}?${productParams.toString()}`,
+          `  ${productUrlFor(product.slug)}`,
         ];
       }),
       ...(usesHospitalityProducts
@@ -2387,13 +2501,13 @@ export function buildLeadOutreachCopy(
       "ESCLUSIVA SU PROGETTO",
       "L’esclusiva può riguardare prodotto, variante, territorio, canale e durata. Viene formalizzata solo dopo verifica di fattibilità, approvazione del campione, definizione delle quantità minime, piano produttivo e accordo commerciale. Il dossier riservato include concept, applicazione dei loghi, condizioni e calendario.",
       "",
-      `Creiamo una capsule che possa appartenere soltanto a ${lead.company_name}.`,
-      "Il primo confronto richiede circa 15 minuti e serve solo a capire coerenza, referente corretto, modello di partnership, applicazione dei loghi e possibile perimetro di esclusiva.",
+      `Condividiamo un concept riservato, disegnato per ${lead.company_name}.`,
+      "Un primo confronto ci permetterà di definire interlocutore, contesto d’impiego, selezione prodotto, personalizzazione, campionatura ed eventuale perimetro di esclusiva.",
       focusCopy.cta,
       "Per richiedere il concept, è sufficiente rispondere a questa email.",
       "",
-      "Cordiali saluti,",
-      "Marco Di Benedetto",
+      "Con stima,",
+      founderName,
       "Founder · SILKinCOM",
       "b2b@silkincom.com · https://www.silkincom.com/it/b2b",
       "",
@@ -2401,6 +2515,18 @@ export function buildLeadOutreachCopy(
     ]
       .filter(Boolean)
       .join("\n"),
+    links: [
+      ...outreachProducts.map((product) => ({
+        label: product.name,
+        url: productUrlFor(product.slug),
+      })),
+      { label: "Twilly Como", url: collectionUrl },
+      ...(usesHospitalityProducts
+        ? [{ label: "Telo Lago", url: towelCollectionUrl }]
+        : []),
+      { label: "Programma B2B", url: `${APP_URL}/it/b2b` },
+      { label: "Richiedi il concept riservato", url: replyUrl },
+    ],
   };
 }
 

@@ -20,7 +20,7 @@ Il messaggio deve avere il tono di un Partnership Office di alto livello: selett
 8. **Partnership editions** — Maison Selection, Co-Branded Edition ed Exclusive Signature Capsule
 9. **Esclusiva su progetto** — prodotto/variante, territorio, canale e durata definiti dopo fattibilità, campione, quantità minime e accordo
 10. **CTA executive** — richiesta di concept preliminare riservato, campioni e condizioni di sviluppo
-11. **Firma personale** — Marco Di Benedetto, Founder SILKinCOM
+11. **Firma personale** — Marco Dibenedetto, Founder SILKinCOM
 12. **Opt-out chiaro** — se risponde `STOP`, il sistema blocca il contatto
 
 ## Sbocchi prioritari
@@ -58,7 +58,8 @@ Il messaggio deve avere il tono di un Partnership Office di alto livello: selett
 - **Micro-CTA** — chiedere concept riservato oppure confronto di 15 minuti, non una decisione commerciale immediata.
 - **Inoltro interno** — se il destinatario non è il referente, facilitare il passaggio a guest experience, procurement, concierge o retail.
 - **Personalizzazione minima** — per ogni categoria aggiungere sempre una nota reale su canale, prodotto luxury, occasione d’uso, cliente finale e referente corretto prima dell’anteprima.
-- **Linguaggio maison** — ogni proposta deve parlare di prodotti luxury Made in Como: seta, cashmere, lino, Telo Lago, Darsena, Riva, Melzi, packaging Maison, capsule riservata, co-branding o esclusiva solo quando coerente con il canale.
+- **Linguaggio maison** — ogni proposta deve parlare di prodotti luxury Made in Como: seta, cashmere, lana, cotone, lino, Telo Lago, Darsena, Riva, Melzi, packaging Maison, capsule riservata, co-branding o esclusiva solo quando coerente con il canale. Ogni testo va curato con particolare attenzione alla precisione dei dettagli.
+- **Deliverability** — prima del go-live verificare su Resend SPF e DKIM di `silkincom.com`, pubblicare una policy DMARC coerente, mantenere mittente e reply-to stabili e iniziare con lotti piccoli e realmente qualificati. Il sistema blocca gli invii cliente se `RESEND_DOMAIN_VERIFIED` non è `true`; nessuna configurazione può garantire in assoluto l’assenza dallo spam, perché reputazione e comportamento dei destinatari restano determinanti.
 - **Follow-up** — manuale, selettivo e solo su lead coerenti; nessun follow-up su contatti `STOP` o non pertinenti.
 
 ## Modelli di partnership
@@ -78,8 +79,9 @@ Il messaggio deve avere il tono di un Partnership Office di alto livello: selett
 6. Selezionare i lead con email e aprire `Anteprima e valida`.
 7. Verificare le foto prodotto: di default la proposta usa la foto primaria dal DB prodotto; se serve una visual più coerente con il partner, caricare un override manuale in `Foto proposta` prima dell’anteprima.
 8. Controllare ogni destinatario, oggetto, logo, prodotti, CTA e stato `STOP`; per più lead occorre aprire tutte le personalizzazioni.
-9. Confermare esplicitamente il contenuto e inviare solo quando tutti i controlli risultano verdi.
-10. Monitorare `Risposte recenti`; se arriva `stop`, non ricontattare.
+9. Prima dell’invio cliente, se serve, sostituire `Email di recapito / test` con una propria email per vedere il recapito reale; gli invii manuali/test non marcano il lead come contattato.
+10. Confermare esplicitamente il contenuto e inviare solo quando tutti i controlli risultano verdi.
+11. Monitorare `Risposte recenti`; se arriva `stop`, non ricontattare.
 
 ## Note compliance
 

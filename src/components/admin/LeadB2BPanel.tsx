@@ -19,6 +19,7 @@ import {
   Eye,
   CheckCircle2,
   AlertTriangle,
+  Star,
 } from "lucide-react";
 import {
   buildLeadSegmentQuery,
@@ -45,6 +46,7 @@ type Lead = {
   notes: string | null;
   status: string;
   score: number;
+  priority_high: boolean;
   do_not_contact: boolean;
   last_scanned_at: string | null;
   last_contacted_at: string | null;
@@ -70,6 +72,8 @@ type OutreachPreview = {
   leadId: string;
   companyName: string;
   recipientEmail: string | null;
+  originalRecipientEmail: string | null;
+  isManualRecipient: boolean;
   subject: string;
   html: string;
   text: string;
@@ -129,6 +133,19 @@ const SALES_OUTLET_GUIDE = [
 ];
 
 const RECOMMENDED_OUTREACH_BATCH_SIZE = 10;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function readApiJson(response: Response): Promise<any> {
+  const body = await response.text();
+  if (!body) return {};
+  try {
+    return JSON.parse(body);
+  } catch {
+    return {
+      error: `Risposta API non valida (${response.status} ${response.statusText || "errore"})`,
+    };
+  }
+}
 
 const CONVERSION_PLAYBOOK = [
   "Batch piccoli: 5-10 strutture realmente coerenti, non invii massivi.",
@@ -315,6 +332,7 @@ export function LeadB2BPanel({
     source_url: "",
     public_contact_page: "",
     notes: "",
+    priority_high: false,
   });
   const [focus, setFocus] = useState("bed_breakfast");
   const [campaignNotes, setCampaignNotes] = useState("");
@@ -330,6 +348,9 @@ export function LeadB2BPanel({
   const [reviewedPreviewIds, setReviewedPreviewIds] = useState<string[]>([]);
   const [previewConfirmed, setPreviewConfirmed] = useState(false);
   const [productImageOverrides, setProductImageOverrides] = useState<
+    Record<string, string>
+  >({});
+  const [recipientEmailOverrides, setRecipientEmailOverrides] = useState<
     Record<string, string>
   >({});
   const [uploadingProductSlug, setUploadingProductSlug] = useState<
@@ -379,9 +400,23 @@ export function LeadB2BPanel({
         }))
         .sort(
           (leadA, leadB) =>
+            Number(leadB.lead.priority_high) -
+              Number(leadA.lead.priority_high) ||
             leadB.conversionScore - leadA.conversionScore ||
             (leadB.lead.score || 0) - (leadA.lead.score || 0),
         ),
+    [leads],
+  );
+  const displayedLeads = useMemo(
+    () =>
+      [...leads].sort(
+        (leadA, leadB) =>
+          Number(Boolean(leadB.priority_high)) -
+            Number(Boolean(leadA.priority_high)) ||
+          (leadB.score || 0) - (leadA.score || 0) ||
+          new Date(leadB.created_at).getTime() -
+            new Date(leadA.created_at).getTime(),
+      ),
     [leads],
   );
   const selectedConversionStats = useMemo(() => {
@@ -492,8 +527,24 @@ export function LeadB2BPanel({
           maxResults: Number(liveMaxResults) || 15,
         }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Ricerca live fallita");
+      const data = await readApiJson(response);
+      const providerDiagnostics = Array.isArray(data.providerDiagnostics)
+        ? data.providerDiagnostics
+        : [];
+      const diagnosticText = providerDiagnostics
+        .filter((diagnostic: any) => diagnostic.status !== "success")
+        .map(
+          (diagnostic: any) =>
+            `${diagnostic.provider}: ${diagnostic.message}`,
+        )
+        .join(" · ");
+      if (!response.ok) {
+        throw new Error(
+          `${data.error || "Ricerca live fallita"}${
+            diagnosticText ? ` — ${diagnosticText}` : ""
+          }`,
+        );
+      }
       const provider =
         data.provider === "openstreetmap"
           ? "OpenStreetMap"
@@ -504,7 +555,9 @@ export function LeadB2BPanel({
         ? ` ${data.warnings.length} siti non leggibili.`
         : "";
       setMessage(
-        `Ricerca completata via ${provider}: ${data.saved || 0} lead salvati da ${data.candidates || 0} risultati.${warningText}`,
+        `Ricerca completata via ${provider}: ${data.saved || 0} lead salvati da ${data.candidates || 0} risultati.${warningText}${
+          diagnosticText ? ` Diagnostica fallback: ${diagnosticText}.` : ""
+        }`,
       );
       await refresh();
     } catch (error) {
@@ -548,7 +601,7 @@ export function LeadB2BPanel({
           notes: scanNotes,
         }),
       });
-      const data = await response.json();
+      const data = await readApiJson(response);
       if (!response.ok) throw new Error(data.error || "Discovery fallita");
       setScanProgress(100);
       const warningText = data.warnings?.length
@@ -591,7 +644,7 @@ export function LeadB2BPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await response.json();
+      const data = await readApiJson(response);
       if (!response.ok) throw new Error(data.error || "Lead non salvato");
       setMessage(
         `Lead salvato: ${data.lead?.company_name || manual.company_name}`,
@@ -609,6 +662,7 @@ export function LeadB2BPanel({
         source_url: "",
         public_contact_page: "",
         notes: "",
+        priority_high: false,
       });
       await refresh();
     } catch (error) {
@@ -622,28 +676,41 @@ export function LeadB2BPanel({
 
   async function patchLead(id: string, patch: Record<string, unknown>) {
     setMessage(null);
-    const response = await fetch(`/api/admin/leads/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(patch),
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Aggiornamento fallito");
-    setLeads((prev) => prev.map((lead) => (lead.id === id ? data.lead : lead)));
+    try {
+      const response = await fetch(`/api/admin/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      const data = await readApiJson(response);
+      if (!response.ok) throw new Error(data.error || "Aggiornamento fallito");
+      setLeads((prev) =>
+        prev.map((lead) => (lead.id === id ? data.lead : lead)),
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Aggiornamento lead fallito",
+      );
+    }
   }
 
   async function deleteLead(id: string, name: string) {
     if (!confirm(`Eliminare il lead "${name}"?`)) return;
-    const response = await fetch(`/api/admin/leads/${id}`, {
-      method: "DELETE",
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      setMessage(data.error || "Cancellazione fallita");
-      return;
+    try {
+      const response = await fetch(`/api/admin/leads/${id}`, {
+        method: "DELETE",
+      });
+      const data = await readApiJson(response);
+      if (!response.ok) {
+        throw new Error(data.error || "Cancellazione fallita");
+      }
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
+      await refresh();
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Cancellazione lead fallita",
+      );
     }
-    setSelectedIds((prev) => prev.filter((item) => item !== id));
-    await refresh();
   }
 
   async function openOutreachPreview(overrideIds?: string[]) {
@@ -655,8 +722,9 @@ export function LeadB2BPanel({
 
     if (ids.length > RECOMMENDED_OUTREACH_BATCH_SIZE) {
       setMessage(
-        `Per massimizzare conversione usa lotti da massimo ${RECOMMENDED_OUTREACH_BATCH_SIZE} lead. Ho aperto comunque l’anteprima: valuta se ridurre il batch.`,
+        `Per proteggere reputazione e conversione puoi generare massimo ${RECOMMENDED_OUTREACH_BATCH_SIZE} email per lotto. Riduci la selezione.`,
       );
+      return;
     }
 
     setPreviewOpen(true);
@@ -665,6 +733,11 @@ export function LeadB2BPanel({
     setOutreachPreviews([]);
     setReviewedPreviewIds([]);
     setPreviewLeadIds(ids);
+    setRecipientEmailOverrides((previous) =>
+      Object.fromEntries(
+        Object.entries(previous).filter(([leadId]) => ids.includes(leadId)),
+      ),
+    );
     setMessage(null);
     try {
       const response = await fetch("/api/admin/leads/outreach/preview", {
@@ -675,11 +748,21 @@ export function LeadB2BPanel({
           focus,
           notes: campaignNotes,
           productImageOverrides,
+          recipientEmailOverrides: Object.fromEntries(
+            Object.entries(recipientEmailOverrides).filter(
+              ([leadId, email]) => ids.includes(leadId) && EMAIL_PATTERN.test(email),
+            ),
+          ),
         }),
       });
-      const data = await response.json();
+      const data = await readApiJson(response);
       if (!response.ok) throw new Error(data.error || "Anteprima non disponibile");
       const previews = (data.previews || []) as OutreachPreview[];
+      if (previews.length !== ids.length) {
+        throw new Error(
+          `Anteprima incompleta: generate ${previews.length} email su ${ids.length}. Ricarica i lead e riprova.`,
+        );
+      }
       setOutreachPreviews(previews);
       setPreviewLeadId(previews[0]?.leadId || "");
       setReviewedPreviewIds(previews[0]?.leadId ? [previews[0].leadId] : []);
@@ -698,7 +781,14 @@ export function LeadB2BPanel({
   function openPreviewInNewTab(preview: OutreachPreview) {
     const previewBlob = new Blob([preview.html], { type: "text/html" });
     const previewUrl = URL.createObjectURL(previewBlob);
-    window.open(previewUrl, "_blank", "noopener,noreferrer");
+    const previewLink = document.createElement("a");
+    previewLink.href = previewUrl;
+    previewLink.target = "_blank";
+    previewLink.rel = "noopener noreferrer";
+    document.body.appendChild(previewLink);
+    previewLink.click();
+    previewLink.remove();
+    setMessage("Anteprima aperta in una nuova scheda del browser.");
     window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60_000);
   }
 
@@ -714,7 +804,7 @@ export function LeadB2BPanel({
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
+      const data = await readApiJson(response);
       if (!response.ok) {
         throw new Error(data.error || "Upload immagine fallito");
       }
@@ -744,6 +834,16 @@ export function LeadB2BPanel({
     setBusy(true);
     setMessage(null);
     try {
+      const validRecipientEmailOverrides = Object.fromEntries(
+        Object.entries(recipientEmailOverrides).filter(
+          ([leadId, email]) =>
+            ids.includes(leadId) &&
+            EMAIL_PATTERN.test(email) &&
+            email !==
+              outreachPreviews.find((preview) => preview.leadId === leadId)
+                ?.originalRecipientEmail,
+        ),
+      );
       const response = await fetch("/api/admin/leads/outreach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -752,24 +852,73 @@ export function LeadB2BPanel({
           focus,
           notes: campaignNotes,
           productImageOverrides,
+          recipientEmailOverrides: validRecipientEmailOverrides,
           previewConfirmed: true,
         }),
       });
-      const data = await response.json();
+      const data = await readApiJson(response);
       if (!response.ok) throw new Error(data.error || "Invio fallito");
-      const sent = (data.results || []).filter((item: any) => item.ok).length;
-      const failed = (data.results || []).filter(
-        (item: any) => !item.ok,
+      const results = Array.isArray(data.results) ? data.results : [];
+      const sent = results.filter((item: any) => item.ok).length;
+      const manualSent = results.filter(
+        (item: any) => item.ok && item.manualRecipient,
       ).length;
-      setMessage(
-        `Invio completato: ${sent} inviati${failed ? `, ${failed} saltati` : ""}.`,
-      );
+      const failedResults = results.filter((item: any) => !item.ok);
+      const failed = failedResults.length;
+      if (sent === 0) {
+        const reasons = failedResults
+          .map((item: any) => item.error)
+          .filter(Boolean)
+          .slice(0, 3)
+          .join(" · ");
+        throw new Error(
+          `Nessuna email inviata${reasons ? `: ${reasons}` : "."}`,
+        );
+      }
+      if (sent > 0 && sent === manualSent) {
+        setMessage(
+          `Test inviato${sent > 1 ? ` a ${sent} indirizzi` : ""}. Nessun lead è stato marcato come contattato${
+            failed ? `; ${failed} invii non riusciti` : ""
+          }.`,
+        );
+      } else {
+        const customerSent = sent - manualSent;
+        setMessage(
+          `Invio completato: ${customerSent} contatti cliente${
+            manualSent ? `, ${manualSent} test` : ""
+          }${failed ? `, ${failed} non riusciti` : ""}.`,
+        );
+      }
+      if (failed > 0) {
+        const failedIds = failedResults.map((item: any) => item.leadId);
+        setSelectedIds(failedIds);
+        setPreviewConfirmed(false);
+        setOutreachPreviews((previous) =>
+          previous.filter((preview) => failedIds.includes(preview.leadId)),
+        );
+        setPreviewLeadIds(failedIds);
+        setPreviewLeadId(failedIds[0] || "");
+        setReviewedPreviewIds([]);
+        setRecipientEmailOverrides((previous) =>
+          Object.fromEntries(
+            Object.entries(previous).filter(([leadId]) =>
+              failedIds.includes(leadId),
+            ),
+          ),
+        );
+        setMessage(
+          `Invio parziale: ${sent} riusciti, ${failed} non riusciti. Restano selezionati solo i lead da correggere; genera nuovamente l’anteprima prima di ritentare.`,
+        );
+        await refresh();
+        return;
+      }
       setSelectedIds([]);
       setPreviewOpen(false);
       setPreviewConfirmed(false);
       setOutreachPreviews([]);
       setPreviewLeadIds([]);
       setReviewedPreviewIds([]);
+      setRecipientEmailOverrides({});
       await refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Errore invio email");
@@ -789,6 +938,53 @@ export function LeadB2BPanel({
   const allPreviewsReviewed =
     previewLeadIds.length > 0 &&
     previewLeadIds.every((leadId) => reviewedPreviewIds.includes(leadId));
+  const manualRecipientCount = outreachPreviews.filter(
+    (preview) => preview.isManualRecipient,
+  ).length;
+
+  function updatePreviewRecipientEmail(preview: OutreachPreview, email: string) {
+    const nextEmail = email.trim();
+    const originalEmail = preview.originalRecipientEmail || "";
+    const isManualRecipient = Boolean(
+      nextEmail && nextEmail.toLowerCase() !== originalEmail.toLowerCase(),
+    );
+    const effectiveEmail = nextEmail || originalEmail || null;
+
+    setRecipientEmailOverrides((previous) => {
+      const next = { ...previous };
+      if (isManualRecipient && EMAIL_PATTERN.test(nextEmail)) {
+        next[preview.leadId] = nextEmail;
+      } else {
+        delete next[preview.leadId];
+      }
+      return next;
+    });
+    setOutreachPreviews((previous) =>
+      previous.map((item) => {
+        if (item.leadId !== preview.leadId) return item;
+        const checks = item.checks.map((check) =>
+          check.label === "Destinatario email presente" ||
+          check.label === "Email di recapito manuale presente"
+            ? {
+                ...check,
+                label: isManualRecipient
+                  ? "Email di recapito manuale presente"
+                  : "Destinatario email presente",
+                ok: Boolean(effectiveEmail) && EMAIL_PATTERN.test(effectiveEmail || ""),
+              }
+            : check,
+        );
+        return {
+          ...item,
+          recipientEmail: effectiveEmail,
+          isManualRecipient,
+          checks,
+          valid: checks.every((check) => check.ok),
+        };
+      }),
+    );
+    setPreviewConfirmed(false);
+  }
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
@@ -1106,6 +1302,25 @@ export function LeadB2BPanel({
                 placeholder="Osservazioni interne, contesto della struttura, priorità"
               />
             </div>
+            <label className="md:col-span-2 flex items-center gap-3 border border-gold-primary/40 bg-ivory px-4 py-3 text-sm">
+              <input
+                type="checkbox"
+                checked={manual.priority_high}
+                onChange={(event) =>
+                  setManual((previous) => ({
+                    ...previous,
+                    priority_high: event.target.checked,
+                  }))
+                }
+                className="h-4 w-4 accent-black"
+              />
+              <span>
+                <strong>Priorità alta</strong>
+                <span className="ml-2 text-soft-grey">
+                  Evidenzia internamente il lead e lo porta in cima alla selezione.
+                </span>
+              </span>
+            </label>
           </div>
         </section>
 
@@ -1172,7 +1387,7 @@ export function LeadB2BPanel({
                     </td>
                   </tr>
                 ) : (
-                  leads.map((lead) => (
+                  displayedLeads.map((lead) => (
                     <tr
                       key={lead.id}
                       className={
@@ -1283,6 +1498,26 @@ export function LeadB2BPanel({
                             );
                           })()}
                           <p className="font-medium">{lead.score ?? 0}</p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              patchLead(lead.id, {
+                                priority_high: !lead.priority_high,
+                              })
+                            }
+                            className={`inline-flex items-center gap-1 border px-2 py-1 text-[10px] uppercase tracking-[0.13em] ${
+                              lead.priority_high
+                                ? "border-gold-primary bg-gold-primary text-soft-black"
+                                : "border-pearl-grey bg-white text-soft-grey"
+                            }`}
+                            title="Priorità interna: non aggiunge intestazioni urgenti all’email"
+                          >
+                            <Star
+                              className="h-3 w-3"
+                              fill={lead.priority_high ? "currentColor" : "none"}
+                            />
+                            {lead.priority_high ? "Priorità alta" : "Priorità normale"}
+                          </button>
                           <p className="text-xs text-soft-grey">
                             Email: {lead.email_sent_count ?? 0}
                           </p>
@@ -1750,6 +1985,44 @@ export function LeadB2BPanel({
                         {activePreview.recipientEmail || "Email mancante"}
                       </p>
                     </div>
+                    <div className="border-b border-pearl-grey pb-4">
+                      <label
+                        htmlFor={`preview-recipient-${activePreview.leadId}`}
+                        className="text-[9px] uppercase tracking-[0.2em] text-soft-grey"
+                      >
+                        Email di recapito / test
+                      </label>
+                      <input
+                        id={`preview-recipient-${activePreview.leadId}`}
+                        type="email"
+                        value={activePreview.recipientEmail || ""}
+                        onChange={(event) =>
+                          updatePreviewRecipientEmail(
+                            activePreview,
+                            event.target.value,
+                          )
+                        }
+                        placeholder="Inserisci la tua email per test recapito"
+                        className={`mt-2 w-full border px-3 py-3 text-sm focus:outline-none focus:ring-1 ${
+                          activePreview.recipientEmail &&
+                          EMAIL_PATTERN.test(activePreview.recipientEmail)
+                            ? "border-pearl-grey bg-warm-white focus:border-gold-primary focus:ring-gold-primary"
+                            : "border-red-200 bg-red-50 focus:border-red-700 focus:ring-red-700"
+                        }`}
+                      />
+                      <p className="mt-2 text-[11px] leading-relaxed text-soft-grey">
+                        Puoi sostituire temporaneamente il destinatario con la tua
+                        email per vedere il recapito reale prima di inviare al
+                        cliente.
+                      </p>
+                      {activePreview.isManualRecipient && (
+                        <p className="mt-2 border border-gold-primary/40 bg-ivory px-3 py-2 text-[11px] leading-relaxed text-soft-black/75">
+                          Invio test/manuale: parte a{" "}
+                          <strong>{activePreview.recipientEmail}</strong> e non
+                          marca il lead come contattato.
+                        </p>
+                      )}
+                    </div>
                     <div>
                       <p className="text-[9px] uppercase tracking-[0.2em] text-soft-grey">
                         Oggetto email
@@ -1786,6 +2059,12 @@ export function LeadB2BPanel({
                       </p>
                     </div>
                   </div>
+                  {manualRecipientCount > 0 && (
+                    <div className="mb-5 border border-gold-primary/40 bg-ivory p-4 text-xs leading-relaxed text-soft-black/75">
+                      {manualRecipientCount} email verrà inviata a un recapito
+                      manuale/test. Il cliente non viene marcato come contattato.
+                    </div>
+                  )}
 
                   <div className="space-y-3 border border-pearl-grey bg-white p-4">
                     <div className="flex items-center justify-between gap-3 border-b border-pearl-grey pb-3">
@@ -1834,7 +2113,8 @@ export function LeadB2BPanel({
                       />
                       <span>
                         Ho verificato destinatari, oggetto, contenuto, prodotti,
-                        logo, CTA e tono maison. Autorizzo l’invio.
+                        email di recapito/test, logo, CTA e tono maison.
+                        Autorizzo l’invio.
                       </span>
                     </label>
                   ) : !allPreviewsValid ? (
@@ -1866,6 +2146,7 @@ export function LeadB2BPanel({
                       <Send className="h-4 w-4" />
                     )}
                     Autorizza e invia {previewLeadIds.length} email
+                    {manualRecipientCount ? ` (${manualRecipientCount} test)` : ""}
                   </button>
                 </aside>
 

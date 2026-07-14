@@ -58,3 +58,6 @@ Thumbs.db
 # Anchored to repo root so it does NOT match app code dirs like
 # src/app/.../social/ (the admin Social dashboard).
 /social/
+
+# Local previews generated during manual QA.
+/tmp/

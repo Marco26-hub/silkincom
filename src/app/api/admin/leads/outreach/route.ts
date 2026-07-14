@@ -5,7 +5,9 @@ import { logAdminAction } from '@/lib/audit';
 import {
   buildLeadOutreachCopy,
   composeLeadTargetingNotes,
+  getLeadOutreachProductSlugs,
   isLeadFocusCoherent,
+  isSafeLeadOutreachLink,
   isTargetingNoteSpecific,
 } from '@/lib/lead-discovery';
 import { loadLeadOutreachProductImages } from '@/lib/lead-outreach-images';
@@ -26,7 +28,34 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const productImages = await loadLeadOutreachProductImages(supabase);
+  let productImages;
+  try {
+    productImages = await loadLeadOutreachProductImages(supabase);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Catalogo immagini B2B non disponibile',
+      },
+      { status: 503 },
+    );
+  }
+  const missingProductImages = getLeadOutreachProductSlugs(
+    parsed.data.focus,
+  ).filter(
+    (slug) =>
+      !parsed.data.productImageOverrides?.[slug] && !productImages[slug],
+  );
+  if (missingProductImages.length > 0) {
+    return NextResponse.json(
+      {
+        error: `Invio bloccato: mancano le foto DB o manuali per ${missingProductImages.join(', ')}.`,
+      },
+      { status: 409 },
+    );
+  }
   const { data: leads, error: leadError } = await supabase
     .from('lead_accounts')
     .select('*')
@@ -36,14 +65,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: leadError.message }, { status: 500 });
   }
 
-  const results: Array<{ leadId: string; ok: boolean; email?: string; error?: string }> = [];
+  const results: Array<{
+    leadId: string;
+    ok: boolean;
+    email?: string;
+    manualRecipient?: boolean;
+    error?: string;
+  }> = [];
 
   for (const lead of leads ?? []) {
     if (lead.do_not_contact || lead.status === 'do_not_contact') {
       results.push({ leadId: lead.id, ok: false, error: 'Skipped: do not contact' });
       continue;
     }
-    if (!lead.contact_email) {
+    const originalRecipientEmail = lead.contact_email || null;
+    const overrideRecipientEmail =
+      parsed.data.recipientEmailOverrides?.[lead.id]?.trim() || null;
+    const recipientEmail = overrideRecipientEmail || originalRecipientEmail;
+    const isManualRecipient = Boolean(
+      overrideRecipientEmail &&
+        overrideRecipientEmail.toLowerCase() !==
+          (originalRecipientEmail || '').toLowerCase(),
+    );
+
+    if (!recipientEmail) {
       results.push({ leadId: lead.id, ok: false, error: 'Manca email di contatto' });
       continue;
     }
@@ -75,18 +120,31 @@ export async function POST(req: NextRequest) {
         productImageOverrides: parsed.data.productImageOverrides,
       },
     );
+    const invalidLinks = copy.links.filter(
+      (link) => !isSafeLeadOutreachLink(link.url),
+    );
+    if (invalidLinks.length > 0) {
+      results.push({
+        leadId: lead.id,
+        ok: false,
+        error: `Invio bloccato: link non validi (${invalidLinks.map((link) => link.label).join(', ')}).`,
+      });
+      continue;
+    }
 
     try {
       const { data: job, error: jobError } = await supabase.from('lead_outreach_jobs').insert({
         lead_id: lead.id,
-        recipient_email: lead.contact_email,
+        recipient_email: recipientEmail,
         subject: copy.subject,
         html_body: copy.html,
         text_body: copy.text,
         focus: parsed.data.focus,
         status: 'queued',
         created_by: auth.userId,
-        campaign_name: 'b2b_collaboration',
+        campaign_name: isManualRecipient
+          ? 'b2b_collaboration_manual_preview'
+          : 'b2b_collaboration',
       }).select('id').single();
 
       if (jobError || !job) {
@@ -94,35 +152,43 @@ export async function POST(req: NextRequest) {
       }
 
       await sendB2BLeadOutreachEmail({
-        to: lead.contact_email,
+        to: recipientEmail,
         subject: copy.subject,
         html: copy.html,
         text: copy.text,
+        isTest: isManualRecipient,
       });
 
-      await supabase
-        .from('lead_accounts')
-        .update({
-          status: 'contacted',
-          last_contacted_at: new Date().toISOString(),
-          email_sent_count: Number(lead.email_sent_count || 0) + 1,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', lead.id);
+      if (!isManualRecipient) {
+        await supabase
+          .from('lead_accounts')
+          .update({
+            status: 'contacted',
+            last_contacted_at: new Date().toISOString(),
+            email_sent_count: Number(lead.email_sent_count || 0) + 1,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', lead.id);
+      }
 
       await supabase
         .from('lead_outreach_jobs')
         .update({ status: 'sent', sent_at: new Date().toISOString(), updated_at: new Date().toISOString() })
         .eq('id', job.id);
 
-      results.push({ leadId: lead.id, ok: true, email: lead.contact_email });
+      results.push({
+        leadId: lead.id,
+        ok: true,
+        email: recipientEmail,
+        manualRecipient: isManualRecipient,
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Errore invio';
       const { data: failedJob } = await supabase
         .from('lead_outreach_jobs')
         .select('id')
         .eq('lead_id', lead.id)
-        .eq('recipient_email', lead.contact_email)
+        .eq('recipient_email', recipientEmail)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -143,6 +209,8 @@ export async function POST(req: NextRequest) {
     notes: parsed.data.notes,
     previewConfirmed: parsed.data.previewConfirmed,
     productImageOverrides: parsed.data.productImageOverrides,
+    recipientEmailOverrides: parsed.data.recipientEmailOverrides,
+    manualRecipientCount: results.filter((result) => result.manualRecipient).length,
   });
 
   return NextResponse.json({ ok: true, results });

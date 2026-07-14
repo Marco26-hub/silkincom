@@ -248,7 +248,7 @@ export default async function MarcoDibenedettoPage({ params }: { params: Promise
               SILKinCOM · {t('role')}
             </span>
             <h1 className="max-w-3xl font-display text-[3.55rem] font-light leading-[0.84] tracking-[-0.045em] sm:text-7xl lg:text-[6.6rem]">
-              Marco <em className="block font-light italic text-gold-primary">Dibenedetto</em>
+              MARCO <em className="block font-light italic text-gold-primary">dibenedetto</em>
             </h1>
             <p className="mt-8 max-w-xl text-sm font-light leading-[1.85] text-warm-white/68 md:text-base">
               {t('metaDescription')}

@@ -3,7 +3,9 @@ import { forbidden, requireAdminApi } from '@/lib/admin-api';
 import {
   buildLeadOutreachCopy,
   composeLeadTargetingNotes,
+  getLeadOutreachProductSlugs,
   isLeadFocusCoherent,
+  isSafeLeadOutreachLink,
   isTargetingNoteSpecific,
 } from '@/lib/lead-discovery';
 import { loadLeadOutreachProductImages } from '@/lib/lead-outreach-images';
@@ -32,7 +34,20 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const productImages = await loadLeadOutreachProductImages(supabase);
+  let productImages;
+  try {
+    productImages = await loadLeadOutreachProductImages(supabase);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Catalogo immagini B2B non disponibile',
+      },
+      { status: 503 },
+    );
+  }
   const { data: leads, error: leadError } = await supabase
     .from('lead_accounts')
     .select('*')
@@ -51,6 +66,15 @@ export async function POST(req: NextRequest) {
       lead.notes,
       parsed.data.notes,
     );
+    const originalRecipientEmail = lead.contact_email || null;
+    const overrideRecipientEmail =
+      parsed.data.recipientEmailOverrides?.[lead.id]?.trim() || null;
+    const recipientEmail = overrideRecipientEmail || originalRecipientEmail;
+    const isManualRecipient = Boolean(
+      overrideRecipientEmail &&
+        overrideRecipientEmail.toLowerCase() !==
+          (originalRecipientEmail || '').toLowerCase(),
+    );
     const copy = buildLeadOutreachCopy(
       {
         company_name: lead.company_name,
@@ -66,10 +90,23 @@ export async function POST(req: NextRequest) {
         productImageOverrides: parsed.data.productImageOverrides,
       },
     );
+    const missingProductImages = getLeadOutreachProductSlugs(
+      parsed.data.focus,
+    ).filter(
+      (slug) =>
+        !parsed.data.productImageOverrides?.[slug] && !productImages[slug],
+    );
+    const invalidLinks = copy.links.filter(
+      (link) =>
+        !isSafeLeadOutreachLink(link.url) ||
+        !copy.html.includes(link.url.replaceAll('&', '&amp;')),
+    );
     const checks: ValidationCheck[] = [
       {
-        label: 'Destinatario email presente',
-        ok: Boolean(lead.contact_email),
+        label: isManualRecipient
+          ? 'Email di recapito manuale presente'
+          : 'Destinatario email presente',
+        ok: Boolean(recipientEmail),
       },
       {
         label: 'Contatto autorizzato e senza richiesta STOP',
@@ -92,8 +129,18 @@ export async function POST(req: NextRequest) {
         ok: copy.html.includes('/logo-official.png'),
       },
       {
-        label: 'Foto prodotto presenti da DB o override manuale',
-        ok: copy.html.includes('<img class="product-image"'),
+        label:
+          missingProductImages.length === 0
+            ? 'Foto prodotto presenti da DB o override manuale'
+            : `Foto mancanti: ${missingProductImages.join(', ')}`,
+        ok: missingProductImages.length === 0,
+      },
+      {
+        label:
+          invalidLinks.length === 0
+            ? 'Link CTA e schede prodotto validi'
+            : `Link non validi: ${invalidLinks.map((link) => link.label).join(', ')}`,
+        ok: invalidLinks.length === 0,
       },
       {
         label: 'Call to action riservata presente',
@@ -109,7 +156,9 @@ export async function POST(req: NextRequest) {
       {
         leadId: lead.id,
         companyName: lead.company_name,
-        recipientEmail: lead.contact_email,
+        recipientEmail,
+        originalRecipientEmail,
+        isManualRecipient,
         subject: copy.subject,
         html: copy.html,
         text: copy.text,
