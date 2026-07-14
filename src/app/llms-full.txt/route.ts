@@ -66,7 +66,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('# SILKinCOM — Full Corpus for LLMs');
   lines.push('');
   lines.push(
-    '> Maison italiana di accessori in seta, cashmere, lana, lino e cotone. Sciarpe, foulard, twilly e pashmine interamente disegnate e confezionate sul Lago di Como dal distretto serico più importante d\'Europa. Founder: Marco Dibenedetto. P.IVA IT03786790133. Sede: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia.'
+    '> Maison italiana di accessori in seta, cashmere, lana, lino e cotone. Sciarpe, foulard, twilly e pashmine interamente disegnate e confezionate sul Lago di Como dal distretto serico più antico d\'Europa. Founder: Marco Dibenedetto. P.IVA IT03786790133. Sede: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia.'
   );
   lines.push('');
   lines.push(`Sito ufficiale: ${APP_URL}`);

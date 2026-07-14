@@ -108,9 +108,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   // (gold #E8C76A on #11100e) lives in those app/ files as the single source.
   verification: {
     google: 'LBplwrKCDJvhwLKGVo1iCSoJt9NUa1Anw5Fpk1KmcdA',
-    other: {
-      'msvalidate.01': '',
-    },
   },
   };
 }
