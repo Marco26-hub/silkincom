@@ -67,6 +67,15 @@ const BLOCKED_SEARCH_HOSTS = [
   "youtube.com",
   "pinterest.com",
   "duckduckgo.com",
+  "google.com",
+  "bing.com",
+  "slh.com",
+  "myboutiquehotel.com",
+  "bedandbreakfast.guide",
+  "vogue.com",
+  "modernluxury.com",
+  "forbes.com",
+  "cntraveler.com",
 ];
 const CONTACT_KEYWORDS = [
   "contact",
@@ -472,6 +481,24 @@ function isBlockedSearchHost(link: string): boolean {
   }
 }
 
+function isEditorialSearchResult(title: string, link: string): boolean {
+  const normalizedTitle = title.toLowerCase();
+  if (
+    /\b(the best|i migliori|top \d+|where to stay|travel guide|hotel guide|review|reviews)\b/i.test(
+      normalizedTitle,
+    )
+  ) {
+    return true;
+  }
+
+  try {
+    const path = new URL(link).pathname.toLowerCase();
+    return /\/(article|articles|blog|magazine|news)\//.test(path);
+  } catch {
+    return true;
+  }
+}
+
 function decodeDuckDuckGoLink(href: string): string | null {
   try {
     const decodedHref = decodeHtmlEntities(href);
@@ -521,13 +548,14 @@ async function searchDuckDuckGo(
       if (!href) continue;
       const link = decodeDuckDuckGoLink(href);
       if (!link || isBlockedSearchHost(link)) continue;
+      const title = stripHtml(match[2]);
+      if (isEditorialSearchResult(title, link)) continue;
       const parsedLink = new URL(link);
       const originKey = `${parsedLink.protocol}//${parsedLink.hostname.replace(/^www\./, "")}`;
       if (seenOrigins.has(originKey)) continue;
       seenOrigins.add(originKey);
       candidates.push({
-        title:
-          stripHtml(match[2]) || new URL(link).hostname.replace(/^www\./, ""),
+        title: title || new URL(link).hostname.replace(/^www\./, ""),
         link,
         snippet: "",
         source: "duckduckgo",
@@ -574,7 +602,9 @@ async function searchGoogleCustomSearch(
     }))
     .filter(
       (item: SearchLeadCandidate) =>
-        Boolean(normalizeLeadUrl(item.link)) && !isBlockedSearchHost(item.link),
+        Boolean(normalizeLeadUrl(item.link)) &&
+        !isBlockedSearchHost(item.link) &&
+        !isEditorialSearchResult(item.title, item.link),
     );
 }
 

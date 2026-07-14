@@ -14,7 +14,16 @@ import {
   Globe,
   ShieldCheck,
   MapPin,
+  Filter,
+  X,
 } from "lucide-react";
+import {
+  buildLeadSegmentQuery,
+  getLeadSegments,
+  LEAD_SEGMENT_GROUPS,
+  MAX_LEAD_SEGMENTS_PER_SEARCH,
+  type LeadSegment,
+} from "@/lib/lead-segments";
 
 type Lead = {
   id: string;
@@ -113,14 +122,16 @@ export function LeadB2BPanel({
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [replies, setReplies] = useState<LeadReply[]>(initialReplies);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [liveQuery, setLiveQuery] = useState(
-    "b&b charme relais hotel boutique resort shop spa luxury concept store",
-  );
+  const [selectedSegmentIds, setSelectedSegmentIds] = useState<string[]>([
+    "bed_breakfast",
+    "boutique_hotel",
+  ]);
+  const [liveQuery, setLiveQuery] = useState("");
   const [liveLocation, setLiveLocation] = useState("Lago di Como Italia");
   const [liveMaxResults, setLiveMaxResults] = useState("6");
   const [scanUrls, setScanUrls] = useState("");
   const [scanNotes, setScanNotes] = useState("");
-  const [scanIndustry, setScanIndustry] = useState("hospitality");
+  const [scanIndustry, setScanIndustry] = useState("bed_breakfast");
   const [manual, setManual] = useState({
     company_name: "",
     website_url: "",
@@ -135,7 +146,7 @@ export function LeadB2BPanel({
     public_contact_page: "",
     notes: "",
   });
-  const [focus, setFocus] = useState("hospitality");
+  const [focus, setFocus] = useState("bed_breakfast");
   const [campaignNotes, setCampaignNotes] = useState(
     "Se desidera, possiamo inviare una proposta riservata con selezione prodotto e condizioni dedicate.",
   );
@@ -166,6 +177,11 @@ export function LeadB2BPanel({
     };
   }, [leads]);
 
+  const selectedSegments = useMemo(
+    () => getLeadSegments(selectedSegmentIds),
+    [selectedSegmentIds],
+  );
+
   useEffect(() => {
     setLeads(initialLeads);
   }, [initialLeads]);
@@ -192,10 +208,32 @@ export function LeadB2BPanel({
     router.refresh();
   }
 
-  async function runLiveSearch() {
-    if (!liveQuery.trim()) {
+  function toggleLeadSegment(segment: LeadSegment) {
+    if (selectedSegmentIds.includes(segment.id)) {
+      setSelectedSegmentIds((previous) =>
+        previous.filter((segmentId) => segmentId !== segment.id),
+      );
+      return;
+    }
+
+    if (selectedSegmentIds.length >= MAX_LEAD_SEGMENTS_PER_SEARCH) {
       setMessage(
-        'Inserisci una ricerca, ad esempio "hotel lusso Lago di Como".',
+        `Seleziona massimo ${MAX_LEAD_SEGMENTS_PER_SEARCH} tipologie per mantenere la ricerca precisa.`,
+      );
+      return;
+    }
+
+    setSelectedSegmentIds((previous) => [...previous, segment.id]);
+    setScanIndustry(segment.focus);
+    setFocus(segment.focus);
+    setMessage(null);
+  }
+
+  async function runLiveSearch() {
+    const query = buildLeadSegmentQuery(selectedSegments, liveQuery);
+    if (!query) {
+      setMessage(
+        "Seleziona almeno una tipologia lead oppure inserisci parole chiave aggiuntive.",
       );
       return;
     }
@@ -207,10 +245,17 @@ export function LeadB2BPanel({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: liveQuery,
+          query,
           location: liveLocation,
-          industry: scanIndustry,
-          notes: scanNotes,
+          industry: selectedSegments[0]?.focus || scanIndustry,
+          notes: [
+            scanNotes,
+            selectedSegments.length
+              ? `Segmenti: ${selectedSegments.map((segment) => segment.label).join(", ")}`
+              : "",
+          ]
+            .filter(Boolean)
+            .join(" · "),
           maxResults: Number(liveMaxResults) || 6,
         }),
       });
@@ -409,7 +454,7 @@ export function LeadB2BPanel({
         </section>
 
         <section className="border border-pearl-grey bg-white p-5 space-y-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <h2 className="font-medium text-lg flex items-center gap-2">
                 <Search className="w-4 h-4 text-gold-primary" />
@@ -424,49 +469,77 @@ export function LeadB2BPanel({
               type="button"
               onClick={runLiveSearch}
               disabled={busy}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-soft-black text-warm-white text-sm disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 bg-soft-black px-4 py-2 text-sm text-warm-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2 disabled:opacity-60 sm:w-auto"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-4 h-4" aria-hidden="true" />
               Trova e scansiona
             </button>
           </div>
+          <LeadSegmentMenu
+            selectedIds={selectedSegmentIds}
+            onToggle={toggleLeadSegment}
+            onClear={() => setSelectedSegmentIds([])}
+          />
           <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_140px] gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-                Query
+              <label
+                htmlFor="lead-search-extra"
+                className="text-[10px] uppercase tracking-[0.2em] text-soft-grey"
+              >
+                Parole chiave extra
               </label>
-              <div className="flex items-center gap-2 border border-pearl-grey bg-warm-white px-3 py-3">
-                <Search className="w-4 h-4 text-soft-grey flex-shrink-0" />
+              <div className="flex items-center gap-2 border border-pearl-grey bg-warm-white px-3 py-3 focus-within:border-soft-black focus-within:ring-1 focus-within:ring-gold-primary">
+                <Search
+                  className="w-4 h-4 text-soft-grey flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <input
+                  id="lead-search-extra"
+                  name="lead-search-extra"
                   value={liveQuery}
                   onChange={(e) => setLiveQuery(e.target.value)}
-                  className="w-full bg-transparent text-sm focus:outline-none"
-                  placeholder="hotel lusso, spa resort, boutique hotel..."
+                  autoComplete="off"
+                  className="w-full bg-transparent text-sm focus-visible:outline-none"
+                  placeholder="Es. clientela VIP, shop interno…"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+              <label
+                htmlFor="lead-search-location"
+                className="text-[10px] uppercase tracking-[0.2em] text-soft-grey"
+              >
                 Zona
               </label>
-              <div className="flex items-center gap-2 border border-pearl-grey bg-warm-white px-3 py-3">
-                <MapPin className="w-4 h-4 text-soft-grey flex-shrink-0" />
+              <div className="flex items-center gap-2 border border-pearl-grey bg-warm-white px-3 py-3 focus-within:border-soft-black focus-within:ring-1 focus-within:ring-gold-primary">
+                <MapPin
+                  className="w-4 h-4 text-soft-grey flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <input
+                  id="lead-search-location"
+                  name="lead-search-location"
                   value={liveLocation}
                   onChange={(e) => setLiveLocation(e.target.value)}
-                  className="w-full bg-transparent text-sm focus:outline-none"
-                  placeholder="Como, Milano, Svizzera..."
+                  autoComplete="off"
+                  className="w-full bg-transparent text-sm focus-visible:outline-none"
+                  placeholder="Como, Milano, Svizzera…"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+              <label
+                htmlFor="lead-search-limit"
+                className="text-[10px] uppercase tracking-[0.2em] text-soft-grey"
+              >
                 Risultati
               </label>
               <select
+                id="lead-search-limit"
+                name="lead-search-limit"
                 value={liveMaxResults}
                 onChange={(e) => setLiveMaxResults(e.target.value)}
-                className="w-full border border-pearl-grey px-3 py-3 bg-warm-white text-sm focus:outline-none focus:border-soft-black"
+                className="w-full border border-pearl-grey px-3 py-3 bg-warm-white text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-soft-black"
               >
                 <option value="3">3</option>
                 <option value="6">6</option>
@@ -1034,6 +1107,126 @@ function Stat({ label, value }: { label: string; value: number }) {
         {label}
       </p>
       <p className="font-display text-3xl">{value}</p>
+    </div>
+  );
+}
+
+function LeadSegmentMenu({
+  selectedIds,
+  onToggle,
+  onClear,
+}: {
+  selectedIds: string[];
+  onToggle: (segment: LeadSegment) => void;
+  onClear: () => void;
+}) {
+  const selectedSegments = getLeadSegments(selectedIds);
+  const selectionIsFull = selectedIds.length >= MAX_LEAD_SEGMENTS_PER_SEARCH;
+
+  return (
+    <div className="border border-pearl-grey bg-warm-white/60">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-pearl-grey px-4 py-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <Filter
+            className="h-4 w-4 flex-shrink-0 text-gold-primary"
+            aria-hidden="true"
+          />
+          <div className="min-w-0">
+            <p className="text-sm font-medium">Tipologie lead</p>
+            <p className="text-xs text-soft-grey">
+              Seleziona fino a {MAX_LEAD_SEGMENTS_PER_SEARCH} segmenti per
+              ricerca.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs tabular-nums text-soft-grey">
+            {selectedIds.length}/{MAX_LEAD_SEGMENTS_PER_SEARCH}
+          </span>
+          <button
+            type="button"
+            onClick={onClear}
+            disabled={selectedIds.length === 0}
+            className="text-xs text-soft-grey underline-offset-4 hover:text-soft-black hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold-primary disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Azzera
+          </button>
+        </div>
+      </div>
+
+      {selectedSegments.length > 0 && (
+        <div className="flex flex-wrap gap-2 border-b border-pearl-grey px-4 py-3">
+          {selectedSegments.map((segment) => (
+            <span
+              key={segment.id}
+              className="inline-flex min-w-0 items-center gap-2 border border-gold-primary/50 bg-white px-3 py-1.5 text-xs"
+            >
+              <span className="truncate">{segment.label}</span>
+              <button
+                type="button"
+                onClick={() => onToggle(segment)}
+                aria-label={`Rimuovi ${segment.label}`}
+                className="flex-shrink-0 text-soft-grey hover:text-soft-black focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold-primary"
+              >
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-px bg-pearl-grey lg:grid-cols-2">
+        {LEAD_SEGMENT_GROUPS.map((group) => {
+          const groupSelectionCount = group.segments.filter((segment) =>
+            selectedIds.includes(segment.id),
+          ).length;
+          return (
+            <details key={group.id} className="group bg-white">
+              <summary className="cursor-pointer list-none px-4 py-3 hover:bg-warm-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-gold-primary [&::-webkit-details-marker]:hidden">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{group.label}</p>
+                    <p className="truncate text-xs text-soft-grey">
+                      {group.description}
+                    </p>
+                  </div>
+                  <span className="flex-shrink-0 text-xs tabular-nums text-gold-primary">
+                    {groupSelectionCount
+                      ? `${groupSelectionCount} scelti`
+                      : group.segments.length}
+                  </span>
+                </div>
+              </summary>
+              <div className="space-y-1 border-t border-pearl-grey px-3 py-3">
+                {group.segments.map((segment) => {
+                  const checked = selectedIds.includes(segment.id);
+                  return (
+                    <label
+                      key={segment.id}
+                      className={`flex min-h-10 cursor-pointer items-center gap-3 px-2 py-2 text-sm hover:bg-warm-white ${
+                        checked
+                          ? "bg-ivory text-soft-black"
+                          : "text-soft-black/80"
+                      } ${!checked && selectionIsFull ? "cursor-not-allowed opacity-45" : ""}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        disabled={!checked && selectionIsFull}
+                        onChange={() => onToggle(segment)}
+                        className="h-4 w-4 flex-shrink-0 accent-black focus-visible:ring-2 focus-visible:ring-gold-primary"
+                      />
+                      <span className="min-w-0 break-words">
+                        {segment.label}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </details>
+          );
+        })}
+      </div>
     </div>
   );
 }

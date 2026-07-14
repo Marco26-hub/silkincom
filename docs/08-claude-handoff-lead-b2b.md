@@ -7,6 +7,7 @@ Aggiornato: 14 luglio 2026
 - Admin `Lead B2B` con ricerca live, scansione siti pubblici, lead manuali, invio outreach e storico risposte.
 - Ricerca funzionante anche senza chiavi Google: usa Google CSE quando configurato e passa automaticamente al motore pubblico di fallback.
 - Ricerca e scansione eseguite in parallelo, con timeout, limite dimensione HTML, controllo URL pubblici e protezione SSRF.
+- Menu lead organizzato in 6 macro-aree e oltre 40 sottocategorie selezionabili; genera automaticamente query e focus commerciale, con massimo 6 segmenti per ricerca.
 - Webhook inbound `/api/email/inbound` per tracciare risposte e richieste `stop`.
 - Template email SILKinCOM più premium/maison con focus per canale.
 - Focus B2B ampliati: hospitality, B&B charme, hotel boutique, resort, spa, wedding, corporate gifting, concept store, museum shop, yacht/golf club, personal shopper, interior, luxury travel, retail, gifting, wholesale.
