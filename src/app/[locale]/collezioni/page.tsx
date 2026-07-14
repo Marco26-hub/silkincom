@@ -7,6 +7,7 @@ import { getFeaturedCollections } from '@/data/collections-db';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
+import { APP_URL } from '@/lib/app-url';
 
 const COLLECTION_FALLBACK_IMAGES: Record<string, string> = {
   inverno: '/instagram/ig-10.webp',
@@ -63,8 +64,51 @@ export default async function CollezioniPage() {
   const categories = getCategories(locale);
   const materials = getMaterials(locale);
 
+  // CollectionPage + ItemList so the main catalog hub is eligible for rich
+  // results / product-carousel treatment (the SEO landings already emit this).
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const meta = COLLECTIONS_META[locale] ?? COLLECTIONS_META.en;
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: meta.title,
+    description: meta.description,
+    url: `${APP_URL}${prefix}/collezioni`,
+    inLanguage: locale,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: products.length,
+      itemListElement: products.slice(0, 40).map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Product',
+          name: p.name,
+          url: `${APP_URL}${prefix}/prodotto/${p.slug}`,
+          image: p.images?.[0],
+          brand: { '@type': 'Brand', name: 'SILKinCOM' },
+          offers: {
+            '@type': 'Offer',
+            url: `${APP_URL}${prefix}/prodotto/${p.slug}`,
+            price: p.price.toFixed(2),
+            priceCurrency: 'EUR',
+            availability: p.variants?.length > 0 && p.variants.every((v) => v.available <= 0)
+              ? 'https://schema.org/OutOfStock'
+              : 'https://schema.org/InStock',
+            itemCondition: 'https://schema.org/NewCondition',
+            seller: { '@type': 'Organization', name: 'SILKinCOM' },
+          },
+        },
+      })),
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+      />
       <BreadcrumbSchema
         trail={[
           { name: 'Home', path: '/' },

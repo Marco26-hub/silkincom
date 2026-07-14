@@ -115,8 +115,12 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
         lines.push(`**Benefici:** ${m.benefits.trim()}`);
         lines.push('');
       }
-      lines.push(`Guida cura completa: ${APP_URL}/cura-prodotto/${m.slug}`);
-      lines.push('');
+      // Only link a care guide when the material has a real slug — some rows
+      // (e.g. duplicate "100% Cotone") have null slug and produced /cura-prodotto/null.
+      if (m.slug) {
+        lines.push(`Guida cura completa: ${APP_URL}/cura-prodotto/${m.slug}`);
+        lines.push('');
+      }
     }
   }
 
