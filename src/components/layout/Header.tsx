@@ -71,7 +71,7 @@ export function Header() {
 
         <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-warm-white">
           {/* Left nav (desktop) */}
-          <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
+          <nav className={`hidden lg:flex items-center lg:justify-end gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             {NAV_LINKS.slice(0, 4).map((l) => (
               <Link
                 key={l.href}
@@ -105,7 +105,7 @@ export function Header() {
           </div>
 
           {/* Right nav + icons */}
-          <div className={`hidden lg:flex items-center justify-end gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
+          <div className={`hidden lg:flex items-center justify-start gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
             {NAV_LINKS.slice(4).map((l) => (
               <Link
                 key={l.href}
@@ -116,7 +116,7 @@ export function Header() {
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-primary group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
-            <div className={`flex items-center gap-4 pl-4 border-l ${overHero ? 'border-warm-white/30' : 'border-pearl-grey/60'}`}>
+            <div className={`ml-auto flex items-center gap-4 pl-4 border-l ${overHero ? 'border-warm-white/30' : 'border-pearl-grey/60'}`}>
               <button aria-label={t('search')} onClick={() => setSearchOpen(true)} className="hover:text-gold-primary transition-colors">
                 <Search className="w-[18px] h-[18px]" />
               </button>
