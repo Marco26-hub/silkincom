@@ -107,6 +107,7 @@ export const leadDiscoverySchema = z.object({
 
 export const leadSearchSchema = z.object({
   query: z.string().trim().min(3, 'Inserisci una ricerca valida'),
+  customQuery: z.string().trim().max(200).optional().default(''),
   location: z.string().trim().max(120).optional().default('Italia'),
   industry: z.string().trim().optional().default('hospitality'),
   notes: z.string().trim().max(500).optional().default(''),
@@ -169,6 +170,9 @@ export const leadOutreachPreviewSchema = z.object({
     'concept_store',
     'museum_bookshop',
     'yacht_golf_club',
+    'boat_charter',
+    'chauffeur_ncc',
+    'luxury_car_rental',
     'personal_shopper',
     'interior_architect',
     'tour_operator_luxury',

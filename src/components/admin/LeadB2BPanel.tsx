@@ -113,6 +113,14 @@ type ScanSummary = {
   startedAt: string;
   completedAt?: string;
   error?: string;
+  categoryBreakdown?: Array<{
+    focus: string;
+    label: string;
+    candidates: number;
+    saved: number;
+    created: number;
+    updated: number;
+  }>;
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -144,6 +152,9 @@ const FOCUS_OPTIONS = [
   { value: "concept_store", label: "Concept store" },
   { value: "museum_bookshop", label: "Museum shop / Cultura" },
   { value: "yacht_golf_club", label: "Yacht / Golf club" },
+  { value: "boat_charter", label: "Noleggio barche / Yacht charter" },
+  { value: "chauffeur_ncc", label: "NCC / Chauffeur VIP" },
+  { value: "luxury_car_rental", label: "Noleggio auto luxury" },
   { value: "personal_shopper", label: "Personal shopper" },
   { value: "interior_architect", label: "Interior / Architetti" },
   { value: "tour_operator_luxury", label: "Luxury travel" },
@@ -161,6 +172,9 @@ const SALES_OUTLET_GUIDE = [
   "Corporate gifting per HR, board e clienti VIP",
   "Museum shop, bookshop e fondazioni culturali",
   "Luxury travel advisor, DMC e personal shopper",
+  "Noleggio barche, yacht charter e boat tour privati",
+  "NCC, chauffeur, limousine e transfer VIP",
+  "Noleggio auto luxury, prestige e supercar",
 ];
 
 const RECOMMENDED_OUTREACH_BATCH_SIZE = 10;
@@ -236,6 +250,21 @@ const FOCUS_TARGETING_GUIDE: Record<string, string[]> = {
     "Club shop, soci, torneo, regata o evento privato",
     "Darsena, Riva, Melzi, gift discreto, pashmine e capsule soci",
     "Referente: club manager, pro shop o eventi",
+  ],
+  boat_charter: [
+    "Charter privato, imbarco, concierge o itinerario sul Lago",
+    "Darsena, Riva, Melzi, Twilly e capsule co-branded a bordo",
+    "Referente: owner, charter manager o guest experience",
+  ],
+  chauffeur_ncc: [
+    "Transfer hotel, aeroporto, evento o itinerario per clientela VIP",
+    "Twilly Como, welcome gift e capsule co-branded per il passeggero",
+    "Referente: owner, operations manager o partnership manager",
+  ],
+  luxury_car_rental: [
+    "Consegna vettura, hotel partner, tour privato o evento automotive",
+    "Darsena, Twilly Como e travel capsule per clienti premium",
+    "Referente: rental manager, concierge partnership o marketing",
   ],
   personal_shopper: [
     "Private client, guardaroba viaggio, styling o gifting",
@@ -479,6 +508,19 @@ export function LeadB2BPanel({
     return { count: selected.length, average, missingNotes };
   }, [leads, selectedIds]);
   const targetingGuide = FOCUS_TARGETING_GUIDE[focus] || [];
+  const primaryOutreachProductSlug = [
+    "hospitality",
+    "bed_breakfast",
+    "hotel_boutique",
+    "resort_beach_club",
+    "spa_wellness",
+  ].includes(focus)
+    ? "tivan"
+    : ["yacht_golf_club", "tour_operator_luxury", "boat_charter"].includes(
+          focus,
+        )
+      ? "darsena-navy"
+      : "como-puro";
   const scanSummaryProgress =
     scanSummary?.status === "running"
       ? scanProgress
@@ -592,17 +634,11 @@ export function LeadB2BPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           query,
+          customQuery: liveQuery,
           location: liveLocation,
           industry: selectedSegments[0]?.focus || scanIndustry,
           segmentIds: selectedSegmentIds,
-          notes: [
-            scanNotes,
-            selectedSegments.length
-              ? `Segmenti: ${selectedSegments.map((segment) => segment.label).join(", ")}`
-              : "",
-          ]
-            .filter(Boolean)
-            .join(" · "),
+          notes: scanNotes,
           maxResults: Number(liveMaxResults) || 15,
         }),
       });
@@ -655,6 +691,9 @@ export function LeadB2BPanel({
           : [],
         updatedLeadIds: Array.isArray(data.updatedLeadIds)
           ? data.updatedLeadIds
+          : [],
+        categoryBreakdown: Array.isArray(data.categoryBreakdown)
+          ? data.categoryBreakdown
           : [],
         startedAt,
         completedAt,
@@ -1973,9 +2012,9 @@ export function LeadB2BPanel({
                   Foto proposta
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-soft-grey">
-                  Di default la mail usa la foto primaria dal DB prodotto; se
-                  manca, usa la foto editoriale Maison corretta per quello SKU.
-                  Carica qui una foto manuale solo per questa campagna.
+                  Il primo contatto usa una sola foto guida per ridurre il peso
+                  promozionale. Le altre restano disponibili per dossier e
+                  follow-up. Puoi sostituire manualmente la foto della campagna.
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -1995,11 +2034,19 @@ export function LeadB2BPanel({
                           </p>
                         </div>
                         <span
-                          className={`text-[9px] uppercase tracking-[0.14em] ${
-                            overrideUrl ? "text-gold-primary" : "text-soft-grey"
+                          className={`text-right text-[9px] uppercase tracking-[0.14em] ${
+                            product.slug === primaryOutreachProductSlug
+                              ? "text-gold-primary"
+                              : "text-soft-grey"
                           }`}
                         >
-                          {overrideUrl ? "Manuale" : "DB"}
+                          {product.slug === primaryOutreachProductSlug
+                            ? overrideUrl
+                              ? "In email · Manuale"
+                              : "In email · DB"
+                            : overrideUrl
+                              ? "Follow-up · Manuale"
+                              : "Follow-up · DB"}
                         </span>
                       </div>
                       {overrideUrl && (
@@ -2617,6 +2664,31 @@ function LeadScanStatus({
           tone={summary.warnings ? "amber" : "neutral"}
         />
       </div>
+
+      {summary.mode === "live" &&
+        summary.categoryBreakdown &&
+        summary.categoryBreakdown.length > 0 && (
+          <div className="mt-4 border border-pearl-grey/70 bg-white/70">
+            <div className="border-b border-pearl-grey/70 px-4 py-2">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-soft-grey">
+                Risultati per categoria
+              </p>
+            </div>
+            <div className="grid gap-px bg-pearl-grey/70 md:grid-cols-3">
+              {summary.categoryBreakdown.map((category) => (
+                <div key={category.focus} className="bg-white px-4 py-3">
+                  <p className="text-sm font-medium text-soft-black">
+                    {category.label}
+                  </p>
+                  <p className="mt-1 text-xs text-soft-grey">
+                    {category.candidates} trovati · {category.created} nuovi ·{" "}
+                    {category.updated} aggiornati
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       <p className="mt-4 text-xs leading-relaxed text-soft-grey">
         {summary.status === "running"

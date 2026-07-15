@@ -89,6 +89,9 @@ export const LEAD_OUTREACH_FOCUS_VALUES = [
   "concept_store",
   "museum_bookshop",
   "yacht_golf_club",
+  "boat_charter",
+  "chauffeur_ncc",
+  "luxury_car_rental",
   "personal_shopper",
   "interior_architect",
   "tour_operator_luxury",
@@ -164,6 +167,22 @@ const OSM_SEGMENT_SELECTORS: Record<string, string[]> = {
   private_club: [
     '["club"]',
     '["name"~"(private club|members club|circolo)",i]',
+  ],
+  boat_rental: [
+    '["amenity"="boat_rental"]',
+    '["shop"="boat"]["rental"="yes"]',
+    '["name"~"(boat rental|noleggio barche|rent a boat|yacht charter|boat charter|charter nautico|private boat tour|tour privato in barca)",i]',
+    '["office"="company"]["name"~"(yacht|boat).{0,12}charter",i]',
+  ],
+  chauffeur_ncc: [
+    '["name"~"(\\bNCC\\b|chauffeur|private driver|autista privato|limousine|luxury transfer|VIP transfer|transfer privato)",i]',
+    '["office"="company"]["name"~"(chauffeur|NCC|private driver|limousine|VIP transfer)",i]',
+    '["amenity"="taxi"]["name"~"(limousine|luxury|VIP|NCC)",i]',
+  ],
+  luxury_car_rental: [
+    '["amenity"="car_rental"]["name"~"(luxury|prestige|supercar|exotic|premium|lusso)",i]',
+    '["shop"="car_rental"]["name"~"(luxury|prestige|supercar|exotic|premium|lusso)",i]',
+    '["name"~"(luxury car rental|prestige car rental|supercar rental|noleggio auto lusso)",i]',
   ],
   concept_store: [
     '["shop"~"^(boutique|clothes|fashion|gift|interior_decoration|design)$"]',
@@ -926,6 +945,20 @@ function inferOsmSegmentIds(query: string, industry?: string): string[] {
     add("boutique_hotel");
   if (/\b(spa|wellness)\b/.test(normalized)) add("spa_hotel");
   if (/\b(yacht|marina)\b/.test(normalized)) add("yacht_club");
+  if (
+    /\b(boat rental|noleggio barche|rent a boat|yacht charter|boat charter|tour.{0,12}barca)\b/.test(
+      normalized,
+    )
+  )
+    add("boat_rental");
+  if (
+    /\b(ncc|chauffeur|private driver|autista privato|limousine|vip transfer)\b/.test(
+      normalized,
+    )
+  )
+    add("chauffeur_ncc");
+  if (/\b(luxury car rental|noleggio auto|supercar|prestige car)\b/.test(normalized))
+    add("luxury_car_rental");
   if (/\bgolf\b/.test(normalized)) add("golf_club");
   if (/\b(concept store|boutique|retail|negozi)/.test(normalized))
     add("concept_store");
@@ -1398,6 +1431,13 @@ const FOCUS_COMPATIBILITY: Record<LeadOutreachFocus, readonly string[]> = {
   concept_store: ["concept_store", "retail", "wholesale"],
   museum_bookshop: ["museum_bookshop", "concept_store", "retail"],
   yacht_golf_club: ["yacht_golf_club", "resort_beach_club", "gifting"],
+  boat_charter: ["boat_charter", "yacht_golf_club", "tour_operator_luxury"],
+  chauffeur_ncc: ["chauffeur_ncc", "tour_operator_luxury", "gifting"],
+  luxury_car_rental: [
+    "luxury_car_rental",
+    "tour_operator_luxury",
+    "gifting",
+  ],
   personal_shopper: ["personal_shopper", "retail", "gifting"],
   interior_architect: ["interior_architect", "hospitality", "gifting"],
   tour_operator_luxury: ["tour_operator_luxury", "hospitality", "gifting"],
@@ -1454,6 +1494,9 @@ const SECTOR_OUTREACH_ACTIVATIONS: Record<LeadOutreachFocus, string> = {
   concept_store: "Assortimento, storytelling e riordino",
   museum_bookshop: "Bookshop, racconto territoriale e retail",
   yacht_golf_club: "Club shop, eventi e member gifting",
+  boat_charter: "Imbarco, charter experience e guest gifting",
+  chauffeur_ncc: "Accoglienza a bordo, transfer e welcome gift VIP",
+  luxury_car_rental: "Consegna vettura, travel kit e client gifting",
   personal_shopper: "Private edit, styling e ordine riservato",
   interior_architect: "Material board, suite e welcome experience",
   tour_operator_luxury: "Welcome kit, concierge e itinerari privati",
@@ -1473,6 +1516,9 @@ const SECTOR_OUTREACH_OBJECTIVES: Record<LeadOutreachFocus, string> = {
   concept_store: "Assortimento curato e riordino selettivo",
   museum_bookshop: "Souvenir culturale ad alto valore",
   yacht_golf_club: "Club retail, premi e member gifting",
+  boat_charter: "Esperienza a bordo, charter retail e ricordo del Lago",
+  chauffeur_ncc: "Welcome experience e fidelizzazione passeggeri VIP",
+  luxury_car_rental: "Esperienza cliente, partnership hotel e gifting premium",
   personal_shopper: "Private client, styling e gifting",
   interior_architect: "Welcome experience e forniture progetto",
   tour_operator_luxury: "Welcome gift e itinerari privati",
@@ -1515,6 +1561,24 @@ function getOutreachProducts(
     ];
   }
 
+  if (focus === "boat_charter") {
+    return [
+      DARSENA_OUTREACH_PRODUCT,
+      RIVA_OUTREACH_PRODUCT,
+      MELZI_OUTREACH_PRODUCT,
+      TWILLY_OUTREACH_PRODUCTS[1],
+    ];
+  }
+
+  if (focus === "chauffeur_ncc" || focus === "luxury_car_rental") {
+    return [
+      TWILLY_OUTREACH_PRODUCTS[0],
+      TWILLY_OUTREACH_PRODUCTS[1],
+      DARSENA_OUTREACH_PRODUCT,
+      RIVA_OUTREACH_PRODUCT,
+    ];
+  }
+
   if (focus === "retail" || focus === "concept_store" || focus === "gifting") {
     return [
       TWILLY_OUTREACH_PRODUCTS[0],
@@ -1547,7 +1611,9 @@ function getOutreachProducts(
 export function getLeadOutreachProductSlugs(
   focus: LeadOutreachFocus,
 ): string[] {
-  return getOutreachProducts(focus).map((product) => product.slug);
+  return getOutreachProducts(focus)
+    .slice(0, 1)
+    .map((product) => product.slug);
 }
 
 export function isSafeLeadOutreachLink(value: string): boolean {
@@ -1602,6 +1668,33 @@ function buildOutreachProductStory(
     };
   }
 
+  if (focus === "boat_charter") {
+    return {
+      eyebrow: "Capsule charter · Darsena, Riva, Melzi & Twilly Como",
+      title: "Un’esperienza a bordo firmata sul Lago di Como.",
+      html: "Il <strong>cappellino Darsena</strong> accompagna imbarco, navigazione e travel kit; la <strong>camicia Riva</strong> e il <strong>pantaloncino Melzi</strong> definiscono una proposta leisure elegante per armatori e ospiti; il <strong>Twilly Como</strong> completa welcome gift, concierge e ricordo esclusivo dell’esperienza.",
+      text: "Il cappellino Darsena accompagna imbarco, navigazione e travel kit; la camicia Riva e il pantaloncino Melzi definiscono una proposta leisure elegante per armatori e ospiti; il Twilly Como completa welcome gift, concierge e ricordo esclusivo dell’esperienza.",
+    };
+  }
+
+  if (focus === "chauffeur_ncc") {
+    return {
+      eyebrow: "Private mobility · Twilly Como & welcome gift",
+      title: "Il primo gesto di accoglienza comincia a bordo.",
+      html: "I <strong>Twilly Como</strong> in pura seta diventano un welcome gift leggero e distintivo per transfer riservati, hotel partner e itinerari VIP. Il <strong>cappellino Darsena</strong> e la <strong>camicia Riva</strong> estendono il progetto a travel kit, driver experience ed eventi selezionati, anche in edizione co-branded.",
+      text: "I Twilly Como in pura seta diventano un welcome gift leggero e distintivo per transfer riservati, hotel partner e itinerari VIP. Il cappellino Darsena e la camicia Riva estendono il progetto a travel kit, driver experience ed eventi selezionati, anche in edizione co-branded.",
+    };
+  }
+
+  if (focus === "luxury_car_rental") {
+    return {
+      eyebrow: "Luxury drive · Travel capsule & client gifting",
+      title: "Dalla consegna della vettura alla memoria del viaggio.",
+      html: "Il <strong>Twilly Como</strong> introduce un gesto di benvenuto raffinato nella consegna della vettura; il <strong>cappellino Darsena</strong> e la <strong>camicia Riva</strong> costruiscono una travel capsule dedicata a tour, hotel partner, eventi automotive e clienti premium, con possibilità di doppia firma.",
+      text: "Il Twilly Como introduce un gesto di benvenuto raffinato nella consegna della vettura; il cappellino Darsena e la camicia Riva costruiscono una travel capsule dedicata a tour, hotel partner, eventi automotive e clienti premium, con possibilità di doppia firma.",
+    };
+  }
+
   if (focus === "tour_operator_luxury") {
     return {
       eyebrow: "Capsule travel · Darsena, Riva & Melzi",
@@ -1629,11 +1722,15 @@ function buildOutreachProductStory(
 }
 
 function buildPartnershipModels(
-  usesHospitalityProducts: boolean,
+  focus: LeadOutreachFocus,
 ): readonly PartnershipModel[] {
-  const productSelection = usesHospitalityProducts
+  const productSelection = HOSPITALITY_PRODUCT_FOCUSES.has(focus)
     ? "Telo Lago Tivan, Darsena, Riva, Melzi e Twilly Como"
-    : "Twilly Como e accessori selezionati";
+    : focus === "boat_charter"
+      ? "Darsena, Riva, Melzi e Twilly Como"
+      : focus === "chauffeur_ncc" || focus === "luxury_car_rental"
+        ? "Twilly Como, Darsena e Riva"
+        : "Twilly Como e accessori selezionati";
 
   return [
     {
@@ -1833,6 +1930,60 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
           {
             title: "Servizio continuativo",
             body: "Quantità iniziali contenute, riordini rapidi e capsule successive per eventi o stagioni.",
+          },
+        ],
+      };
+    case "boat_charter":
+      return {
+        title: "Piano noleggio barche e yacht charter",
+        steps: [
+          {
+            title: "On-board selection",
+            body: "Darsena per imbarco e navigazione, Riva e Melzi per una capsule leisure coordinata, Twilly Como come welcome gift o ricordo esclusivo del charter.",
+          },
+          {
+            title: "Esperienza e doppia firma",
+            body: "Integrazione nel welcome kit, nella cabina o nel servizio concierge, con possibilità di Co-Branded Edition SILKinCOM × Charter su prodotto, packaging o card.",
+          },
+          {
+            title: "Pilota stagionale",
+            body: "Prima dotazione calibrata su numero di imbarcazioni e ospiti, verifica dell’utilizzo e riordino per eventi, regate e alta stagione.",
+          },
+        ],
+      };
+    case "chauffeur_ncc":
+      return {
+        title: "Piano NCC, chauffeur e transfer VIP",
+        steps: [
+          {
+            title: "Welcome gesture",
+            body: "Twilly Como in pura seta come omaggio riservato per clienti VIP, honeymoon, ospiti hotel e itinerari privati sul Lago di Como.",
+          },
+          {
+            title: "Partnership hospitality",
+            body: "Capsule dedicata per hotel, concierge e DMC partner, con card personalizzata e possibilità di doppia firma per rendere riconoscibile il servizio.",
+          },
+          {
+            title: "Attivazione controllata",
+            body: "Test su una selezione di transfer ad alto valore, raccolta feedback e successiva estensione a flotte, eventi o clienti continuativi.",
+          },
+        ],
+      };
+    case "luxury_car_rental":
+      return {
+        title: "Piano noleggio auto luxury e prestige",
+        steps: [
+          {
+            title: "Vehicle delivery experience",
+            body: "Twilly Como come welcome gift nella consegna della vettura; Darsena e Riva come travel capsule per tour, weekend ed eventi automotive.",
+          },
+          {
+            title: "Hotel e concierge partnership",
+            body: "Proposta coordinata per clienti provenienti da hotel, ville, DMC e concierge, con packaging e messaggio dedicati all’itinerario.",
+          },
+          {
+            title: "Edizione riservata",
+            body: "Pilota su vetture o pacchetti selezionati, seguito da una Co-Branded Edition o Signature Capsule definita per stagione, territorio e clientela.",
           },
         ],
       };
@@ -2119,6 +2270,51 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
         ],
         cta: "Possiamo inviare una selezione club riservata con quantità contenute, packaging dedicato e opzione capsule soci. In alternativa, possiamo fissare 15 minuti con club manager o retail/pro shop.",
       };
+    case "boat_charter":
+      return {
+        subject: "Capsule riservata per charter ed esperienze sul Lago",
+        eyebrow: "Boat charter · Private lake experience",
+        intro:
+          "Vi proponiamo una capsule luxury pensata per noleggio barche, yacht charter e tour privati, dove ogni dettaglio a bordo contribuisce alla qualità percepita dell’esperienza.",
+        angle:
+          "Darsena, Riva e Melzi accompagnano imbarco e navigazione; il Twilly Como in pura seta trasforma il welcome gift in un ricordo autentico del Lago, con possibilità di doppia firma o capsule esclusiva.",
+        products: [
+          "cappellino Darsena per imbarco, navigazione e travel kit",
+          "camicia Riva e pantaloncino Melzi per capsule leisure a bordo",
+          "Twilly Como in pura seta per welcome gift e concierge",
+        ],
+        cta: "Possiamo preparare un concept riservato calibrato su flotta, numero di ospiti e livello di servizio, con opzione co-branding ed esclusiva. In alternativa, possiamo fissare 15 minuti con owner, charter manager o guest experience.",
+      };
+    case "chauffeur_ncc":
+      return {
+        subject: "Welcome experience luxury per transfer e clientela VIP",
+        eyebrow: "NCC · Chauffeur · Private mobility",
+        intro:
+          "Vi proponiamo un progetto di accoglienza dedicato a servizi NCC, chauffeur e transfer privati che accompagnano clientela internazionale, ospiti di hotel e viaggiatori VIP.",
+        angle:
+          "Il Twilly Como in pura seta può diventare un gesto di benvenuto discreto e memorabile a bordo, sviluppato con packaging, card e doppia firma per valorizzare il servizio e le partnership hospitality.",
+        products: [
+          "Twilly Como in pura seta per welcome gift VIP",
+          "cappellino Darsena per itinerari ed esperienze leisure",
+          "camicia Riva per capsule travel ed eventi selezionati",
+        ],
+        cta: "Possiamo inviare una proposta riservata per transfer premium, hotel partner e itinerari sul Lago, con quantità pilota e opzione co-branded. In alternativa, possiamo fissare 15 minuti con owner, operations o partnership manager.",
+      };
+    case "luxury_car_rental":
+      return {
+        subject: "Travel capsule luxury per noleggio auto prestige",
+        eyebrow: "Luxury car rental · Client experience",
+        intro:
+          "Vi proponiamo una capsule Made in Como dedicata al noleggio di auto luxury, ai tour privati e alle partnership con hotel e concierge di alto livello.",
+        angle:
+          "Un welcome gift curato nella consegna della vettura prolunga il valore dell’esperienza: Twilly Como per il gesto più raffinato, Darsena e Riva per una travel capsule riconoscibile e contemporanea.",
+        products: [
+          "Twilly Como in pura seta per vehicle delivery e gifting",
+          "cappellino Darsena per tour, weekend ed eventi automotive",
+          "camicia Riva per capsule viaggio e collaborazioni speciali",
+        ],
+        cta: "Possiamo preparare un concept riservato per clienti premium, hotel partner o pacchetti driving experience, con quantità pilota, doppia firma ed eventuale esclusiva. In alternativa, possiamo fissare 15 minuti con rental manager, marketing o concierge partnership.",
+      };
     case "personal_shopper":
       return {
         subject: "Selezione luxury SILKinCOM per private client",
@@ -2228,7 +2424,7 @@ function buildFocusCopy(focus: LeadOutreachFocus) {
   }
 }
 
-export function buildLeadOutreachCopy(
+export function buildLeadOutreachDossierCopy(
   lead: {
     company_name: string;
     city?: string | null;
@@ -2262,10 +2458,16 @@ export function buildLeadOutreachCopy(
       ) || product.image,
   }));
   const productStory = buildOutreachProductStory(focus);
-  const partnershipModels = buildPartnershipModels(usesHospitalityProducts);
+  const partnershipModels = buildPartnershipModels(focus);
   const executiveProject = usesHospitalityProducts
     ? "Hospitality Signature Capsule"
-    : "Luxury Signature Capsule SILKinCOM";
+    : focus === "boat_charter"
+      ? "Charter Signature Capsule"
+      : focus === "chauffeur_ncc"
+        ? "Private Mobility Signature"
+        : focus === "luxury_car_rental"
+          ? "Luxury Drive Signature Capsule"
+          : "Luxury Signature Capsule SILKinCOM";
   const executiveMaterial = "Seta · Cashmere · Lana · Cotone · Lino";
   const greeting = lead.contact_name
     ? `Gentile ${lead.contact_name},`
@@ -2289,7 +2491,11 @@ export function buildLeadOutreachCopy(
   };
   const collectionLinksHtml = usesHospitalityProducts
     ? `<a href="${escapeHtml(towelCollectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Scopri il Telo Lago</a><a href="${escapeHtml(collectionUrl)}" style="display:inline-block;border:1px solid #17130F;color:#17130F;text-decoration:none;padding:12px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Esplora i Twilly Como</a>`
-    : `<a href="${escapeHtml(collectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 22px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;">Esplora la collezione Twilly Como</a>`;
+    : focus === "boat_charter" ||
+        focus === "chauffeur_ncc" ||
+        focus === "luxury_car_rental"
+      ? `<a href="${escapeHtml(productUrlFor(DARSENA_OUTREACH_PRODUCT.slug))}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Scopri Darsena</a><a href="${escapeHtml(collectionUrl)}" style="display:inline-block;border:1px solid #17130F;color:#17130F;text-decoration:none;padding:12px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Esplora i Twilly Como</a>`
+      : `<a href="${escapeHtml(collectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 22px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;">Esplora la collezione Twilly Como</a>`;
   const replySubject = `Richiesta concept riservato | ${lead.company_name} × SILKinCOM`;
   const replyBody = [
     `Gentile ${founderName},`,
@@ -2595,6 +2801,176 @@ export function buildLeadOutreachCopy(
       { label: "Programma B2B", url: `${APP_URL}/it/b2b` },
       { label: "Richiedi il concept riservato", url: replyUrl },
     ],
+  };
+}
+
+export function buildLeadOutreachCopy(
+  lead: {
+    company_name: string;
+    city?: string | null;
+    country?: string | null;
+    contact_name?: string | null;
+    website_url: string;
+  },
+  focus: LeadOutreachFocus,
+  notes = "",
+  options: {
+    productImages?: LeadOutreachProductImages;
+    productImageOverrides?: LeadOutreachProductImages;
+  } = {},
+) {
+  const focusCopy = buildFocusCopy(focus);
+  const founderName = "Marco Dibenedetto";
+  const greeting = lead.contact_name
+    ? `Gentile ${lead.contact_name},`
+    : `Gentile Team ${lead.company_name},`;
+  const primaryProduct = getOutreachProducts(focus)[0];
+  const primaryProductImage =
+    resolveLeadOutreachImage(
+      options.productImageOverrides?.[primaryProduct.slug],
+      options.productImages?.[primaryProduct.slug],
+      primaryProduct.image,
+    ) || primaryProduct.image;
+  const proposalUrl = `${APP_URL}/it/b2b#richiedi-proposta`;
+  const officialLogoUrl = `${APP_URL}/logo-official.png`;
+  const normalizedReason = notes.trim().replace(/\s+/g, " ");
+  const reason =
+    normalizedReason.length > 260
+      ? `${normalizedReason.slice(0, 257).replace(/\s+\S*$/, "")}…`
+      : normalizedReason;
+  const subject = sanitizeEmailHeader(
+    `Un’idea per ${lead.company_name}, dal Lago di Como`,
+  );
+  const replySubject = `Approfondimento SILKinCOM | ${lead.company_name}`;
+  const replyBody = [
+    `Gentile ${founderName},`,
+    "",
+    "grazie per averci contattato. Il progetto può essere di nostro interesse.",
+    "",
+    "Preferiamo:",
+    "[ ] ricevere la selezione riservata di 2–3 prodotti",
+    "[ ] fissare un breve confronto di 15 minuti",
+    "",
+    "Referente:",
+    "Ruolo:",
+    "Telefono:",
+    "",
+    "Cordiali saluti,",
+    lead.company_name,
+  ].join("\n");
+  const replyUrl = `mailto:b2b@silkincom.com?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
+  const preheader = reason
+    ? `Una proposta SILKinCOM pensata per ${lead.company_name}: ${reason}`
+    : `Una proposta SILKinCOM pensata per ${lead.company_name}.`;
+
+  const html = `<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    @media screen and (max-width:520px) {
+      .email-shell { padding:12px 0 !important; }
+      .email-content { padding:28px 22px !important; }
+      .product-image-cell,
+      .product-copy-cell { display:block !important; width:100% !important; box-sizing:border-box !important; }
+      .product-image-cell { padding:14px 14px 0 !important; text-align:center !important; }
+      .product-copy-cell { padding:15px 18px 19px !important; }
+      .product-image { width:100% !important; max-width:230px !important; margin:0 auto !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#F4F0E8;font-family:Arial,Helvetica,sans-serif;color:#201C18;">
+  <div style="display:none;max-height:0;overflow:hidden;color:#F4F0E8;">${escapeHtml(preheader)}</div>
+  <div class="email-shell" style="max-width:620px;margin:0 auto;padding:24px 12px;">
+    <div style="background:#151310;padding:14px 20px;text-align:center;">
+      <img src="${escapeHtml(officialLogoUrl)}" width="92" alt="SILKinCOM" style="display:block;width:92px;max-width:92px;height:auto;margin:0 auto;border:0;" />
+    </div>
+    <div class="email-content" style="background:#FFFDF9;border:1px solid #E6DDCF;border-top:0;padding:34px 32px;">
+      <p style="font-size:14px;line-height:1.65;color:#4A443D;margin:0 0 18px;">${escapeHtml(greeting)}</p>
+      <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:29px;font-weight:400;line-height:1.22;color:#201C18;margin:0 0 18px;">Un’idea per ${escapeHtml(lead.company_name)}.</h1>
+      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 14px;">Sono <strong>${escapeHtml(founderName)}</strong>, Founder di SILKinCOM, Maison tessile del territorio comasco.</p>
+      ${reason ? `<p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 14px;">Vi contatto perché ${escapeHtml(reason)}</p>` : ""}
+      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 22px;">${escapeHtml(focusCopy.angle)}</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #E6DDCF;background:#FAF7F1;margin:0 0 22px;">
+        <tr>
+          <td class="product-image-cell" width="150" valign="top" style="width:150px;padding:12px;">
+            <img class="product-image" src="${escapeHtml(primaryProductImage)}" width="138" alt="${escapeHtml(primaryProduct.alt)}" style="display:block;width:138px;max-width:100%;height:auto;border:0;background:#F1ECE4;" />
+          </td>
+          <td class="product-copy-cell" valign="middle" style="padding:15px 18px 15px 4px;">
+            <p style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#A87F1E;margin:0 0 6px;">Selezione introduttiva</p>
+            <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:400;line-height:1.3;color:#201C18;margin:0 0 7px;">${escapeHtml(primaryProduct.name)}</h2>
+            <p style="font-size:13px;line-height:1.55;color:#625B52;margin:0 0 8px;">${escapeHtml(primaryProduct.detail)}</p>
+            <p style="font-size:11px;line-height:1.5;color:#8C681B;margin:0;">Selezione disponibile per progetti dedicati e collaborazioni su misura.</p>
+          </td>
+        </tr>
+      </table>
+
+      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 10px;">Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.</p>
+      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 20px;"><strong>È lei la persona giusta per valutarla?</strong> In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.</p>
+      <p style="margin:0 0 12px;">
+        <a href="${escapeHtml(proposalUrl)}" style="display:inline-block;background:#201C18;color:#FFFDF9;text-decoration:none;padding:12px 18px;font-size:11px;letter-spacing:.08em;">Approfondisci la proposta</a>
+      </p>
+      <p style="font-size:12px;line-height:1.6;color:#6F675E;margin:0 0 24px;">
+        Preferisce un confronto diretto? <a href="${escapeHtml(replyUrl)}" style="color:#8C681B;text-decoration:underline;">Risponda a Marco</a>.
+      </p>
+
+      <p style="font-size:14px;line-height:1.6;color:#3F3932;margin:0;">Con stima,<br /><strong>${escapeHtml(founderName)}</strong><br /><span style="font-size:12px;color:#8A8278;">Founder · SILKinCOM · Como</span></p>
+      <div style="height:1px;background:#E6DDCF;margin:24px 0 14px;"></div>
+      <p style="font-size:10px;line-height:1.55;color:#999187;margin:0;">Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda <strong>STOP</strong>.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  const text = [
+    greeting,
+    "",
+    `Sono ${founderName}, Founder di SILKinCOM, Maison tessile del territorio comasco.`,
+    reason ? `Vi contatto perché ${reason}` : null,
+    focusCopy.angle,
+    "",
+    `${primaryProduct.name}: ${primaryProduct.detail}`,
+    "",
+    "Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.",
+    "È lei la persona giusta per valutarla? In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.",
+    "",
+    "Approfondisca la proposta e i modelli di collaborazione:",
+    proposalUrl,
+    "",
+    "Per un confronto diretto, risponda a questa email: Marco le risponderà personalmente.",
+    "",
+    "Con stima,",
+    founderName,
+    "Founder · SILKinCOM · Como",
+    "",
+    "Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda STOP.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return {
+    subject,
+    html,
+    text,
+    links: [
+      { label: "Approfondisci la proposta", url: proposalUrl },
+      { label: "Rispondi a Marco", url: replyUrl },
+    ],
+  };
+}
+
+export function getLeadOutreachDeliveryMetrics(copy: {
+  html: string;
+  text: string;
+  links: Array<{ label: string; url: string }>;
+}) {
+  return {
+    htmlBytes: Buffer.byteLength(copy.html, "utf8"),
+    textWords: copy.text.trim().split(/\s+/).filter(Boolean).length,
+    imageCount: (copy.html.match(/<img\b/gi) || []).length,
+    linkCount: copy.links.length,
   };
 }
 

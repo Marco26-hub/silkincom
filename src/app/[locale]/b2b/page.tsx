@@ -78,7 +78,7 @@ export default async function B2BPage() {
       </section>
 
       {/* CTA + Form */}
-      <section className="py-24 bg-soft-black text-warm-white">
+      <section id="richiedi-proposta" className="scroll-mt-24 py-24 bg-soft-black text-warm-white">
         <div className="max-w-3xl mx-auto px-6 text-center mb-12">
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-5">
             {t('cta.eyebrow')}

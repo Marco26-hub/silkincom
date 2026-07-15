@@ -5,6 +5,7 @@ import {
   LEAD_OUTREACH_FALLBACK_IMAGES,
   composeLeadTargetingNotes,
   getLeadOutreachProductSlugs,
+  getLeadOutreachDeliveryMetrics,
   isLeadFocusCoherent,
   isMeaningfulLeadOutreachImage,
   isSafeLeadOutreachLink,
@@ -119,6 +120,7 @@ export async function POST(req: NextRequest) {
         !isSafeLeadOutreachLink(link.url) ||
         !copy.html.includes(link.url.replaceAll('&', '&amp;')),
     );
+    const deliveryMetrics = getLeadOutreachDeliveryMetrics(copy);
     const checks: ValidationCheck[] = [
       {
         label: isManualRecipient
@@ -149,7 +151,7 @@ export async function POST(req: NextRequest) {
       {
         label:
           missingProductImages.length === 0
-            ? 'Foto prodotto presenti da DB, editoriale Maison o override manuale'
+            ? 'Foto prodotto guida presente da DB o override manuale'
             : `Foto mancanti: ${missingProductImages.join(', ')}`,
         ok: missingProductImages.length === 0,
       },
@@ -163,13 +165,33 @@ export async function POST(req: NextRequest) {
       {
         label:
           invalidLinks.length === 0
-            ? 'Link CTA e schede prodotto validi'
+            ? 'Link di approfondimento e risposta validi'
             : `Link non validi: ${invalidLinks.map((link) => link.label).join(', ')}`,
         ok: invalidLinks.length === 0,
       },
       {
-        label: 'Call to action riservata presente',
-        ok: copy.html.includes('Richiedi il concept riservato'),
+        label: 'Approfondimento pubblico presente',
+        ok: copy.html.includes('Approfondisci la proposta'),
+      },
+      {
+        label: 'Risposta diretta a Marco presente',
+        ok: copy.html.includes('Risponda a Marco') && copy.html.includes('mailto:'),
+      },
+      {
+        label: `Testo breve e leggibile (${deliveryMetrics.textWords} parole)`,
+        ok: deliveryMetrics.textWords <= 210,
+      },
+      {
+        label: `HTML leggero (${Math.ceil(deliveryMetrics.htmlBytes / 1024)} KB)`,
+        ok: deliveryMetrics.htmlBytes <= 25_000,
+      },
+      {
+        label: `Immagini essenziali (${deliveryMetrics.imageCount})`,
+        ok: deliveryMetrics.imageCount <= 2,
+      },
+      {
+        label: `Link essenziali (${deliveryMetrics.linkCount})`,
+        ok: deliveryMetrics.linkCount <= 2,
       },
       {
         label: 'Istruzione STOP presente',

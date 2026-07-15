@@ -273,6 +273,33 @@ export const LEAD_SEGMENT_GROUPS: LeadSegmentGroup[] = [
     ],
   },
   {
+    id: "luxury_mobility",
+    label: "Nautica & mobilità luxury",
+    description:
+      "Charter, chauffeur e servizi di mobilità per clientela premium.",
+    segments: [
+      {
+        id: "boat_rental",
+        label: "Noleggio barche & yacht charter",
+        query:
+          "luxury boat rental yacht charter private boat tour noleggio barche premium",
+        focus: "boat_charter",
+      },
+      {
+        id: "chauffeur_ncc",
+        label: "NCC, chauffeur & transfer VIP",
+        query: "NCC chauffeur limousine luxury VIP private transfer",
+        focus: "chauffeur_ncc",
+      },
+      {
+        id: "luxury_car_rental",
+        label: "Noleggio auto luxury",
+        query: "luxury car rental prestige supercar",
+        focus: "luxury_car_rental",
+      },
+    ],
+  },
+  {
     id: "wholesale",
     label: "Wholesale & distribuzione",
     description:

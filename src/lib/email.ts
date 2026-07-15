@@ -88,7 +88,7 @@ const OWNER_EMAIL =
 const B2B_EMAIL =
   process.env.B2B_NOTIFICATION_EMAIL || 'silkincom.business@gmail.com';
 const B2B_FROM_EMAIL = DOMAIN_VERIFIED
-  ? 'Marco Dibenedetto · SILKinCOM <partnerships@silkincom.com>'
+  ? process.env.B2B_FROM_EMAIL || 'Marco Dibenedetto <marco@silkincom.com>'
   : 'SILKinCOM Partnerships <onboarding@resend.dev>';
 const B2B_REPLY_TO = DOMAIN_VERIFIED ? 'b2b@silkincom.com' : B2B_EMAIL;
 
@@ -912,9 +912,6 @@ export async function sendB2BLeadOutreachEmail(params: {
     text: params.text,
     headers: {
       'List-Unsubscribe': '<mailto:b2b@silkincom.com?subject=STOP>',
-      'X-Campaign-Type': params.isTest
-        ? 'b2b-partnership-test'
-        : 'b2b-partnership',
     },
   });
 }

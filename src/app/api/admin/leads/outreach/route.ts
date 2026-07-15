@@ -7,6 +7,7 @@ import {
   LEAD_OUTREACH_FALLBACK_IMAGES,
   composeLeadTargetingNotes,
   getLeadOutreachProductSlugs,
+  getLeadOutreachDeliveryMetrics,
   isLeadFocusCoherent,
   isSafeLeadOutreachLink,
   isTargetingNoteSpecific,
@@ -135,6 +136,21 @@ export async function POST(req: NextRequest) {
         leadId: lead.id,
         ok: false,
         error: `Invio bloccato: link non validi (${invalidLinks.map((link) => link.label).join(', ')}).`,
+      });
+      continue;
+    }
+    const deliveryMetrics = getLeadOutreachDeliveryMetrics(copy);
+    if (
+      deliveryMetrics.textWords > 210 ||
+      deliveryMetrics.htmlBytes > 25_000 ||
+      deliveryMetrics.imageCount > 2 ||
+      deliveryMetrics.linkCount > 2
+    ) {
+      results.push({
+        leadId: lead.id,
+        ok: false,
+        error:
+          'Invio bloccato: il messaggio supera i limiti del primo contatto (210 parole, 25 KB, 2 immagini, 2 link).',
       });
       continue;
     }
