@@ -90,7 +90,9 @@ const B2B_EMAIL =
 const B2B_FROM_EMAIL = DOMAIN_VERIFIED
   ? process.env.B2B_FROM_EMAIL || 'Marco Dibenedetto <marco@silkincom.com>'
   : 'SILKinCOM Partnerships <onboarding@resend.dev>';
-const B2B_REPLY_TO = DOMAIN_VERIFIED ? 'b2b@silkincom.com' : B2B_EMAIL;
+const B2B_REPLY_TO =
+  process.env.B2B_REPLY_TO_EMAIL ||
+  (DOMAIN_VERIFIED ? 'b2b@silkincom.com' : B2B_EMAIL);
 
 export type B2BInquiry = {
   nome: string;

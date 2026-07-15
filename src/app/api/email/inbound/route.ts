@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
 import { createServiceClient } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
@@ -6,6 +7,8 @@ export const dynamic = 'force-dynamic';
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 const STOP_RE = /(?:^|\s)(stop|unsubscribe|disiscrivimi|cancellami|basta)(?:\s|$|[.!?])/i;
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function authorized(req: NextRequest): boolean {
   const expected = process.env.INBOUND_EMAIL_WEBHOOK_SECRET;
@@ -74,11 +77,56 @@ function excerpt(text: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'Unauthorized inbound email webhook' }, { status: 401 });
+  const rawPayload = await req.text();
+  const svixId = req.headers.get('svix-id');
+  const svixTimestamp = req.headers.get('svix-timestamp');
+  const svixSignature = req.headers.get('svix-signature');
+  const resendWebhookSecret = process.env.RESEND_WEBHOOK_SECRET;
+
+  let payload: any = null;
+
+  if (svixId && svixTimestamp && svixSignature && resendWebhookSecret) {
+    try {
+      const event = resend.webhooks.verify({
+        payload: rawPayload,
+        headers: {
+          id: svixId,
+          timestamp: svixTimestamp,
+          signature: svixSignature,
+        },
+        webhookSecret: resendWebhookSecret,
+      }) as any;
+
+      if (event.type !== 'email.received') {
+        return NextResponse.json({ ok: true, ignored: true, type: event.type });
+      }
+
+      const { data: receivedEmail, error: receivedEmailError } =
+        await resend.emails.receiving.get(event.data.email_id);
+
+      if (receivedEmailError || !receivedEmail) {
+        return NextResponse.json(
+          { error: 'Contenuto email inbound non disponibile' },
+          { status: 502 },
+        );
+      }
+
+      payload = {
+        ...event.data,
+        ...receivedEmail,
+        raw_event: event,
+        svix_id: svixId,
+      };
+    } catch {
+      return NextResponse.json({ error: 'Invalid Resend webhook signature' }, { status: 401 });
+    }
+  } else {
+    if (!authorized(req)) {
+      return NextResponse.json({ error: 'Unauthorized inbound email webhook' }, { status: 401 });
+    }
+    payload = JSON.parse(rawPayload || 'null');
   }
 
-  const payload = await req.json().catch(() => null);
   if (!payload || typeof payload !== 'object') {
     return NextResponse.json({ error: 'Payload non valido' }, { status: 400 });
   }
@@ -95,6 +143,18 @@ export async function POST(req: NextRequest) {
   const intent = isStop ? 'stop' : 'reply';
   const now = new Date().toISOString();
   const supabase = createServiceClient();
+
+  if (svixId) {
+    const { data: duplicate } = await supabase
+      .from('lead_inbound_messages')
+      .select('id')
+      .contains('raw_payload', { svix_id: svixId })
+      .maybeSingle();
+
+    if (duplicate) {
+      return NextResponse.json({ ok: true, duplicate: true });
+    }
+  }
 
   const { data: lead } = await supabase
     .from('lead_accounts')
