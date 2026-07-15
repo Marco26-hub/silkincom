@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const discovered = [];
+  const discovered: Array<{ data: { id?: string } | null; existed: boolean }> =
+    [];
   const warnings: string[] = [];
 
   const results = await Promise.allSettled(
@@ -43,6 +44,15 @@ export async function POST(req: NextRequest) {
           industry: parsed.data.industry,
           notes: parsed.data.notes,
         });
+        const { data: existingLead, error: existingError } = await supabase
+          .from("lead_accounts")
+          .select("id")
+          .eq("website_url", lead.website_url)
+          .maybeSingle();
+
+        if (existingError) {
+          throw new Error(existingError.message);
+        }
 
         const { data, error } = await supabase
           .from("lead_accounts")
@@ -71,7 +81,7 @@ export async function POST(req: NextRequest) {
         if (error) {
           throw new Error(error.message);
         }
-        return data;
+        return { data, existed: Boolean(existingLead?.id) };
       } catch (error) {
         const message =
           error instanceof Error ? error.message : `Errore su ${url}`;
@@ -93,6 +103,16 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     discovered: discovered.length,
+    created: discovered.filter((item) => !item.existed).length,
+    updated: discovered.filter((item) => item.existed).length,
+    createdLeadIds: discovered
+      .filter((item) => !item.existed)
+      .map((item) => item.data?.id)
+      .filter(Boolean),
+    updatedLeadIds: discovered
+      .filter((item) => item.existed)
+      .map((item) => item.data?.id)
+      .filter(Boolean),
     warnings,
   });
 }

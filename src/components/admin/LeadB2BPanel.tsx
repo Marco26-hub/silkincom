@@ -95,6 +95,26 @@ type OutreachSendReceipt = {
   detail?: string;
 };
 
+type ScanSummary = {
+  mode: "live" | "url";
+  status: "running" | "done" | "error";
+  title: string;
+  detail: string;
+  requested: number;
+  candidates: number;
+  saved: number;
+  created: number;
+  updated: number;
+  warnings: number;
+  progress: number;
+  provider?: string;
+  createdLeadIds: string[];
+  updatedLeadIds: string[];
+  startedAt: string;
+  completedAt?: string;
+  error?: string;
+};
+
 const STATUS_LABELS: Record<string, string> = {
   new: "Nuovo",
   scanned: "Scansionato",
@@ -329,7 +349,9 @@ export function LeadB2BPanel({
   const [scanNotes, setScanNotes] = useState("");
   const [scanIndustry, setScanIndustry] = useState("bed_breakfast");
   const [scanProgress, setScanProgress] = useState(0);
+  const [liveSearching, setLiveSearching] = useState(false);
   const [scanningSites, setScanningSites] = useState(false);
+  const [scanSummary, setScanSummary] = useState<ScanSummary | null>(null);
   const [manual, setManual] = useState({
     company_name: "",
     website_url: "",
@@ -398,6 +420,12 @@ export function LeadB2BPanel({
     () => getLeadSegments(selectedSegmentIds),
     [selectedSegmentIds],
   );
+  const latestScanLeadRank = useMemo(() => {
+    const rank = new Map<string, number>();
+    scanSummary?.updatedLeadIds.forEach((id) => rank.set(id, 1));
+    scanSummary?.createdLeadIds.forEach((id) => rank.set(id, 2));
+    return rank;
+  }, [scanSummary]);
   const rankedConversionLeads = useMemo(
     () =>
       leads
@@ -424,13 +452,15 @@ export function LeadB2BPanel({
     () =>
       [...leads].sort(
         (leadA, leadB) =>
+          (latestScanLeadRank.get(leadB.id) || 0) -
+            (latestScanLeadRank.get(leadA.id) || 0) ||
           Number(Boolean(leadB.priority_high)) -
             Number(Boolean(leadA.priority_high)) ||
           (leadB.score || 0) - (leadA.score || 0) ||
           new Date(leadB.created_at).getTime() -
             new Date(leadA.created_at).getTime(),
       ),
-    [leads],
+    [leads, latestScanLeadRank],
   );
   const selectedConversionStats = useMemo(() => {
     const selected = leads.filter((lead) => selectedIds.includes(lead.id));
@@ -449,6 +479,10 @@ export function LeadB2BPanel({
     return { count: selected.length, average, missingNotes };
   }, [leads, selectedIds]);
   const targetingGuide = FOCUS_TARGETING_GUIDE[focus] || [];
+  const scanSummaryProgress =
+    scanSummary?.status === "running"
+      ? scanProgress
+      : scanSummary?.progress || 0;
 
   useEffect(() => {
     setLeads(initialLeads);
@@ -518,8 +552,40 @@ export function LeadB2BPanel({
       return;
     }
 
+    const requested = Number(liveMaxResults) || 15;
+    const startedAt = new Date().toISOString();
     setBusy(true);
+    setLiveSearching(true);
+    setScanProgress(6);
+    setScanSummary({
+      mode: "live",
+      status: "running",
+      title: "Ricerca live in corso",
+      detail: query,
+      requested,
+      candidates: 0,
+      saved: 0,
+      created: 0,
+      updated: 0,
+      warnings: 0,
+      progress: 6,
+      createdLeadIds: [],
+      updatedLeadIds: [],
+      startedAt,
+    });
     setMessage(null);
+    const progressTimer = window.setInterval(() => {
+      const step = requested > 20 ? 3 : 5;
+      setScanProgress((previous) => {
+        if (previous >= 93) return previous;
+        return Math.min(93, previous + step);
+      });
+      setScanSummary((current) =>
+        current?.status === "running"
+          ? { ...current, progress: Math.min(93, current.progress + step) }
+          : current,
+      );
+    }, 850);
     try {
       const response = await fetch("/api/admin/leads/search", {
         method: "POST",
@@ -567,18 +633,65 @@ export function LeadB2BPanel({
       const warningText = data.warnings?.length
         ? ` ${data.warnings.length} siti non leggibili.`
         : "";
+      const created = data.created || 0;
+      const updated = data.updated || 0;
+      const completedAt = new Date().toISOString();
+      setScanProgress(100);
+      setScanSummary({
+        mode: "live",
+        status: "done",
+        title: "Ricerca live completata",
+        detail: query,
+        requested,
+        candidates: data.candidates || 0,
+        saved: data.saved || 0,
+        created,
+        updated,
+        warnings: Array.isArray(data.warnings) ? data.warnings.length : 0,
+        progress: 100,
+        provider,
+        createdLeadIds: Array.isArray(data.createdLeadIds)
+          ? data.createdLeadIds
+          : [],
+        updatedLeadIds: Array.isArray(data.updatedLeadIds)
+          ? data.updatedLeadIds
+          : [],
+        startedAt,
+        completedAt,
+      });
       setMessage(
-        `Ricerca completata via ${provider}: ${data.saved || 0} lead salvati da ${data.candidates || 0} risultati.${warningText}${
+        `Ricerca completata via ${provider}: ${created} nuovi lead, ${updated} già presenti aggiornati, ${data.saved || 0} salvati da ${data.candidates || 0} risultati.${warningText}${
           diagnosticText ? ` Diagnostica fallback: ${diagnosticText}.` : ""
         }`,
       );
       await refresh();
     } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : "Errore ricerca live",
-      );
+      const errorMessage =
+        error instanceof Error ? error.message : "Errore ricerca live";
+      setScanSummary((current) => ({
+        mode: "live",
+        status: "error",
+        title: "Ricerca live non completata",
+        detail: query,
+        requested,
+        candidates: current?.candidates || 0,
+        saved: current?.saved || 0,
+        created: current?.created || 0,
+        updated: current?.updated || 0,
+        warnings: current?.warnings || 0,
+        progress: current?.progress || scanProgress,
+        provider: current?.provider,
+        createdLeadIds: current?.createdLeadIds || [],
+        updatedLeadIds: current?.updatedLeadIds || [],
+        startedAt: current?.startedAt || startedAt,
+        completedAt: new Date().toISOString(),
+        error: errorMessage,
+      }));
+      setMessage(errorMessage);
     } finally {
+      window.clearInterval(progressTimer);
       setBusy(false);
+      setLiveSearching(false);
     }
   }
 
@@ -593,16 +706,38 @@ export function LeadB2BPanel({
       return;
     }
 
+    const startedAt = new Date().toISOString();
     setBusy(true);
     setScanningSites(true);
     setScanProgress(5);
+    setScanSummary({
+      mode: "url",
+      status: "running",
+      title: "Scansione URL in corso",
+      detail: `${urls.length} URL pubblici`,
+      requested: urls.length,
+      candidates: urls.length,
+      saved: 0,
+      created: 0,
+      updated: 0,
+      warnings: 0,
+      progress: 5,
+      createdLeadIds: [],
+      updatedLeadIds: [],
+      startedAt,
+    });
     setMessage(null);
     const progressTimer = window.setInterval(() => {
+      const step = urls.length > 12 ? 3 : 5;
       setScanProgress((previous) => {
         if (previous >= 92) return previous;
-        const step = urls.length > 12 ? 3 : 5;
         return Math.min(92, previous + step);
       });
+      setScanSummary((current) =>
+        current?.status === "running"
+          ? { ...current, progress: Math.min(92, current.progress + step) }
+          : current,
+      );
     }, 900);
     try {
       const response = await fetch("/api/admin/leads/discover", {
@@ -617,18 +752,59 @@ export function LeadB2BPanel({
       const data = await readApiJson(response);
       if (!response.ok) throw new Error(data.error || "Discovery fallita");
       setScanProgress(100);
+      const created = data.created || 0;
+      const updated = data.updated || 0;
+      setScanSummary({
+        mode: "url",
+        status: "done",
+        title: "Scansione URL completata",
+        detail: `${urls.length} URL pubblici`,
+        requested: urls.length,
+        candidates: urls.length,
+        saved: data.discovered || 0,
+        created,
+        updated,
+        warnings: Array.isArray(data.warnings) ? data.warnings.length : 0,
+        progress: 100,
+        createdLeadIds: Array.isArray(data.createdLeadIds)
+          ? data.createdLeadIds
+          : [],
+        updatedLeadIds: Array.isArray(data.updatedLeadIds)
+          ? data.updatedLeadIds
+          : [],
+        startedAt,
+        completedAt: new Date().toISOString(),
+      });
       const warningText = data.warnings?.length
         ? ` ${data.warnings.length} siti non leggibili.`
         : "";
       setMessage(
-        `Scansione completata: ${data.discovered || 0} lead aggiornati.${warningText}`,
+        `Scansione completata: ${created} nuovi lead, ${updated} già presenti aggiornati, ${data.discovered || 0} totali.${warningText}`,
       );
       setScanUrls("");
       await refresh();
     } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : "Errore di scansione",
-      );
+      const errorMessage =
+        error instanceof Error ? error.message : "Errore di scansione";
+      setScanSummary((current) => ({
+        mode: "url",
+        status: "error",
+        title: "Scansione URL non completata",
+        detail: `${urls.length} URL pubblici`,
+        requested: urls.length,
+        candidates: urls.length,
+        saved: current?.saved || 0,
+        created: current?.created || 0,
+        updated: current?.updated || 0,
+        warnings: current?.warnings || 0,
+        progress: current?.progress || scanProgress,
+        createdLeadIds: current?.createdLeadIds || [],
+        updatedLeadIds: current?.updatedLeadIds || [],
+        startedAt: current?.startedAt || startedAt,
+        completedAt: new Date().toISOString(),
+        error: errorMessage,
+      }));
+      setMessage(errorMessage);
     } finally {
       window.clearInterval(progressTimer);
       setBusy(false);
@@ -1061,6 +1237,13 @@ export function LeadB2BPanel({
           <Stat label="Stop" value={stats.stopped} />
         </section>
 
+        {scanSummary && (
+          <LeadScanStatus
+            summary={scanSummary}
+            progress={scanSummaryProgress}
+          />
+        )}
+
         <section className="border border-pearl-grey bg-white p-5 space-y-4">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
@@ -1079,8 +1262,16 @@ export function LeadB2BPanel({
               disabled={busy}
               className="inline-flex w-full items-center justify-center gap-2 bg-soft-black px-4 py-2 text-sm text-warm-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary focus-visible:ring-offset-2 disabled:opacity-60 sm:w-auto"
             >
-              <Search className="w-4 h-4" aria-hidden="true" />
-              Trova e scansiona
+              <Search
+                className={`w-4 h-4 ${liveSearching ? "animate-pulse" : ""}`}
+                aria-hidden="true"
+              />
+              {liveSearching ? "Scansione live…" : "Trova e scansiona"}
+              {liveSearching && (
+                <span className="ml-1 border-l border-warm-white/30 pl-2 text-xs tabular-nums text-gold-primary">
+                  {scanProgress}%
+                </span>
+              )}
             </button>
           </div>
           <LeadSegmentMenu
@@ -1440,13 +1631,28 @@ export function LeadB2BPanel({
                     </td>
                   </tr>
                 ) : (
-                  displayedLeads.map((lead) => (
-                    <tr
-                      key={lead.id}
-                      className={
-                        selectedIds.includes(lead.id) ? "bg-ivory/60" : ""
-                      }
-                    >
+                  displayedLeads.map((lead) => {
+                    const latestScanRank = latestScanLeadRank.get(lead.id) || 0;
+                    const latestScanLabel =
+                      latestScanRank === 2
+                        ? "Nuovo batch"
+                        : latestScanRank === 1
+                          ? "Già presente"
+                          : null;
+                    return (
+                      <tr
+                        key={lead.id}
+                        className={[
+                          latestScanRank === 2
+                            ? "bg-emerald-50/70"
+                            : latestScanRank === 1
+                              ? "bg-gold-primary/10"
+                              : "",
+                          selectedIds.includes(lead.id) ? "bg-ivory/70" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                      >
                       <td className="px-4 py-4 align-top">
                         <input
                           type="checkbox"
@@ -1460,6 +1666,17 @@ export function LeadB2BPanel({
                           <div className="flex items-center gap-2">
                             <Building2 className="w-4 h-4 text-gold-primary" />
                             <p className="font-medium">{lead.company_name}</p>
+                            {latestScanLabel && (
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] ${
+                                  latestScanRank === 2
+                                    ? "bg-emerald-100 text-emerald-800"
+                                    : "bg-gold-primary/20 text-soft-black"
+                                }`}
+                              >
+                                {latestScanLabel}
+                              </span>
+                            )}
                           </div>
                           <div className="flex items-center gap-2 text-xs text-soft-grey">
                             <Globe className="w-3.5 h-3.5" />
@@ -1633,8 +1850,9 @@ export function LeadB2BPanel({
                           </button>
                         </div>
                       </td>
-                    </tr>
-                  ))
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -2303,6 +2521,141 @@ function Stat({ label, value }: { label: string; value: number }) {
         {label}
       </p>
       <p className="font-display text-3xl">{value}</p>
+    </div>
+  );
+}
+
+function LeadScanStatus({
+  summary,
+  progress,
+}: {
+  summary: ScanSummary;
+  progress: number;
+}) {
+  const safeProgress = Math.max(0, Math.min(100, Math.round(progress)));
+  const statusLabel =
+    summary.status === "running"
+      ? "In corso"
+      : summary.status === "done"
+        ? "Completata"
+        : "Da verificare";
+  const statusClass =
+    summary.status === "done"
+      ? "border-emerald-200 bg-emerald-50/40"
+      : summary.status === "error"
+        ? "border-red-200 bg-red-50/40"
+        : "border-gold-primary/50 bg-ivory";
+
+  return (
+    <section
+      className={`border px-5 py-4 ${statusClass}`}
+      role="status"
+      aria-live="polite"
+    >
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-gold-primary">
+            Avanzamento scansione · {statusLabel}
+          </p>
+          <h2 className="mt-1 font-display text-2xl">{summary.title}</h2>
+          <p className="mt-1 text-sm text-soft-grey">
+            {summary.provider ? `${summary.provider} · ` : ""}
+            {summary.detail}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-sm">
+          {summary.status === "error" ? (
+            <AlertTriangle className="h-4 w-4 text-red-700" />
+          ) : (
+            <CheckCircle2
+              className={`h-4 w-4 ${
+                summary.status === "done"
+                  ? "text-emerald-700"
+                  : "text-gold-primary"
+              }`}
+            />
+          )}
+          <span className="font-medium tabular-nums">{safeProgress}%</span>
+        </div>
+      </div>
+
+      <div className="mt-4 h-2 overflow-hidden bg-white/80">
+        <div
+          className={`h-full transition-all duration-500 ${
+            summary.status === "error" ? "bg-red-500" : "bg-gold-primary"
+          }`}
+          style={{ width: `${safeProgress}%` }}
+        />
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <ScanMetric
+          label="Nuovi lead"
+          value={summary.created}
+          hint="non presenti prima"
+          tone="green"
+        />
+        <ScanMetric
+          label="Già presenti"
+          value={summary.updated}
+          hint="aggiornati nel batch"
+        />
+        <ScanMetric
+          label={summary.mode === "live" ? "Risultati" : "URL"}
+          value={summary.candidates || summary.requested}
+          hint={summary.mode === "live" ? "dal motore" : "analizzati"}
+        />
+        <ScanMetric
+          label="Salvati"
+          value={summary.saved}
+          hint="totale batch"
+        />
+        <ScanMetric
+          label="Warning"
+          value={summary.warnings}
+          hint="siti non leggibili"
+          tone={summary.warnings ? "amber" : "neutral"}
+        />
+      </div>
+
+      <p className="mt-4 text-xs leading-relaxed text-soft-grey">
+        {summary.status === "running"
+          ? "Scansione attiva: al termine i lead nuovi verranno marcati in verde e quelli già presenti in oro."
+          : summary.status === "done"
+            ? `Ultimo batch chiuso: ${summary.created} nuovi lead e ${summary.updated} lead già presenti aggiornati. I record del batch sono portati in cima alla tabella.`
+            : summary.error || "Scansione interrotta: controlla il messaggio sopra e riprova."}
+      </p>
+    </section>
+  );
+}
+
+function ScanMetric({
+  label,
+  value,
+  hint,
+  tone = "neutral",
+}: {
+  label: string;
+  value: number;
+  hint: string;
+  tone?: "neutral" | "green" | "amber";
+}) {
+  const valueClass =
+    tone === "green"
+      ? "text-emerald-700"
+      : tone === "amber"
+        ? "text-amber-700"
+        : "text-soft-black";
+
+  return (
+    <div className="border border-pearl-grey/70 bg-white px-4 py-3">
+      <p className="text-[10px] uppercase tracking-[0.18em] text-soft-grey">
+        {label}
+      </p>
+      <p className={`mt-1 font-display text-2xl tabular-nums ${valueClass}`}>
+        {value}
+      </p>
+      <p className="text-[11px] text-soft-grey">{hint}</p>
     </div>
   );
 }

@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const saved = [];
+  const saved: Array<{ data: { id?: string } | null; existed: boolean }> = [];
   const queryLabel = [input.query, input.location].filter(Boolean).join(" ");
 
   const results = await Promise.allSettled(
@@ -85,6 +85,13 @@ export async function POST(req: NextRequest) {
         lead?.score || 10,
         contactEmail ? 70 : contactPhone ? 35 : 20,
       );
+      const { data: existingLead, error: existingError } = await supabase
+        .from("lead_accounts")
+        .select("id")
+        .eq("website_url", websiteUrl)
+        .maybeSingle();
+
+      if (existingError) throw new Error(existingError.message);
 
       const { data, error } = await supabase
         .from("lead_accounts")
@@ -111,13 +118,16 @@ export async function POST(req: NextRequest) {
         .single();
 
       if (error) throw new Error(error.message);
-      return { data, warning: scanWarning };
+      return { data, warning: scanWarning, existed: Boolean(existingLead?.id) };
     }),
   );
 
   for (const result of results) {
     if (result.status === "fulfilled") {
-      saved.push(result.value.data);
+      saved.push({
+        data: result.value.data,
+        existed: result.value.existed,
+      });
       if (result.value.warning) warnings.push(result.value.warning);
     } else
       warnings.push(
@@ -132,6 +142,16 @@ export async function POST(req: NextRequest) {
     provider: candidates[0]?.source || "unknown",
     candidates: candidates.length,
     saved: saved.length,
+    created: saved.filter((item) => !item.existed).length,
+    updated: saved.filter((item) => item.existed).length,
+    createdLeadIds: saved
+      .filter((item) => !item.existed)
+      .map((item) => item.data?.id)
+      .filter(Boolean),
+    updatedLeadIds: saved
+      .filter((item) => item.existed)
+      .map((item) => item.data?.id)
+      .filter(Boolean),
     warnings,
     providerDiagnostics,
   });
