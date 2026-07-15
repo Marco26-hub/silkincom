@@ -81,6 +81,7 @@ export async function POST(req: NextRequest) {
     );
     const copy = buildLeadOutreachCopy(
       {
+        id: lead.id,
         company_name: lead.company_name,
         city: lead.city,
         country: lead.country,
@@ -92,6 +93,7 @@ export async function POST(req: NextRequest) {
       {
         productImages,
         productImageOverrides: parsed.data.productImageOverrides,
+        isTestRecipient: isManualRecipient,
       },
     );
     const missingProductImages = getLeadOutreachProductSlugs(
@@ -175,7 +177,7 @@ export async function POST(req: NextRequest) {
       },
       {
         label: 'Risposta diretta a Marco presente',
-        ok: copy.html.includes('Risponda a Marco') && copy.html.includes('mailto:'),
+        ok: copy.text.includes('rispondere direttamente a questa email'),
       },
       {
         label: `Testo breve e leggibile (${deliveryMetrics.textWords} parole)`,

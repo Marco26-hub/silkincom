@@ -30,7 +30,13 @@ const INITIAL: FormState = {
   privacy: false,
 };
 
-export function B2BForm() {
+export function B2BForm({
+  leadId,
+  leadToken,
+}: {
+  leadId?: string;
+  leadToken?: string;
+}) {
   const t = useTranslations('b2bPage.form');
   const tc = useTranslations('common');
   const [data, setData] = useState<FormState>(INITIAL);
@@ -65,6 +71,8 @@ export function B2BForm() {
           tipo: data.tipo || null,
           volume: data.volume.trim() || null,
           messaggio: data.messaggio.trim(),
+          leadId: leadId || null,
+          leadToken: leadToken || null,
           ...antibotFields(),
         }),
       });

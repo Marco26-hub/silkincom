@@ -1,8 +1,9 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limit';
 import { antibotGate } from '@/lib/antibot';
 import { sendB2BNotification, sendB2BClientConfirmation, type B2BInquiry } from '@/lib/email';
+import { verifyLeadPublicToken } from '@/lib/lead-public-links';
 
 export const runtime = 'nodejs';
 
@@ -36,6 +37,13 @@ export async function POST(req: NextRequest) {
       tipoRaw && (ALLOWED_TIPI as readonly string[]).includes(tipoRaw) ? tipoRaw : null;
     const volume = trimOrNull(body?.volume);
     const messaggio = trimOrNull(body?.messaggio);
+    const leadId = trimOrNull(body?.leadId);
+    const leadToken = trimOrNull(body?.leadToken);
+    const hasVerifiedLead = Boolean(
+      leadId &&
+        leadToken &&
+        verifyLeadPublicToken(leadId, 'proposal', leadToken),
+    );
 
     if (!nome) {
       return NextResponse.json({ error: 'Nome obbligatorio' }, { status: 400 });
@@ -62,6 +70,7 @@ export async function POST(req: NextRequest) {
         azienda,
         tipo,
         volume,
+        lead_id: hasVerifiedLead ? leadId : null,
       },
     });
 
@@ -103,6 +112,51 @@ export async function POST(req: NextRequest) {
     }
     if (clientResult.status === 'rejected') {
       console.error('B2B client confirmation failed:', clientResult.reason);
+    }
+
+    if (hasVerifiedLead && leadId) {
+      const serviceClient = createServiceClient();
+      const { data: lead } = await serviceClient
+        .from('lead_accounts')
+        .select('reply_count, do_not_contact')
+        .eq('id', leadId)
+        .maybeSingle();
+
+      if (lead) {
+        const now = new Date().toISOString();
+        const { error: leadUpdateError } = await serviceClient
+          .from('lead_accounts')
+          .update({
+            status: lead.do_not_contact ? 'do_not_contact' : 'replied',
+            last_reply_at: now,
+            reply_count: Number(lead.reply_count || 0) + 1,
+            last_reply_excerpt: messaggio.slice(0, 700),
+            updated_at: now,
+          })
+          .eq('id', leadId);
+
+        if (leadUpdateError) {
+          console.error('B2B lead reply tracking update failed:', leadUpdateError);
+        }
+
+        const { error: inboundInsertError } = await serviceClient
+          .from('lead_inbound_messages')
+          .insert({
+          lead_id: leadId,
+          from_email: email,
+          to_email: 'b2b@silkincom.com',
+          subject: 'Approfondimento tramite form SILKinCOM',
+          message_excerpt: messaggio.slice(0, 700),
+          raw_payload: { source: 'public_b2b_form' },
+          intent: 'reply',
+          matched_newsletter: false,
+          received_at: now,
+        });
+
+        if (inboundInsertError) {
+          console.error('B2B lead reply tracking insert failed:', inboundInsertError);
+        }
+      }
     }
 
     return NextResponse.json(

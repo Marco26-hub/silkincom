@@ -1,6 +1,10 @@
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 import { APP_URL } from "./app-url";
+import {
+  buildLeadProposalUrl,
+  buildLeadStopUrl,
+} from "./lead-public-links";
 
 type DiscoveryOptions = {
   query?: string;
@@ -2806,6 +2810,7 @@ export function buildLeadOutreachDossierCopy(
 
 export function buildLeadOutreachCopy(
   lead: {
+    id?: string;
     company_name: string;
     city?: string | null;
     country?: string | null;
@@ -2817,6 +2822,7 @@ export function buildLeadOutreachCopy(
   options: {
     productImages?: LeadOutreachProductImages;
     productImageOverrides?: LeadOutreachProductImages;
+    isTestRecipient?: boolean;
   } = {},
 ) {
   const focusCopy = buildFocusCopy(focus);
@@ -2831,7 +2837,12 @@ export function buildLeadOutreachCopy(
       options.productImages?.[primaryProduct.slug],
       primaryProduct.image,
     ) || primaryProduct.image;
-  const proposalUrl = `${APP_URL}/it/b2b#richiedi-proposta`;
+  const proposalUrl = options.isTestRecipient
+    ? `${APP_URL}/it/b2b#richiedi-proposta`
+    : buildLeadProposalUrl(lead.id);
+  const stopUrl = options.isTestRecipient
+    ? `${APP_URL}/it/b2b/stop?test=1`
+    : buildLeadStopUrl(lead.id);
   const officialLogoUrl = `${APP_URL}/logo-official.png`;
   const normalizedReason = notes.trim().replace(/\s+/g, " ");
   const reason =
@@ -2841,24 +2852,6 @@ export function buildLeadOutreachCopy(
   const subject = sanitizeEmailHeader(
     `Un’idea per ${lead.company_name}, dal Lago di Como`,
   );
-  const replySubject = `Approfondimento SILKinCOM | ${lead.company_name}`;
-  const replyBody = [
-    `Gentile ${founderName},`,
-    "",
-    "grazie per averci contattato. Il progetto può essere di nostro interesse.",
-    "",
-    "Preferiamo:",
-    "[ ] ricevere la selezione riservata di 2–3 prodotti",
-    "[ ] fissare un breve confronto di 15 minuti",
-    "",
-    "Referente:",
-    "Ruolo:",
-    "Telefono:",
-    "",
-    "Cordiali saluti,",
-    lead.company_name,
-  ].join("\n");
-  const replyUrl = `mailto:b2b@silkincom.com?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
   const preheader = reason
     ? `Una proposta SILKinCOM pensata per ${lead.company_name}: ${reason}`
     : `Una proposta SILKinCOM pensata per ${lead.company_name}.`;
@@ -2913,12 +2906,12 @@ export function buildLeadOutreachCopy(
         <a href="${escapeHtml(proposalUrl)}" style="display:inline-block;background:#201C18;color:#FFFDF9;text-decoration:none;padding:12px 18px;font-size:11px;letter-spacing:.08em;">Approfondisci la proposta</a>
       </p>
       <p style="font-size:12px;line-height:1.6;color:#6F675E;margin:0 0 24px;">
-        Preferisce un confronto diretto? <a href="${escapeHtml(replyUrl)}" style="color:#8C681B;text-decoration:underline;">Risponda a Marco</a>.
+        Preferisce un confronto diretto? Può rispondere a questa email: Marco le risponderà personalmente.
       </p>
 
       <p style="font-size:14px;line-height:1.6;color:#3F3932;margin:0;">Con stima,<br /><strong>${escapeHtml(founderName)}</strong><br /><span style="font-size:12px;color:#8A8278;">Founder · SILKinCOM · Como</span></p>
       <div style="height:1px;background:#E6DDCF;margin:24px 0 14px;"></div>
-      <p style="font-size:10px;line-height:1.55;color:#999187;margin:0;">Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda <strong>STOP</strong>.</p>
+      <p style="font-size:10px;line-height:1.55;color:#999187;margin:0;">Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda <strong>STOP</strong>${stopUrl ? ` oppure <a href="${escapeHtml(stopUrl)}" style="color:#777067;text-decoration:underline;">confermi qui</a>` : ""}.</p>
     </div>
   </div>
 </body>
@@ -2939,13 +2932,14 @@ export function buildLeadOutreachCopy(
     "Approfondisca la proposta e i modelli di collaborazione:",
     proposalUrl,
     "",
-    "Per un confronto diretto, risponda a questa email: Marco le risponderà personalmente.",
+    "Per un confronto diretto, può rispondere direttamente a questa email: Marco le risponderà personalmente.",
     "",
     "Con stima,",
     founderName,
     "Founder · SILKinCOM · Como",
     "",
     "Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda STOP.",
+    stopUrl ? `Conferma STOP: ${stopUrl}` : null,
   ]
     .filter(Boolean)
     .join("\n");
@@ -2956,7 +2950,7 @@ export function buildLeadOutreachCopy(
     text,
     links: [
       { label: "Approfondisci la proposta", url: proposalUrl },
-      { label: "Rispondi a Marco", url: replyUrl },
+      ...(stopUrl ? [{ label: "Conferma STOP", url: stopUrl }] : []),
     ],
   };
 }

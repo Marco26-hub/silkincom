@@ -115,6 +115,7 @@ export async function POST(req: NextRequest) {
 
     const copy = buildLeadOutreachCopy(
       {
+        id: lead.id,
         company_name: lead.company_name,
         city: lead.city,
         country: lead.country,
@@ -126,6 +127,7 @@ export async function POST(req: NextRequest) {
       {
         productImages,
         productImageOverrides: parsed.data.productImageOverrides,
+        isTestRecipient: isManualRecipient,
       },
     );
     const invalidLinks = copy.links.filter(

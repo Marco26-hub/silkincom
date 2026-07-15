@@ -12,8 +12,13 @@ export async function generateMetadata() {
   };
 }
 
-export default async function B2BPage() {
+export default async function B2BPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ lead?: string; token?: string }>;
+}) {
   const t = await getTranslations('b2bPage');
+  const params = await searchParams;
   return (
     <>
       <BreadcrumbSchema
@@ -92,7 +97,7 @@ export default async function B2BPage() {
           </p>
         </div>
         <div className="px-6">
-          <B2BForm />
+          <B2BForm leadId={params.lead} leadToken={params.token} />
         </div>
       </section>
     </>

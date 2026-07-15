@@ -44,10 +44,11 @@ Aggiornato: 15 luglio 2026
 2. `GOOGLE_SEARCH_API_KEY` e `GOOGLE_CSE_ID` restano opzionali; configurarli prima di aumentare molto il volume, perché le istanze OpenStreetMap pubbliche sono adatte a ricerche admin moderate, non a campagne massive automatizzate.
 3. `NOMINATIM_API_URL` e `OVERPASS_API_URL` permettono di cambiare provider senza modificare il codice; lasciati vuoti usano gli endpoint pubblici con timeout, cache geocoding e rotazione fallback.
 4. Mantenere visibile l’attribuzione `© OpenStreetMap contributors (ODbL)` nell’area ricerca.
-5. Configurare `RESEND_WEBHOOK_SECRET` in produzione e collegare l'evento Resend `email.received` al webhook `https://www.silkincom.com/api/email/inbound`. La route verifica la firma Svix, recupera il corpo completo tramite Receiving API e deduplica con `svix-id`; `INBOUND_EMAIL_WEBHOOK_SECRET` resta solo come fallback per provider legacy.
-6. Testare un invio a un indirizzo interno e rispondere `stop` per verificare `do_not_contact`, `stop_requested_at` e `lead_inbound_messages`.
-7. Eseguire sempre un invio di prova interno dopo modifiche sostanziali al template e verificare rendering desktop/mobile nei principali client email.
-8. Creare preset di query per zona: Lago di Como, Milano, Svizzera, Costa Smeralda, Capri, Toscana, Montecarlo. Per `Nautica & mobilità luxury`, mantenere separati charter, NCC e autonoleggio in modo che settore, prodotti e CTA restino coerenti.
+5. Piano gratuito attivo: l'email mantiene `b2b@silkincom.com` su Google Workspace, l'approfondimento firmato porta al form B2B e registra il lead come `replied`; il link pubblico `STOP` richiede conferma, verifica il token HMAC e imposta subito `do_not_contact` in Supabase. Usa `LEAD_PUBLIC_LINK_SECRET`, con fallback a `INBOUND_EMAIL_WEBHOOK_SECRET`, senza richiedere Resend Pro o modificare gli MX Google.
+6. Non attivare Resend Receiving sul dominio principale: sostituirebbe gli MX Google Workspace. Il webhook `email.received` resta predisposto come opzione futura; nel piano gratuito le risposte dirette arrivano a `b2b@silkincom.com`, mentre il form firmato e il link STOP garantiscono il tracciamento automatico essenziale.
+7. Testare un invio a un indirizzo interno, il form di approfondimento e il pulsante STOP; verificare `status`, `reply_count`, `do_not_contact`, `stop_requested_at` e `lead_inbound_messages`.
+8. Eseguire sempre un invio di prova interno dopo modifiche sostanziali al template e verificare rendering desktop/mobile nei principali client email.
+9. Creare preset di query per zona: Lago di Como, Milano, Svizzera, Costa Smeralda, Capri, Toscana, Montecarlo. Per `Nautica & mobilità luxury`, mantenere separati charter, NCC e autonoleggio in modo che settore, prodotti e CTA restino coerenti.
 
 ## Nota commerciale
 
