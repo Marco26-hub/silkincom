@@ -2290,8 +2290,42 @@ export function buildLeadOutreachCopy(
   const collectionLinksHtml = usesHospitalityProducts
     ? `<a href="${escapeHtml(towelCollectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Scopri il Telo Lago</a><a href="${escapeHtml(collectionUrl)}" style="display:inline-block;border:1px solid #17130F;color:#17130F;text-decoration:none;padding:12px 18px;margin:0 4px 8px 4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;">Esplora i Twilly Como</a>`
     : `<a href="${escapeHtml(collectionUrl)}" style="display:inline-block;background:#17130F;color:#FFFDF8;text-decoration:none;padding:13px 22px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;">Esplora la collezione Twilly Como</a>`;
-  const replySubject = `Concept riservato — ${lead.company_name} × SILKinCOM`;
-  const replyBody = `Gentile ${founderName},\n\nla ringraziamo per averci presentato la proposta SILKinCOM. Desideriamo valutare un progetto dedicato per ${lead.company_name}.\n\nIl modello di maggiore interesse è:\n□ Maison Selection con logo SILKinCOM\n□ Co-Branded Edition SILKinCOM × ${lead.company_name}\n□ Exclusive Signature Capsule\n\nSaremmo lieti di ricevere il dossier riservato, il concept preliminare e le condizioni di sviluppo.\nIn alternativa, possiamo fissare un confronto di 15 minuti con il referente più adatto.\n\nCon stima,`;
+  const replySubject = `Richiesta concept riservato | ${lead.company_name} × SILKinCOM`;
+  const replyBody = [
+    `Gentile ${founderName},`,
+    "",
+    "abbiamo ricevuto con interesse la proposta riservata SILKinCOM.",
+    `Desideriamo approfondire un progetto dedicato per ${lead.company_name},`,
+    "coerente con il nostro standard di accoglienza e con il profilo dei nostri ospiti.",
+    "",
+    "Formula di collaborazione da valutare:",
+    "",
+    "[ ] Maison Selection SILKinCOM",
+    "    selezione curata con logo SILKinCOM",
+    "",
+    "[ ] Co-Branded Edition",
+    `    SILKinCOM × ${lead.company_name}`,
+    "",
+    "[ ] Exclusive Signature Capsule",
+    "    capsule esclusiva con perimetro e condizioni dedicate",
+    "",
+    "Per procedere, chiediamo cortesemente di ricevere:",
+    "",
+    "- dossier riservato",
+    "- concept preliminare",
+    "- selezione prodotti consigliata",
+    "- condizioni di sviluppo, minimi e tempi indicativi",
+    "",
+    "Siamo disponibili a fissare un confronto di 15 minuti",
+    "con il referente più adatto del nostro team.",
+    "",
+    "Cordiali saluti,",
+    "",
+    "Nome e cognome",
+    "Ruolo",
+    lead.company_name,
+    "Telefono",
+  ].join("\n");
   const replyUrl = `mailto:b2b@silkincom.com?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent(replyBody)}`;
   const noteBlock = notes.trim()
     ? `<div style="margin:24px 0 0 0;padding:18px 20px;background:#F8F3EA;border-left:2px solid #D8B443;">
