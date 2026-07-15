@@ -84,6 +84,17 @@ type OutreachPreview = {
   }>;
 };
 
+type OutreachSendReceipt = {
+  status: "sent" | "failed" | "partial";
+  mode: "test" | "customer";
+  emails: string[];
+  sentAt: string;
+  subject?: string;
+  jobIds: string[];
+  failedCount?: number;
+  detail?: string;
+};
+
 const STATUS_LABELS: Record<string, string> = {
   new: "Nuovo",
   scanned: "Scansionato",
@@ -347,6 +358,8 @@ export function LeadB2BPanel({
   const [previewLeadIds, setPreviewLeadIds] = useState<string[]>([]);
   const [reviewedPreviewIds, setReviewedPreviewIds] = useState<string[]>([]);
   const [previewConfirmed, setPreviewConfirmed] = useState(false);
+  const [outreachSendReceipt, setOutreachSendReceipt] =
+    useState<OutreachSendReceipt | null>(null);
   const [productImageOverrides, setProductImageOverrides] = useState<
     Record<string, string>
   >({});
@@ -733,6 +746,7 @@ export function LeadB2BPanel({
     setOutreachPreviews([]);
     setReviewedPreviewIds([]);
     setPreviewLeadIds(ids);
+    setOutreachSendReceipt(null);
     setRecipientEmailOverrides((previous) =>
       Object.fromEntries(
         Object.entries(previous).filter(([leadId]) => ids.includes(leadId)),
@@ -815,6 +829,7 @@ export function LeadB2BPanel({
         [slug]: uploadedUrl,
       }));
       setPreviewConfirmed(false);
+      setOutreachSendReceipt(null);
       setMessage("Foto proposta aggiornata. Riapri l’anteprima per validarla.");
     } catch (error) {
       setMessage(
@@ -863,6 +878,13 @@ export function LeadB2BPanel({
       const manualSent = results.filter(
         (item: any) => item.ok && item.manualRecipient,
       ).length;
+      const successfulResults = results.filter((item: any) => item.ok);
+      const successfulEmails = successfulResults
+        .map((item: any) => item.email)
+        .filter(Boolean);
+      const successfulJobIds = successfulResults
+        .map((item: any) => item.jobId)
+        .filter(Boolean);
       const failedResults = results.filter((item: any) => !item.ok);
       const failed = failedResults.length;
       if (sent === 0) {
@@ -876,8 +898,22 @@ export function LeadB2BPanel({
         );
       }
       if (sent > 0 && sent === manualSent) {
+        setOutreachSendReceipt({
+          status: failed > 0 ? "partial" : "sent",
+          mode: "test",
+          emails: successfulEmails,
+          sentAt: new Date().toISOString(),
+          subject: outreachPreviews.find((preview) =>
+            ids.includes(preview.leadId),
+          )?.subject,
+          jobIds: successfulJobIds,
+          failedCount: failed,
+          detail:
+            "Accettata dal provider email. Nessun lead cliente è stato marcato come contattato.",
+        });
+        setPreviewConfirmed(false);
         setMessage(
-          `Test inviato${sent > 1 ? ` a ${sent} indirizzi` : ""}. Nessun lead è stato marcato come contattato${
+          `TEST INVIATO${successfulEmails.length ? ` a ${successfulEmails.join(", ")}` : ""}. Nessun lead cliente è stato marcato come contattato${
             failed ? `; ${failed} invii non riusciti` : ""
           }.`,
         );
@@ -912,6 +948,10 @@ export function LeadB2BPanel({
         await refresh();
         return;
       }
+      if (sent > 0 && sent === manualSent) {
+        await refresh();
+        return;
+      }
       setSelectedIds([]);
       setPreviewOpen(false);
       setPreviewConfirmed(false);
@@ -921,6 +961,18 @@ export function LeadB2BPanel({
       setRecipientEmailOverrides({});
       await refresh();
     } catch (error) {
+      setOutreachSendReceipt({
+        status: "failed",
+        mode: manualRecipientCount > 0 ? "test" : "customer",
+        emails: outreachPreviews
+          .filter((preview) => ids.includes(preview.leadId))
+          .map((preview) => preview.recipientEmail || "")
+          .filter(Boolean),
+        sentAt: new Date().toISOString(),
+        subject: activePreview?.subject,
+        jobIds: [],
+        detail: error instanceof Error ? error.message : "Errore invio email",
+      });
       setMessage(error instanceof Error ? error.message : "Errore invio email");
     } finally {
       setBusy(false);
@@ -984,6 +1036,7 @@ export function LeadB2BPanel({
       }),
     );
     setPreviewConfirmed(false);
+    setOutreachSendReceipt(null);
   }
 
   return (
@@ -2127,6 +2180,59 @@ export function LeadB2BPanel({
                     <div className="border border-gold-primary/50 bg-ivory p-4 text-xs leading-relaxed text-soft-black/75">
                       Apri ogni destinatario dal menu per verificare tutte le
                       personalizzazioni prima di autorizzare la campagna.
+                    </div>
+                  )}
+
+                  {outreachSendReceipt && (
+                    <div
+                      className={`mt-4 border p-4 text-sm leading-relaxed ${
+                        outreachSendReceipt.status === "failed"
+                          ? "border-red-200 bg-red-50 text-red-800"
+                          : "border-green-200 bg-green-50 text-green-900"
+                      }`}
+                      role="status"
+                      aria-live="polite"
+                    >
+                      <div className="flex items-start gap-3">
+                        {outreachSendReceipt.status === "failed" ? (
+                          <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                        ) : (
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                        )}
+                        <div className="min-w-0 space-y-2">
+                          <p className="font-medium uppercase tracking-[0.12em]">
+                            {outreachSendReceipt.mode === "test"
+                              ? outreachSendReceipt.status === "failed"
+                                ? "Test non inviato"
+                                : "Test inviato"
+                              : outreachSendReceipt.status === "failed"
+                                ? "Invio non riuscito"
+                                : "Invio completato"}
+                          </p>
+                          <p className="break-words text-xs">
+                            A:{" "}
+                            {outreachSendReceipt.emails.length
+                              ? outreachSendReceipt.emails.join(", ")
+                              : "destinatario non disponibile"}
+                          </p>
+                          <p className="text-xs">
+                            Ora:{" "}
+                            {new Date(outreachSendReceipt.sentAt).toLocaleString(
+                              "it-IT",
+                            )}
+                          </p>
+                          {outreachSendReceipt.jobIds.length > 0 && (
+                            <p className="break-all text-xs">
+                              Traccia job: {outreachSendReceipt.jobIds.join(", ")}
+                            </p>
+                          )}
+                          {outreachSendReceipt.detail && (
+                            <p className="text-xs">
+                              {outreachSendReceipt.detail}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )}
 

@@ -75,6 +75,7 @@ export async function POST(req: NextRequest) {
     leadId: string;
     ok: boolean;
     email?: string;
+    jobId?: string;
     manualRecipient?: boolean;
     error?: string;
   }> = [];
@@ -186,6 +187,7 @@ export async function POST(req: NextRequest) {
         leadId: lead.id,
         ok: true,
         email: recipientEmail,
+        jobId: job.id,
         manualRecipient: isManualRecipient,
       });
     } catch (error) {
