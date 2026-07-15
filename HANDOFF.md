@@ -1,7 +1,9 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 21 maggio 2026 · ultimo commit di riferimento: `bc3fbd6`.
+Ultimo aggiornamento: 15 luglio 2026 · ultimo commit di riferimento: `d90ba15`.
+
+> ⚠️ Tra il 21/05 (`bc3fbd6`) e il 15/07 c'è stato lavoro **B2B outreach/response tracking** (commit fino a `1ecbd1d`) **non documentato** in questo handoff. Il §6 salta dalla sessione 21/05 direttamente alla sessione 15/07 (fix recensioni).
 
 ---
 
@@ -357,7 +359,29 @@ Commit di riferimento parte 5: `093cbad` → `987a143`.
 
 ⚠️ **Modifiche DB di questa sessione** (migration `027`→`031` + pulizie dati darsena/lario/melzi applicate via `execute_sql`) sono **già applicate in produzione** sul project Supabase. I file migration sono nel repo come record.
 
-Commit di riferimento 21/05: `dc0d4f4` → **`bc3fbd6` (HEAD)**.
+Commit di riferimento 21/05: `dc0d4f4` → **`bc3fbd6`**.
+
+---
+
+### Sessione 15/07 — fix moderazione recensioni + risposta pubblica (in corso)
+
+**Bug fix — pagina admin recensioni vuota** (commit `d90ba15`, pushato in prod):
+- **Sintomo:** il badge notifiche contava "1 recensione da approvare" ma `/admin/recensioni` mostrava "Nessuna recensione in attesa" (lista vuota, nessun pulsante Approva). Prima recensione vera arrivata → bug latente emerso.
+- **Causa:** `src/app/[locale]/admin/recensioni/page.tsx` faceva `.select('…, products(name, slug), profiles(full_name, email)')` sulla tabella `reviews`. **Non esiste FK `reviews → profiles`**: l'unico FK di `reviews.customer_id` punta a `customers`. PostgREST non risolve l'embed `profiles(…)` → l'**intera query** va in errore → `data = null`. L'errore era **swallowed** (il codice destrutturava solo `data`, non `error`) → pagina perennemente vuota. Il conteggio notifiche (`/api/admin/notifications`) è invece una `count` semplice su `reviews` **senza embed** → funzionava (mostrava 1). Da qui il mismatch.
+- **Fix:** rimosso l'embed `profiles(…)` (tenuto `products(name, slug)`, FK valido); le identità autore (`full_name`/`email`) vivono in `profiles` → risolte con una **seconda query** `.in('id', customerIds)` e mergeate per `customer_id`; aggiunto `console.error` sugli errori query (niente più fail silenzioso). `tsc --noEmit` pulito.
+- ⚠️ **Gotcha da ricordare:** `reviews.customer_id` FK → **`customers`** (NON `profiles`). `customers` **non** ha `full_name`/`email` (sono su `profiles`, stesso id auth). **Mai** usare `profiles(…)` in embed PostgREST partendo da `reviews`.
+
+**Feature — risposta admin visibile al pubblico** (commit `89e1ad1`, component pushato; **view DB ancora da applicare a prod**):
+- Scelta utente: mostrare la risposta del negozio (`reviews.admin_reply`, settata da `PATCH /api/admin/reviews/[id]` action `reply`) sotto la recensione sulla PDP. (Scartata l'opzione email al cliente.)
+- **Migration `053_reviews_public_admin_reply.sql`** (repo): `create or replace view reviews_public` che aggiunge `admin_reply` + `admin_replied_at`. Base = definizione **live** della view (che porta già il fallback `coalesce(pr.full_name, r.author_name, 'Cliente verificato')` — drift rispetto a migration `008`, mai messo a repo). **⚠️ NON applicata a prod:** l'auto-mode classifier blocca DDL sul DB live → **deve applicarla l'utente** (Supabase SQL Editor o `npm run db:push`). Finché non applicata, la risposta non compare (ma le recensioni sì — vedi sotto).
+- `src/components/product/ProductReviews.tsx`: `admin_reply` aggiunto al type + blocco render "Risposta di SILKinCOM" (label i18n 7 lingue `REPLY_LABEL`).
+- **Deploy-safe (resiliente):** il fetch prova `select … admin_reply`; se la colonna non c'è ancora nella view (migration non applicata) la query 400 → **retry senza `admin_reply`** (recensioni renderizzano lo stesso, risposta nascosta) + `console.error`. Quindi il component è stato deployato **indipendentemente** dalla migration: nessun rischio di rompere le PDP. La risposta comparirà **da sola** appena l'utente applica la view `053` (nessun redeploy necessario).
+
+**Nota vendite / visibilità:** una recensione appare pubblica **solo con `is_approved=true`** (la view filtra `where is_approved = true`). L'utente deve cliccare **Approva** in `/admin/recensioni` (fix già live). Chiarito "da tutte le parti": **sito** subito dopo Approva; **Google search** (stelle rich-snippet) via structured data già presente — decide Google, serve re-crawl, non garantito; **NON** Google Maps / Profilo Business (sistema separato). **Recensioni finte scartate** (illegali UE — Direttiva Omnibus + Codice del Consumo; badge `is_verified_purchase` le smaschererebbe). Proposto (non costruito) un flusso **email-richiesta-recensione** ai clienti veri post-consegna.
+
+**Unica azione utente residua per la risposta pubblica:** applicare la view `053` a prod (SQL in `supabase/migrations/053_reviews_public_admin_reply.sql`, o `npm run db:push`). Poi la risposta admin compare sotto le recensioni approvate, senza redeploy.
+
+Commit di riferimento 15/07: `d90ba15` (fix moderazione) → **`89e1ad1` (HEAD)** (risposta pubblica recensioni, deploy-safe).
 
 ---
 
@@ -409,6 +433,9 @@ Commit di riferimento 21/05: `dc0d4f4` → **`bc3fbd6` (HEAD)**.
 | Login Google (OAuth) | Codice OK. Config esterna: Supabase → Auth → Providers → Google (Client ID/Secret); Google Cloud → redirect URI `https://fjudulhxsafjizcmrifw.supabase.co/auth/v1/callback`; Supabase → Auth → URL Configuration → Redirect URLs: aggiungere `https://silkincom.com/auth/callback` + `https://silkincom.com/**` (serve anche per la conferma email registrazione). | **Da fare (utente)** |
 | Stock magazzino | Apparel (lario/melzi/riva tutte le varianti), `tivan`, `bellagio-2/3/4`, `tremezzo-beige` a quota 0 → pubblicati ma non comprabili. Caricare le quantità reali da `/admin/magazzino`. | **Da fare (utente)** |
 | Descrizioni prodotto i18n | `description_long_i18n` riempito a mano per tutti i 41 prodotti (en/es/fr/de/pt/nl) | **✓ Fatto** (migration `031`) |
+| Recensioni admin — pagina vuota | Embed `profiles(…)` senza FK su `reviews` (FK va a `customers`) → query in errore swallowed. Fix: query separata `profiles` + log errori | **✓ Fatto** (commit `d90ba15`) |
+| Risposta recensione pubblica sul sito | Render in `ProductReviews` (deploy-safe, resiliente) pushato `89e1ad1`. Manca solo applicare la view `053` a prod → risposta compare da sola | **Component ✓ / view da fare (utente)** — applicare `053` (SQL nel file o `npm run db:push`) |
+| Approva recensione "Melzi Beige" | Recensione vera in attesa (`is_approved=false`) — non appare finché non approvata | **Da fare (utente)** — click **Approva** in `/admin/recensioni` |
 
 GEO audit completo con piano 30 giorni: vedi `GEO-AUDIT-REPORT.md` (score finale **66/100**, ~78 proiettato dopo i quick win week-1).
 
@@ -560,7 +587,7 @@ silkincom/
 │   ├── types/        database.ts (tipi tabelle Supabase)
 │   └── middleware.ts next-intl + refresh sessione Supabase + gate /admin e /account
 ├── messages/         it·en·es·fr·de·pt·nl .json (stringhe UI, 756 chiavi)
-├── supabase/migrations/  011 → 031
+├── supabase/migrations/  011 → 053  (053 = reviews_public + admin_reply, NON ancora applicata a prod)
 └── scripts/          translate-i18n.mjs · seed-products.ts
 ```
 
