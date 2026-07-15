@@ -24,24 +24,54 @@ type Pending = {
   admin_reply?: string | null;
 };
 
+// NB: reviews.customer_id has no FK to `profiles` (its FK points to `customers`),
+// so PostgREST cannot embed profiles(...) here — doing so errors the whole query.
+// Author identity lives in `profiles`, keyed by the same id, so we resolve it in a
+// second query and merge by customer_id.
+const REVIEW_COLUMNS =
+  'id, rating, title, comment, is_verified_purchase, created_at, product_id, customer_id, admin_reply, products(name, slug)';
+
 export default async function AdminReviewsPage() {
   const supabase = createServiceClient();
 
-  const { data: pendingRaw } = await supabase
-    .from('reviews')
-    .select('id, rating, title, comment, is_verified_purchase, created_at, product_id, customer_id, admin_reply, products(name, slug), profiles(full_name, email)')
-    .eq('is_approved', false)
-    .order('created_at', { ascending: false })
-    .limit(100);
+  const [{ data: pendingRaw, error: pendingErr }, { data: approvedRaw, error: approvedErr }] =
+    await Promise.all([
+      supabase
+        .from('reviews')
+        .select(REVIEW_COLUMNS)
+        .eq('is_approved', false)
+        .order('created_at', { ascending: false })
+        .limit(100),
+      supabase
+        .from('reviews')
+        .select(REVIEW_COLUMNS)
+        .eq('is_approved', true)
+        .order('created_at', { ascending: false })
+        .limit(50),
+    ]);
 
-  const { data: approvedRaw } = await supabase
-    .from('reviews')
-    .select('id, rating, title, comment, is_verified_purchase, created_at, product_id, customer_id, admin_reply, products(name, slug), profiles(full_name, email)')
-    .eq('is_approved', true)
-    .order('created_at', { ascending: false })
-    .limit(50);
+  if (pendingErr) console.error('[admin/recensioni] pending reviews query failed:', pendingErr.message);
+  if (approvedErr) console.error('[admin/recensioni] approved reviews query failed:', approvedErr.message);
+
+  // Resolve author name/email from profiles (no direct FK, so fetch by id).
+  const customerIds = Array.from(
+    new Set(
+      [...(pendingRaw || []), ...(approvedRaw || [])]
+        .map((r: any) => r.customer_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  );
+  const profileMap = new Map<string, { full_name: string | null; email: string | null }>();
+  if (customerIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, full_name, email')
+      .in('id', customerIds);
+    for (const p of profiles || []) profileMap.set(p.id, { full_name: p.full_name, email: p.email });
+  }
 
   function mapReview(r: any): Pending {
+    const profile = r.customer_id ? profileMap.get(r.customer_id) : undefined;
     return {
       id: r.id,
       rating: r.rating,
@@ -53,8 +83,8 @@ export default async function AdminReviewsPage() {
       customer_id: r.customer_id,
       product_name: r.products?.name,
       product_slug: r.products?.slug,
-      author_name: r.profiles?.full_name,
-      author_email: r.profiles?.email,
+      author_name: profile?.full_name ?? undefined,
+      author_email: profile?.email ?? undefined,
       admin_reply: r.admin_reply,
     };
   }
