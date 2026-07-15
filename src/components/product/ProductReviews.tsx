@@ -22,6 +22,11 @@ const TRUST: Record<string, Record<string, string>> = {
   beFirst: { it: 'Sii la prima voce: racconta la tua esperienza qui sotto.', en: 'Be the first voice: share your experience below.', es: 'Sé la primera voz: comparte tu experiencia abajo.', fr: 'Soyez la première voix : partagez votre expérience ci-dessous.', de: 'Sei die erste Stimme: Teile unten deine Erfahrung.', pt: 'Seja a primeira voz: partilhe a sua experiência abaixo.', nl: 'Wees de eerste stem: deel hieronder je ervaring.' },
 };
 
+// Label for the merchant's public reply shown beneath a review.
+const REPLY_LABEL: Record<string, string> = {
+  it: 'Risposta di SILKinCOM', en: 'Reply from SILKinCOM', es: 'Respuesta de SILKinCOM', fr: 'Réponse de SILKinCOM', de: 'Antwort von SILKinCOM', pt: 'Resposta da SILKinCOM', nl: 'Reactie van SILKinCOM',
+};
+
 type Props = {
   productSlug: string;
   isAuthenticated: boolean;
@@ -35,6 +40,7 @@ type Review = {
   author_name: string;
   verified_purchase: boolean;
   created_at: string;
+  admin_reply: string | null;
 };
 
 export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
@@ -44,15 +50,36 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
   let reviews: Review[] = [];
   let stats = { count: 0, average: 0 };
 
+  const REVIEW_BASE = 'id, rating, title, body, author_name, verified_purchase, created_at';
+
   try {
     const supabase = createServiceClient();
-    const [{ data: rows }, { data: statsRows }] = await Promise.all([
-      supabase
+
+    // admin_reply is exposed by migration 053. If that migration isn't applied
+    // yet, selecting it 400s — so fall back to the base columns (reviews still
+    // render, just without the merchant reply) and log it. Lets the component
+    // deploy independently of the DB migration; the reply appears on its own
+    // once the view is updated.
+    async function fetchReviews() {
+      const withReply = await supabase
         .from('reviews_public')
-        .select('id, rating, title, body, author_name, verified_purchase, created_at')
+        .select(`${REVIEW_BASE}, admin_reply`)
         .eq('product_slug', productSlug)
         .order('created_at', { ascending: false })
-        .limit(20),
+        .limit(20);
+      if (!withReply.error) return withReply.data;
+      console.error('[ProductReviews] admin_reply unavailable, retrying without it:', withReply.error.message);
+      const base = await supabase
+        .from('reviews_public')
+        .select(REVIEW_BASE)
+        .eq('product_slug', productSlug)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      return base.data;
+    }
+
+    const [rows, { data: statsRows }] = await Promise.all([
+      fetchReviews(),
       supabase.rpc('product_review_stats', { p_slug: productSlug }),
     ]);
     if (rows) reviews = rows as Review[];
@@ -155,6 +182,16 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
               <p className="text-[11px] uppercase tracking-[0.25em] text-soft-black/50 border-t border-pearl-grey/40 pt-3">
                 {r.author_name}
               </p>
+              {r.admin_reply && (
+                <div className="mt-4 border-l-2 border-gold-primary/50 bg-white/60 pl-4 py-3">
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-gold-dark mb-1.5">
+                    {tr(REPLY_LABEL)}
+                  </p>
+                  <p className="text-sm font-light italic leading-relaxed text-soft-black/70">
+                    {r.admin_reply}
+                  </p>
+                </div>
+              )}
             </article>
           ))}
         </div>
