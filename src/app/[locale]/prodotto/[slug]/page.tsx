@@ -13,7 +13,8 @@ import { ProductReviews } from '@/components/product/ProductReviews';
 import { ArtisanAttribution } from '@/components/product/ArtisanAttribution';
 import { InventoryBadge } from '@/components/product/InventoryBadge';
 import { SizeGuideModal } from '@/components/product/SizeGuideModal';
-import { createServerClient } from '@/lib/supabase/server';
+import { StarRating } from '@/components/product/StarRating';
+import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
 
 function materialName(slug: string | undefined, locale: string): string {
@@ -164,6 +165,24 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   } catch {
     isAuthenticated = false;
   }
+
+  // Rating badge under H1 — same product_review_stats RPC as ReviewSchema/
+  // ProductReviews. Fails silent (badge just doesn't render) so a Supabase
+  // hiccup never breaks the PDP.
+  let reviewStats = { count: 0, average: 0 };
+  try {
+    const svc = createServiceClient();
+    const { data: statsRows } = await svc.rpc('product_review_stats', { p_slug: p.slug });
+    if (statsRows && Array.isArray(statsRows) && statsRows[0]) {
+      reviewStats = {
+        count: Number(statsRows[0].count || 0),
+        average: Number(statsRows[0].average || 0),
+      };
+    }
+  } catch {
+    reviewStats = { count: 0, average: 0 };
+  }
+
   // Disambiguated product name for schema + breadcrumb leaf. If the raw product
   // name matches the category (e.g. "Cernobbio") and a color variant exists,
   // append the color so AI crawlers and Google Rich Results see a distinct leaf.
@@ -310,9 +329,18 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                 </span>
               )}
 
-              <h1 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05] mb-6 text-soft-black">
+              <h1 className="font-display font-light text-4xl md:text-5xl lg:text-6xl leading-[1.05] mb-4 text-soft-black">
                 {p.name}{colorLabel ? ` ${colorLabel}` : ''}
               </h1>
+
+              {reviewStats.count > 0 && (
+                <Link href="#review" className="group mb-5 inline-flex items-center gap-2.5">
+                  <StarRating rating={reviewStats.average} />
+                  <span className="text-[11px] font-light text-soft-black/60 transition-colors group-hover:text-gold-dark">
+                    {t('reviews.summary', { average: reviewStats.average, count: reviewStats.count })}
+                  </span>
+                </Link>
+              )}
 
               <p className="text-2xl md:text-3xl font-light text-soft-black mb-3 tracking-wide">
                 {formatPrice(p.price)}

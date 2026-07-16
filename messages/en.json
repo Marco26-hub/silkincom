@@ -143,6 +143,12 @@
       "titleAccent": "pieces",
       "viewAll": "See all"
     },
+    "socialProof": {
+      "eyebrow": "Verified Reviews",
+      "titlePlain": "Real voices,",
+      "titleAccent": "real purchases.",
+      "cta": "Discover the product"
+    },
     "materials": {
       "eyebrow": "Our Materials",
       "titlePlain": "We select only",

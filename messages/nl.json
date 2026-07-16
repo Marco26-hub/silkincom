@@ -143,6 +143,12 @@
       "titleAccent": "stukken",
       "viewAll": "Alles bekijken"
     },
+    "socialProof": {
+      "eyebrow": "Geverifieerde Reviews",
+      "titlePlain": "Echte stemmen,",
+      "titleAccent": "echte aankopen.",
+      "cta": "Ontdek het product"
+    },
     "materials": {
       "eyebrow": "Onze Materialen",
       "titlePlain": "We selecteren uitsluitend",

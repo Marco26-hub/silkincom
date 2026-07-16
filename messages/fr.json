@@ -143,6 +143,12 @@
       "titleAccent": "iconiques",
       "viewAll": "Voir tout"
     },
+    "socialProof": {
+      "eyebrow": "Avis Vérifiés",
+      "titlePlain": "Voix authentiques,",
+      "titleAccent": "achats réels.",
+      "cta": "Découvrir le produit"
+    },
     "materials": {
       "eyebrow": "Nos Matières",
       "titlePlain": "Nous sélectionnons uniquement",

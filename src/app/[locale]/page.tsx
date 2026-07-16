@@ -1,5 +1,6 @@
 import { Hero } from '@/components/sections/Hero';
 import { ShopStrip } from '@/components/sections/ShopStrip';
+import { SocialProof } from '@/components/sections/SocialProof';
 import { ValueProps } from '@/components/sections/ValueProps';
 import { FeaturedCollections } from '@/components/sections/FeaturedCollections';
 import { BrandStory } from '@/components/sections/BrandStory';
@@ -67,6 +68,7 @@ export default async function HomePage() {
     <>
       <Hero slides={slides} />
       <ShopStrip />
+      <SocialProof />
       <ValueProps section={valueProps} />
       <FeaturedCollections collections={featured} />
       <BrandStory section={brandStory} />

@@ -143,6 +143,12 @@
       "titleAccent": "Stücke",
       "viewAll": "Alle ansehen"
     },
+    "socialProof": {
+      "eyebrow": "Verifizierte Bewertungen",
+      "titlePlain": "Echte Stimmen,",
+      "titleAccent": "echte Käufe.",
+      "cta": "Produkt entdecken"
+    },
     "materials": {
       "eyebrow": "Unsere Materialien",
       "titlePlain": "Wir wählen nur",
