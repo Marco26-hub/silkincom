@@ -671,7 +671,7 @@ export async function sendHeritageEmail(email: string) {
   });
 }
 
-export async function sendFirstPurchaseDiscountEmail(email: string, code: string = 'BENVENUTA10') {
+export async function sendFirstPurchaseDiscountEmail(email: string, code: string = 'BENVENUTO10') {
   const inner = `
     <p style="font-size:9px; letter-spacing:0.5em; color:#A87F1E; text-transform:uppercase; margin:0 0 16px 0;">Un gesto di benvenuto</p>
     <h1 style="font-family:'Cormorant Garamond', Georgia, serif; font-weight:300; font-size:32px; line-height:1.25; margin:0 0 24px 0;">Il suo primo acquisto, con <em style="color:#D4AF37; font-style:italic;">−10%</em></h1>

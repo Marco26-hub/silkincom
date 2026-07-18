@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
       email_type: 'first_purchase_discount',
       scheduled_at: new Date(now + 7 * day).toISOString(),
       status: 'pending',
-      payload: { source: 'newsletter-confirm', code: 'BENVENUTA10' },
+      payload: { source: 'newsletter-confirm', code: 'BENVENUTO10' },
     },
   ]);
 

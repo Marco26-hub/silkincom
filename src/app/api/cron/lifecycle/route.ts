@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
           break;
         }
         case 'first_purchase_discount': {
-          const code = (job.payload?.code as string) || 'BENVENUTA10';
+          const code = (job.payload?.code as string) || 'BENVENUTO10';
           await sendFirstPurchaseDiscountEmail(job.recipient_email, code);
           result = { sent: true };
           break;
