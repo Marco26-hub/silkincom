@@ -8,6 +8,7 @@ import { CookieBanner } from '@/components/ui/CookieBanner';
 import { SalesNotification } from '@/components/ui/SalesNotification';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { FloatingNav } from '@/components/ui/FloatingNav';
+import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import type { HomeSectionLocalized } from '@/data/home-content';
 
 export function PublicChrome({
@@ -32,6 +33,7 @@ export function PublicChrome({
       <main>{children}</main>
       <Footer />
       <FloatingNav />
+      <WhatsAppButton />
       <CookieBanner />
       <SalesNotification />
     </>

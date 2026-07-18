@@ -17,6 +17,9 @@ import { useTranslations } from 'next-intl';
  */
 const SHOW_AFTER = 280; // px scrolled before the nav appears
 const FOOTER_GAP = 12; // px kept between the nav and the footer
+// Persistent WhatsApp FAB sits bottom-right at 24px and is 56px tall (h-14).
+// Lift the whole nav row above it so "back to top" never overlaps the FAB.
+const FAB_CLEARANCE = 64;
 
 export function FloatingNav() {
   const router = useRouter();
@@ -87,7 +90,7 @@ export function FloatingNav() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
           transition={{ duration: 0.35, ease: [0.21, 0.47, 0.32, 0.98] }}
-          style={{ bottom: 24 + lift }}
+          style={{ bottom: 24 + FAB_CLEARANCE + lift }}
           className="fixed inset-x-0 z-40 flex justify-between items-center pointer-events-none px-4 md:px-6"
         >
           {canBack ? (
