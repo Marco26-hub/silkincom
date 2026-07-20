@@ -1,9 +1,37 @@
 # SILKinCOM — Handoff per nuova sessione
 
 Documento di contesto per proseguire il lavoro. Leggere **interamente** prima di iniziare.
-Ultimo aggiornamento: 15 luglio 2026 · ultimo commit di riferimento: `d90ba15`.
+Ultimo aggiornamento: **18 luglio 2026** · ultimo commit di riferimento: `4c86697`.
 
 > ⚠️ Tra il 21/05 (`bc3fbd6`) e il 15/07 c'è stato lavoro **B2B outreach/response tracking** (commit fino a `1ecbd1d`) **non documentato** in questo handoff. Il §6 salta dalla sessione 21/05 direttamente alla sessione 15/07 (fix recensioni).
+
+---
+
+## ⚙️ 0. COORDINAMENTO MULTI-AGENTE (Codex + Claude) — LEGGERE PRIMA DI EDITARE
+
+**Esistono DUE working copy dello stesso repo `Marco26-hub/silkincom`:**
+- **`/Users/md/pulizie srl/silkincom`** = branch **`main`** = **PRODUZIONE** (deploy auto Vercel su push). Copia canonica delle sessioni Claude.
+- **`/Users/md/silkincom_claude`** = branch **`codex/deploy-current-origin`** = worktree di **Codex**. NON è produzione finché non viene mergiato su main.
+
+**⚠️ Entrambi gli agenti pushano su `main`.** Il 16/07 Codex ha pushato **19 commit** (feature B2B lead-outreach + migration recensioni) su main mentre Claude lavorava → `git push` rifiutato (remote ahead). **PROTOCOLLO OBBLIGATORIO prima di ogni push:**
+1. `git fetch origin && git status`
+2. Se remote è avanti: `git diff $(git merge-base HEAD origin/main) origin/main --stat` per vedere quali file ha toccato l'altro agente.
+3. `git pull --rebase origin main` (verifica che i file toccati NON si sovrappongano prima di assumere merge pulito).
+4. `npx tsc --noEmit` dopo il rebase (l'altro agente può aver cambiato `package.json`/dipendenze → `npm install` se serve).
+5. Poi `git push`.
+- **Migration DB condivise**: se un agente tocca view/tabelle Supabase (es. `reviews_public`), l'altro deve ri-verificarle. Il 16/07 la migration `053_reviews_public_admin_reply.sql` di Codex ha invertito la precedenza `COALESCE` nella view `reviews_public` (esponeva il nome reale invece dell'override) → fixato in `054` da Claude.
+- **`social/` è GITIGNORED** (asset/doc locali, non versionati) — non è condiviso via git tra i worktree.
+- **Verifica preview**: la MCP preview può puntare al worktree sbagliato. Usa `preview_start {name:"silkincom-clone"}` (porta 3200, path corretto), NON `{name:"silkincom"}` (punta a `silkincom_claude`). Route DB-backed rendono SOLO in prod (service-role assente in `.env.local`).
+
+## 📋 SESSIONE 18/07/2026 (Claude) — cosa è cambiato
+**Codice/prod (commit su main):**
+- **Anti-bot** rinforzato (honeypot + timing token HMAC + rate-limit) su checkout/contatti/newsletter/b2b/reviews. `src/lib/antibot.ts`, `useAntibot.tsx`.
+- **Prova sociale recensione**: badge ★ sotto H1 PDP (`prodotto/[slug]/page.tsx`, `StarRating.tsx`) + sezione `SocialProof.tsx` in home + melzi-1 nei bestseller. Fix bug privacy `reviews_public` (migration 054).
+- **Cattura email**: `WelcomePopup.tsx` (popup −10% primo ordine, coupon `BENVENUTO10` in DB, double opt-in) montato in `PublicChrome`. + `WhatsAppButton.tsx` (FAB assistenza).
+- **Fix drip email**: codice sconto welcome allineato a `BENVENUTO10` (era `BENVENUTA10` inesistente) in `newsletter/confirm`, `cron/lifecycle`, `email.ts`.
+- **Blog**: nuovo post DB `come-indossare-sciarpa-como` (IT+6 lingue) + hero `public/editorial/sciarpa-como-{guida,uomo}.webp`.
+**Social/marketing (Blotato, non-git):** libreria educational (caroselli come-indossare/cura), lead-magnet "commenta parola→PDF DM", promo −10% (card+reel), analisi strategia. Tutto in `social/guida-educational/` + `social/STRATEGIA-SOCIAL-ANALISI-2026-07.md` + `social/profili/`.
+**TODO owner (non-code):** bio-link UTM 5 profili · Meta Pixel ID (retargeting) · apex→www 308 · GBP+Trustpilot · leaked-password toggle Supabase · Postgres upgrade (deferred).
 
 ---
 
