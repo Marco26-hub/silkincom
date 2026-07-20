@@ -30,8 +30,14 @@ Ultimo aggiornamento: **18 luglio 2026** · ultimo commit di riferimento: `4c866
 - **Cattura email**: `WelcomePopup.tsx` (popup −10% primo ordine, coupon `BENVENUTO10` in DB, double opt-in) montato in `PublicChrome`. + `WhatsAppButton.tsx` (FAB assistenza).
 - **Fix drip email**: codice sconto welcome allineato a `BENVENUTO10` (era `BENVENUTA10` inesistente) in `newsletter/confirm`, `cron/lifecycle`, `email.ts`.
 - **Blog**: nuovo post DB `come-indossare-sciarpa-como` (IT+6 lingue) + hero `public/editorial/sciarpa-como-{guida,uomo}.webp`.
-**Social/marketing (Blotato, non-git):** libreria educational (caroselli come-indossare/cura), lead-magnet "commenta parola→PDF DM", promo −10% (card+reel), analisi strategia. Tutto in `social/guida-educational/` + `social/STRATEGIA-SOCIAL-ANALISI-2026-07.md` + `social/profili/`.
-**TODO owner (non-code):** bio-link UTM 5 profili · Meta Pixel ID (retargeting) · apex→www 308 · GBP+Trustpilot · leaked-password toggle Supabase · Postgres upgrade (deferred).
+**Social/marketing (Blotato + `social/`, GITIGNORED non-git):**
+- **Libreria educational** `social/guida-educational/`: caroselli "come indossare" (foulard/pashmina/sciarpa) + "cura" (cashmere/seta/lino), 32 slide gold. PDF per-guida in `PDF/<tema>/` + `PDF/README.md` (mappa keyword→PDF, da inviare in DM). Booklet `Guida-SILKinCOM.pdf`.
+- **5 lead-magnet "commenta parola→PDF DM"** schedulati 1/sett IG+FB (SETA/SILKINCOM 19/07, FOULARD 24/07, PASHMINA 31/07, CASHMERE 07/08, LINO 14/08). Teaser PRO 4-slide in `teaser-pro/`. ⚠️ **consegna DM = azione owner** (rispondi+invia PDF) o automazione ManyChat.
+- **Strategia**: `social/STRATEGIA-SOCIAL-ANALISI-2026-07.md` (mix corretto) + **`STRATEGIA-VIRALE-RISTRUTTURATA-2026-07.md`** (reel-first, settimana-tipo, swap duplicati). Profili: `social/profili/OTTIMIZZAZIONE-PROFILI-2026-07.md` (bio 7 profili da incollare).
+- **Reel**: Remotion SilkReel per prodotto (no volti AI, estivi) — `remotion/` `npx remotion render SilkReel --props`. 3 reel da video reali approvati Marco (`social/reel-remotion/reel-{twilly-aperol,riva-lino-uomo,melzi-lino-uomo}.mp4`) + Tivan, **in attesa OK Marco per schedulare**. ⚠️ Marco ha RIFIUTATO reel con footage AI di PERSONE (uncanny) → usare prodotto/scenario o video approvati.
+- **Blog** `come-indossare-sciarpa-como` (DB, IT+6 lingue, hero Tremezzo).
+- **Cap Blotato 200/200**: per aggiungere → swap (cancella prodotto-duplicati Lario/Darsena). Foto nuove in `~/Desktop/modelli ai silkincom FOTO` (18/07 = invernali Tremezzo + 3 video UGC approvati).
+**TODO owner (non-code, MOLTIPLICATORI):** bio-link UTM 5 profili · Meta Pixel ID (retargeting) · **ManyChat** (keyword→DM auto) · apex→www 308 · GBP+Trustpilot · leaked-password toggle Supabase · Postgres upgrade (deferred).
 
 ---
 
