@@ -118,6 +118,8 @@ type ScanSummary = {
   saved: number;
   created: number;
   updated: number;
+  /** Quanti risultati erano gia' stati contattati in passato. */
+  alreadyContacted: number;
   warnings: number;
   progress: number;
   provider?: string;
@@ -845,6 +847,7 @@ export function LeadB2BPanel({
       saved: 0,
       created: 0,
       updated: 0,
+      alreadyContacted: 0,
       warnings: 0,
       progress: 6,
       createdLeadIds: [],
@@ -907,6 +910,7 @@ export function LeadB2BPanel({
         : "";
       const created = data.created || 0;
       const updated = data.updated || 0;
+      const alreadyContacted = data.alreadyContacted || 0;
       const completedAt = new Date().toISOString();
       setScanProgress(100);
       setScanSummary({
@@ -919,6 +923,7 @@ export function LeadB2BPanel({
         saved: data.saved || 0,
         created,
         updated,
+        alreadyContacted,
         warnings: Array.isArray(data.warnings) ? data.warnings.length : 0,
         progress: 100,
         provider,
@@ -953,6 +958,7 @@ export function LeadB2BPanel({
         saved: current?.saved || 0,
         created: current?.created || 0,
         updated: current?.updated || 0,
+        alreadyContacted: current?.alreadyContacted || 0,
         warnings: current?.warnings || 0,
         progress: current?.progress || scanProgress,
         provider: current?.provider,
@@ -995,6 +1001,7 @@ export function LeadB2BPanel({
       saved: 0,
       created: 0,
       updated: 0,
+      alreadyContacted: 0,
       warnings: 0,
       progress: 5,
       createdLeadIds: [],
@@ -1029,6 +1036,7 @@ export function LeadB2BPanel({
       setScanProgress(100);
       const created = data.created || 0;
       const updated = data.updated || 0;
+      const alreadyContacted = data.alreadyContacted || 0;
       setScanSummary({
         mode: "url",
         status: "done",
@@ -1039,6 +1047,7 @@ export function LeadB2BPanel({
         saved: data.discovered || 0,
         created,
         updated,
+        alreadyContacted,
         warnings: Array.isArray(data.warnings) ? data.warnings.length : 0,
         progress: 100,
         createdLeadIds: Array.isArray(data.createdLeadIds)
@@ -1071,6 +1080,7 @@ export function LeadB2BPanel({
         saved: current?.saved || 0,
         created: current?.created || 0,
         updated: current?.updated || 0,
+        alreadyContacted: current?.alreadyContacted || 0,
         warnings: current?.warnings || 0,
         progress: current?.progress || scanProgress,
         createdLeadIds: current?.createdLeadIds || [],
@@ -3309,7 +3319,7 @@ function LeadScanStatus({
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-6">
         <ScanMetric
           label="Nuovi lead"
           value={summary.created}
@@ -3320,6 +3330,19 @@ function LeadScanStatus({
           label="Già presenti"
           value={summary.updated}
           hint="aggiornati nel batch"
+        />
+        {/* Senza questo numero i già contattati ricomparivano indistinguibili
+            dai nuovi, con il rischio concreto di riscrivere a chi era stato
+            appena contattato. */}
+        <ScanMetric
+          label="Già contattati"
+          value={summary.alreadyContacted}
+          hint={
+            summary.alreadyContacted > 0
+              ? "stato conservato, non riscriverli"
+              : "nessuno fra i risultati"
+          }
+          tone={summary.alreadyContacted > 0 ? "amber" : undefined}
         />
         <ScanMetric
           label={summary.mode === "live" ? "Risultati" : "URL"}

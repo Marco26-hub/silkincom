@@ -13,6 +13,7 @@ import {
   type LeadSegment,
 } from "@/lib/lead-segments";
 import { leadSearchSchema } from "@/lib/validations";
+import { upsertScannedLead } from "@/lib/lead-upsert";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -187,6 +188,7 @@ export async function POST(req: NextRequest) {
   const saved: Array<{
     data: { id?: string } | null;
     existed: boolean;
+    alreadyContacted: boolean;
     industry: string;
   }> = [];
   const results = await Promise.allSettled(
@@ -223,54 +225,41 @@ export async function POST(req: NextRequest) {
         lead?.score || 10,
         contactEmail ? 70 : contactPhone ? 35 : 20,
       );
-      const { data: existingLead, error: existingError } = await supabase
-        .from("lead_accounts")
-        .select("id")
-        .eq("website_url", websiteUrl)
-        .maybeSingle();
+      const { data, existed, alreadyContacted } = await upsertScannedLead(
+        supabase,
+        {
+          company_name: lead?.company_name || candidate.title,
+          website_url: websiteUrl,
+          industry: candidate.industry,
+          city: lead?.city || candidate.city || null,
+          country: lead?.country || candidate.country || "IT",
+          contact_email: contactEmail,
+          contact_phone: contactPhone,
+          source_url: candidate.sourceUrl || candidate.link,
+          public_contact_page: lead?.public_contact_page || null,
+          discovery_query: candidate.queryLabel,
+          notes:
+            [
+              input.notes,
+              candidate.segmentLabels.length
+                ? `Segmenti: ${candidate.segmentLabels.join(", ")}`
+                : "",
+            ]
+              .filter(Boolean)
+              .join(" · ") ||
+            candidate.snippet ||
+            lead?.notes ||
+            "",
+          status: contactEmail ? "qualified" : "scanned",
+          score,
+        },
+      );
 
-      if (existingError) throw new Error(existingError.message);
-
-      const { data, error } = await supabase
-        .from("lead_accounts")
-        .upsert(
-          {
-            company_name: lead?.company_name || candidate.title,
-            website_url: websiteUrl,
-            industry: candidate.industry,
-            city: lead?.city || candidate.city || null,
-            country: lead?.country || candidate.country || "IT",
-            contact_email: contactEmail,
-            contact_phone: contactPhone,
-            source_url: candidate.sourceUrl || candidate.link,
-            public_contact_page: lead?.public_contact_page || null,
-            discovery_query: candidate.queryLabel,
-            notes:
-              [
-                input.notes,
-                candidate.segmentLabels.length
-                  ? `Segmenti: ${candidate.segmentLabels.join(", ")}`
-                  : "",
-              ]
-                .filter(Boolean)
-                .join(" · ") ||
-              candidate.snippet ||
-              lead?.notes ||
-              "",
-            status: contactEmail ? "qualified" : "scanned",
-            score,
-            last_scanned_at: new Date().toISOString(),
-          },
-          { onConflict: "website_url" },
-        )
-        .select()
-        .single();
-
-      if (error) throw new Error(error.message);
       return {
         data,
         warning: scanWarning,
-        existed: Boolean(existingLead?.id),
+        existed,
+        alreadyContacted,
         industry: candidate.industry,
       };
     }),
@@ -281,6 +270,7 @@ export async function POST(req: NextRequest) {
       saved.push({
         data: result.value.data,
         existed: result.value.existed,
+        alreadyContacted: result.value.alreadyContacted,
         industry: result.value.industry,
       });
       if (result.value.warning) warnings.push(result.value.warning);
@@ -299,6 +289,13 @@ export async function POST(req: NextRequest) {
     saved: saved.length,
     created: saved.filter((item) => !item.existed).length,
     updated: saved.filter((item) => item.existed).length,
+    // Quanti fra i risultati erano gia' stati contattati: senza questo numero
+    // ricomparivano indistinguibili dai nuovi e si rischiava di riscrivergli.
+    alreadyContacted: saved.filter((item) => item.alreadyContacted).length,
+    alreadyContactedLeadIds: saved
+      .filter((item) => item.alreadyContacted)
+      .map((item) => item.data?.id)
+      .filter(Boolean),
     createdLeadIds: saved
       .filter((item) => !item.existed)
       .map((item) => item.data?.id)
@@ -322,6 +319,8 @@ export async function POST(req: NextRequest) {
         saved: groupedSaved.length,
         created: groupedSaved.filter((item) => !item.existed).length,
         updated: groupedSaved.filter((item) => item.existed).length,
+        alreadyContacted: groupedSaved.filter((item) => item.alreadyContacted)
+          .length,
       };
     }),
     warnings,

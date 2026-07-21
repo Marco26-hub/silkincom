@@ -6,6 +6,7 @@ import {
   normalizeLeadUrl,
 } from "@/lib/lead-discovery";
 import { leadDiscoverySchema } from "@/lib/validations";
+import { upsertScannedLead } from "@/lib/lead-upsert";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,8 +34,11 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = createServiceClient();
-  const discovered: Array<{ data: { id?: string } | null; existed: boolean }> =
-    [];
+  const discovered: Array<{
+    data: { id?: string } | null;
+    existed: boolean;
+    alreadyContacted: boolean;
+  }> = [];
   const warnings: string[] = [];
 
   const results = await Promise.allSettled(
@@ -44,44 +48,26 @@ export async function POST(req: NextRequest) {
           industry: parsed.data.industry,
           notes: parsed.data.notes,
         });
-        const { data: existingLead, error: existingError } = await supabase
-          .from("lead_accounts")
-          .select("id")
-          .eq("website_url", lead.website_url)
-          .maybeSingle();
+        const { data, existed, alreadyContacted } = await upsertScannedLead(
+          supabase,
+          {
+            company_name: lead.company_name,
+            website_url: lead.website_url,
+            industry: parsed.data.industry || "hospitality",
+            city: lead.city,
+            country: lead.country || "IT",
+            contact_email: lead.contact_email,
+            contact_phone: lead.contact_phone,
+            source_url: lead.source_url,
+            public_contact_page: lead.public_contact_page,
+            discovery_query: lead.discovery_query,
+            notes: parsed.data.notes || lead.notes || "",
+            status: lead.contact_email ? "qualified" : "scanned",
+            score: lead.score,
+          },
+        );
 
-        if (existingError) {
-          throw new Error(existingError.message);
-        }
-
-        const { data, error } = await supabase
-          .from("lead_accounts")
-          .upsert(
-            {
-              company_name: lead.company_name,
-              website_url: lead.website_url,
-              industry: parsed.data.industry || "hospitality",
-              city: lead.city,
-              country: lead.country || "IT",
-              contact_email: lead.contact_email,
-              contact_phone: lead.contact_phone,
-              source_url: lead.source_url,
-              public_contact_page: lead.public_contact_page,
-              discovery_query: lead.discovery_query,
-              notes: parsed.data.notes || lead.notes || "",
-              status: lead.contact_email ? "qualified" : "scanned",
-              score: lead.score,
-              last_scanned_at: new Date().toISOString(),
-            },
-            { onConflict: "website_url" },
-          )
-          .select()
-          .single();
-
-        if (error) {
-          throw new Error(error.message);
-        }
-        return { data, existed: Boolean(existingLead?.id) };
+        return { data, existed, alreadyContacted };
       } catch (error) {
         const message =
           error instanceof Error ? error.message : `Errore su ${url}`;
@@ -105,6 +91,7 @@ export async function POST(req: NextRequest) {
     discovered: discovered.length,
     created: discovered.filter((item) => !item.existed).length,
     updated: discovered.filter((item) => item.existed).length,
+    alreadyContacted: discovered.filter((item) => item.alreadyContacted).length,
     createdLeadIds: discovered
       .filter((item) => !item.existed)
       .map((item) => item.data?.id)
