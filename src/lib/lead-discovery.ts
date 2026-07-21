@@ -5,6 +5,7 @@ import {
   buildLeadProposalUrl,
   buildLeadStopUrl,
 } from "./lead-public-links";
+import { getLeadReasonPresets } from "./lead-segments";
 
 type DiscoveryOptions = {
   query?: string;
@@ -1485,6 +1486,10 @@ export function isTargetingNoteSpecific(
 // Nota: NON inventa dettagli sulla struttura (dotazioni, spa, boutique…), che
 // sarebbero affermazioni false in una email inviata a un'attività reale.
 export function buildAutoTargetingNote(focus: LeadOutreachFocus): string {
+  // Stesso catalogo mostrato nel menu admin, così il motivo inviato in
+  // automatico coincide con la prima voce che l'operatore vede a schermo.
+  const preset = getLeadReasonPresets(focus)[0];
+  if (preset) return preset.note;
   const activations = SECTOR_OUTREACH_ACTIVATIONS[focus];
   if (!activations) return "";
   return activations.charAt(0).toLowerCase() + activations.slice(1);

@@ -23,7 +23,9 @@ import {
 } from "lucide-react";
 import {
   buildLeadSegmentQuery,
+  getLeadReasonPresets,
   getLeadSegments,
+  isLeadReasonPresetNote,
   LEAD_SEGMENT_GROUPS,
   MAX_LEAD_SEGMENTS_PER_SEARCH,
   type LeadSegment,
@@ -408,6 +410,27 @@ export function LeadB2BPanel({
   });
   const [focus, setFocus] = useState("bed_breakfast");
   const [campaignNotes, setCampaignNotes] = useState("");
+  // Motivi pronti del settore selezionato. Il campo resta libero: il preset
+  // riempie solo la textarea, che poi si può riscrivere a mano.
+  const reasonPresets = useMemo(() => getLeadReasonPresets(focus), [focus]);
+  const activePresetId = useMemo(
+    () =>
+      reasonPresets.find((preset) => preset.note === campaignNotes.trim())?.id ??
+      "",
+    [reasonPresets, campaignNotes],
+  );
+
+  // Al cambio settore il motivo si riallinea da solo, ma solo se il campo è
+  // vuoto o contiene ancora un preset: un motivo scritto a mano non va perso.
+  useEffect(() => {
+    const presets = getLeadReasonPresets(focus);
+    if (presets.length === 0) return;
+    setCampaignNotes((current) =>
+      !current.trim() || isLeadReasonPresetNote(current)
+        ? presets[0].note
+        : current,
+    );
+  }, [focus]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -2002,6 +2025,25 @@ export function LeadB2BPanel({
               <label className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
                 Motivo specifico della proposta
               </label>
+              {reasonPresets.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {reasonPresets.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => setCampaignNotes(preset.note)}
+                      title={preset.note}
+                      className={`px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] border transition-colors ${
+                        activePresetId === preset.id
+                          ? "border-soft-black bg-soft-black text-white"
+                          : "border-pearl-grey text-soft-grey hover:border-soft-black hover:text-soft-black"
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              )}
               <textarea
                 value={campaignNotes}
                 onChange={(e) => setCampaignNotes(e.target.value)}
