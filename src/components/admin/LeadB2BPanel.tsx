@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search,
@@ -1085,6 +1085,25 @@ export function LeadB2BPanel({
   useEffect(() => {
     void loadCatalogImages();
   }, []);
+
+  // Cambiando la foto mentre l'anteprima è aperta, l'anteprima va rigenerata:
+  // l'HTML mostrato arriva dalla chiamata precedente e resterebbe quello di
+  // prima, facendo sembrare che la scelta non abbia avuto effetto.
+  // Sta in un effect e non nell'onClick perché openOutreachPreview legge
+  // productImageOverrides dallo stato: chiamandola subito dopo il setState
+  // manderebbe ancora il valore vecchio.
+  const previewRefreshKey = JSON.stringify(productImageOverrides);
+  const lastPreviewRefreshKey = useRef(previewRefreshKey);
+  useEffect(() => {
+    if (lastPreviewRefreshKey.current === previewRefreshKey) return;
+    lastPreviewRefreshKey.current = previewRefreshKey;
+    if (!previewOpen || previewLeadIds.length === 0) return;
+    void openOutreachPreview(previewLeadIds);
+    // openOutreachPreview è stabile nel ciclo di vita del pannello e rileggere
+    // le altre dipendenze qui rigenererebbe l'anteprima anche per modifiche
+    // che non riguardano le foto.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewRefreshKey, previewOpen, previewLeadIds]);
 
   // La foto caricata viene salvata nel catalogo (product_images), non solo
   // nello stato della campagna: prima finiva in /api/admin/media e viveva solo
@@ -2611,6 +2630,58 @@ export function LeadB2BPanel({
                       manuale/test. Il cliente non viene marcato come contattato.
                     </div>
                   )}
+
+                  {/* Selettore foto dentro l'anteprima: la sezione foto del
+                      pannello resta coperta dal modale, quindi senza questo
+                      bisognerebbe chiudere, cambiare e riaprire per vedere
+                      l'effetto. */}
+                  {(() => {
+                    const gallery =
+                      catalogImages[primaryOutreachProductSlug] || [];
+                    if (gallery.length < 2) return null;
+                    const activeUrl =
+                      productImageOverrides[primaryOutreachProductSlug] ||
+                      gallery.find((image) => image.isPrimary)?.url ||
+                      gallery[0]?.url;
+                    return (
+                      <div className="mb-5 space-y-2 border border-pearl-grey bg-white p-4">
+                        <p className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">
+                          Foto in email · cambia al volo
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {gallery.map((image) => (
+                            <button
+                              key={image.id}
+                              type="button"
+                              disabled={previewLoading}
+                              onClick={() =>
+                                setProductImageOverrides((previous) => ({
+                                  ...previous,
+                                  [primaryOutreachProductSlug]: image.url,
+                                }))
+                              }
+                              title={
+                                image.isPrimary
+                                  ? "Principale a catalogo"
+                                  : "Usa questa foto"
+                              }
+                              className={`h-14 w-14 overflow-hidden border transition disabled:opacity-50 ${
+                                image.url === activeUrl
+                                  ? "border-soft-black ring-1 ring-gold-primary"
+                                  : "border-pearl-grey hover:border-soft-black"
+                              }`}
+                            >
+                              <img
+                                src={image.url}
+                                alt=""
+                                className="h-full w-full object-cover"
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   <div className="space-y-3 border border-pearl-grey bg-white p-4">
                     <div className="flex items-center justify-between gap-3 border-b border-pearl-grey pb-3">
