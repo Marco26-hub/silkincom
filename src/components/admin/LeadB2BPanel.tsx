@@ -468,6 +468,30 @@ export function LeadB2BPanel({
   >(null);
   // Fisarmonica della sezione foto: un prodotto aperto per volta.
   const [openPhotoSlug, setOpenPhotoSlug] = useState<string | null>(null);
+
+  // Miniature da mostrare per un prodotto: le foto a catalogo più, in testa,
+  // quella caricata solo per la campagna. Senza questa, una foto caricata
+  // senza «carica anche nel sito» finisce in media library e non compare fra
+  // le miniature, dando l'impressione che l'upload non abbia fatto nulla.
+  function getPhotoOptions(slug: string) {
+    const gallery = (catalogImages[slug] || []).map((image) => ({
+      ...image,
+      uploaded: false,
+    }));
+    const override = productImageOverrides[slug];
+    if (override && !gallery.some((image) => image.url === override)) {
+      return [
+        {
+          id: `uploaded-${slug}`,
+          url: override,
+          isPrimary: false,
+          uploaded: true,
+        },
+        ...gallery,
+      ];
+    }
+    return gallery;
+  }
   // Foto già a catalogo, per poterne scegliere una esistente invece di
   // ricaricarla. Chiave = slug prodotto.
   const [catalogImages, setCatalogImages] = useState<
@@ -1165,6 +1189,9 @@ export function LeadB2BPanel({
         ...previous,
         [slug]: uploadedUrl,
       }));
+      // Apre la riga del prodotto: dopo un upload ci si aspetta di vedere la
+      // foto appena caricata, non di doverla andare a cercare.
+      setOpenPhotoSlug(slug);
       setPreviewConfirmed(false);
       setOutreachSendReceipt(null);
     } catch (error) {
@@ -2179,7 +2206,7 @@ export function LeadB2BPanel({
                 {OUTREACH_IMAGE_PRODUCTS.map((product) => {
                   const overrideUrl = productImageOverrides[product.slug];
                   const inputId = `outreach-image-${product.slug}`;
-                  const gallery = catalogImages[product.slug] || [];
+                  const gallery = getPhotoOptions(product.slug);
                   const isPrimaryProduct =
                     product.slug === primaryOutreachProductSlug;
                   const isOpen = openPhotoSlug === product.slug;
@@ -2248,9 +2275,11 @@ export function LeadB2BPanel({
                                       setOutreachSendReceipt(null);
                                     }}
                                     title={
-                                      image.isPrimary
-                                        ? "Principale a catalogo"
-                                        : "Usa questa foto"
+                                      image.uploaded
+                                        ? "Foto caricata da te"
+                                        : image.isPrimary
+                                          ? "Principale a catalogo"
+                                          : "Usa questa foto"
                                     }
                                     className={`relative h-14 w-14 overflow-hidden border transition ${
                                       isSelected
@@ -2263,9 +2292,15 @@ export function LeadB2BPanel({
                                       alt=""
                                       className="h-full w-full object-cover"
                                     />
-                                    {image.isPrimary && (
-                                      <span className="absolute inset-x-0 bottom-0 bg-soft-black/75 text-center text-[7px] uppercase tracking-[0.1em] text-warm-white">
-                                        Princ.
+                                    {(image.uploaded || image.isPrimary) && (
+                                      <span
+                                        className={`absolute inset-x-0 bottom-0 text-center text-[7px] uppercase tracking-[0.1em] text-warm-white ${
+                                          image.uploaded
+                                            ? "bg-gold-primary/90 text-soft-black"
+                                            : "bg-soft-black/75"
+                                        }`}
+                                      >
+                                        {image.uploaded ? "Caricata" : "Princ."}
                                       </span>
                                     )}
                                   </button>
@@ -2654,8 +2689,7 @@ export function LeadB2BPanel({
                       bisognerebbe chiudere, cambiare e riaprire per vedere
                       l'effetto. */}
                   {(() => {
-                    const gallery =
-                      catalogImages[primaryOutreachProductSlug] || [];
+                    const gallery = getPhotoOptions(primaryOutreachProductSlug);
                     if (gallery.length < 2) return null;
                     const activeUrl =
                       productImageOverrides[primaryOutreachProductSlug] ||
@@ -2679,11 +2713,13 @@ export function LeadB2BPanel({
                                 }))
                               }
                               title={
-                                image.isPrimary
-                                  ? "Principale a catalogo"
-                                  : "Usa questa foto"
+                                image.uploaded
+                                  ? "Foto caricata da te"
+                                  : image.isPrimary
+                                    ? "Principale a catalogo"
+                                    : "Usa questa foto"
                               }
-                              className={`h-14 w-14 overflow-hidden border transition disabled:opacity-50 ${
+                              className={`relative h-14 w-14 overflow-hidden border transition disabled:opacity-50 ${
                                 image.url === activeUrl
                                   ? "border-soft-black ring-1 ring-gold-primary"
                                   : "border-pearl-grey hover:border-soft-black"
@@ -2694,6 +2730,11 @@ export function LeadB2BPanel({
                                 alt=""
                                 className="h-full w-full object-cover"
                               />
+                              {image.uploaded && (
+                                <span className="absolute inset-x-0 bottom-0 bg-gold-primary/90 text-center text-[7px] uppercase tracking-[0.1em] text-soft-black">
+                                  Caricata
+                                </span>
+                              )}
                             </button>
                           ))}
                         </div>
