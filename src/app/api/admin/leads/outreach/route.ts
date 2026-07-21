@@ -5,7 +5,7 @@ import { logAdminAction } from '@/lib/audit';
 import {
   buildLeadOutreachCopy,
   LEAD_OUTREACH_FALLBACK_IMAGES,
-  composeLeadTargetingNotes,
+  resolveLeadTargetingNotes,
   getLeadOutreachProductSlugs,
   getLeadOutreachDeliveryMetrics,
   isLeadFocusCoherent,
@@ -100,9 +100,10 @@ export async function POST(req: NextRequest) {
       results.push({ leadId: lead.id, ok: false, error: 'Manca email di contatto' });
       continue;
     }
-    const targetingNotes = composeLeadTargetingNotes(
+    const { note: targetingNotes } = resolveLeadTargetingNotes(
       lead.notes,
-      parsed.data.notes
+      parsed.data.notes,
+      parsed.data.focus,
     );
     if (!isLeadFocusCoherent(lead.industry, parsed.data.focus)) {
       results.push({ leadId: lead.id, ok: false, error: 'Focus non coerente con il settore del lead' });

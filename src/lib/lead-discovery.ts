@@ -1478,6 +1478,31 @@ export function isTargetingNoteSpecific(
   return note.length >= 24 && /[a-zà-ÿ]{4,}/i.test(note);
 }
 
+// Motivo di contatto ricavato dai touchpoint reali del settore, usato quando
+// non è stata scritta una nota a mano. Serve a non dover compilare il campo a
+// ogni campagna: la specificità sul singolo lead arriva comunque dalla frase
+// finale, che monta nome struttura e città (vedi buildOutreachReasonSentence).
+// Nota: NON inventa dettagli sulla struttura (dotazioni, spa, boutique…), che
+// sarebbero affermazioni false in una email inviata a un'attività reale.
+export function buildAutoTargetingNote(focus: LeadOutreachFocus): string {
+  const activations = SECTOR_OUTREACH_ACTIVATIONS[focus];
+  if (!activations) return "";
+  return activations.charAt(0).toLowerCase() + activations.slice(1);
+}
+
+// Sceglie il motivo da usare: la nota scritta a mano ha sempre la precedenza,
+// altrimenti si ricade su quella automatica. Restituisce anche l'origine, così
+// l'anteprima admin può dire chiaramente quale delle due si sta inviando.
+export function resolveLeadTargetingNotes(
+  leadNotes: string | null | undefined,
+  campaignNotes: string | null | undefined,
+  focus: LeadOutreachFocus,
+): { note: string; source: "manual" | "auto" } {
+  const manual = composeLeadTargetingNotes(leadNotes, campaignNotes);
+  if (isTargetingNoteSpecific(manual)) return { note: manual, source: "manual" };
+  return { note: buildAutoTargetingNote(focus), source: "auto" };
+}
+
 export function isLeadFocusCoherent(
   leadIndustry: string | null | undefined,
   focus: LeadOutreachFocus,

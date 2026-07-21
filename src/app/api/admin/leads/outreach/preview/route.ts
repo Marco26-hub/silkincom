@@ -3,7 +3,7 @@ import { forbidden, requireAdminApi } from '@/lib/admin-api';
 import {
   buildLeadOutreachCopy,
   LEAD_OUTREACH_FALLBACK_IMAGES,
-  composeLeadTargetingNotes,
+  resolveLeadTargetingNotes,
   getLeadOutreachProductSlugs,
   getLeadOutreachDeliveryMetrics,
   isLeadFocusCoherent,
@@ -66,10 +66,8 @@ export async function POST(req: NextRequest) {
     const lead = leadById.get(leadId);
     if (!lead) return [];
 
-    const targetingNotes = composeLeadTargetingNotes(
-      lead.notes,
-      parsed.data.notes,
-    );
+    const { note: targetingNotes, source: targetingSource } =
+      resolveLeadTargetingNotes(lead.notes, parsed.data.notes, parsed.data.focus);
     const originalRecipientEmail = lead.contact_email || null;
     const overrideRecipientEmail =
       parsed.data.recipientEmailOverrides?.[lead.id]?.trim() || null;
@@ -143,7 +141,10 @@ export async function POST(req: NextRequest) {
         ok: isLeadFocusCoherent(lead.industry, parsed.data.focus),
       },
       {
-        label: 'Motivo reale e specifico inserito',
+        label:
+          targetingSource === 'manual'
+            ? 'Motivo reale e specifico inserito'
+            : 'Motivo generato dai touchpoint del settore (scrivine uno tuo per personalizzarlo)',
         ok: isTargetingNoteSpecific(targetingNotes),
       },
       {
