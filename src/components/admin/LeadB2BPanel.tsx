@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   Star,
+  ChevronDown,
 } from "lucide-react";
 import {
   buildLeadSegmentQuery,
@@ -465,6 +466,8 @@ export function LeadB2BPanel({
   const [uploadingProductSlug, setUploadingProductSlug] = useState<
     string | null
   >(null);
+  // Fisarmonica della sezione foto: un prodotto aperto per volta.
+  const [openPhotoSlug, setOpenPhotoSlug] = useState<string | null>(null);
   // Foto già a catalogo, per poterne scegliere una esistente invece di
   // ricaricarla. Chiave = slug prodotto.
   const [catalogImages, setCatalogImages] = useState<
@@ -2165,62 +2168,73 @@ export function LeadB2BPanel({
                   Foto proposta
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-soft-grey">
-                  Il primo contatto usa una sola foto guida per ridurre il peso
-                  promozionale. Le altre restano disponibili per dossier e
-                  follow-up. Puoi scegliere una foto già a catalogo oppure
-                  caricarne una nuova: se non spunti «carica anche nel sito»
-                  resta solo in questa email e la scheda prodotto non cambia.
+                  L’email mostra una sola foto, quella del prodotto in evidenza.
+                  Apri un prodotto per cambiarla o caricarne una nuova.
                 </p>
               </div>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {/* Una riga per prodotto, dettagli solo su quello aperto: con
+                  sette prodotti e fino a cinque foto ciascuno, mostrare tutto
+                  insieme rendeva la colonna lunghissima e illeggibile. */}
+              <div className="divide-y divide-pearl-grey border border-pearl-grey bg-white">
                 {OUTREACH_IMAGE_PRODUCTS.map((product) => {
                   const overrideUrl = productImageOverrides[product.slug];
                   const inputId = `outreach-image-${product.slug}`;
+                  const gallery = catalogImages[product.slug] || [];
+                  const isPrimaryProduct =
+                    product.slug === primaryOutreachProductSlug;
+                  const isOpen = openPhotoSlug === product.slug;
+                  const currentUrl =
+                    overrideUrl ||
+                    gallery.find((image) => image.isPrimary)?.url ||
+                    gallery[0]?.url;
+
                   return (
-                    <div
-                      key={product.slug}
-                      className="border border-pearl-grey bg-white p-3"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-medium text-sm">{product.name}</p>
-                          <p className="text-[10px] uppercase tracking-[0.16em] text-soft-grey">
-                            {product.role}
-                          </p>
-                        </div>
-                        <span
-                          className={`text-right text-[9px] uppercase tracking-[0.14em] ${
-                            product.slug === primaryOutreachProductSlug
-                              ? "text-gold-primary"
-                              : "text-soft-grey"
-                          }`}
-                        >
-                          {product.slug === primaryOutreachProductSlug
-                            ? overrideUrl
-                              ? "In email · Manuale"
-                              : "In email · DB"
-                            : overrideUrl
-                              ? "Follow-up · Manuale"
-                              : "Follow-up · DB"}
+                    <div key={product.slug}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenPhotoSlug(isOpen ? null : product.slug)
+                        }
+                        className="flex w-full items-center gap-3 p-2.5 text-left transition hover:bg-ivory"
+                      >
+                        {currentUrl ? (
+                          <img
+                            src={currentUrl}
+                            alt=""
+                            className="h-11 w-11 flex-shrink-0 border border-pearl-grey object-cover"
+                          />
+                        ) : (
+                          <span className="h-11 w-11 flex-shrink-0 border border-dashed border-pearl-grey" />
+                        )}
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center gap-2">
+                            <span className="truncate text-sm font-medium">
+                              {product.name}
+                            </span>
+                            {isPrimaryProduct && (
+                              <span className="flex-shrink-0 bg-soft-black px-1.5 py-0.5 text-[8px] uppercase tracking-[0.12em] text-warm-white">
+                                In email
+                              </span>
+                            )}
+                          </span>
+                          <span className="mt-0.5 block truncate text-[10px] uppercase tracking-[0.14em] text-soft-grey">
+                            {overrideUrl ? "Foto scelta" : "Foto di catalogo"}
+                            {gallery.length > 0 ? ` · ${gallery.length}` : ""}
+                          </span>
                         </span>
-                      </div>
-                      {(() => {
-                        const gallery = catalogImages[product.slug] || [];
-                        if (gallery.length === 0) return null;
-                        // Senza override vince la primaria del catalogo: è
-                        // quella che l'email userebbe così com'è.
-                        const selectedUrl =
-                          overrideUrl ||
-                          gallery.find((image) => image.isPrimary)?.url ||
-                          gallery[0]?.url;
-                        return (
-                          <div className="mt-3">
-                            <p className="mb-1.5 text-[9px] uppercase tracking-[0.16em] text-soft-grey">
-                              Dal catalogo · {gallery.length}
-                            </p>
+                        <ChevronDown
+                          className={`h-4 w-4 flex-shrink-0 text-soft-grey transition-transform ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {isOpen && (
+                        <div className="space-y-3 border-t border-pearl-grey bg-ivory/40 p-3">
+                          {gallery.length > 0 && (
                             <div className="flex flex-wrap gap-1.5">
                               {gallery.map((image) => {
-                                const isSelected = image.url === selectedUrl;
+                                const isSelected = image.url === currentUrl;
                                 return (
                                   <button
                                     key={image.id}
@@ -2238,7 +2252,7 @@ export function LeadB2BPanel({
                                         ? "Principale a catalogo"
                                         : "Usa questa foto"
                                     }
-                                    className={`relative h-16 w-16 overflow-hidden border transition ${
+                                    className={`relative h-14 w-14 overflow-hidden border transition ${
                                       isSelected
                                         ? "border-soft-black ring-1 ring-gold-primary"
                                         : "border-pearl-grey hover:border-soft-black"
@@ -2251,94 +2265,98 @@ export function LeadB2BPanel({
                                     />
                                     {image.isPrimary && (
                                       <span className="absolute inset-x-0 bottom-0 bg-soft-black/75 text-center text-[7px] uppercase tracking-[0.1em] text-warm-white">
-                                        Principale
+                                        Princ.
                                       </span>
                                     )}
                                   </button>
                                 );
                               })}
                             </div>
-                          </div>
-                        );
-                      })()}
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <input
-                          id={inputId}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(event) => {
-                            const file = event.target.files?.[0] || null;
-                            void uploadProductOverride(product.slug, file);
-                            event.currentTarget.value = "";
-                          }}
-                        />
-                        <label
-                          htmlFor={inputId}
-                          className="inline-flex cursor-pointer items-center justify-center border border-soft-black px-3 py-2 text-[10px] uppercase tracking-[0.14em] transition hover:bg-soft-black hover:text-warm-white"
-                        >
-                          {uploadingProductSlug === product.slug
-                            ? "Upload…"
-                            : "Carica foto"}
-                        </label>
-                        <div className="flex w-full flex-col gap-1">
-                          <label className="inline-flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-soft-grey">
+                          )}
+
+                          <div className="flex flex-wrap items-center gap-2">
                             <input
-                              type="checkbox"
-                              checked={Boolean(productImageToSite[product.slug])}
-                              onChange={(event) =>
-                                setProductImageToSite((previous) => ({
-                                  ...previous,
-                                  [product.slug]: event.target.checked,
-                                }))
-                              }
-                              className="h-3.5 w-3.5 accent-black"
+                              id={inputId}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(event) => {
+                                const file = event.target.files?.[0] || null;
+                                void uploadProductOverride(product.slug, file);
+                                event.currentTarget.value = "";
+                              }}
                             />
-                            Carica anche nel sito
-                          </label>
-                          {productImageToSite[product.slug] && (
-                            <label className="inline-flex cursor-pointer items-center gap-2 pl-5 text-[10px] uppercase tracking-[0.12em] text-soft-grey">
+                            <label
+                              htmlFor={inputId}
+                              className="inline-flex cursor-pointer items-center justify-center border border-soft-black px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] transition hover:bg-soft-black hover:text-warm-white"
+                            >
+                              {uploadingProductSlug === product.slug
+                                ? "Upload…"
+                                : "Carica foto"}
+                            </label>
+                            {overrideUrl && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setProductImageOverrides((previous) => {
+                                    const next = { ...previous };
+                                    delete next[product.slug];
+                                    return next;
+                                  });
+                                  setPreviewConfirmed(false);
+                                }}
+                                className="border border-pearl-grey px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-soft-grey transition hover:border-soft-black hover:text-soft-black"
+                              >
+                                Torna a catalogo
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="space-y-1 border-t border-pearl-grey pt-2">
+                            <label className="inline-flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-soft-grey">
                               <input
                                 type="checkbox"
                                 checked={Boolean(
-                                  productImagePrimary[product.slug],
+                                  productImageToSite[product.slug],
                                 )}
                                 onChange={(event) =>
-                                  setProductImagePrimary((previous) => ({
+                                  setProductImageToSite((previous) => ({
                                     ...previous,
                                     [product.slug]: event.target.checked,
                                   }))
                                 }
                                 className="h-3.5 w-3.5 accent-black"
                               />
-                              e come foto principale
+                              Carica anche nel sito
                             </label>
-                          )}
-                          <p className="text-[9px] leading-relaxed text-soft-grey/80">
-                            {productImageToSite[product.slug]
-                              ? productImagePrimary[product.slug]
-                                ? "Entra in scheda prodotto e diventa la principale ovunque."
-                                : "Entra in scheda prodotto; la principale resta quella attuale."
-                              : "Resta solo in questa email, archiviata in Media. Sul sito non compare."}
-                          </p>
+                            {productImageToSite[product.slug] && (
+                              <label className="ml-5 flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-soft-grey">
+                                <input
+                                  type="checkbox"
+                                  checked={Boolean(
+                                    productImagePrimary[product.slug],
+                                  )}
+                                  onChange={(event) =>
+                                    setProductImagePrimary((previous) => ({
+                                      ...previous,
+                                      [product.slug]: event.target.checked,
+                                    }))
+                                  }
+                                  className="h-3.5 w-3.5 accent-black"
+                                />
+                                e come foto principale
+                              </label>
+                            )}
+                            <p className="text-[9px] leading-relaxed text-soft-grey/80">
+                              {productImageToSite[product.slug]
+                                ? productImagePrimary[product.slug]
+                                  ? "La nuova foto entra in scheda prodotto e diventa la principale ovunque."
+                                  : "La nuova foto entra in scheda prodotto; la principale resta quella attuale."
+                                : "La nuova foto resta solo in questa email, archiviata in Media."}
+                            </p>
+                          </div>
                         </div>
-                        {overrideUrl && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setProductImageOverrides((previous) => {
-                                const next = { ...previous };
-                                delete next[product.slug];
-                                return next;
-                              });
-                              setPreviewConfirmed(false);
-                            }}
-                            className="border border-pearl-grey px-3 py-2 text-[10px] uppercase tracking-[0.14em] text-soft-grey transition hover:border-red-200 hover:text-red-700"
-                          >
-                            Usa DB
-                          </button>
-                        )}
-                      </div>
+                      )}
                     </div>
                   );
                 })}
