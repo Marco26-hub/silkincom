@@ -184,3 +184,119 @@ export async function POST(req: NextRequest) {
     savedToCatalog: true,
   });
 }
+
+/**
+ * Elimina una foto dal catalogo di un prodotto outreach.
+ *
+ * Rimuove la riga da `product_images` e il file dallo storage. Due tutele che
+ * la route generica `/api/admin/products/[id]/images` non ha:
+ *   - rifiuta di eliminare l'ultima foto rimasta, perché un prodotto senza
+ *     immagini blocca l'invio (il controllo anteprima segnala foto mancante);
+ *   - se la foto era la principale, promuove la successiva, altrimenti il
+ *     prodotto resterebbe senza principale e quale foto vince dipenderebbe
+ *     dall'ordinamento.
+ */
+export async function DELETE(req: NextRequest) {
+  const auth = await requireAdminApi();
+  if (!auth.ok) return forbidden(auth.status);
+
+  const body = await req.json().catch(() => null);
+  const slug = String(body?.slug || '').trim();
+  const imageId = String(body?.imageId || '').trim();
+
+  if (!imageId) {
+    return NextResponse.json({ error: 'imageId richiesto' }, { status: 400 });
+  }
+  if (!LEAD_OUTREACH_PRODUCT_SLUGS.includes(slug)) {
+    return NextResponse.json(
+      { error: `Slug non ammesso per l'outreach: ${slug || '(vuoto)'}` },
+      { status: 400 },
+    );
+  }
+
+  const supabase = createServiceClient();
+  const { data: product, error: productError } = await supabase
+    .from('products')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (productError) {
+    return NextResponse.json({ error: productError.message }, { status: 500 });
+  }
+  if (!product) {
+    return NextResponse.json(
+      { error: `Prodotto "${slug}" non trovato a catalogo` },
+      { status: 404 },
+    );
+  }
+
+  const { data: images, error: imagesError } = await supabase
+    .from('product_images')
+    .select('id, image_url, is_primary, display_order')
+    .eq('product_id', product.id)
+    .order('display_order', { ascending: true });
+
+  if (imagesError) {
+    return NextResponse.json({ error: imagesError.message }, { status: 500 });
+  }
+
+  const target = (images || []).find((image) => image.id === imageId);
+  if (!target) {
+    // L'id non appartiene a questo prodotto: non si elimina alla cieca.
+    return NextResponse.json(
+      { error: 'Foto non trovata per questo prodotto' },
+      { status: 404 },
+    );
+  }
+  if ((images || []).length <= 1) {
+    return NextResponse.json(
+      {
+        error:
+          'È l’unica foto del prodotto: caricane un’altra prima di eliminare questa, altrimenti l’invio si blocca per foto mancante.',
+      },
+      { status: 409 },
+    );
+  }
+
+  const { error: deleteError } = await supabase
+    .from('product_images')
+    .delete()
+    .eq('id', imageId)
+    .eq('product_id', product.id);
+
+  if (deleteError) {
+    return NextResponse.json({ error: deleteError.message }, { status: 500 });
+  }
+
+  // Il file va rimosso dopo la riga: se sparisse prima e la delete fallisse,
+  // resterebbe una riga che punta a un file inesistente.
+  const storagePath = target.image_url?.split('/product-images/')[1];
+  if (storagePath) {
+    await supabase.storage.from('product-images').remove([storagePath]);
+  }
+
+  let promotedId: string | null = null;
+  if (target.is_primary) {
+    const next = (images || []).find((image) => image.id !== imageId);
+    if (next) {
+      await supabase
+        .from('product_images')
+        .update({ is_primary: true })
+        .eq('id', next.id);
+      promotedId = next.id;
+    }
+  }
+
+  revalidateCatalog();
+
+  await logAdminAction(
+    auth.userId,
+    'delete_lead_outreach_product_image',
+    'product',
+    product.id,
+    { slug, imageId, wasPrimary: target.is_primary, promotedId },
+  );
+
+  return NextResponse.json({ ok: true, promotedId });
+}

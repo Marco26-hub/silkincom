@@ -514,6 +514,58 @@ export function LeadB2BPanel({
   // dalla vista di chi sta lavorando nella colonna delle foto, e un upload
   // fallito lì passava inosservato.
   const [uploadError, setUploadError] = useState<Record<string, string>>({});
+  // Eliminazione foto: id in attesa di conferma e id in corso di eliminazione.
+  // La conferma è inline invece che con un dialog del browser perché tocca
+  // anche la scheda prodotto pubblica e va detto esplicitamente.
+  const [pendingDeleteImageId, setPendingDeleteImageId] = useState<
+    string | null
+  >(null);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+
+  async function deleteCatalogImage(slug: string, imageId: string) {
+    setDeletingImageId(imageId);
+    setMessage(null);
+    try {
+      const response = await fetch("/api/admin/leads/outreach/product-image", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, imageId }),
+      });
+      const data = await readApiJson(response);
+      if (!response.ok) {
+        throw new Error(data.error || "Eliminazione non riuscita");
+      }
+      // Se la foto eliminata era quella scelta per la campagna, l'override
+      // punterebbe a un file che non esiste più: va tolto.
+      const deletedUrl = (catalogImages[slug] || []).find(
+        (image) => image.id === imageId,
+      )?.url;
+      if (deletedUrl && productImageOverrides[slug] === deletedUrl) {
+        setProductImageOverrides((previous) => {
+          const next = { ...previous };
+          delete next[slug];
+          return next;
+        });
+      }
+      setPendingDeleteImageId(null);
+      setPreviewConfirmed(false);
+      setOutreachSendReceipt(null);
+      await loadCatalogImages();
+      setMessage(
+        data.promotedId
+          ? "Foto eliminata. Era la principale: è stata promossa la successiva."
+          : "Foto eliminata dal catalogo e dal sito.",
+      );
+    } catch (error) {
+      setUploadError((previous) => ({
+        ...previous,
+        [slug]:
+          error instanceof Error ? error.message : "Eliminazione non riuscita",
+      }));
+    } finally {
+      setDeletingImageId(null);
+    }
+  }
 
   // La conferma sparisce da sola: lasciata a schermo diventerebbe rumore, e la
   // miniatura con badge «Caricata» resta comunque come prova dell'upload.
@@ -2273,6 +2325,13 @@ export function LeadB2BPanel({
                   const overrideUrl = productImageOverrides[product.slug];
                   const inputId = `outreach-image-${product.slug}`;
                   const gallery = getPhotoOptions(product.slug);
+                  // Solo le foto realmente a catalogo: quella caricata per la
+                  // sola campagna non conta, altrimenti il cestino comparirebbe
+                  // su un prodotto che a catalogo ne ha una soltanto e il
+                  // server rifiuterebbe l'eliminazione.
+                  const catalogPhotoCount = gallery.filter(
+                    (image) => !image.uploaded,
+                  ).length;
                   const isPrimaryProduct =
                     product.slug === primaryOutreachProductSlug;
                   const isOpen = openPhotoSlug === product.slug;
@@ -2343,52 +2402,116 @@ export function LeadB2BPanel({
                             <div className="flex flex-wrap gap-1.5">
                               {gallery.map((image) => {
                                 const isSelected = image.url === currentUrl;
+                                // Il cestino sta fuori dal bottone di selezione:
+                                // un button dentro un button non è HTML valido.
                                 return (
-                                  <button
+                                  <div
                                     key={image.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setProductImageOverrides((previous) => ({
-                                        ...previous,
-                                        [product.slug]: image.url,
-                                      }));
-                                      setPreviewConfirmed(false);
-                                      setOutreachSendReceipt(null);
-                                    }}
-                                    title={
-                                      image.uploaded
-                                        ? "Foto caricata da te"
-                                        : image.isPrimary
-                                          ? "Principale a catalogo"
-                                          : "Usa questa foto"
-                                    }
-                                    className={`relative h-14 w-14 overflow-hidden border transition ${
-                                      isSelected
-                                        ? "border-soft-black ring-1 ring-gold-primary"
-                                        : "border-pearl-grey hover:border-soft-black"
-                                    }`}
+                                    className="group relative h-14 w-14"
                                   >
-                                    <img
-                                      src={image.url}
-                                      alt=""
-                                      className="h-full w-full object-cover"
-                                    />
-                                    {(image.uploaded || image.isPrimary) && (
-                                      <span
-                                        className={`absolute inset-x-0 bottom-0 text-center text-[7px] uppercase tracking-[0.1em] text-warm-white ${
-                                          image.uploaded
-                                            ? "bg-gold-primary/90 text-soft-black"
-                                            : "bg-soft-black/75"
-                                        }`}
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setProductImageOverrides((previous) => ({
+                                          ...previous,
+                                          [product.slug]: image.url,
+                                        }));
+                                        setPreviewConfirmed(false);
+                                        setOutreachSendReceipt(null);
+                                      }}
+                                      title={
+                                        image.uploaded
+                                          ? "Foto caricata da te"
+                                          : image.isPrimary
+                                            ? "Principale a catalogo"
+                                            : "Usa questa foto"
+                                      }
+                                      className={`h-full w-full overflow-hidden border transition ${
+                                        isSelected
+                                          ? "border-soft-black ring-1 ring-gold-primary"
+                                          : "border-pearl-grey hover:border-soft-black"
+                                      }`}
+                                    >
+                                      <img
+                                        src={image.url}
+                                        alt=""
+                                        className="h-full w-full object-cover"
+                                      />
+                                      {(image.uploaded || image.isPrimary) && (
+                                        <span
+                                          className={`absolute inset-x-0 bottom-0 text-center text-[7px] uppercase tracking-[0.1em] text-warm-white ${
+                                            image.uploaded
+                                              ? "bg-gold-primary/90 text-soft-black"
+                                              : "bg-soft-black/75"
+                                          }`}
+                                        >
+                                          {image.uploaded
+                                            ? "Caricata"
+                                            : "Princ."}
+                                        </span>
+                                      )}
+                                    </button>
+                                    {/* La foto caricata solo per la campagna non
+                                        sta a catalogo: lì non c'è niente da
+                                        eliminare, si toglie con «Torna a
+                                        catalogo». */}
+                                    {!image.uploaded && catalogPhotoCount > 1 && (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          setPendingDeleteImageId(image.id)
+                                        }
+                                        title="Elimina questa foto dal catalogo"
+                                        className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center border border-pearl-grey bg-white text-soft-grey transition hover:border-red-300 hover:text-red-700 group-hover:flex"
                                       >
-                                        {image.uploaded ? "Caricata" : "Princ."}
-                                      </span>
+                                        <Trash2 className="h-3 w-3" />
+                                      </button>
                                     )}
-                                  </button>
+                                  </div>
                                 );
                               })}
                             </div>
                           )}
+
+                          {pendingDeleteImageId &&
+                            gallery.some(
+                              (image) => image.id === pendingDeleteImageId,
+                            ) && (
+                              <div className="space-y-2 border border-red-200 bg-red-50 p-2.5">
+                                <p className="text-[10px] leading-relaxed text-red-800">
+                                  Eliminare questa foto? Sparisce anche dalla
+                                  scheda prodotto sul sito e non è recuperabile.
+                                </p>
+                                <div className="flex gap-2">
+                                  <button
+                                    type="button"
+                                    disabled={
+                                      deletingImageId === pendingDeleteImageId
+                                    }
+                                    onClick={() =>
+                                      void deleteCatalogImage(
+                                        product.slug,
+                                        pendingDeleteImageId,
+                                      )
+                                    }
+                                    className="border border-red-300 bg-red-700 px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-white transition hover:bg-red-800 disabled:opacity-50"
+                                  >
+                                    {deletingImageId === pendingDeleteImageId
+                                      ? "Elimino…"
+                                      : "Elimina"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setPendingDeleteImageId(null)
+                                    }
+                                    className="border border-pearl-grey bg-white px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-soft-grey transition hover:border-soft-black hover:text-soft-black"
+                                  >
+                                    Annulla
+                                  </button>
+                                </div>
+                              </div>
+                            )}
 
                           <div className="flex flex-wrap items-center gap-2">
                             <input
