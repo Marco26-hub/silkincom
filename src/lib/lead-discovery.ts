@@ -2120,6 +2120,116 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
   }
 }
 
+// Aggancio premium per settore, usato per costruire la frase "Vi scrivo perché…".
+// Serve a evitare che la nota di targeting (spesso un elenco di parole chiave,
+// es. "Welcome gift, ricordo ospite o acquisto in reception") finisca incollata
+// dopo "perché" producendo una frase sgrammaticata.
+const FOCUS_REASON_LEADIN: Record<LeadOutreachFocus, string> = {
+  hospitality:
+    "può far diventare il tessile parte dell’esperienza ospite, non un articolo a scaffale",
+  bed_breakfast:
+    "può portare il Lago dentro l’accoglienza, dal soggiorno al ricordo che resta",
+  hotel_boutique:
+    "può dare a hall, suite e boutique interna un dettaglio Made in Como riconoscibile",
+  resort_beach_club:
+    "può rendere pool, beach e resort shop coerenti sotto un’unica firma tessile",
+  spa_wellness:
+    "può portare in spa un telo e un gift corner all’altezza del percorso benessere",
+  wedding_events:
+    "può trasformare il cadeau agli ospiti in un ricordo che sopravvive all’evento",
+  corporate_gifting:
+    "può dare ai regali istituzionali una provenienza vera, non un logo applicato",
+  concept_store:
+    "può aggiungere all’assortimento una capsule territoriale con una storia dietro",
+  museum_bookshop:
+    "può offrire al bookshop un souvenir culturale lontano dal merchandising generico",
+  yacht_golf_club:
+    "può riservare ai soci una selezione dedicata tra club shop ed eventi",
+  boat_charter:
+    "può rendere l’imbarco e il guest gifting parte dell’esperienza a bordo",
+  chauffeur_ncc:
+    "può curare l’accoglienza a bordo con un dettaglio che il cliente VIP nota",
+  luxury_car_rental:
+    "può accompagnare la consegna vettura con un travel kit di livello",
+  personal_shopper:
+    "può proporre alla clientela seguita un private edit riservato",
+  interior_architect:
+    "può completare material board e suite con tessuti che raccontano il territorio",
+  tour_operator_luxury:
+    "può arricchire welcome kit e itinerari privati con un ricordo del Lago",
+  retail:
+    "può inserire in boutique una capsule Made in Como con riassortimento selettivo",
+  gifting:
+    "può contare su curatela e packaging pensati per il dono, non per lo scaffale",
+  wholesale:
+    "può partire da un campionario e un primo ordine calibrato, senza impegni ampi",
+};
+
+// Trasforma la nota in una subordinata utilizzabile dopo i due punti: toglie la
+// punteggiatura finale, sostituisce il separatore " · " (usato quando si
+// uniscono nota campagna e nota lead) e abbassa l'iniziale se non è una sigla.
+function toReasonClause(note: string): string {
+  const cleaned = note
+    .replace(/\s*·\s*/g, "; ")
+    .replace(/[.;,\s]+$/u, "")
+    .trim();
+  if (!cleaned) return "";
+  const [firstWord] = cleaned.split(/\s+/);
+  if (firstWord && firstWord === firstWord.toUpperCase() && /[A-ZÀ-Ý]/u.test(firstWord)) {
+    return cleaned;
+  }
+  return cleaned.charAt(0).toLowerCase() + cleaned.slice(1);
+}
+
+// La checklist admin blocca l'invio oltre 210 parole; teniamo un margine di
+// sicurezza per non finire esattamente sul filo.
+const TEXT_WORD_BUDGET = 200;
+
+function countWords(value: string): number {
+  return value.trim().split(/\s+/).filter(Boolean).length;
+}
+
+// Taglia la nota rispettando sia un tetto di parole sia uno di caratteri.
+// Il tetto di parole è quello che protegge davvero il limite delle 210 parole
+// della checklist: il solo limite a caratteri lascia passare note fatte di
+// molte parole brevi.
+function truncateReasonNote(
+  note: string,
+  maxWords: number,
+  maxChars: number,
+): string {
+  if (!note) return "";
+  const words = note.split(/\s+/).filter(Boolean);
+  let result = words.length > maxWords ? words.slice(0, maxWords).join(" ") : note;
+  if (result.length > maxChars) {
+    result = result.slice(0, maxChars).replace(/\s+\S*$/, "");
+  }
+  return result === note ? note : `${result.replace(/[.;,\s]+$/u, "")}…`;
+}
+
+function normalizeReasonPlace(city: string | null | undefined): string {
+  const place = (city || "").trim().replace(/\s+/g, " ");
+  if (!place || place.length > 40) return "";
+  return place.charAt(0).toUpperCase() + place.slice(1);
+}
+
+// Compone la motivazione del contatto: sempre una frase compiuta, ancorata al
+// nome della struttura, alla città e all'angolo del settore.
+function buildOutreachReasonSentence(
+  companyName: string,
+  city: string | null | undefined,
+  focus: LeadOutreachFocus,
+  note: string,
+): string {
+  const leadIn = FOCUS_REASON_LEADIN[focus];
+  const place = normalizeReasonPlace(city);
+  const target = place ? `${companyName}, a ${place},` : companyName;
+  const clause = toReasonClause(note);
+  return clause
+    ? `Vi scrivo perché ${target} ${leadIn}: ${clause}.`
+    : `Vi scrivo perché ${target} ${leadIn}.`;
+}
+
 function buildFocusCopy(focus: LeadOutreachFocus) {
   switch (focus) {
     case "bed_breakfast":
@@ -2845,10 +2955,29 @@ export function buildLeadOutreachCopy(
     : buildLeadStopUrl(lead.id);
   const officialLogoUrl = `${APP_URL}/logo-official.png`;
   const normalizedReason = notes.trim().replace(/\s+/g, " ");
-  const reason =
-    normalizedReason.length > 260
-      ? `${normalizedReason.slice(0, 257).replace(/\s+\S*$/, "")}…`
-      : normalizedReason;
+  // La nota finisce dentro una frase costruita, quindi il testo completo deve
+  // restare sotto le 210 parole che la checklist admin impone per abilitare
+  // l'invio. Il budget non può essere fisso: il corpo cambia lunghezza col
+  // settore (lead-in e angle diversi) e col nome della struttura, che compare
+  // due volte. Lo misuriamo quindi a vuoto e diamo alla nota ciò che avanza.
+  // Il taglio è per PAROLE oltre che per caratteri, perché un tetto di soli
+  // caratteri lascia passare note fatte di molte parole brevi.
+  const baseWords = countWords(
+    buildTextBody(
+      buildOutreachReasonSentence(lead.company_name, lead.city, focus, ""),
+    ),
+  );
+  const reason = truncateReasonNote(
+    normalizedReason,
+    Math.max(0, TEXT_WORD_BUDGET - baseWords),
+    145,
+  );
+  const reasonSentence = buildOutreachReasonSentence(
+    lead.company_name,
+    lead.city,
+    focus,
+    reason,
+  );
   const subject = sanitizeEmailHeader(
     `Un’idea per ${lead.company_name}, dal Lago di Como`,
   );
@@ -2867,7 +2996,7 @@ export function buildLeadOutreachCopy(
   <div style="max-width:560px;margin:0 auto;padding:20px;">
     <p style="font-size:15px;line-height:1.6;color:#222222;margin:0 0 16px;">${escapeHtml(greeting)}</p>
     <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Sono ${escapeHtml(founderName)}, Founder di SILKinCOM, Maison tessile del territorio comasco.</p>
-    ${reason ? `<p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Vi contatto perché ${escapeHtml(reason)}</p>` : ""}
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">${escapeHtml(reasonSentence)}</p>
     <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">${escapeHtml(focusCopy.angle)}</p>
     <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Le lascio un riferimento concreto: ${escapeHtml(primaryProduct.name)} &mdash; ${escapeHtml(primaryProduct.detail)}</p>
 
@@ -2885,11 +3014,24 @@ export function buildLeadOutreachCopy(
 </body>
 </html>`;
 
-  const text = [
+  const text = buildTextBody(reasonSentence);
+
+  return {
+    subject,
+    html,
+    text,
+    links: [
+      { label: "Approfondisci la proposta", url: proposalUrl },
+      ...(stopUrl ? [{ label: "Conferma STOP", url: stopUrl }] : []),
+    ],
+  };
+
+  function buildTextBody(sentence: string): string {
+    return [
     greeting,
     "",
     `Sono ${founderName}, Founder di SILKinCOM, Maison tessile del territorio comasco.`,
-    reason ? `Vi contatto perché ${reason}` : null,
+    sentence,
     focusCopy.angle,
     "",
     `Le lascio un riferimento concreto: ${primaryProduct.name} — ${primaryProduct.detail}`,
@@ -2908,19 +3050,10 @@ export function buildLeadOutreachCopy(
     "",
     "Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda STOP.",
     stopUrl ? `Conferma STOP: ${stopUrl}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  return {
-    subject,
-    html,
-    text,
-    links: [
-      { label: "Approfondisci la proposta", url: proposalUrl },
-      ...(stopUrl ? [{ label: "Conferma STOP", url: stopUrl }] : []),
-    ],
-  };
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
 }
 
 export function getLeadOutreachDeliveryMetrics(copy: {
