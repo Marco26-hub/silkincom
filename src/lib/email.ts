@@ -88,7 +88,7 @@ const OWNER_EMAIL =
 const B2B_EMAIL =
   process.env.B2B_NOTIFICATION_EMAIL || 'silkincom.business@gmail.com';
 const B2B_FROM_EMAIL = DOMAIN_VERIFIED
-  ? process.env.B2B_FROM_EMAIL || 'Marco Dibenedetto <marco@silkincom.com>'
+  ? process.env.B2B_FROM_EMAIL || 'SILKinCOM <marco@silkincom.com>'
   : 'SILKinCOM Partnerships <onboarding@resend.dev>';
 const B2B_REPLY_TO =
   process.env.B2B_REPLY_TO_EMAIL ||
