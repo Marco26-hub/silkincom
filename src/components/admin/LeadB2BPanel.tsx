@@ -444,6 +444,11 @@ export function LeadB2BPanel({
   const [previewConfirmed, setPreviewConfirmed] = useState(false);
   const [outreachSendReceipt, setOutreachSendReceipt] =
     useState<OutreachSendReceipt | null>(null);
+  // Per-slug: se la foto caricata deve diventare anche la principale del
+  // prodotto sul sito. Scelta esplicita, perché cambia il catalogo pubblico.
+  const [productImagePrimary, setProductImagePrimary] = useState<
+    Record<string, boolean>
+  >({});
   const [productImageOverrides, setProductImageOverrides] = useState<
     Record<string, string>
   >({});
@@ -1054,15 +1059,20 @@ export function LeadB2BPanel({
     window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60_000);
   }
 
+  // La foto caricata viene salvata nel catalogo (product_images), non solo
+  // nello stato della campagna: prima finiva in /api/admin/media e viveva solo
+  // in memoria, quindi spariva al primo reload della pagina.
   async function uploadProductOverride(slug: string, file: File | null) {
     if (!file) return;
+    const makePrimary = Boolean(productImagePrimary[slug]);
     setUploadingProductSlug(slug);
     setMessage(null);
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("alt_text", `Foto proposta B2B ${slug}`);
-      const response = await fetch("/api/admin/media", {
+      formData.append("slug", slug);
+      formData.append("makePrimary", makePrimary ? "true" : "false");
+      const response = await fetch("/api/admin/leads/outreach/product-image", {
         method: "POST",
         body: formData,
       });
@@ -1070,7 +1080,7 @@ export function LeadB2BPanel({
       if (!response.ok) {
         throw new Error(data.error || "Upload immagine fallito");
       }
-      const uploadedUrl = data.media?.url as string | undefined;
+      const uploadedUrl = data.url as string | undefined;
       if (!uploadedUrl) throw new Error("URL immagine non ricevuto");
       setProductImageOverrides((previous) => ({
         ...previous,
@@ -1078,7 +1088,11 @@ export function LeadB2BPanel({
       }));
       setPreviewConfirmed(false);
       setOutreachSendReceipt(null);
-      setMessage("Foto proposta aggiornata. Riapri l’anteprima per validarla.");
+      setMessage(
+        data.isPrimary
+          ? "Foto salvata a catalogo e impostata come principale: la useranno sia l’email sia il sito. Riapri l’anteprima per validarla."
+          : "Foto salvata a catalogo e usata in questa campagna. Sul sito resta principale quella attuale. Riapri l’anteprima per validarla.",
+      );
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : "Errore upload immagine",
@@ -2082,7 +2096,10 @@ export function LeadB2BPanel({
                 <p className="mt-1 text-[11px] leading-relaxed text-soft-grey">
                   Il primo contatto usa una sola foto guida per ridurre il peso
                   promozionale. Le altre restano disponibili per dossier e
-                  follow-up. Puoi sostituire manualmente la foto della campagna.
+                  follow-up. Le foto caricate qui vengono salvate nel catalogo
+                  del prodotto, quindi restano anche dopo la campagna. Spunta
+                  «anche principale sul sito» per farla diventare la foto
+                  principale ovunque, non solo in questa email.
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -2142,7 +2159,21 @@ export function LeadB2BPanel({
                         >
                           {uploadingProductSlug === product.slug
                             ? "Upload…"
-                            : "Sostituisci"}
+                            : "Carica foto"}
+                        </label>
+                        <label className="inline-flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-soft-grey">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(productImagePrimary[product.slug])}
+                            onChange={(event) =>
+                              setProductImagePrimary((previous) => ({
+                                ...previous,
+                                [product.slug]: event.target.checked,
+                              }))
+                            }
+                            className="h-3.5 w-3.5 accent-black"
+                          />
+                          Anche principale sul sito
                         </label>
                         {overrideUrl && (
                           <button
