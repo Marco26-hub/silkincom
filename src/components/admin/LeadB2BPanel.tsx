@@ -193,6 +193,41 @@ const SALES_OUTLET_GUIDE = [
 const RECOMMENDED_OUTREACH_BATCH_SIZE = 10;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Upload con avanzamento reale. `fetch` non espone il progresso del corpo in
+// uscita, quindi per mostrare una percentuale che significhi qualcosa serve
+// XMLHttpRequest. Al 100% il file è arrivato ma il server deve ancora
+// ottimizzarlo e salvarlo: quella fase viene mostrata come "elaborazione",
+// altrimenti la barra resterebbe ferma su 100 sembrando bloccata.
+function uploadWithProgress(
+  url: string,
+  formData: FormData,
+  onProgress: (percent: number) => void,
+): Promise<{ ok: boolean; data: any }> {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("POST", url);
+    request.upload.onprogress = (event) => {
+      if (!event.lengthComputable) return;
+      onProgress(Math.round((event.loaded / event.total) * 100));
+    };
+    request.onload = () => {
+      let data: any = {};
+      try {
+        data = request.responseText ? JSON.parse(request.responseText) : {};
+      } catch {
+        data = {
+          error: `Risposta API non valida (${request.status} ${request.statusText || "errore"})`,
+        };
+      }
+      resolve({ ok: request.status >= 200 && request.status < 300, data });
+    };
+    request.onerror = () =>
+      reject(new Error("Errore di rete durante il caricamento"));
+    request.onabort = () => reject(new Error("Caricamento annullato"));
+    request.send(formData);
+  });
+}
+
 async function readApiJson(response: Response): Promise<any> {
   const body = await response.text();
   if (!body) return {};
@@ -468,6 +503,21 @@ export function LeadB2BPanel({
   >(null);
   // Fisarmonica della sezione foto: un prodotto aperto per volta.
   const [openPhotoSlug, setOpenPhotoSlug] = useState<string | null>(null);
+  // Percentuale di caricamento per slug e ultimo slug caricato con successo,
+  // per dare conferma dentro la riga del prodotto invece che solo nel
+  // messaggio generale in cima alla pagina.
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
+    {},
+  );
+  const [uploadDoneSlug, setUploadDoneSlug] = useState<string | null>(null);
+
+  // La conferma sparisce da sola: lasciata a schermo diventerebbe rumore, e la
+  // miniatura con badge «Caricata» resta comunque come prova dell'upload.
+  useEffect(() => {
+    if (!uploadDoneSlug) return;
+    const timer = window.setTimeout(() => setUploadDoneSlug(null), 8000);
+    return () => window.clearTimeout(timer);
+  }, [uploadDoneSlug]);
 
   // Miniature da mostrare per un prodotto: le foto a catalogo più, in testa,
   // quella caricata solo per la campagna. Senza questa, una foto caricata
@@ -1140,28 +1190,33 @@ export function LeadB2BPanel({
     const toSite = Boolean(productImageToSite[slug]);
     const makePrimary = toSite && Boolean(productImagePrimary[slug]);
     setUploadingProductSlug(slug);
+    setUploadProgress((previous) => ({ ...previous, [slug]: 0 }));
+    setUploadDoneSlug(null);
+    // La riga si apre subito: la barra di avanzamento sta dentro il dettaglio
+    // del prodotto, a riga chiusa non si vedrebbe.
+    setOpenPhotoSlug(slug);
     setMessage(null);
     try {
       const formData = new FormData();
       formData.append("file", file);
+      const onProgress = (percent: number) =>
+        setUploadProgress((previous) => ({ ...previous, [slug]: percent }));
       let uploadedUrl: string | undefined;
 
       if (toSite) {
         formData.append("slug", slug);
         formData.append("makePrimary", makePrimary ? "true" : "false");
-        const response = await fetch("/api/admin/leads/outreach/product-image", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await readApiJson(response);
-        if (!response.ok) {
-          throw new Error(data.error || "Upload immagine fallito");
-        }
+        const { ok, data } = await uploadWithProgress(
+          "/api/admin/leads/outreach/product-image",
+          formData,
+          onProgress,
+        );
+        if (!ok) throw new Error(data.error || "Upload immagine fallito");
         uploadedUrl = data.url as string | undefined;
         setMessage(
           data.isPrimary
-            ? "Foto salvata nel sito e impostata come principale: la useranno sia l’email sia la scheda prodotto. Riapri l’anteprima per validarla."
-            : "Foto aggiunta alla galleria del prodotto sul sito e usata in questa campagna. Sul sito la principale resta quella attuale. Riapri l’anteprima per validarla.",
+            ? "Foto salvata nel sito e impostata come principale: la useranno sia l’email sia la scheda prodotto."
+            : "Foto aggiunta alla galleria del prodotto sul sito e usata in questa campagna. Sul sito la principale resta quella attuale.",
         );
         // La foto appena caricata deve comparire subito fra quelle
         // scegliibili dal catalogo.
@@ -1170,17 +1225,15 @@ export function LeadB2BPanel({
         // Solo campagna: finisce nella media library, non nella scheda
         // prodotto, quindi sul sito non compare da nessuna parte.
         formData.append("alt_text", `Foto proposta B2B ${slug}`);
-        const response = await fetch("/api/admin/media", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await readApiJson(response);
-        if (!response.ok) {
-          throw new Error(data.error || "Upload immagine fallito");
-        }
+        const { ok, data } = await uploadWithProgress(
+          "/api/admin/media",
+          formData,
+          onProgress,
+        );
+        if (!ok) throw new Error(data.error || "Upload immagine fallito");
         uploadedUrl = data.media?.url as string | undefined;
         setMessage(
-          "Foto usata solo in questa email e archiviata in Media. Sul sito non compare. Riapri l’anteprima per validarla.",
+          "Foto usata solo in questa email e archiviata in Media. Sul sito non compare.",
         );
       }
 
@@ -1189,9 +1242,7 @@ export function LeadB2BPanel({
         ...previous,
         [slug]: uploadedUrl,
       }));
-      // Apre la riga del prodotto: dopo un upload ci si aspetta di vedere la
-      // foto appena caricata, non di doverla andare a cercare.
-      setOpenPhotoSlug(slug);
+      setUploadDoneSlug(slug);
       setPreviewConfirmed(false);
       setOutreachSendReceipt(null);
     } catch (error) {
@@ -1200,6 +1251,11 @@ export function LeadB2BPanel({
       );
     } finally {
       setUploadingProductSlug(null);
+      setUploadProgress((previous) => {
+        const next = { ...previous };
+        delete next[slug];
+        return next;
+      });
     }
   }
 
@@ -2244,9 +2300,24 @@ export function LeadB2BPanel({
                               </span>
                             )}
                           </span>
-                          <span className="mt-0.5 block truncate text-[10px] uppercase tracking-[0.14em] text-soft-grey">
-                            {overrideUrl ? "Foto scelta" : "Foto di catalogo"}
-                            {gallery.length > 0 ? ` · ${gallery.length}` : ""}
+                          <span
+                            className={`mt-0.5 block truncate text-[10px] uppercase tracking-[0.14em] ${
+                              uploadingProductSlug === product.slug
+                                ? "text-gold-primary"
+                                : uploadDoneSlug === product.slug
+                                  ? "text-green-700"
+                                  : "text-soft-grey"
+                            }`}
+                          >
+                            {uploadingProductSlug === product.slug
+                              ? `Caricamento ${uploadProgress[product.slug] ?? 0}%`
+                              : uploadDoneSlug === product.slug
+                                ? "Foto caricata"
+                                : `${overrideUrl ? "Foto scelta" : "Foto di catalogo"}${
+                                    gallery.length > 0
+                                      ? ` · ${gallery.length}`
+                                      : ""
+                                  }`}
                           </span>
                         </span>
                         <ChevronDown
@@ -2323,10 +2394,14 @@ export function LeadB2BPanel({
                             />
                             <label
                               htmlFor={inputId}
-                              className="inline-flex cursor-pointer items-center justify-center border border-soft-black px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] transition hover:bg-soft-black hover:text-warm-white"
+                              className={`inline-flex items-center justify-center border border-soft-black px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] transition ${
+                                uploadingProductSlug === product.slug
+                                  ? "pointer-events-none opacity-60"
+                                  : "cursor-pointer hover:bg-soft-black hover:text-warm-white"
+                              }`}
                             >
                               {uploadingProductSlug === product.slug
-                                ? "Upload…"
+                                ? "Caricamento…"
                                 : "Carica foto"}
                             </label>
                             {overrideUrl && (
@@ -2346,6 +2421,32 @@ export function LeadB2BPanel({
                               </button>
                             )}
                           </div>
+
+                          {uploadingProductSlug === product.slug && (
+                            <div className="space-y-1">
+                              <div className="h-1 w-full overflow-hidden bg-pearl-grey">
+                                <div
+                                  className="h-1 bg-gold-primary transition-all duration-200"
+                                  style={{
+                                    width: `${uploadProgress[product.slug] ?? 0}%`,
+                                  }}
+                                />
+                              </div>
+                              <p className="text-[9px] uppercase tracking-[0.14em] text-soft-grey">
+                                {(uploadProgress[product.slug] ?? 0) < 100
+                                  ? `Caricamento ${uploadProgress[product.slug] ?? 0}%`
+                                  : "Ottimizzazione e salvataggio…"}
+                              </p>
+                            </div>
+                          )}
+
+                          {uploadDoneSlug === product.slug &&
+                            uploadingProductSlug !== product.slug && (
+                              <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.12em] text-green-700">
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                Foto caricata
+                              </p>
+                            )}
 
                           <div className="space-y-1 border-t border-pearl-grey pt-2">
                             <label className="inline-flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-soft-grey">
