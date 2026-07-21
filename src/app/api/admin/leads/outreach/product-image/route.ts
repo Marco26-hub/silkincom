@@ -18,6 +18,59 @@ export const dynamic = 'force-dynamic';
  * l'upload precedente viveva solo nello stato del componente e spariva al
  * primo reload, senza che nessuno lo notasse.
  */
+/**
+ * Elenca le foto già a catalogo dei prodotti che l'outreach può mostrare, così
+ * dal pannello si può scegliere una foto esistente invece di ricaricarla.
+ * Restituisce tutti gli slug in una sola chiamata: il pannello mostra le card
+ * dei prodotti insieme, farne una per prodotto sarebbe solo traffico in più.
+ */
+export async function GET() {
+  const auth = await requireAdminApi();
+  if (!auth.ok) return forbidden(auth.status);
+
+  const supabase = createServiceClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select('slug, product_images(id, image_url, is_primary, display_order)')
+    .in('slug', LEAD_OUTREACH_PRODUCT_SLUGS);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const images: Record<
+    string,
+    Array<{ id: string; url: string; isPrimary: boolean }>
+  > = {};
+
+  for (const product of (data as ProductWithImagesRow[]) || []) {
+    images[product.slug] = [...(product.product_images || [])]
+      .filter((image) => Boolean(image.image_url))
+      .sort((a, b) => {
+        if (a.is_primary && !b.is_primary) return -1;
+        if (!a.is_primary && b.is_primary) return 1;
+        return Number(a.display_order || 0) - Number(b.display_order || 0);
+      })
+      .map((image) => ({
+        id: image.id,
+        url: image.image_url as string,
+        isPrimary: Boolean(image.is_primary),
+      }));
+  }
+
+  return NextResponse.json({ ok: true, images });
+}
+
+type ProductWithImagesRow = {
+  slug: string;
+  product_images?: Array<{
+    id: string;
+    image_url: string | null;
+    is_primary: boolean | null;
+    display_order: number | null;
+  }> | null;
+};
+
 export async function POST(req: NextRequest) {
   const auth = await requireAdminApi();
   if (!auth.ok) return forbidden(auth.status);

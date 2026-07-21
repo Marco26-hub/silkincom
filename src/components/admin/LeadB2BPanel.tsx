@@ -458,6 +458,11 @@ export function LeadB2BPanel({
   const [uploadingProductSlug, setUploadingProductSlug] = useState<
     string | null
   >(null);
+  // Foto già a catalogo, per poterne scegliere una esistente invece di
+  // ricaricarla. Chiave = slug prodotto.
+  const [catalogImages, setCatalogImages] = useState<
+    Record<string, Array<{ id: string; url: string; isPrimary: boolean }>>
+  >({});
 
   const stats = useMemo(() => {
     const qualified = leads.filter(
@@ -1059,6 +1064,21 @@ export function LeadB2BPanel({
     window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60_000);
   }
 
+  async function loadCatalogImages() {
+    try {
+      const response = await fetch("/api/admin/leads/outreach/product-image");
+      const data = await readApiJson(response);
+      if (!response.ok) return;
+      setCatalogImages(data.images || {});
+    } catch {
+      // Non blocca il pannello: senza elenco restano upload e foto di default.
+    }
+  }
+
+  useEffect(() => {
+    void loadCatalogImages();
+  }, []);
+
   // La foto caricata viene salvata nel catalogo (product_images), non solo
   // nello stato della campagna: prima finiva in /api/admin/media e viveva solo
   // in memoria, quindi spariva al primo reload della pagina.
@@ -1088,6 +1108,9 @@ export function LeadB2BPanel({
       }));
       setPreviewConfirmed(false);
       setOutreachSendReceipt(null);
+      // Ricarica l'elenco: la foto appena caricata deve comparire subito fra
+      // quelle scegliibili dal catalogo.
+      void loadCatalogImages();
       setMessage(
         data.isPrimary
           ? "Foto salvata a catalogo e impostata come principale: la useranno sia l’email sia il sito. Riapri l’anteprima per validarla."
@@ -2134,13 +2157,63 @@ export function LeadB2BPanel({
                               : "Follow-up · DB"}
                         </span>
                       </div>
-                      {overrideUrl && (
-                        <img
-                          src={overrideUrl}
-                          alt=""
-                          className="mt-3 h-24 w-full border border-pearl-grey object-cover"
-                        />
-                      )}
+                      {(() => {
+                        const gallery = catalogImages[product.slug] || [];
+                        if (gallery.length === 0) return null;
+                        // Senza override vince la primaria del catalogo: è
+                        // quella che l'email userebbe così com'è.
+                        const selectedUrl =
+                          overrideUrl ||
+                          gallery.find((image) => image.isPrimary)?.url ||
+                          gallery[0]?.url;
+                        return (
+                          <div className="mt-3">
+                            <p className="mb-1.5 text-[9px] uppercase tracking-[0.16em] text-soft-grey">
+                              Dal catalogo · {gallery.length}
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {gallery.map((image) => {
+                                const isSelected = image.url === selectedUrl;
+                                return (
+                                  <button
+                                    key={image.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setProductImageOverrides((previous) => ({
+                                        ...previous,
+                                        [product.slug]: image.url,
+                                      }));
+                                      setPreviewConfirmed(false);
+                                      setOutreachSendReceipt(null);
+                                    }}
+                                    title={
+                                      image.isPrimary
+                                        ? "Principale a catalogo"
+                                        : "Usa questa foto"
+                                    }
+                                    className={`relative h-16 w-16 overflow-hidden border transition ${
+                                      isSelected
+                                        ? "border-soft-black ring-1 ring-gold-primary"
+                                        : "border-pearl-grey hover:border-soft-black"
+                                    }`}
+                                  >
+                                    <img
+                                      src={image.url}
+                                      alt=""
+                                      className="h-full w-full object-cover"
+                                    />
+                                    {image.isPrimary && (
+                                      <span className="absolute inset-x-0 bottom-0 bg-soft-black/75 text-center text-[7px] uppercase tracking-[0.1em] text-warm-white">
+                                        Principale
+                                      </span>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })()}
                       <div className="mt-3 flex flex-wrap gap-2">
                         <input
                           id={inputId}
