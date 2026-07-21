@@ -1,3 +1,30 @@
+// Settori usati dall'outreach B2B. Vivono qui, in un modulo di soli dati senza
+// import, perché li usano sia il client (menu admin) sia gli schemi zod: se
+// stessero in lead-discovery.ts trascinerebbero node:dns nel bundle client.
+export const LEAD_OUTREACH_FOCUS_VALUES = [
+  "hospitality",
+  "bed_breakfast",
+  "hotel_boutique",
+  "resort_beach_club",
+  "spa_wellness",
+  "wedding_events",
+  "corporate_gifting",
+  "concept_store",
+  "museum_bookshop",
+  "yacht_golf_club",
+  "boat_charter",
+  "chauffeur_ncc",
+  "luxury_car_rental",
+  "personal_shopper",
+  "interior_architect",
+  "tour_operator_luxury",
+  "retail",
+  "gifting",
+  "wholesale",
+] as const;
+
+export type LeadOutreachFocus = (typeof LEAD_OUTREACH_FOCUS_VALUES)[number];
+
 export type LeadSegment = {
   id: string;
   label: string;

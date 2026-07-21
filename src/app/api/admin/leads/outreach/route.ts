@@ -6,6 +6,7 @@ import {
   buildLeadOutreachCopy,
   LEAD_OUTREACH_FALLBACK_IMAGES,
   resolveLeadTargetingNotes,
+  TARGETING_NOTE_MIN_LENGTH,
   getLeadOutreachProductSlugs,
   getLeadOutreachDeliveryMetrics,
   isLeadFocusCoherent,
@@ -100,11 +101,22 @@ export async function POST(req: NextRequest) {
       results.push({ leadId: lead.id, ok: false, error: 'Manca email di contatto' });
       continue;
     }
-    const { note: targetingNotes } = resolveLeadTargetingNotes(
-      lead.notes,
-      parsed.data.notes,
-      parsed.data.focus,
-    );
+    const { note: targetingNotes, source: targetingSource } =
+      resolveLeadTargetingNotes(
+        lead.notes,
+        parsed.data.notes,
+        parsed.data.focus,
+      );
+    // Stessa regola dell'anteprima: un motivo scritto ma troppo corto ferma
+    // l'invio invece di essere sostituito in silenzio da quello automatico.
+    if (targetingSource === 'rejected') {
+      results.push({
+        leadId: lead.id,
+        ok: false,
+        error: `Motivo troppo corto (minimo ${TARGETING_NOTE_MIN_LENGTH} caratteri): allungalo o svuota il campo per usare quello automatico`,
+      });
+      continue;
+    }
     if (!isLeadFocusCoherent(lead.industry, parsed.data.focus)) {
       results.push({ leadId: lead.id, ok: false, error: 'Focus non coerente con il settore del lead' });
       continue;

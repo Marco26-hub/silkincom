@@ -5,7 +5,11 @@ import {
   buildLeadProposalUrl,
   buildLeadStopUrl,
 } from "./lead-public-links";
-import { getLeadReasonPresets } from "./lead-segments";
+import {
+  getLeadReasonPresets,
+  LEAD_OUTREACH_FOCUS_VALUES,
+  type LeadOutreachFocus,
+} from "./lead-segments";
 
 type DiscoveryOptions = {
   query?: string;
@@ -83,29 +87,10 @@ type OverpassElement = {
   tags?: Record<string, string | undefined>;
 };
 
-export const LEAD_OUTREACH_FOCUS_VALUES = [
-  "hospitality",
-  "bed_breakfast",
-  "hotel_boutique",
-  "resort_beach_club",
-  "spa_wellness",
-  "wedding_events",
-  "corporate_gifting",
-  "concept_store",
-  "museum_bookshop",
-  "yacht_golf_club",
-  "boat_charter",
-  "chauffeur_ncc",
-  "luxury_car_rental",
-  "personal_shopper",
-  "interior_architect",
-  "tour_operator_luxury",
-  "retail",
-  "gifting",
-  "wholesale",
-] as const;
-
-export type LeadOutreachFocus = (typeof LEAD_OUTREACH_FOCUS_VALUES)[number];
+// Definiti in lead-segments.ts (modulo dati puro) e ri-esportati qui per non
+// rompere gli import esistenti.
+export { LEAD_OUTREACH_FOCUS_VALUES };
+export type { LeadOutreachFocus };
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 const PHONE_RE = /(?:\+?\d[\d\s()./-]{6,}\d)/g;
@@ -1486,26 +1471,51 @@ export function isTargetingNoteSpecific(
 // Nota: NON inventa dettagli sulla struttura (dotazioni, spa, boutique…), che
 // sarebbero affermazioni false in una email inviata a un'attività reale.
 export function buildAutoTargetingNote(focus: LeadOutreachFocus): string {
-  // Stesso catalogo mostrato nel menu admin, così il motivo inviato in
-  // automatico coincide con la prima voce che l'operatore vede a schermo.
-  const preset = getLeadReasonPresets(focus)[0];
-  if (preset) return preset.note;
-  const activations = SECTOR_OUTREACH_ACTIVATIONS[focus];
-  if (!activations) return "";
-  return activations.charAt(0).toLowerCase() + activations.slice(1);
+  // Unica fonte: lo stesso catalogo mostrato nel menu admin, così il motivo
+  // inviato in automatico coincide con la prima voce che si vede a schermo.
+  // Se un settore restasse senza preset si torna stringa vuota di proposito:
+  // il check dell'anteprima diventa rosso e l'invio si ferma. Meglio fermarsi
+  // che spedire di nascosto un testo diverso da quello mostrato nel menu.
+  return getLeadReasonPresets(focus)[0]?.note ?? "";
 }
 
-// Sceglie il motivo da usare: la nota scritta a mano ha sempre la precedenza,
-// altrimenti si ricade su quella automatica. Restituisce anche l'origine, così
-// l'anteprima admin può dire chiaramente quale delle due si sta inviando.
+export const TARGETING_NOTE_MIN_LENGTH = 24;
+
+export type LeadTargetingNotesResolution = {
+  note: string;
+  /**
+   * manual   = si invia il motivo scritto a mano
+   * auto     = campo lasciato vuoto, si invia il preset del settore
+   * rejected = è stato scritto un motivo ma è troppo corto per essere usato.
+   *            NON viene sostituito di nascosto: l'anteprima lo segnala e
+   *            l'invio si blocca, così il testo scritto non sparisce senza
+   *            che nessuno se ne accorga.
+   */
+  source: "manual" | "auto" | "rejected";
+  rejectedNote: string;
+};
+
 export function resolveLeadTargetingNotes(
   leadNotes: string | null | undefined,
   campaignNotes: string | null | undefined,
   focus: LeadOutreachFocus,
-): { note: string; source: "manual" | "auto" } {
+): LeadTargetingNotesResolution {
   const manual = composeLeadTargetingNotes(leadNotes, campaignNotes);
-  if (isTargetingNoteSpecific(manual)) return { note: manual, source: "manual" };
-  return { note: buildAutoTargetingNote(focus), source: "auto" };
+  if (isTargetingNoteSpecific(manual)) {
+    return { note: manual, source: "manual", rejectedNote: "" };
+  }
+  if (manual.trim()) {
+    return {
+      note: buildAutoTargetingNote(focus),
+      source: "rejected",
+      rejectedNote: manual.trim(),
+    };
+  }
+  return {
+    note: buildAutoTargetingNote(focus),
+    source: "auto",
+    rejectedNote: "",
+  };
 }
 
 export function isLeadFocusCoherent(

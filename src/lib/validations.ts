@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { LEAD_OUTREACH_FOCUS_VALUES } from './lead-segments';
 
 // ========== PRODUCT ==========
 
@@ -159,27 +160,10 @@ export const leadOutreachPreviewSchema = z.object({
     .array(z.string().uuid())
     .min(1, 'Seleziona almeno un lead')
     .max(6, 'Per proteggere la reputazione del dominio invia massimo 6 email per lotto'),
-  focus: z.enum([
-    'hospitality',
-    'bed_breakfast',
-    'hotel_boutique',
-    'resort_beach_club',
-    'spa_wellness',
-    'wedding_events',
-    'corporate_gifting',
-    'concept_store',
-    'museum_bookshop',
-    'yacht_golf_club',
-    'boat_charter',
-    'chauffeur_ncc',
-    'luxury_car_rental',
-    'personal_shopper',
-    'interior_architect',
-    'tour_operator_luxury',
-    'retail',
-    'gifting',
-    'wholesale',
-  ]).default('hospitality'),
+  // Derivato dalla lista dei settori invece di riscriverlo: se le due liste
+  // divergono, un focus valido per zod ma sconosciuto a lead-discovery
+  // produrrebbe "undefined" dentro il testo dell'email.
+  focus: z.enum(LEAD_OUTREACH_FOCUS_VALUES).default('hospitality'),
   notes: z.string().trim().max(1000).optional().default(''),
   productImageOverrides: z
     .record(z.string().trim().min(1), z.string().trim().url())

@@ -4,6 +4,7 @@ import {
   buildLeadOutreachCopy,
   LEAD_OUTREACH_FALLBACK_IMAGES,
   resolveLeadTargetingNotes,
+  TARGETING_NOTE_MIN_LENGTH,
   getLeadOutreachProductSlugs,
   getLeadOutreachDeliveryMetrics,
   isLeadFocusCoherent,
@@ -66,8 +67,15 @@ export async function POST(req: NextRequest) {
     const lead = leadById.get(leadId);
     if (!lead) return [];
 
-    const { note: targetingNotes, source: targetingSource } =
-      resolveLeadTargetingNotes(lead.notes, parsed.data.notes, parsed.data.focus);
+    const {
+      note: targetingNotes,
+      source: targetingSource,
+      rejectedNote,
+    } = resolveLeadTargetingNotes(
+      lead.notes,
+      parsed.data.notes,
+      parsed.data.focus,
+    );
     const originalRecipientEmail = lead.contact_email || null;
     const overrideRecipientEmail =
       parsed.data.recipientEmailOverrides?.[lead.id]?.trim() || null;
@@ -115,6 +123,20 @@ export async function POST(req: NextRequest) {
         ),
       ),
     );
+    // Foto che arrivano dalla lista di riserva hardcoded invece che dal
+    // catalogo: sono ospitate sul vecchio sito Wix, quindi possono sparire
+    // senza preavviso. Vanno distinte, altrimenti la checklist dichiara
+    // "foto dal DB" mentre in realtà sta spedendo un'immagine di ripiego.
+    const fallbackProductImages = getLeadOutreachProductSlugs(
+      parsed.data.focus,
+    ).filter((slug) => {
+      const resolved = resolveLeadOutreachImage(
+        parsed.data.productImageOverrides?.[slug],
+        productImages[slug],
+        LEAD_OUTREACH_FALLBACK_IMAGES[slug],
+      );
+      return Boolean(resolved) && resolved === LEAD_OUTREACH_FALLBACK_IMAGES[slug];
+    });
     const invalidLinks = copy.links.filter(
       (link) =>
         !isSafeLeadOutreachLink(link.url) ||
@@ -141,11 +163,18 @@ export async function POST(req: NextRequest) {
         ok: isLeadFocusCoherent(lead.industry, parsed.data.focus),
       },
       {
+        // Se il motivo scritto a mano è stato scartato lo si dice, invece di
+        // sostituirlo di nascosto con quello automatico: chi lo ha scritto
+        // altrimenti crederebbe di aver inviato il proprio testo.
         label:
-          targetingSource === 'manual'
-            ? 'Motivo reale e specifico inserito'
-            : 'Motivo generato dai touchpoint del settore (scrivine uno tuo per personalizzarlo)',
-        ok: isTargetingNoteSpecific(targetingNotes),
+          targetingSource === 'rejected'
+            ? `Il motivo scritto è troppo corto (${rejectedNote.length}/${TARGETING_NOTE_MIN_LENGTH} caratteri) e NON verrà inviato: allungalo, oppure svuota il campo per usare quello automatico`
+            : targetingSource === 'manual'
+              ? 'Motivo reale e specifico inserito'
+              : 'Motivo generato dai touchpoint del settore (scrivine uno tuo per personalizzarlo)',
+        ok:
+          targetingSource !== 'rejected' &&
+          isTargetingNoteSpecific(targetingNotes),
       },
       {
         label: 'Logo ufficiale SILKinCOM presente',
@@ -153,10 +182,14 @@ export async function POST(req: NextRequest) {
       },
       {
         label:
-          missingProductImages.length === 0
-            ? 'Foto prodotto guida presente da DB o override manuale'
-            : `Foto mancanti: ${missingProductImages.join(', ')}`,
-        ok: missingProductImages.length === 0,
+          missingProductImages.length > 0
+            ? `Foto mancanti: ${missingProductImages.join(', ')}`
+            : fallbackProductImages.length > 0
+              ? `Foto NON dal catalogo, si usa quella di riserva sul vecchio sito Wix: ${fallbackProductImages.join(', ')}`
+              : 'Foto prodotto guida presente da DB o override manuale',
+        ok:
+          missingProductImages.length === 0 &&
+          fallbackProductImages.length === 0,
       },
       {
         label:
