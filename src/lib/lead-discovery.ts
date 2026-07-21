@@ -2160,50 +2160,6 @@ function buildSectorProposal(focus: LeadOutreachFocus): SectorProposal {
   }
 }
 
-// Aggancio premium per settore, usato per costruire la frase "Vi scrivo perché…".
-// Serve a evitare che la nota di targeting (spesso un elenco di parole chiave,
-// es. "Welcome gift, ricordo ospite o acquisto in reception") finisca incollata
-// dopo "perché" producendo una frase sgrammaticata.
-const FOCUS_REASON_LEADIN: Record<LeadOutreachFocus, string> = {
-  hospitality:
-    "può far diventare il tessile parte dell’esperienza ospite, non un articolo a scaffale",
-  bed_breakfast:
-    "può portare il Lago dentro l’accoglienza, dal soggiorno al ricordo che resta",
-  hotel_boutique:
-    "può dare a hall, suite e boutique interna un dettaglio Made in Como riconoscibile",
-  resort_beach_club:
-    "può rendere pool, beach e resort shop coerenti sotto un’unica firma tessile",
-  spa_wellness:
-    "può portare in spa un telo e un gift corner all’altezza del percorso benessere",
-  wedding_events:
-    "può trasformare il cadeau agli ospiti in un ricordo che sopravvive all’evento",
-  corporate_gifting:
-    "può dare ai regali istituzionali una provenienza vera, non un logo applicato",
-  concept_store:
-    "può aggiungere all’assortimento una capsule territoriale con una storia dietro",
-  museum_bookshop:
-    "può offrire al bookshop un souvenir culturale lontano dal merchandising generico",
-  yacht_golf_club:
-    "può riservare ai soci una selezione dedicata tra club shop ed eventi",
-  boat_charter:
-    "può rendere l’imbarco e il guest gifting parte dell’esperienza a bordo",
-  chauffeur_ncc:
-    "può curare l’accoglienza a bordo con un dettaglio che il cliente VIP nota",
-  luxury_car_rental:
-    "può accompagnare la consegna vettura con un travel kit di livello",
-  personal_shopper:
-    "può proporre alla clientela seguita un private edit riservato",
-  interior_architect:
-    "può completare material board e suite con tessuti che raccontano il territorio",
-  tour_operator_luxury:
-    "può arricchire welcome kit e itinerari privati con un ricordo del Lago",
-  retail:
-    "può inserire in boutique una capsule Made in Como con riassortimento selettivo",
-  gifting:
-    "può contare su curatela e packaging pensati per il dono, non per lo scaffale",
-  wholesale:
-    "può partire da un campionario e un primo ordine calibrato, senza impegni ampi",
-};
 
 // Trasforma la nota in una subordinata utilizzabile dopo i due punti: toglie la
 // punteggiatura finale, sostituisce il separatore " · " (usato quando si
@@ -2253,21 +2209,41 @@ function normalizeReasonPlace(city: string | null | undefined): string {
   return place.charAt(0).toUpperCase() + place.slice(1);
 }
 
-// Compone la motivazione del contatto: sempre una frase compiuta, ancorata al
-// nome della struttura, alla città e all'angolo del settore.
+function lowerFirst(value: string): string {
+  if (!value) return "";
+  const [firstWord] = value.split(/\s+/);
+  if (firstWord && firstWord === firstWord.toUpperCase() && /[A-ZÀ-Ý]/u.test(firstWord)) {
+    return value;
+  }
+  return value.charAt(0).toLowerCase() + value.slice(1);
+}
+
+// Compone la motivazione del contatto.
+//
+// Il nome della struttura NON viene ripetuto: è già nel saluto una riga sopra,
+// e ripeterlo subito suona automatizzato.
+//
+// La cornice è volutamente neutra e non descrive il settore. Prima conteneva un
+// aggancio per settore, ma quell'aggancio e il motivo dicevano la stessa cosa:
+// su 15 settori su 19 la frase finiva per ripetere le stesse parole a distanza
+// di poche battute ("...dentro l'accoglienza: ...la percezione dell'accoglienza").
+// La specificità di settore la porta già il motivo, che arriva dal catalogo.
+//
+// I due punti finali reggono qualsiasi frammento: i motivi iniziano in modo
+// vario ("camere e spazi comuni", "il momento della consegna vettura") e una
+// cornice con preposizione richiederebbe di concordare gli articoli.
 function buildOutreachReasonSentence(
-  companyName: string,
   city: string | null | undefined,
-  focus: LeadOutreachFocus,
   note: string,
 ): string {
-  const leadIn = FOCUS_REASON_LEADIN[focus];
   const place = normalizeReasonPlace(city);
-  const target = place ? `${companyName}, a ${place},` : companyName;
+  const target = place
+    ? `a ${place} una realtà come la vostra è`
+    : "la vostra è";
   const clause = toReasonClause(note);
   return clause
-    ? `Vi scrivo perché ${target} ${leadIn}: ${clause}.`
-    : `Vi scrivo perché ${target} ${leadIn}.`;
+    ? `Vi scrivo perché ${target} il tipo di contesto in cui questi tessuti funzionano: ${clause}.`
+    : `Vi scrivo perché ${target} il tipo di contesto in cui questi tessuti funzionano.`;
 }
 
 function buildFocusCopy(focus: LeadOutreachFocus) {
@@ -3003,21 +2979,14 @@ export function buildLeadOutreachCopy(
   // Il taglio è per PAROLE oltre che per caratteri, perché un tetto di soli
   // caratteri lascia passare note fatte di molte parole brevi.
   const baseWords = countWords(
-    buildTextBody(
-      buildOutreachReasonSentence(lead.company_name, lead.city, focus, ""),
-    ),
+    buildTextBody(buildOutreachReasonSentence(lead.city, "")),
   );
   const reason = truncateReasonNote(
     normalizedReason,
     Math.max(0, TEXT_WORD_BUDGET - baseWords),
     145,
   );
-  const reasonSentence = buildOutreachReasonSentence(
-    lead.company_name,
-    lead.city,
-    focus,
-    reason,
-  );
+  const reasonSentence = buildOutreachReasonSentence(lead.city, reason);
   const subject = sanitizeEmailHeader(
     `Un’idea per ${lead.company_name}, dal Lago di Como`,
   );
@@ -3035,19 +3004,18 @@ export function buildLeadOutreachCopy(
 <body style="margin:0;padding:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;color:#222222;">
   <div style="max-width:560px;margin:0 auto;padding:20px;">
     <p style="font-size:15px;line-height:1.6;color:#222222;margin:0 0 16px;">${escapeHtml(greeting)}</p>
-    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Sono ${escapeHtml(founderName)}, Founder di SILKinCOM, Maison tessile del territorio comasco.</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">sono ${escapeHtml(founderName)}, produco tessuti a Como: seta, lino, cashmere.</p>
     <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">${escapeHtml(reasonSentence)}</p>
-    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">${escapeHtml(focusCopy.angle)}</p>
-    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Le lascio un riferimento concreto: ${escapeHtml(primaryProduct.name)} &mdash; ${escapeHtml(primaryProduct.detail)}</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Un esempio concreto: ${escapeHtml(primaryProduct.name)}, ${escapeHtml(lowerFirst(primaryProduct.detail))}</p>
 
     <img src="${escapeHtml(primaryProductImage)}" width="300" alt="${escapeHtml(primaryProduct.alt)}" style="display:block;width:300px;max-width:100%;height:auto;border:0;margin:0 0 18px;" />
 
-    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.</p>
-    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">È lei la persona giusta per valutarla? In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Si può partire da poche referenze e, se ha senso, arrivare a un’edizione dedicata a voi.</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Se non siete voi a occuparvene, mi indicate a chi posso scrivere?</p>
     <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;"><a href="${escapeHtml(proposalUrl)}" style="color:#1a4d8f;text-decoration:underline;">Approfondisci la proposta</a></p>
-    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 20px;">Preferisce un confronto diretto? Può rispondere a questa email: le risponderò personalmente.</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 20px;">Per un confronto diretto potete rispondere direttamente a questa email.</p>
 
-    <p style="font-size:15px;line-height:1.6;color:#222222;margin:0 0 10px;">Con stima,<br />${escapeHtml(founderName)}<br /><span style="color:#666666;">Founder · SILKinCOM · Como</span></p>
+    <p style="font-size:15px;line-height:1.6;color:#222222;margin:0 0 10px;">${escapeHtml(founderName)}<br /><span style="color:#666666;">SILKinCOM · Como</span></p>
     <img src="${escapeHtml(officialLogoUrl)}" width="86" alt="SILKinCOM" style="display:block;width:86px;max-width:86px;height:auto;border:0;margin:0 0 18px;" />
     <p style="font-size:11px;line-height:1.5;color:#888888;margin:0;">Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda STOP${stopUrl ? ` oppure <a href="${escapeHtml(stopUrl)}" style="color:#888888;">confermi qui</a>` : ""}.</p>
   </div>
@@ -3070,28 +3038,29 @@ export function buildLeadOutreachCopy(
     return [
     greeting,
     "",
-    `Sono ${founderName}, Founder di SILKinCOM, Maison tessile del territorio comasco.`,
+    `sono ${founderName}, produco tessuti a Como: seta, lino, cashmere.`,
     sentence,
-    focusCopy.angle,
     "",
-    `Le lascio un riferimento concreto: ${primaryProduct.name} — ${primaryProduct.detail}`,
+    `Un esempio concreto: ${primaryProduct.name}, ${lowerFirst(primaryProduct.detail)}`,
     "",
-    "Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.",
-    "È lei la persona giusta per valutarla? In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.",
+    "Si può partire da poche referenze e, se ha senso, arrivare a un’edizione dedicata a voi.",
+    "Se non siete voi a occuparvene, mi indicate a chi posso scrivere?",
     "",
-    "Approfondisca la proposta e i modelli di collaborazione:",
+    "Approfondisci la proposta e i modelli di collaborazione:",
     proposalUrl,
     "",
-    "Per un confronto diretto, può rispondere direttamente a questa email: le risponderò personalmente.",
+    "Per un confronto diretto potete rispondere direttamente a questa email.",
     "",
-    "Con stima,",
     founderName,
-    "Founder · SILKinCOM · Como",
+    "SILKinCOM · Como",
     "",
-    "Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda STOP.",
+    "Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, basta rispondere STOP.",
     stopUrl ? `Conferma STOP: ${stopUrl}` : null,
     ]
-      .filter(Boolean)
+      // Si scartano solo le righe assenti: le stringhe vuote sono i separatori
+      // fra i paragrafi. Con filter(Boolean) sparivano e la versione testuale
+      // arrivava come un muro unico, senza righe bianche.
+      .filter((line): line is string => line !== null)
       .join("\n");
   }
 }
