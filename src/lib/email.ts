@@ -905,6 +905,10 @@ export async function sendB2BLeadOutreachEmail(params: {
     );
   }
 
+  // Nessun header List-Unsubscribe: è un marker "bulk commerciale" che spinge
+  // Gmail verso Promozioni. Questo è outreach 1:1 a volume basso (non bulk
+  // sender ai sensi delle regole Gmail, che scattano oltre 5000/giorno) e
+  // l'opt-out resta garantito nel corpo del messaggio (istruzione STOP + link).
   return sendEmail({
     from: B2B_FROM_EMAIL,
     to: params.to,
@@ -912,8 +916,5 @@ export async function sendB2BLeadOutreachEmail(params: {
     subject: params.subject,
     html: params.html,
     text: params.text,
-    headers: {
-      'List-Unsubscribe': '<mailto:b2b@silkincom.com?subject=STOP>',
-    },
   });
 }

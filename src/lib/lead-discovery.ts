@@ -2852,67 +2852,35 @@ export function buildLeadOutreachCopy(
   const subject = sanitizeEmailHeader(
     `Un’idea per ${lead.company_name}, dal Lago di Como`,
   );
-  const preheader = reason
-    ? `Una proposta SILKinCOM pensata per ${lead.company_name}: ${reason}`
-    : `Una proposta SILKinCOM pensata per ${lead.company_name}.`;
-
+  // Layout deliberatamente "lettera personale": niente banner logo a tutta
+  // larghezza, niente card prodotto bordata, niente bottone CTA pieno. Sono i
+  // tre marker che spingono Gmail a classificare come Promozioni. Il logo resta
+  // (piccolo, in firma) perché la checklist admin lo richiede, e la foto
+  // prodotto resta ma come immagine semplice, non come modulo commerciale.
   const html = `<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    @media screen and (max-width:520px) {
-      .email-shell { padding:12px 0 !important; }
-      .email-content { padding:28px 22px !important; }
-      .product-image-cell,
-      .product-copy-cell { display:block !important; width:100% !important; box-sizing:border-box !important; }
-      .product-image-cell { padding:14px 14px 0 !important; text-align:center !important; }
-      .product-copy-cell { padding:15px 18px 19px !important; }
-      .product-image { width:100% !important; max-width:230px !important; margin:0 auto !important; }
-    }
-  </style>
 </head>
-<body style="margin:0;padding:0;background:#F4F0E8;font-family:Arial,Helvetica,sans-serif;color:#201C18;">
-  <div style="display:none;max-height:0;overflow:hidden;color:#F4F0E8;">${escapeHtml(preheader)}</div>
-  <div class="email-shell" style="max-width:620px;margin:0 auto;padding:24px 12px;">
-    <div style="background:#151310;padding:14px 20px;text-align:center;">
-      <img src="${escapeHtml(officialLogoUrl)}" width="92" alt="SILKinCOM" style="display:block;width:92px;max-width:92px;height:auto;margin:0 auto;border:0;" />
-    </div>
-    <div class="email-content" style="background:#FFFDF9;border:1px solid #E6DDCF;border-top:0;padding:34px 32px;">
-      <p style="font-size:14px;line-height:1.65;color:#4A443D;margin:0 0 18px;">${escapeHtml(greeting)}</p>
-      <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:29px;font-weight:400;line-height:1.22;color:#201C18;margin:0 0 18px;">Un’idea per ${escapeHtml(lead.company_name)}.</h1>
-      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 14px;">Sono <strong>${escapeHtml(founderName)}</strong>, Founder di SILKinCOM, Maison tessile del territorio comasco.</p>
-      ${reason ? `<p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 14px;">Vi contatto perché ${escapeHtml(reason)}</p>` : ""}
-      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 22px;">${escapeHtml(focusCopy.angle)}</p>
+<body style="margin:0;padding:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;color:#222222;">
+  <div style="max-width:560px;margin:0 auto;padding:20px;">
+    <p style="font-size:15px;line-height:1.6;color:#222222;margin:0 0 16px;">${escapeHtml(greeting)}</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Sono ${escapeHtml(founderName)}, Founder di SILKinCOM, Maison tessile del territorio comasco.</p>
+    ${reason ? `<p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Vi contatto perché ${escapeHtml(reason)}</p>` : ""}
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">${escapeHtml(focusCopy.angle)}</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Le lascio un riferimento concreto: ${escapeHtml(primaryProduct.name)} &mdash; ${escapeHtml(primaryProduct.detail)}</p>
 
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #E6DDCF;background:#FAF7F1;margin:0 0 22px;">
-        <tr>
-          <td class="product-image-cell" width="150" valign="top" style="width:150px;padding:12px;">
-            <img class="product-image" src="${escapeHtml(primaryProductImage)}" width="138" alt="${escapeHtml(primaryProduct.alt)}" style="display:block;width:138px;max-width:100%;height:auto;border:0;background:#F1ECE4;" />
-          </td>
-          <td class="product-copy-cell" valign="middle" style="padding:15px 18px 15px 4px;">
-            <p style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#A87F1E;margin:0 0 6px;">Selezione introduttiva</p>
-            <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:400;line-height:1.3;color:#201C18;margin:0 0 7px;">${escapeHtml(primaryProduct.name)}</h2>
-            <p style="font-size:13px;line-height:1.55;color:#625B52;margin:0 0 8px;">${escapeHtml(primaryProduct.detail)}</p>
-            <p style="font-size:11px;line-height:1.5;color:#8C681B;margin:0;">Selezione disponibile per progetti dedicati e collaborazioni su misura.</p>
-          </td>
-        </tr>
-      </table>
+    <img src="${escapeHtml(primaryProductImage)}" width="300" alt="${escapeHtml(primaryProduct.alt)}" style="display:block;width:300px;max-width:100%;height:auto;border:0;margin:0 0 18px;" />
 
-      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 10px;">Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.</p>
-      <p style="font-size:15px;line-height:1.7;color:#3F3932;margin:0 0 20px;"><strong>È lei la persona giusta per valutarla?</strong> In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.</p>
-      <p style="margin:0 0 12px;">
-        <a href="${escapeHtml(proposalUrl)}" style="display:inline-block;background:#201C18;color:#FFFDF9;text-decoration:none;padding:12px 18px;font-size:11px;letter-spacing:.08em;">Approfondisci la proposta</a>
-      </p>
-      <p style="font-size:12px;line-height:1.6;color:#6F675E;margin:0 0 24px;">
-        Preferisce un confronto diretto? Può rispondere a questa email: Marco le risponderà personalmente.
-      </p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;">È lei la persona giusta per valutarla? In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.</p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 14px;"><a href="${escapeHtml(proposalUrl)}" style="color:#1a4d8f;text-decoration:underline;">Approfondisci la proposta</a></p>
+    <p style="font-size:15px;line-height:1.7;color:#222222;margin:0 0 20px;">Preferisce un confronto diretto? Può rispondere a questa email: le risponderò personalmente.</p>
 
-      <p style="font-size:14px;line-height:1.6;color:#3F3932;margin:0;">Con stima,<br /><strong>${escapeHtml(founderName)}</strong><br /><span style="font-size:12px;color:#8A8278;">Founder · SILKinCOM · Como</span></p>
-      <div style="height:1px;background:#E6DDCF;margin:24px 0 14px;"></div>
-      <p style="font-size:10px;line-height:1.55;color:#999187;margin:0;">Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda <strong>STOP</strong>${stopUrl ? ` oppure <a href="${escapeHtml(stopUrl)}" style="color:#777067;text-decoration:underline;">confermi qui</a>` : ""}.</p>
-    </div>
+    <p style="font-size:15px;line-height:1.6;color:#222222;margin:0 0 10px;">Con stima,<br />${escapeHtml(founderName)}<br /><span style="color:#666666;">Founder · SILKinCOM · Como</span></p>
+    <img src="${escapeHtml(officialLogoUrl)}" width="86" alt="SILKinCOM" style="display:block;width:86px;max-width:86px;height:auto;border:0;margin:0 0 18px;" />
+    <p style="font-size:11px;line-height:1.5;color:#888888;margin:0;">Contatto business pubblico selezionato per pertinenza. Per non ricevere altre comunicazioni, risponda STOP${stopUrl ? ` oppure <a href="${escapeHtml(stopUrl)}" style="color:#888888;">confermi qui</a>` : ""}.</p>
   </div>
 </body>
 </html>`;
@@ -2924,7 +2892,7 @@ export function buildLeadOutreachCopy(
     reason ? `Vi contatto perché ${reason}` : null,
     focusCopy.angle,
     "",
-    `${primaryProduct.name}: ${primaryProduct.detail}`,
+    `Le lascio un riferimento concreto: ${primaryProduct.name} — ${primaryProduct.detail}`,
     "",
     "Possiamo partire da una selezione essenziale e, se pertinente, sviluppare una doppia firma o un’edizione riservata.",
     "È lei la persona giusta per valutarla? In caso contrario, le sarei grato se potesse indicarmi il referente più adatto.",
@@ -2932,7 +2900,7 @@ export function buildLeadOutreachCopy(
     "Approfondisca la proposta e i modelli di collaborazione:",
     proposalUrl,
     "",
-    "Per un confronto diretto, può rispondere direttamente a questa email: Marco le risponderà personalmente.",
+    "Per un confronto diretto, può rispondere direttamente a questa email: le risponderò personalmente.",
     "",
     "Con stima,",
     founderName,
