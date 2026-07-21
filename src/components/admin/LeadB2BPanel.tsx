@@ -510,6 +510,10 @@ export function LeadB2BPanel({
     {},
   );
   const [uploadDoneSlug, setUploadDoneSlug] = useState<string | null>(null);
+  // Errore di upload per slug: il banner generale è in cima alla pagina, fuori
+  // dalla vista di chi sta lavorando nella colonna delle foto, e un upload
+  // fallito lì passava inosservato.
+  const [uploadError, setUploadError] = useState<Record<string, string>>({});
 
   // La conferma sparisce da sola: lasciata a schermo diventerebbe rumore, e la
   // miniatura con badge «Caricata» resta comunque come prova dell'upload.
@@ -1192,6 +1196,11 @@ export function LeadB2BPanel({
     setUploadingProductSlug(slug);
     setUploadProgress((previous) => ({ ...previous, [slug]: 0 }));
     setUploadDoneSlug(null);
+    setUploadError((previous) => {
+      const next = { ...previous };
+      delete next[slug];
+      return next;
+    });
     // La riga si apre subito: la barra di avanzamento sta dentro il dettaglio
     // del prodotto, a riga chiusa non si vedrebbe.
     setOpenPhotoSlug(slug);
@@ -1246,9 +1255,10 @@ export function LeadB2BPanel({
       setPreviewConfirmed(false);
       setOutreachSendReceipt(null);
     } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : "Errore upload immagine",
-      );
+      const detail =
+        error instanceof Error ? error.message : "Errore upload immagine";
+      setUploadError((previous) => ({ ...previous, [slug]: detail }));
+      setMessage(detail);
     } finally {
       setUploadingProductSlug(null);
       setUploadProgress((previous) => {
@@ -2446,6 +2456,17 @@ export function LeadB2BPanel({
                                 <CheckCircle2 className="h-3.5 w-3.5" />
                                 Foto caricata
                               </p>
+                            )}
+
+                          {uploadError[product.slug] &&
+                            uploadingProductSlug !== product.slug && (
+                              <div className="flex items-start gap-1.5 border border-red-200 bg-red-50 p-2 text-[10px] leading-relaxed text-red-700">
+                                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                                <span className="break-words">
+                                  Caricamento non riuscito:{" "}
+                                  {uploadError[product.slug]}
+                                </span>
+                              </div>
                             )}
 
                           <div className="space-y-1 border-t border-pearl-grey pt-2">

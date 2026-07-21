@@ -76,7 +76,14 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (dbError) return NextResponse.json({ error: dbError.message }, { status: 500 });
+  if (dbError) {
+    // Il file è già nello storage: senza questa rimozione resterebbe lì senza
+    // alcuna riga che lo referenzi, invisibile e impossibile da ritrovare
+    // dall'admin. È così che si sono accumulati i file orfani nel bucket
+    // mentre l'insert falliva per la foreign key verso admin_users.
+    await supabase.storage.from('media').remove([path]);
+    return NextResponse.json({ error: dbError.message }, { status: 500 });
+  }
 
   await logAdminAction(auth.userId, 'create', 'media', media.id, {
     filename: file.name,
