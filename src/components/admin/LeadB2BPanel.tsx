@@ -29,6 +29,16 @@ import {
   type LeadSegment,
 } from "@/lib/lead-segments";
 
+const LEAD_ZONE_PRESETS = [
+  "Lago di Como",
+  "Milano",
+  "Svizzera",
+  "Costa Smeralda",
+  "Capri",
+  "Toscana",
+  "Montecarlo",
+] as const;
+
 type Lead = {
   id: string;
   company_name: string;
@@ -1363,6 +1373,22 @@ export function LeadB2BPanel({
                   className="w-full bg-transparent text-sm focus-visible:outline-none"
                   placeholder="Como, Milano, Svizzera…"
                 />
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {LEAD_ZONE_PRESETS.map((zone) => (
+                  <button
+                    key={zone}
+                    type="button"
+                    onClick={() => setLiveLocation(zone)}
+                    className={`px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] border transition-colors ${
+                      liveLocation === zone
+                        ? "border-soft-black bg-soft-black text-white"
+                        : "border-pearl-grey text-soft-grey hover:border-soft-black hover:text-soft-black"
+                    }`}
+                  >
+                    {zone}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="space-y-2">
