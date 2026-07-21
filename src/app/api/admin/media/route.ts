@@ -108,12 +108,15 @@ export async function DELETE(req: NextRequest) {
     .eq('id', id)
     .single();
 
+  // Prima la riga, poi il file. All'inverso, se la delete della riga fallisse,
+  // resterebbe un record che punta a un file inesistente: nell'admin
+  // comparirebbe come immagine rotta. Un file orfano invece non si vede.
+  const { error } = await supabase.from('media_library').delete().eq('id', id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
   if (media?.storage_path) {
     await supabase.storage.from('media').remove([media.storage_path]);
   }
-
-  const { error } = await supabase.from('media_library').delete().eq('id', id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   await logAdminAction(auth.userId, 'delete', 'media', id, {});
 

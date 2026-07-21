@@ -521,6 +521,59 @@ export function LeadB2BPanel({
     string | null
   >(null);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  // Id in media_library della foto caricata per la sola campagna, per poterla
+  // eliminare davvero: l'override da solo conosce l'URL, non la riga.
+  const [campaignUploadId, setCampaignUploadId] = useState<
+    Record<string, string>
+  >({});
+
+  // Elimina la foto caricata per la sola campagna: sta in media_library, non a
+  // catalogo, quindi il sito non è coinvolto. Senza questa, «Torna a catalogo»
+  // toglieva solo la selezione e il file restava archiviato per sempre.
+  async function deleteCampaignPhoto(slug: string) {
+    const mediaId = campaignUploadId[slug];
+    setDeletingImageId(`uploaded-${slug}`);
+    setMessage(null);
+    try {
+      if (mediaId) {
+        const response = await fetch("/api/admin/media", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: mediaId }),
+        });
+        const data = await readApiJson(response);
+        if (!response.ok) {
+          throw new Error(data.error || "Eliminazione non riuscita");
+        }
+      }
+      setProductImageOverrides((previous) => {
+        const next = { ...previous };
+        delete next[slug];
+        return next;
+      });
+      setCampaignUploadId((previous) => {
+        const next = { ...previous };
+        delete next[slug];
+        return next;
+      });
+      setPendingDeleteImageId(null);
+      setPreviewConfirmed(false);
+      setOutreachSendReceipt(null);
+      setMessage(
+        mediaId
+          ? "Foto eliminata da Media. L’email torna alla foto di catalogo."
+          : "Foto tolta dalla campagna. L’email torna alla foto di catalogo.",
+      );
+    } catch (error) {
+      setUploadError((previous) => ({
+        ...previous,
+        [slug]:
+          error instanceof Error ? error.message : "Eliminazione non riuscita",
+      }));
+    } finally {
+      setDeletingImageId(null);
+    }
+  }
 
   async function deleteCatalogImage(slug: string, imageId: string) {
     setDeletingImageId(imageId);
@@ -1293,6 +1346,11 @@ export function LeadB2BPanel({
         );
         if (!ok) throw new Error(data.error || "Upload immagine fallito");
         uploadedUrl = data.media?.url as string | undefined;
+        // Serve l'id per poterla eliminare: l'override conosce solo l'URL.
+        const mediaId = data.media?.id as string | undefined;
+        if (mediaId) {
+          setCampaignUploadId((previous) => ({ ...previous, [slug]: mediaId }));
+        }
         setMessage(
           "Foto usata solo in questa email e archiviata in Media. Sul sito non compare.",
         );
@@ -2451,17 +2509,21 @@ export function LeadB2BPanel({
                                         </span>
                                       )}
                                     </button>
-                                    {/* La foto caricata solo per la campagna non
-                                        sta a catalogo: lì non c'è niente da
-                                        eliminare, si toglie con «Torna a
-                                        catalogo». */}
-                                    {!image.uploaded && catalogPhotoCount > 1 && (
+                                    {/* La foto di catalogo si elimina solo se
+                                        non è l'ultima; quella caricata per la
+                                        sola campagna si può sempre eliminare,
+                                        perché il catalogo resta comunque. */}
+                                    {(image.uploaded || catalogPhotoCount > 1) && (
                                       <button
                                         type="button"
                                         onClick={() =>
                                           setPendingDeleteImageId(image.id)
                                         }
-                                        title="Elimina questa foto dal catalogo"
+                                        title={
+                                          image.uploaded
+                                            ? "Elimina la foto caricata"
+                                            : "Elimina questa foto dal catalogo"
+                                        }
                                         className="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center border border-pearl-grey bg-white text-soft-grey transition hover:border-red-300 hover:text-red-700 group-hover:flex"
                                       >
                                         <Trash2 className="h-3 w-3" />
@@ -2476,42 +2538,52 @@ export function LeadB2BPanel({
                           {pendingDeleteImageId &&
                             gallery.some(
                               (image) => image.id === pendingDeleteImageId,
-                            ) && (
-                              <div className="space-y-2 border border-red-200 bg-red-50 p-2.5">
-                                <p className="text-[10px] leading-relaxed text-red-800">
-                                  Eliminare questa foto? Sparisce anche dalla
-                                  scheda prodotto sul sito e non è recuperabile.
-                                </p>
-                                <div className="flex gap-2">
-                                  <button
-                                    type="button"
-                                    disabled={
-                                      deletingImageId === pendingDeleteImageId
-                                    }
-                                    onClick={() =>
-                                      void deleteCatalogImage(
-                                        product.slug,
-                                        pendingDeleteImageId,
-                                      )
-                                    }
-                                    className="border border-red-300 bg-red-700 px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-white transition hover:bg-red-800 disabled:opacity-50"
-                                  >
-                                    {deletingImageId === pendingDeleteImageId
-                                      ? "Elimino…"
-                                      : "Elimina"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setPendingDeleteImageId(null)
-                                    }
-                                    className="border border-pearl-grey bg-white px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-soft-grey transition hover:border-soft-black hover:text-soft-black"
-                                  >
-                                    Annulla
-                                  </button>
+                            ) &&
+                            (() => {
+                              // Le due eliminazioni hanno conseguenze diverse e
+                              // vanno dette: una tocca il sito, l'altra no.
+                              const isCampaignPhoto =
+                                pendingDeleteImageId === `uploaded-${product.slug}`;
+                              return (
+                                <div className="space-y-2 border border-red-200 bg-red-50 p-2.5">
+                                  <p className="text-[10px] leading-relaxed text-red-800">
+                                    {isCampaignPhoto
+                                      ? "Eliminare la foto caricata? Viene rimossa da Media e l’email torna alla foto di catalogo. Il sito non è interessato."
+                                      : "Eliminare questa foto? Sparisce anche dalla scheda prodotto sul sito e non è recuperabile."}
+                                  </p>
+                                  <div className="flex gap-2">
+                                    <button
+                                      type="button"
+                                      disabled={
+                                        deletingImageId === pendingDeleteImageId
+                                      }
+                                      onClick={() =>
+                                        void (isCampaignPhoto
+                                          ? deleteCampaignPhoto(product.slug)
+                                          : deleteCatalogImage(
+                                              product.slug,
+                                              pendingDeleteImageId,
+                                            ))
+                                      }
+                                      className="border border-red-300 bg-red-700 px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-white transition hover:bg-red-800 disabled:opacity-50"
+                                    >
+                                      {deletingImageId === pendingDeleteImageId
+                                        ? "Elimino…"
+                                        : "Elimina"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setPendingDeleteImageId(null)
+                                      }
+                                      className="border border-pearl-grey bg-white px-3 py-1.5 text-[10px] uppercase tracking-[0.14em] text-soft-grey transition hover:border-soft-black hover:text-soft-black"
+                                    >
+                                      Annulla
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              );
+                            })()}
 
                           <div className="flex flex-wrap items-center gap-2">
                             <input
