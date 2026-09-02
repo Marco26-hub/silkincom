@@ -1,5 +1,6 @@
 import { ExternalLink, Star } from 'lucide-react';
 import { getLocale } from 'next-intl/server';
+import { TrustpilotReviewCarousel } from '@/components/sections/TrustpilotReviewCarousel';
 import {
   TRUSTPILOT_PROFILE_URL,
   TRUSTPILOT_REVIEWS,
@@ -13,6 +14,9 @@ type Copy = {
   reviews: string;
   readOriginal: string;
   viewAll: string;
+  previous: string;
+  next: string;
+  review: string;
 };
 
 const COPY: Record<string, Copy> = {
@@ -23,6 +27,9 @@ const COPY: Record<string, Copy> = {
     reviews: 'recensioni',
     readOriginal: 'Leggi su Trustpilot',
     viewAll: 'Vedi tutte le recensioni',
+    previous: 'Recensione precedente',
+    next: 'Recensione successiva',
+    review: 'Mostra recensione',
   },
   en: {
     eyebrow: 'Reviews on Trustpilot',
@@ -31,6 +38,9 @@ const COPY: Record<string, Copy> = {
     reviews: 'reviews',
     readOriginal: 'Read on Trustpilot',
     viewAll: 'See all reviews',
+    previous: 'Previous review',
+    next: 'Next review',
+    review: 'Show review',
   },
   de: {
     eyebrow: 'Bewertungen auf Trustpilot',
@@ -39,6 +49,9 @@ const COPY: Record<string, Copy> = {
     reviews: 'Bewertungen',
     readOriginal: 'Auf Trustpilot lesen',
     viewAll: 'Alle Bewertungen ansehen',
+    previous: 'Vorherige Bewertung',
+    next: 'Nächste Bewertung',
+    review: 'Bewertung anzeigen',
   },
   fr: {
     eyebrow: 'Avis sur Trustpilot',
@@ -47,6 +60,9 @@ const COPY: Record<string, Copy> = {
     reviews: 'avis',
     readOriginal: 'Lire sur Trustpilot',
     viewAll: 'Voir tous les avis',
+    previous: 'Avis précédent',
+    next: 'Avis suivant',
+    review: 'Afficher l’avis',
   },
   es: {
     eyebrow: 'Opiniones en Trustpilot',
@@ -55,6 +71,9 @@ const COPY: Record<string, Copy> = {
     reviews: 'opiniones',
     readOriginal: 'Leer en Trustpilot',
     viewAll: 'Ver todas las opiniones',
+    previous: 'Opinión anterior',
+    next: 'Opinión siguiente',
+    review: 'Mostrar opinión',
   },
   pt: {
     eyebrow: 'Avaliações no Trustpilot',
@@ -63,6 +82,9 @@ const COPY: Record<string, Copy> = {
     reviews: 'avaliações',
     readOriginal: 'Ler no Trustpilot',
     viewAll: 'Ver todas as avaliações',
+    previous: 'Avaliação anterior',
+    next: 'Avaliação seguinte',
+    review: 'Mostrar avaliação',
   },
   nl: {
     eyebrow: 'Reviews op Trustpilot',
@@ -71,27 +93,21 @@ const COPY: Record<string, Copy> = {
     reviews: 'reviews',
     readOriginal: 'Lees op Trustpilot',
     viewAll: 'Bekijk alle reviews',
+    previous: 'Vorige review',
+    next: 'Volgende review',
+    review: 'Review tonen',
   },
 };
 
 type TrustpilotReviewsProps = {
-  limit?: number;
   compact?: boolean;
 };
 
 export async function TrustpilotReviews({
-  limit = TRUSTPILOT_REVIEWS.length,
   compact = false,
 }: TrustpilotReviewsProps) {
   const locale = await getLocale();
   const copy = COPY[locale] ?? COPY.it;
-  const reviews = TRUSTPILOT_REVIEWS.slice(0, limit);
-  const dateFormatter = new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
 
   return (
     <section
@@ -145,65 +161,26 @@ export async function TrustpilotReviews({
           </a>
         </header>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review) => (
-            <article
-              key={review.id}
-              className="flex min-h-[280px] flex-col border border-pearl-grey/70 bg-warm-white p-7 md:p-8"
-            >
-              <div className="mb-5 flex" aria-label={`${review.rating} su 5`}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-4 w-4 ${
-                      star <= review.rating
-                        ? 'fill-[#00b67a] text-[#00b67a]'
-                        : 'text-pearl-grey'
-                    }`}
-                    strokeWidth={1.5}
-                  />
-                ))}
-              </div>
-              <h3 className="mb-3 font-display text-xl font-normal leading-tight">
-                {review.title}
-              </h3>
-              <blockquote className="mb-7 flex-1 text-sm font-light leading-[1.75] text-soft-black/75">
-                &ldquo;{review.body}&rdquo;
-              </blockquote>
-              <footer className="border-t border-pearl-grey/50 pt-5">
-                <p className="mb-1 text-[11px] font-medium uppercase text-soft-black/70">
-                  {review.author}
-                </p>
-                <p className="mb-4 text-[10px] uppercase text-soft-black/40">
-                  {dateFormatter.format(new Date(review.experiencedAt))}
-                </p>
-                <a
-                  href={review.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[10px] uppercase text-soft-black/60 transition-colors hover:text-[#007a52]"
-                >
-                  {copy.readOriginal}
-                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                </a>
-              </footer>
-            </article>
-          ))}
-        </div>
+        <TrustpilotReviewCarousel
+          reviews={TRUSTPILOT_REVIEWS}
+          locale={locale}
+          readOriginal={copy.readOriginal}
+          previousLabel={copy.previous}
+          nextLabel={copy.next}
+          reviewLabel={copy.review}
+        />
 
-        {limit < TRUSTPILOT_REVIEWS.length && (
-          <div className="mt-10 text-center">
-            <a
-              href={TRUSTPILOT_PROFILE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border-b border-soft-black pb-1 text-[10px] uppercase text-soft-black transition-colors hover:border-[#00b67a] hover:text-[#007a52]"
-            >
-              {copy.viewAll}
-              <ExternalLink className="h-3 w-3" aria-hidden="true" />
-            </a>
-          </div>
-        )}
+        <div className="mt-9 text-center">
+          <a
+            href={TRUSTPILOT_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border-b border-soft-black pb-1 text-[10px] uppercase text-soft-black transition-colors hover:border-[#00b67a] hover:text-[#007a52]"
+          >
+            {copy.viewAll}
+            <ExternalLink className="h-3 w-3" aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </section>
   );

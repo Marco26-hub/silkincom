@@ -68,7 +68,7 @@ export default async function HomePage() {
     <>
       <Hero slides={slides} />
       <ShopStrip />
-      <TrustpilotReviews limit={3} />
+      <TrustpilotReviews />
       <ValueProps section={valueProps} />
       <FeaturedCollections collections={featured} />
       <BrandStory section={brandStory} />
