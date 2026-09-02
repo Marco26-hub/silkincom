@@ -3,6 +3,7 @@ import { ArrowRight, Star } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
+import { TrustpilotReviews } from '@/components/sections/TrustpilotReviews';
 
 export async function generateMetadata() {
   const t = await getTranslations('recensioniPage');
@@ -94,6 +95,8 @@ export default async function RecensioniPage() {
           )}
         </div>
       </section>
+
+      <TrustpilotReviews compact />
 
       {/* Reviews grid */}
       {reviews.length > 0 && (
