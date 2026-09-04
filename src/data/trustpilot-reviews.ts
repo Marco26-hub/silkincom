@@ -2,9 +2,9 @@ export const TRUSTPILOT_PROFILE_URL =
   'https://it.trustpilot.com/review/silkincom.com';
 
 export const TRUSTPILOT_SUMMARY = {
-  trustScore: 4.1,
-  reviewCount: 5,
-  lastCheckedAt: '2026-09-02',
+  trustScore: 4.2,
+  reviewCount: 6,
+  lastCheckedAt: '2026-09-04',
 } as const;
 
 export type TrustpilotReview = {
@@ -20,6 +20,15 @@ export type TrustpilotReview = {
 // Public service reviews copied from the SILKinCOM Trustpilot profile.
 // Keep the wording faithful and link every quote to its original review.
 export const TRUSTPILOT_REVIEWS: TrustpilotReview[] = [
+  {
+    id: '6a9997049c920a5067cff62b',
+    author: 'Mauro Barontini',
+    title: 'Ordinato il cappellino darsena blu',
+    body: 'Ordinato il cappellino darsena blu , materiale di qualità e veramente bello,ricevuto in brevissimo tempo, molto soddisfatto della gestione dell ordine',
+    rating: 5,
+    experiencedAt: '2026-08-22',
+    url: 'https://it.trustpilot.com/reviews/6a9997049c920a5067cff62b',
+  },
   {
     id: '6a97eeb89ed5110a42727fe8',
     author: 'Borsieri Car Service srl',
