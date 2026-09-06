@@ -2,9 +2,9 @@ export const TRUSTPILOT_PROFILE_URL =
   'https://it.trustpilot.com/review/silkincom.com';
 
 export const TRUSTPILOT_SUMMARY = {
-  trustScore: 4.2,
-  reviewCount: 6,
-  lastCheckedAt: '2026-09-04',
+  trustScore: 4.3,
+  reviewCount: 7,
+  lastCheckedAt: '2026-09-07',
 } as const;
 
 export type TrustpilotReview = {
@@ -20,6 +20,15 @@ export type TrustpilotReview = {
 // Public service reviews copied from the SILKinCOM Trustpilot profile.
 // Keep the wording faithful and link every quote to its original review.
 export const TRUSTPILOT_REVIEWS: TrustpilotReview[] = [
+  {
+    id: '6a9cb4d2558d2a549f94404c',
+    author: 'Leonardo Bassan',
+    title: 'Prodotti top',
+    body: 'Prodotti top, qualità alta e personale molto disponibile',
+    rating: 5,
+    experiencedAt: '2026-09-04',
+    url: 'https://it.trustpilot.com/reviews/6a9cb4d2558d2a549f94404c',
+  },
   {
     id: '6a9997049c920a5067cff62b',
     author: 'Mauro Barontini',
