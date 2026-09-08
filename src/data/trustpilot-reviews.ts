@@ -4,7 +4,7 @@ export const TRUSTPILOT_PROFILE_URL =
 export const TRUSTPILOT_SUMMARY = {
   trustScore: 4.3,
   reviewCount: 7,
-  lastCheckedAt: '2026-09-07',
+  lastCheckedAt: '2026-09-08',
 } as const;
 
 export type TrustpilotReview = {
