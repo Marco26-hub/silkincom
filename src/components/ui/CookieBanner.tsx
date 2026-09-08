@@ -11,6 +11,13 @@ export function CookieBanner() {
 
   useEffect(() => {
     if (!localStorage.getItem(KEY)) setVisible(true);
+    // Re-open on demand so consent can be changed/withdrawn at any time
+    // (GDPR Art. 7(3)). The "Preferenze cookie" footer link dispatches this.
+    function reopen() {
+      setVisible(true);
+    }
+    window.addEventListener('silkincom:open-cookie-preferences', reopen);
+    return () => window.removeEventListener('silkincom:open-cookie-preferences', reopen);
   }, []);
 
   function decide(value: 'accept' | 'reject') {

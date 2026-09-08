@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackLead } from '@/lib/analytics';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Instagram, Facebook, Youtube, Mail, Check } from 'lucide-react';
@@ -27,6 +28,14 @@ import { useAntibot } from '@/components/antibot/useAntibot';
 // Footer nav link: gold on hover with a subtle rightward glide — quiet luxury.
 const LINK = 'inline-block hover:text-gold-primary hover:translate-x-1 transition-all duration-300';
 
+// Localized labels for the two compliance links added to the legal row.
+const COOKIE_PREFS_LABEL: Record<string, string> = {
+  it: 'Preferenze cookie', en: 'Cookie preferences', de: 'Cookie-Einstellungen', fr: 'Préférences cookies', es: 'Preferencias de cookies', pt: 'Preferências de cookies', nl: 'Cookievoorkeuren',
+};
+const ACCESSIBILITY_LABEL: Record<string, string> = {
+  it: 'Accessibilità', en: 'Accessibility', de: 'Barrierefreiheit', fr: 'Accessibilité', es: 'Accesibilidad', pt: 'Acessibilidade', nl: 'Toegankelijkheid',
+};
+
 export function Footer() {
   const t = useTranslations('footer');
   const tn = useTranslations('nav');
@@ -51,6 +60,7 @@ export function Footer() {
       const data = await res.json();
       if (res.ok) {
         setNlState('success');
+        trackLead('footer');
         setNlMsg(data.message || 'Controlla la tua email per confermare');
         setEmail('');
       } else {
@@ -263,6 +273,14 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:justify-end">
             <Link href="/privacy-policy" className="hover:text-gold-primary transition-colors">{t('links.privacy')}</Link>
             <Link href="/cookie-policy" className="hover:text-gold-primary transition-colors">{t('links.cookies')}</Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('silkincom:open-cookie-preferences'))}
+              className="uppercase tracking-[0.3em] hover:text-gold-primary transition-colors"
+            >
+              {catLabel(COOKIE_PREFS_LABEL)}
+            </button>
+            <Link href="/accessibilita" className="hover:text-gold-primary transition-colors">{catLabel(ACCESSIBILITY_LABEL)}</Link>
             <Link href="/termini" className="hover:text-gold-primary transition-colors">{t('links.terms')}</Link>
             <span className="text-warm-white/60">P.IVA 03786790133</span>
           </div>

@@ -102,6 +102,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry('/privacy-policy', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
     entry('/cookie-policy', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
     entry('/termini', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
+    entry('/accessibilita', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
   ];
 
   const productRoutes: MetadataRoute.Sitemap = PRODUCT_SLUGS.map((slug) =>
