@@ -29,6 +29,7 @@ VERITÀ — NON NEGOZIABILE
 - Il territorio è un fatto: Como è da secoli il distretto serico di riferimento in Europa. Racconta l'origine senza esagerare.
 
 FOCUS
+- Chiama ogni prodotto con il TIPO indicato nel CATALOGO (sciarpa, pashmina, twilly…). Il tipo del catalogo vince anche sul brief: se il brief chiama "pashmina" una sciarpa, scrivi sciarpa.
 - Un articolo, un protagonista. Se il brief indica un prodotto o una linea, l'articolo parla di quello; altri prodotti compaiono al massimo come link di passaggio, mai come sezioni.
 - Non riscrivere un articolo già pubblicato (vedi ARTICOLI ESISTENTI): se l'argomento è vicino, scegli un angolo diverso e linka quello esistente.
 
@@ -98,6 +99,23 @@ type ProductRow = {
   price: number | null;
   composition: string | null;
   dimensions: string | null;
+  // many-to-one embed: an object at runtime, typed as an array by supabase-js
+  categories: { slug: string } | { slug: string }[] | null;
+};
+
+// Product type per line, as the storefront labels it (ProductCard
+// CATEGORY_TYPE): the model must never call a scarf a pashmina.
+const TYPE_BY_LINE: Record<string, string> = {
+  bellagio: 'pashmina',
+  cernobbio: 'sciarpa',
+  tremezzo: 'sciarpa',
+  varenna: 'sciarpa',
+  'twilly-como': 'twilly',
+  darsena: 'cappello',
+  lario: 't-shirt',
+  melzi: 'shorts',
+  riva: 'camicia',
+  tivan: 'telo mare',
 };
 
 /** Live catalogue + published articles, so the model writes from real facts. */
@@ -106,7 +124,7 @@ export async function buildEditorialContext(): Promise<EditorialContext> {
   const [{ data: products }, { data: posts }] = await Promise.all([
     supabase
       .from('products')
-      .select('slug, name, price, composition, dimensions')
+      .select('slug, name, price, composition, dimensions, categories!products_category_id_fkey(slug)')
       .eq('status', 'published')
       .order('slug'),
     supabase
@@ -119,9 +137,12 @@ export async function buildEditorialContext(): Promise<EditorialContext> {
   ]);
 
   const allowedPaths = new Set(STATIC_LINKS.map(([p]) => p));
-  const catalogue = ((products ?? []) as ProductRow[]).map((p) => {
+  const catalogue = ((products ?? []) as unknown as ProductRow[]).map((p) => {
     allowedPaths.add(`/prodotto/${p.slug}`);
+    const line = Array.isArray(p.categories) ? p.categories[0]?.slug : p.categories?.slug;
+    const type = line ? TYPE_BY_LINE[line] : undefined;
     const bits = [
+      type ? type.toUpperCase() : null,
       p.name,
       p.price != null ? `€${p.price}` : null,
       p.composition,
@@ -135,7 +156,7 @@ export async function buildEditorialContext(): Promise<EditorialContext> {
   });
 
   const text = [
-    'CATALOGO (unica fonte per prezzi, composizioni, misure; pagine prodotto linkabili):',
+    'CATALOGO (unica fonte per tipo di prodotto, prezzi, composizioni, misure; pagine prodotto linkabili):',
     ...catalogue,
     '',
     'ARTICOLI ESISTENTI (non duplicarli; linkali quando pertinenti):',
