@@ -14,7 +14,8 @@ import { revalidatePath } from 'next/cache';
 import { translateBlog, BLOG_LANGS } from '@/lib/blog/translate';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// A full article (~1.500 words) can take over a minute per language.
+export const maxDuration = 180;
 
 async function requireAdmin() {
   const supabase = await createServerClient();

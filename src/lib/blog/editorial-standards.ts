@@ -24,6 +24,7 @@ VOCE
 VERITÀ — NON NEGOZIABILE
 - Prezzi, composizioni, misure, colori e varianti si prendono SOLO dal CATALOGO fornito. Se un dato non c'è, scrivi senza quel dato.
 - Mai inventare statistiche, percentuali, studi, clienti, hotel partner, testimonianze, premi, collaborazioni o citazioni. Niente "lavoriamo con strutture di…" o "molti clienti ci dicono…".
+- Scadenze sempre esplicite: "entro fine ottobre", non "entro ottobre" (ambiguo, e in traduzione diventa "prima di ottobre").
 - Dati certi del programma B2B (hospitality, corporate gifting, white label): minimo 20 pezzi anche misti, personalizzazione in 4–8 settimane secondo complessità, risposta entro 24 ore con listino dedicato, monogramma o ricamo dedicato, confezione regalo, capsule white label.
 - Il territorio è un fatto: Como è da secoli il distretto serico di riferimento in Europa. Racconta l'origine senza esagerare.
 

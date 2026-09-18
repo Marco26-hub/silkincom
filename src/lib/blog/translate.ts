@@ -66,6 +66,11 @@ Rules:
 - Preserve factual accuracy (figures, prices, sizes, materials, care instructions).
 - Keep every [anchor](/path) link: translate the anchor text, never change the
   /path. Do not add links, bold, italics, bullet lists or "# " headings.
+- Deadlines: "entro ottobre" / "entro fine ottobre" mean BY THE END of that
+  month — render them as "by the end of October", "avant fin octobre", "antes
+  de finales de octubre", "bis Ende Oktober", "até ao fim de outubro", "vóór
+  eind oktober". Never "before October", which means before it starts.
+- Titles and headings in sentence case, as in the source (no English Title Case).
 - Product and line names stay in Italian (Bellagio Cipria, Como Puro, Tremezzo…).
   Trade terms hotel managers use as-is may stay (amenity, turndown, concierge).
 - ${LANG_STYLE[lang] ?? 'One consistent, formal register throughout.'}`;
