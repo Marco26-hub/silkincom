@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import {
   Plus, Sparkles, DownloadCloud, Pencil, Trash2, Eye, EyeOff,
-  Loader2, X, Languages, Check, ImagePlus,
+  Loader2, X, Languages, Check, ImagePlus, Send, CalendarClock, ExternalLink,
 } from 'lucide-react';
 
 const LOCALES = ['en', 'es', 'fr', 'de', 'pt', 'nl'] as const;
@@ -232,12 +232,19 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
       if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
       setGenOpen(false); setGenTopic(''); setGenBrief(''); setGenImage('');
       const nFix = Array.isArray(j.fixes) ? j.fixes.length : 0;
-      flash(`Bozza generata: "${j.title}".${nFix ? ` ${nFix} correzioni di formato applicate.` : ''} Aprila per revisionare.`);
+      flash(`Bozza generata: "${j.title}".${nFix ? ` ${nFix} correzioni di formato applicate.` : ''} La trovi qui sotto in BOZZE.`);
       router.refresh();
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   }
 
   async function togglePublish(p: AdminPost) {
+    if (p.status !== 'published') {
+      const future = p.published_at && parseDbDate(p.published_at).getTime() > Date.now();
+      const when = future
+        ? `programmare per ${parseDbDate(p.published_at as string).toLocaleString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}`
+        : 'pubblicare subito sul sito';
+      if (!confirm(`Vuoi ${when} "${p.title}"?`)) return;
+    }
     setBusy(true); setErr(null);
     try {
       const res = await fetch('/api/admin/blog', {
@@ -364,72 +371,127 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
         </div>
       )}
 
-      {/* List */}
-      <div className="border border-pearl-grey bg-white overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="border-b border-pearl-grey bg-warm-white">
-            <tr className="text-left text-[10px] uppercase tracking-[0.2em] text-soft-grey">
-              <th className="px-5 py-3 font-medium">Titolo</th>
-              <th className="px-5 py-3 font-medium">Stato</th>
-              <th className="px-5 py-3 font-medium">Lingue</th>
-              <th className="px-5 py-3 font-medium">Data</th>
-              <th className="px-5 py-3 font-medium text-right">Azioni</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-pearl-grey/60">
-            {initialPosts.map((p) => {
-              const langs = translatedLocales(p);
-              const published = p.status === 'published';
-              // Published with a future date = scheduled; the public site hides it until then.
-              const scheduled = published && !!p.published_at && parseDbDate(p.published_at).getTime() > Date.now();
-              return (
-                <tr key={p.id} className="hover:bg-ivory/40">
-                  <td className="px-5 py-3">
-                    <div className="font-medium text-soft-black">{p.title}</div>
-                    <div className="text-[11px] text-soft-grey font-mono">/{p.slug}</div>
-                  </td>
-                  <td className="px-5 py-3">
-                    <span className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${scheduled ? 'bg-amber-100 text-amber-800' : published ? 'bg-emerald-100 text-emerald-800' : 'bg-pearl-grey/50 text-soft-grey'}`}>
-                      {scheduled
-                        ? `Programmato · ${parseDbDate(p.published_at as string).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}`
-                        : published ? 'Pubblicato' : 'Bozza'}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 border border-soft-black text-soft-black">IT</span>
-                      {langs.length > 0 ? (
-                        langs.map((l) => (
-                          <span key={l} className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 border border-pearl-grey text-soft-grey">{l}</span>
-                        ))
-                      ) : (
-                        <span className="text-[10px] text-soft-grey/50">solo IT</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 text-soft-grey whitespace-nowrap">
-                    {p.published_at ? parseDbDate(p.published_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <IconBtn title="Modifica" onClick={() => { setEditing(toDraft(p)); setErr(null); }}><Pencil className="w-3.5 h-3.5" /></IconBtn>
-                      <IconBtn title={published ? 'Metti in bozza' : 'Pubblica'} onClick={() => togglePublish(p)}>
-                        {published ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                      </IconBtn>
-                      <IconBtn title="Elimina" danger onClick={() => del(p)}><Trash2 className="w-3.5 h-3.5" /></IconBtn>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-            {initialPosts.length === 0 && (
-              <tr><td colSpan={5} className="px-5 py-12 text-center text-soft-grey text-sm">
-                Nessun articolo. Importa da blog.json o crea il primo.
-              </td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* List — split by status so drafts are never lost among published posts */}
+      {(() => {
+        const now = Date.now();
+        const isScheduled = (p: AdminPost) =>
+          p.status === 'published' && !!p.published_at && parseDbDate(p.published_at).getTime() > now;
+        const drafts = initialPosts.filter((p) => p.status !== 'published');
+        const scheduled = initialPosts
+          .filter(isScheduled)
+          .sort((a, b) => parseDbDate(a.published_at as string).getTime() - parseDbDate(b.published_at as string).getTime());
+        const live = initialPosts.filter((p) => p.status === 'published' && !isScheduled(p));
+        const fmt = (d: string, withTime = false) =>
+          parseDbDate(d).toLocaleString('it-IT', {
+            weekday: withTime ? 'short' : undefined, day: 'numeric', month: 'short', year: withTime ? undefined : 'numeric',
+            ...(withTime ? { hour: '2-digit', minute: '2-digit' } : {}),
+          });
+
+        const Langs = ({ p }: { p: AdminPost }) => {
+          const langs = translatedLocales(p);
+          return (
+            <div className="flex items-center gap-1 flex-wrap">
+              <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 border border-soft-black text-soft-black">IT</span>
+              {LOCALES.map((l) => (
+                <span key={l} className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 border ${langs.includes(l) ? 'border-soft-black/40 text-soft-black' : 'border-pearl-grey text-soft-grey/40 line-through'}`}>{l}</span>
+              ))}
+              {langs.length < LOCALES.length && <span className="text-[10px] text-amber-700 ml-1">mancano {LOCALES.length - langs.length} lingue</span>}
+            </div>
+          );
+        };
+
+        const Btn = ({ children, onClick, href, tone = 'plain' }: { children: React.ReactNode; onClick?: () => void; href?: string; tone?: 'plain' | 'dark' | 'danger' }) => {
+          const cls = `inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-[0.15em] border transition-colors disabled:opacity-40 ${
+            tone === 'dark' ? 'bg-soft-black text-warm-white border-soft-black hover:bg-gold-primary hover:text-soft-black'
+            : tone === 'danger' ? 'border-pearl-grey text-soft-grey hover:border-red-500 hover:text-red-600'
+            : 'border-pearl-grey text-soft-black hover:border-soft-black'}`;
+          return href
+            ? <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{children}</a>
+            : <button type="button" onClick={onClick} disabled={busy} className={cls}>{children}</button>;
+        };
+
+        const Card = ({ p, children, meta }: { p: AdminPost; children: React.ReactNode; meta: React.ReactNode }) => (
+          <div className="px-5 py-4 flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
+            <div className="flex-1 min-w-0 space-y-1.5">
+              <div className="font-medium text-soft-black leading-snug">{p.title}</div>
+              <div className="text-[11px] text-soft-grey font-mono truncate">/{p.slug}</div>
+              <div className="flex items-center gap-3 flex-wrap text-[11px] text-soft-grey">{meta}<Langs p={p} /></div>
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap md:justify-end">{children}</div>
+          </div>
+        );
+
+        const Section = ({ id, title, hint, tone, count, children }: { id: string; title: string; hint: string; tone: string; count: number; children: React.ReactNode }) => (
+          <section id={id} className="border border-pearl-grey bg-white scroll-mt-24">
+            <div className={`px-5 py-3 border-b border-pearl-grey flex items-baseline justify-between gap-3 ${tone}`}>
+              <h2 className="text-[11px] uppercase tracking-[0.25em] font-medium">{title} <span className="opacity-60">({count})</span></h2>
+              <span className="text-[11px] opacity-70">{hint}</span>
+            </div>
+            <div className="divide-y divide-pearl-grey/60">
+              {count === 0 ? <p className="px-5 py-6 text-sm text-soft-grey">Nessun articolo.</p> : children}
+            </div>
+          </section>
+        );
+
+        const preview = (p: AdminPost) => `/admin/blog/anteprima/${p.id}`;
+
+        return (
+          <div className="space-y-6">
+            {/* Summary: jump to each group */}
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <a href="#bozze" className="border border-pearl-grey bg-white px-3 py-3 hover:border-soft-black">
+                <div className="font-display text-3xl">{drafts.length}</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">Bozze</div>
+              </a>
+              <a href="#programmati" className="border border-pearl-grey bg-white px-3 py-3 hover:border-soft-black">
+                <div className="font-display text-3xl">{scheduled.length}</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">Programmati</div>
+              </a>
+              <a href="#pubblicati" className="border border-pearl-grey bg-white px-3 py-3 hover:border-soft-black">
+                <div className="font-display text-3xl">{live.length}</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-soft-grey">Pubblicati</div>
+              </a>
+            </div>
+
+            <Section id="bozze" title="Bozze" hint="Non visibili sul sito: rileggi, traduci, poi pubblica o programma" tone="bg-pearl-grey/30" count={drafts.length}>
+              {drafts.map((p) => {
+                const planned = p.published_at && parseDbDate(p.published_at).getTime() > now ? p.published_at : null;
+                return (
+                  <Card key={p.id} p={p} meta={<span>{planned ? `data prevista ${fmt(planned, true)}` : `modificata ${p.updated_at ? fmt(p.updated_at) : '—'}`}</span>}>
+                    <Btn onClick={() => { setEditing(toDraft(p)); setErr(null); }}><Pencil className="w-3.5 h-3.5" /> Modifica</Btn>
+                    <Btn href={preview(p)}><Eye className="w-3.5 h-3.5" /> Anteprima</Btn>
+                    <Btn tone="dark" onClick={() => togglePublish(p)}>
+                      <Send className="w-3.5 h-3.5" /> {planned ? `Programma ${fmt(planned)}` : 'Pubblica ora'}
+                    </Btn>
+                    <Btn tone="danger" onClick={() => del(p)}><Trash2 className="w-3.5 h-3.5" /></Btn>
+                  </Card>
+                );
+              })}
+            </Section>
+
+            <Section id="programmati" title="Programmati" hint="Escono da soli alla data indicata" tone="bg-amber-50 text-amber-900" count={scheduled.length}>
+              {scheduled.map((p) => (
+                <Card key={p.id} p={p} meta={<span className="text-amber-800 font-medium"><CalendarClock className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />esce {fmt(p.published_at as string, true)}</span>}>
+                  <Btn onClick={() => { setEditing(toDraft(p)); setErr(null); }}><Pencil className="w-3.5 h-3.5" /> Modifica</Btn>
+                  <Btn href={preview(p)}><Eye className="w-3.5 h-3.5" /> Anteprima</Btn>
+                  <Btn onClick={() => togglePublish(p)}><EyeOff className="w-3.5 h-3.5" /> Riporta in bozza</Btn>
+                </Card>
+              ))}
+            </Section>
+
+            <Section id="pubblicati" title="Pubblicati" hint="Online sul sito" tone="bg-emerald-50 text-emerald-900" count={live.length}>
+              {live.map((p) => (
+                <Card key={p.id} p={p} meta={<span>online dal {p.published_at ? fmt(p.published_at) : '—'}</span>}>
+                  <Btn onClick={() => { setEditing(toDraft(p)); setErr(null); }}><Pencil className="w-3.5 h-3.5" /> Modifica</Btn>
+                  <Btn href={`/trame-di-como/${p.slug}`}><ExternalLink className="w-3.5 h-3.5" /> Vedi sul sito</Btn>
+                  <Btn onClick={() => togglePublish(p)}><EyeOff className="w-3.5 h-3.5" /> Metti in bozza</Btn>
+                  <Btn tone="danger" onClick={() => del(p)}><Trash2 className="w-3.5 h-3.5" /></Btn>
+                </Card>
+              ))}
+            </Section>
+          </div>
+        );
+      })()}
 
       {/* Editor drawer */}
       {editing && (
@@ -511,6 +573,11 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
                 {trProgress ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Languages className="w-3.5 h-3.5" />}
                 {trProgress ? `Traduco ${trProgress}` : 'Traduci con AI'}
               </button>
+              {editing.id && (
+                <a href={`/admin/blog/anteprima/${editing.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-pearl-grey px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] hover:border-soft-black">
+                  <Eye className="w-3.5 h-3.5" /> Anteprima
+                </a>
+              )}
               <button onClick={() => !busy && setEditing(null)} className="px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] border border-pearl-grey hover:border-soft-black disabled:opacity-40">Chiudi</button>
             </div>
           </div>
@@ -526,18 +593,5 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-1.5">{label}</label>
       {children}
     </div>
-  );
-}
-
-function IconBtn({ children, title, onClick, danger }: { children: React.ReactNode; title: string; onClick: () => void; danger?: boolean }) {
-  return (
-    <button
-      type="button"
-      title={title}
-      onClick={onClick}
-      className={`p-2 border border-pearl-grey transition-colors ${danger ? 'hover:border-red-500 hover:text-red-600' : 'hover:border-soft-black hover:text-soft-black'} text-soft-grey`}
-    >
-      {children}
-    </button>
   );
 }
