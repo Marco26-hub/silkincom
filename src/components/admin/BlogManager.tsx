@@ -71,6 +71,7 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
   const [notice, setNotice] = useState<string | null>(null);
   const [trProgress, setTrProgress] = useState<string | null>(null);
   const [genTopic, setGenTopic] = useState('');
+  const [genBrief, setGenBrief] = useState('');
   const [genOpen, setGenOpen] = useState(false);
 
   function flash(msg: string) {
@@ -134,12 +135,13 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
     try {
       const res = await fetch('/api/admin/blog/generate', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: genTopic.trim() }),
+        body: JSON.stringify({ topic: genTopic.trim(), brief: genBrief.trim() }),
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
-      setGenOpen(false); setGenTopic('');
-      flash(`Bozza generata: "${j.title}". Aprila per revisionare.`);
+      setGenOpen(false); setGenTopic(''); setGenBrief('');
+      const nFix = Array.isArray(j.fixes) ? j.fixes.length : 0;
+      flash(`Bozza generata: "${j.title}".${nFix ? ` ${nFix} correzioni di formato applicate.` : ''} Aprila per revisionare.`);
       router.refresh();
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   }
@@ -205,10 +207,18 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
             <button onClick={generate} disabled={busy} className="inline-flex items-center gap-2 px-4 py-2 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black disabled:opacity-40">
               {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />} Genera
             </button>
-            <button onClick={() => { setGenOpen(false); setGenTopic(''); }} className="px-4 py-2 border border-pearl-grey text-[11px] uppercase tracking-[0.2em] hover:border-soft-black">Annulla</button>
+            <button onClick={() => { setGenOpen(false); setGenTopic(''); setGenBrief(''); }} className="px-4 py-2 border border-pearl-grey text-[11px] uppercase tracking-[0.2em] hover:border-soft-black">Annulla</button>
           </div>
+          <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey">Brief (facoltativo)</label>
+          <textarea
+            value={genBrief}
+            onChange={(e) => setGenBrief(e.target.value)}
+            rows={3}
+            placeholder="Protagonista, pubblico e angolo. es. Solo pashmina Bellagio Cipria, per direttori d'hotel 5 stelle: welcome gift e servizio serale in terrazza."
+            className="w-full border border-pearl-grey bg-white px-3 py-2 text-sm focus:outline-none focus:border-soft-black"
+          />
           {err && genOpen && <p className="text-xs text-red-700">{err}</p>}
-          <p className="text-[11px] text-soft-grey/70">Crea una bozza italiana. Poi la revisioni, traduci con AI e pubblichi.</p>
+          <p className="text-[11px] text-soft-grey/70">Bozza italiana secondo lo standard Trame di Como: dati reali dal catalogo, link solo a pagine esistenti, domande finali per Google e AI. Poi la revisioni, traduci con AI e pubblichi. La foto di copertina scegli tu: controlla che non sia già uscita sui social.</p>
         </div>
       )}
 

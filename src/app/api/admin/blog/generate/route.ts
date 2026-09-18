@@ -5,14 +5,15 @@
  * in blog_posts as status='draft'. The admin then reviews, edits, translates
  * (AI) and publishes from /admin/blog.
  *
- * Body: { topic: string, keywords?: string[], featuredImageUrl?: string }
+ * Body: { topic: string, brief?: string, keywords?: string[], featuredImageUrl?: string }
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { generateBlogDraft } from '@/lib/automation/content-engine';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// Catalogue lookup + a ~1.500-word draft from the model: allow for the slow path.
+export const maxDuration = 120;
 
 async function requireAdmin() {
   const supabase = await createServerClient();
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
   if (!auth.ok) return NextResponse.json({ error: 'Forbidden' }, { status: auth.status });
 
   const body = (await req.json().catch(() => ({}))) as {
-    topic?: string; keywords?: string[]; featuredImageUrl?: string;
+    topic?: string; brief?: string; keywords?: string[]; featuredImageUrl?: string;
   };
   const topic = String(body.topic ?? '').trim();
   if (topic.length < 5) return NextResponse.json({ error: 'Argomento troppo corto (min 5 caratteri)' }, { status: 400 });
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     const draft = await generateBlogDraft({
       topic,
+      ...(body.brief?.trim() ? { brief: body.brief.trim() } : {}),
       keywords: Array.isArray(body.keywords) ? body.keywords : [],
       ...(body.featuredImageUrl ? { featuredImageUrl: body.featuredImageUrl } : {}),
     });
@@ -65,7 +67,7 @@ export async function POST(req: NextRequest) {
       .single();
     if (error) throw new Error(error.message);
 
-    return NextResponse.json({ ok: true, id: data.id, title: draft.title });
+    return NextResponse.json({ ok: true, id: data.id, title: draft.title, fixes: draft.fixes });
   } catch (e) {
     return NextResponse.json({ ok: false, error: (e as Error).message }, { status: 502 });
   }

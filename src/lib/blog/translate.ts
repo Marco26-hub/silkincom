@@ -50,7 +50,9 @@ Output STRICT JSON, no markdown fences, no commentary:
 Rules:
 - Translate everything; keep only proper nouns (SILKinCOM, Como, Lake Como).
 - Correct ${langName} accents/diacritics. Natural, premium register.
-- Preserve factual accuracy (figures, materials, care instructions).`;
+- Preserve factual accuracy (figures, prices, sizes, materials, care instructions).
+- Keep every [anchor](/path) link: translate the anchor text, never change the
+  /path. Do not add links, bold, italics, bullet lists or "# " headings.`;
 }
 
 export async function translateBlog(it: BlogFields, targetLang: string): Promise<BlogFields> {

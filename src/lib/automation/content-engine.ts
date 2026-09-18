@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
+import { EDITORIAL_RULES, buildEditorialContext, lintBlogContent } from '@/lib/blog/editorial-standards';
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
@@ -26,8 +27,9 @@ export const blogAutomationInputSchema = z.object({
   topic: z.string().min(5),
   keywords: z.array(z.string()).default([]),
   productName: z.string().optional(),
+  brief: z.string().optional(),
   tone: z.string().default('elegante, editoriale, premium'),
-  minWords: z.number().int().min(400).max(2400).default(900),
+  minWords: z.number().int().min(400).max(2400).default(1200),
   categorySlug: z.string().default('collezioni'),
   featuredImageUrl: z.string().url().optional(),
 });
@@ -200,53 +202,89 @@ export async function generateSocialPosts(input: SocialAutomationInput) {
   }));
 }
 
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const BLOG_MODELS = ['anthropic/claude-sonnet-4.5', 'anthropic/claude-3.7-sonnet', 'openai/gpt-4o'];
+
+async function runOpenRouterJson<T>({
+  system,
+  user,
+  schema,
+}: {
+  system: string;
+  user: string;
+  schema: z.ZodType<T>;
+}): Promise<T | null> {
+  if (!process.env.OPENROUTER_API_KEY) return null;
+
+  for (const model of BLOG_MODELS) {
+    const resp = await fetch(OPENROUTER_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://www.silkincom.com',
+        'X-Title': 'SILKinCOM Blog Draft',
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.7,
+        max_tokens: 7000,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user },
+        ],
+      }),
+    }).catch(() => null);
+    if (!resp?.ok) continue;
+
+    const payload = await resp.json();
+    const text: unknown = payload?.choices?.[0]?.message?.content;
+    if (typeof text !== 'string' || !text) continue;
+    const json = text.match(/\{[\s\S]*\}/)?.[0] ?? text;
+    const result = safeJsonParse(json, schema);
+    if (result) return result;
+  }
+  return null;
+}
+
+/**
+ * Italian draft written to the SILKinCOM editorial standard (see
+ * src/lib/blog/editorial-standards.ts): live catalogue facts, real link
+ * targets, renderer-safe markdown. Throws when no model answers — a
+ * placeholder article saved as a draft is worse than a clear error.
+ */
 export async function generateBlogDraft(input: BlogAutomationInput) {
   const parsed = blogAutomationInputSchema.parse(input);
+  const ctx = await buildEditorialContext();
 
-  const ai = await runOpenAIJson({
-    system:
-      'Sei un editor SEO per un brand luxury italiano. Scrivi in italiano professionale e caldo. Output JSON valido.',
-    user: JSON.stringify(parsed),
-    schema: blogDraftSchema,
-  });
+  const user = [
+    `ARGOMENTO: ${parsed.topic}`,
+    parsed.brief ? `BRIEF (angolo, protagonista, pubblico): ${parsed.brief}` : '',
+    parsed.productName ? `PRODOTTO PROTAGONISTA: ${parsed.productName}` : '',
+    parsed.keywords.length ? `PAROLE CHIAVE: ${parsed.keywords.join(', ')}` : '',
+    `LUNGHEZZA MINIMA: ${parsed.minWords} parole`,
+    '',
+    ctx.text,
+  ].filter(Boolean).join('\n');
 
-  if (ai) {
-    return {
-      ...ai,
-      slug: slugify(ai.slug || ai.title),
-    };
-  }
+  const ai =
+    (await runOpenRouterJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema })) ??
+    (await runOpenAIJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema }));
+  if (!ai) throw new Error('Nessun modello AI ha risposto (OPENROUTER_API_KEY / OPENAI_API_KEY)');
 
-  const title = `${parsed.topic} — guida SILKinCOM`;
-  const excerpt =
-    `Una guida pratica e premium su ${parsed.topic}, con focus su qualità dei materiali, styling e cura del prodotto.`;
-  const content = [
-    `# ${title}`,
-    '',
-    `Nel mondo SILKinCOM, ${parsed.topic.toLowerCase()} è una scelta di stile ma anche tecnica.`,
-    '',
-    '## Cosa conta davvero',
-    '',
-    '- Selezione del materiale in base a stagione e uso',
-    '- Bilanciamento tra eleganza, comfort e durata',
-    '- Cura corretta per mantenere mano e brillantezza',
-    '',
-    '## Come scegliere il prodotto giusto',
-    '',
-    `Parti da contesto e frequenza d'uso. ${parsed.productName ? `Se ami ${parsed.productName},` : 'Per ogni accessorio'} privilegia composizioni naturali e finiture curate.`,
-    '',
-    '## Conclusione',
-    '',
-    'Una scelta premium nasce da dettagli concreti: filato, manifattura, proporzioni, manutenzione.',
-  ].join('\n');
+  const { content, fixes } = lintBlogContent(ai.content, ctx.allowedPaths);
+  const seoTitle = ai.seoTitle.length > 60
+    ? `${ai.seoTitle.replace(/\s*\|\s*SILKinCOM\s*$/i, '').slice(0, 47).trim()} | SILKinCOM`
+    : ai.seoTitle;
 
   return {
-    title,
-    slug: slugify(title),
-    excerpt,
+    ...ai,
     content,
-    seoTitle: `${title} | SILKinCOM`,
-    seoDescription: excerpt,
+    seoTitle,
+    seoDescription: ai.seoDescription.slice(0, 160),
+    slug: slugify(ai.slug || ai.title),
+    fixes,
   };
 }
 
