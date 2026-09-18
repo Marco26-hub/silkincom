@@ -92,7 +92,8 @@ export async function POST(req: NextRequest) {
       seo_title: String(body.seo_title ?? '') || null,
       seo_description: String(body.seo_description ?? '') || null,
       status,
-      published_at: status === 'published' ? new Date().toISOString() : null,
+      // A future date schedules the post (see src/data/posts.ts).
+      published_at: status === 'published' ? (String(body.published_at ?? '') || new Date().toISOString()) : null,
     })
     .select('id')
     .single();
@@ -122,9 +123,9 @@ export async function PATCH(req: NextRequest) {
   if (body.status !== undefined) {
     const status = body.status === 'published' ? 'published' : 'draft';
     update.status = status;
-    // Stamp publish date the first time it goes live. The editor form doesn't
-    // send published_at, so keep an existing date: re-saving must not bump an
-    // old article to the top of the journal, nor release a scheduled one early.
+    // A date picked in the editor wins (a future one schedules the post).
+    // Without it keep the existing date: re-saving must not bump an old
+    // article to the top of the journal, nor release a scheduled one early.
     if (status === 'published') {
       const { data: current } = await supabase
         .from('blog_posts').select('published_at').eq('id', id).maybeSingle();

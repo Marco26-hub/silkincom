@@ -28,6 +28,9 @@ export type Post = {
   image: string;
   date: string;
   body: string;
+  /** Admin SEO title/description for this locale; '' when not set. */
+  seoTitle: string;
+  seoDescription: string;
 };
 
 // A published post with a future published_at is *scheduled*: it stays off
@@ -53,14 +56,26 @@ type DbRow = {
   title_i18n: Record<string, string> | null;
   excerpt_i18n: Record<string, string> | null;
   content_i18n: Record<string, string> | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  seo_title_i18n: Record<string, string> | null;
+  seo_description_i18n: Record<string, string> | null;
 };
 
 const DB_SELECT =
-  'slug, title, excerpt, content, featured_image_url, published_at, title_i18n, excerpt_i18n, content_i18n';
+  'slug, title, excerpt, content, featured_image_url, published_at, title_i18n, excerpt_i18n, content_i18n, ' +
+  'seo_title, seo_description, seo_title_i18n, seo_description_i18n';
 
 function pickDb(base: string, i18n: Record<string, string> | null, locale: Locale): string {
   if (locale === 'it') return base;
   return (i18n && i18n[locale]) || base;
+}
+
+// SEO strings must not fall back to Italian on a foreign page: an empty value
+// lets the page derive them from the (already localized) title and excerpt.
+function pickSeo(base: string | null, i18n: Record<string, string> | null, locale: Locale): string {
+  if (locale === 'it') return base ?? '';
+  return (i18n && i18n[locale]) || '';
 }
 
 function localizeDb(r: DbRow, locale: Locale): Post {
@@ -71,6 +86,8 @@ function localizeDb(r: DbRow, locale: Locale): Post {
     image: r.featured_image_url ?? '',
     date: r.published_at ?? '',
     body: pickDb(r.content ?? '', r.content_i18n, locale),
+    seoTitle: pickSeo(r.seo_title, r.seo_title_i18n, locale),
+    seoDescription: pickSeo(r.seo_description, r.seo_description_i18n, locale),
   };
 }
 
@@ -96,6 +113,8 @@ function localizeJson(p: RawPost, locale: Locale): Post {
     image: p.image,
     date: p.date,
     body: pickJson(p.body, locale),
+    seoTitle: '',
+    seoDescription: '',
   };
 }
 

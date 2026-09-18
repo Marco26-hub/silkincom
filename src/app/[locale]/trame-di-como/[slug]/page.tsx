@@ -106,12 +106,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const locale = await getLocale();
   const p = await getPost(slug, locale);
   if (!p) return {};
+  // Admin SEO fields win; they already carry the "| SILKinCOM" suffix, so
+  // bypass the layout template instead of doubling the brand.
+  const title = p.seoTitle
+    ? (/silkincom/i.test(p.seoTitle) ? { absolute: p.seoTitle } : p.seoTitle)
+    : p.title;
+  const description = p.seoDescription || clip(p.description, 158);
   return {
-    title: p.title,
-    description: p.description.slice(0, 160),
+    title,
+    description,
     alternates: localizedAlternates(locale, `/trame-di-como/${slug}`),
-    openGraph: { images: p.image ? [p.image] : [] },
+    openGraph: {
+      title: p.seoTitle || p.title,
+      description,
+      images: p.image ? [p.image] : [],
+    },
   };
+}
+
+// Cut at a word boundary so snippets never end mid-word.
+function clip(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:.–—-]+$/, '')}…`;
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {

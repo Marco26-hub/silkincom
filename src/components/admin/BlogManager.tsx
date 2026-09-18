@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import {
   Plus, Sparkles, DownloadCloud, Pencil, Trash2, Eye, EyeOff,
-  Loader2, X, Languages, Check,
+  Loader2, X, Languages, Check, ImagePlus,
 } from 'lucide-react';
 
 const LOCALES = ['en', 'es', 'fr', 'de', 'pt', 'nl'] as const;
@@ -42,18 +42,35 @@ type Draft = {
   seo_title: string;
   seo_description: string;
   status: string;
+  /** datetime-local value in the admin's own timezone; '' = publish now. */
+  published_at: string;
 };
 
 const blank: Draft = {
   title: '', slug: '', excerpt: '', content: '', featured_image_url: '',
-  seo_title: '', seo_description: '', status: 'draft',
+  seo_title: '', seo_description: '', status: 'draft', published_at: '',
 };
+
+// published_at is stored without a timezone and means UTC (src/data/posts.ts
+// compares it with the UTC clock), so read it as UTC...
+function parseDbDate(s: string): Date {
+  return new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(s) ? s : `${s}Z`);
+}
+
+// ...and show/edit it in the admin's local time.
+function toLocalInput(s: string | null): string {
+  if (!s) return '';
+  const d = parseDbDate(s);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
 function toDraft(p: AdminPost): Draft {
   return {
     id: p.id, title: p.title, slug: p.slug, excerpt: p.excerpt ?? '', content: p.content ?? '',
     featured_image_url: p.featured_image_url ?? '', seo_title: p.seo_title ?? '',
     seo_description: p.seo_description ?? '', status: p.status,
+    published_at: toLocalInput(p.published_at),
   };
 }
 
@@ -88,13 +105,29 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
       const res = await fetch('/api/admin/blog', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editing),
+        body: JSON.stringify({
+          ...editing,
+          published_at: editing.published_at ? new Date(editing.published_at).toISOString() : undefined,
+        }),
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
       setEditing(null);
       flash(editing.id ? 'Articolo salvato' : 'Articolo creato');
       router.refresh();
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  }
+
+  async function uploadCover(file: File) {
+    if (!editing) return;
+    setBusy(true); setErr(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/admin/blog/image', { method: 'POST', body: fd });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
+      setEditing((cur) => (cur ? { ...cur, featured_image_url: j.url } : cur));
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   }
 
@@ -239,7 +272,7 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
               const langs = translatedLocales(p);
               const published = p.status === 'published';
               // Published with a future date = scheduled; the public site hides it until then.
-              const scheduled = published && !!p.published_at && new Date(p.published_at).getTime() > Date.now();
+              const scheduled = published && !!p.published_at && parseDbDate(p.published_at).getTime() > Date.now();
               return (
                 <tr key={p.id} className="hover:bg-ivory/40">
                   <td className="px-5 py-3">
@@ -249,7 +282,7 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
                   <td className="px-5 py-3">
                     <span className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${scheduled ? 'bg-amber-100 text-amber-800' : published ? 'bg-emerald-100 text-emerald-800' : 'bg-pearl-grey/50 text-soft-grey'}`}>
                       {scheduled
-                        ? `Programmato · ${new Date(p.published_at as string).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}`
+                        ? `Programmato · ${parseDbDate(p.published_at as string).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}`
                         : published ? 'Pubblicato' : 'Bozza'}
                     </span>
                   </td>
@@ -266,7 +299,7 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
                     </div>
                   </td>
                   <td className="px-5 py-3 text-soft-grey whitespace-nowrap">
-                    {p.published_at ? new Date(p.published_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
+                    {p.published_at ? parseDbDate(p.published_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-end gap-1.5">
@@ -313,8 +346,26 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
               <Field label="Contenuto (usa ## e ### per i titoli, riga vuota tra i paragrafi)">
                 <textarea value={editing.content} onChange={(e) => setEditing({ ...editing, content: e.target.value })} rows={16} className="w-full border border-pearl-grey px-3 py-2 text-sm font-mono leading-relaxed focus:outline-none focus:border-soft-black resize-y" />
               </Field>
-              <Field label="URL immagine di copertina">
-                <input value={editing.featured_image_url} onChange={(e) => setEditing({ ...editing, featured_image_url: e.target.value })} placeholder="/images/blog/... oppure https://..." className="w-full border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black" />
+              <Field label="Foto di copertina">
+                <div className="flex gap-3 items-start">
+                  {editing.featured_image_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={editing.featured_image_url} alt="" className="w-20 h-24 object-cover border border-pearl-grey shrink-0" />
+                  )}
+                  <div className="flex-1 space-y-2">
+                    <label className={`inline-flex items-center gap-2 border border-pearl-grey px-3 py-2 text-[11px] uppercase tracking-[0.2em] cursor-pointer hover:border-soft-black ${busy ? 'opacity-40 pointer-events-none' : ''}`}>
+                      <ImagePlus className="w-3.5 h-3.5" /> Carica foto
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadCover(f); e.target.value = ''; }}
+                      />
+                    </label>
+                    <input value={editing.featured_image_url} onChange={(e) => setEditing({ ...editing, featured_image_url: e.target.value })} placeholder="oppure incolla un URL (/editorial/... o https://...)" className="w-full border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black" />
+                    <p className="text-[11px] text-soft-grey/80">Verticale, senza scritte sopra. Usa una foto mai uscita sui social.</p>
+                  </div>
+                </div>
               </Field>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Field label="SEO title">
@@ -327,6 +378,15 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
                   </select>
                 </Field>
               </div>
+              <Field label="Data di pubblicazione (facoltativa)">
+                <input
+                  type="datetime-local"
+                  value={editing.published_at}
+                  onChange={(e) => setEditing({ ...editing, published_at: e.target.value })}
+                  className="w-full border border-pearl-grey px-3 py-2 text-sm bg-white focus:outline-none focus:border-soft-black"
+                />
+                <p className="text-[11px] text-soft-grey/80 mt-1">Con stato Pubblicato: data futura = programmato, esce da solo a quell&apos;ora. Vuota = subito.</p>
+              </Field>
               <Field label="SEO description">
                 <textarea value={editing.seo_description} onChange={(e) => setEditing({ ...editing, seo_description: e.target.value })} rows={2} className="w-full border border-pearl-grey px-3 py-2 text-sm focus:outline-none focus:border-soft-black resize-y" />
               </Field>
