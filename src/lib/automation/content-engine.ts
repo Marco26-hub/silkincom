@@ -204,7 +204,8 @@ export async function generateSocialPosts(input: SocialAutomationInput) {
 }
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const BLOG_MODELS = ['anthropic/claude-sonnet-4.5', 'anthropic/claude-3.7-sonnet', 'openai/gpt-4o'];
+// Current OpenRouter slugs (checked 2026-09-18), all vision-capable; cross-vendor last.
+const BLOG_MODELS = ['anthropic/claude-sonnet-5', 'anthropic/claude-sonnet-4.6', 'anthropic/claude-sonnet-4.5', 'openai/gpt-4.1'];
 
 /**
  * Models often return JSON with raw line breaks inside string values (invalid
@@ -284,7 +285,7 @@ async function runOpenRouterJson<T>({
         body: JSON.stringify({
           model,
           temperature: 0.7,
-          max_tokens: 7000,
+          max_tokens: 6000,
           response_format: { type: 'json_object' },
           messages: [
             { role: 'system', content: system },

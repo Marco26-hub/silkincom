@@ -6,12 +6,13 @@
 
 const OPENROUTER_BASE = 'https://openrouter.ai/api/v1/chat/completions';
 import { getOpenRouterKey } from '@/lib/secrets/openrouter';
+// Current OpenRouter slugs (checked 2026-09-18); cross-vendor fallbacks last.
 const MODELS = [
+  'anthropic/claude-sonnet-5',
+  'anthropic/claude-sonnet-4.6',
   'anthropic/claude-sonnet-4.5',
-  'anthropic/claude-3.7-sonnet',
-  'anthropic/claude-sonnet-latest',
-  'openai/gpt-4o',
-  'google/gemini-2.0-flash-001',
+  'openai/gpt-4.1',
+  'google/gemini-2.5-flash',
 ];
 
 export const BLOG_LANGS: Record<string, string> = {
@@ -107,6 +108,9 @@ export async function translateBlog(it: BlogFields, targetLang: string): Promise
           { role: 'user', content: user },
         ],
         temperature: 0.4,
+        // Explicit cap: without it OpenRouter reserves the model's maximum
+        // output and refuses the call (402) on a small credit balance.
+        max_tokens: 6000,
         response_format: { type: 'json_object' },
       }),
     });
