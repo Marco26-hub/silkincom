@@ -46,6 +46,11 @@ STRUTTURA
 - Blocco domande: una sezione "## " (es. "Le domande che ci fanno…") con 4–6 domande in "### ", ognuna seguita da una risposta di 2–4 frasi che si regge da sola, citabile fuori contesto.
 - Chiusura: sezione "## " con invito all'azione verso la pagina giusta (/b2b per hotel e aziende; pagina prodotto o collezione per i privati) e una frase finale che resti in mente.
 
+FOTO (se allegata)
+- È la copertina dell'articolo: guardala e rendi il testo coerente con ciò che mostra — luogo, luce, stagione, momento della giornata, gesto. L'apertura narrativa può partire da quella scena.
+- Descrivi solo ciò che si vede davvero; non inventare dettagli fuori campo.
+- Il prodotto lo prendi dal BRIEF e dal CATALOGO, mai dalla foto: non dedurre modello, colore commerciale o prezzo da quello che vedi. Se foto e brief sembrano non combaciare, segui il brief.
+
 SEO
 - title: 55–110 caratteri, parola chiave principale nella prima metà, una promessa chiara.
 - excerpt: 1–2 frasi, 150–230 caratteri. Appare in corsivo sotto il titolo: deve incuriosire, non riassumere.
@@ -107,6 +112,8 @@ export async function buildEditorialContext(): Promise<EditorialContext> {
       .from('blog_posts')
       .select('slug, title')
       .eq('status', 'published')
+      // Scheduled posts aren't live yet: linking them would 404 until their date.
+      .lte('published_at', new Date().toISOString())
       .order('published_at', { ascending: false }),
   ]);
 

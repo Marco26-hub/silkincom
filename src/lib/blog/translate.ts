@@ -5,6 +5,7 @@
  */
 
 const OPENROUTER_BASE = 'https://openrouter.ai/api/v1/chat/completions';
+import { getOpenRouterKey } from '@/lib/secrets/openrouter';
 const MODELS = [
   'anthropic/claude-sonnet-4.5',
   'anthropic/claude-3.7-sonnet',
@@ -70,7 +71,8 @@ Rules:
 }
 
 export async function translateBlog(it: BlogFields, targetLang: string): Promise<BlogFields> {
-  if (!process.env.OPENROUTER_API_KEY) throw new Error('OPENROUTER_API_KEY non configurato');
+  const apiKey = await getOpenRouterKey();
+  if (!apiKey) throw new Error('Chiave OpenRouter non configurata (Admin → Blog)');
   const langName = BLOG_LANGS[targetLang];
   if (!langName) throw new Error(`Lingua non supportata: ${targetLang}`);
 
@@ -93,7 +95,7 @@ export async function translateBlog(it: BlogFields, targetLang: string): Promise
     const res = await fetch(OPENROUTER_BASE, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://www.silkincom.com',
         'X-Title': 'SILKinCOM Blog Translate',

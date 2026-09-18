@@ -9,6 +9,7 @@
  */
 
 import { createServiceClient } from '@/lib/supabase/server';
+import { getOpenRouterKey } from '@/lib/secrets/openrouter';
 
 export type AdCopy = {
   headlines: string[];
@@ -64,8 +65,9 @@ export async function generateAdCopy(
   slugs: string[],
   locale: 'it' | 'en' = 'it',
 ): Promise<AdCopy> {
-  if (!process.env.OPENROUTER_API_KEY) {
-    throw new Error('OPENROUTER_API_KEY non configurato');
+  const apiKey = await getOpenRouterKey();
+  if (!apiKey) {
+    throw new Error('Chiave OpenRouter non configurata (Admin → Blog)');
   }
   if (slugs.length === 0) throw new Error('Almeno un prodotto richiesto');
 
@@ -98,7 +100,7 @@ export async function generateAdCopy(
     const res = await fetch(OPENROUTER_BASE, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://www.silkincom.com',
         'X-Title': 'SILKinCOM Ad Copy',

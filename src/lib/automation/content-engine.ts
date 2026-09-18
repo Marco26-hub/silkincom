@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { slugify } from '@/lib/utils';
 import { EDITORIAL_RULES, buildEditorialContext, lintBlogContent } from '@/lib/blog/editorial-standards';
+import { getOpenRouterKey } from '@/lib/secrets/openrouter';
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
@@ -254,13 +255,20 @@ async function runOpenRouterJson<T>({
   system,
   user,
   schema,
+  imageUrl,
 }: {
   system: string;
   user: string;
   schema: z.ZodType<T>;
+  /** Public image the model should look at (vision), e.g. the cover photo. */
+  imageUrl?: string;
 }): Promise<{ data: T | null; errors: string[] }> {
   const errors: string[] = [];
-  if (!process.env.OPENROUTER_API_KEY) return { data: null, errors: ['OPENROUTER_API_KEY mancante'] };
+  const apiKey = await getOpenRouterKey();
+  if (!apiKey) return { data: null, errors: ['chiave OpenRouter non configurata (Admin → Blog)'] };
+  const userContent = imageUrl
+    ? [{ type: 'text', text: user }, { type: 'image_url', image_url: { url: imageUrl } }]
+    : user;
 
   for (const model of BLOG_MODELS) {
     let resp: Response;
@@ -268,7 +276,7 @@ async function runOpenRouterJson<T>({
       resp = await fetch(OPENROUTER_URL, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://www.silkincom.com',
           'X-Title': 'SILKinCOM Blog Draft',
@@ -280,7 +288,7 @@ async function runOpenRouterJson<T>({
           response_format: { type: 'json_object' },
           messages: [
             { role: 'system', content: system },
-            { role: 'user', content: user },
+            { role: 'user', content: userContent },
           ],
         }),
       });
@@ -328,12 +336,18 @@ export async function generateBlogDraft(input: BlogAutomationInput) {
     parsed.brief ? `BRIEF (angolo, protagonista, pubblico): ${parsed.brief}` : '',
     parsed.productName ? `PRODOTTO PROTAGONISTA: ${parsed.productName}` : '',
     parsed.keywords.length ? `PAROLE CHIAVE: ${parsed.keywords.join(', ')}` : '',
+    parsed.featuredImageUrl ? 'FOTO DI COPERTINA: allegata (vedi regole FOTO).' : '',
     `LUNGHEZZA MINIMA: ${parsed.minWords} parole`,
     '',
     ctx.text,
   ].filter(Boolean).join('\n');
 
-  const openrouter = await runOpenRouterJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema });
+  const openrouter = await runOpenRouterJson({
+    system: EDITORIAL_RULES,
+    user,
+    schema: blogDraftSchema,
+    imageUrl: parsed.featuredImageUrl,
+  });
   const ai =
     openrouter.data ?? (await runOpenAIJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema }));
   if (!ai) {

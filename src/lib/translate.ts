@@ -2,6 +2,8 @@
 // Italian is the source language; target locales are en/es/fr/de/pt/nl.
 // Used by /api/admin/products/[id]/translate and /api/admin/home-slides/[id]/translate.
 
+import { getOpenRouterKey } from '@/lib/secrets/openrouter';
+
 export const TARGET_LANGS: Record<string, string> = {
   en: 'English',
   es: 'Spanish',
@@ -39,11 +41,12 @@ export async function translateFields<T extends TranslatableFields>(
 
   const user = `Translate these Italian fields to ${targetLang}. Return JSON {${keys.join(', ')}}.\n\n${JSON.stringify(fields)}`;
 
+  const apiKey = await getOpenRouterKey();
   const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      authorization: `Bearer ${apiKey}`,
       'HTTP-Referer': 'https://silkincom.com',
       'X-Title': 'SILKinCOM',
     },

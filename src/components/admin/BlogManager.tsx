@@ -7,7 +7,7 @@
  * created from scratch, generated as an AI draft, or imported from the legacy
  * blog.json once.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import {
   Plus, Sparkles, DownloadCloud, Pencil, Trash2, Eye, EyeOff,
@@ -74,6 +74,14 @@ function toDraft(p: AdminPost): Draft {
   };
 }
 
+type AiKeyStatus = {
+  source: 'admin' | 'env' | null;
+  last4: string | null;
+  valid: boolean;
+  remaining: number | null;
+  error: string | null;
+};
+
 function translatedLocales(p: AdminPost): string[] {
   const t = p.title_i18n ?? {};
   const c = p.content_i18n ?? {};
@@ -89,7 +97,52 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
   const [trProgress, setTrProgress] = useState<string | null>(null);
   const [genTopic, setGenTopic] = useState('');
   const [genBrief, setGenBrief] = useState('');
+  const [genImage, setGenImage] = useState('');
   const [genOpen, setGenOpen] = useState(false);
+  const [aiKey, setAiKey] = useState<AiKeyStatus | null>(null);
+  const [keyOpen, setKeyOpen] = useState(false);
+  const [keyInput, setKeyInput] = useState('');
+
+  useEffect(() => { loadAiKey(); }, []);
+
+  async function loadAiKey() {
+    try {
+      const res = await fetch('/api/admin/settings/openrouter');
+      if (res.ok) {
+        const j = (await res.json()) as AiKeyStatus;
+        setAiKey(j);
+        if (!j.valid) setKeyOpen(true);
+      }
+    } catch { /* status is informative only */ }
+  }
+
+  async function saveAiKey() {
+    if (!keyInput.trim()) return;
+    setBusy(true); setErr(null);
+    try {
+      const res = await fetch('/api/admin/settings/openrouter', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: keyInput.trim() }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
+      setKeyInput(''); setKeyOpen(false);
+      flash(`Chiave AI salvata e verificata (…${j.last4})`);
+      await loadAiKey();
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  }
+
+  async function uploadGenImage(file: File) {
+    setBusy(true); setErr(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/admin/blog/image', { method: 'POST', body: fd });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
+      setGenImage(j.url);
+    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
+  }
 
   function flash(msg: string) {
     setNotice(msg);
@@ -168,11 +221,15 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
     try {
       const res = await fetch('/api/admin/blog/generate', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: genTopic.trim(), brief: genBrief.trim() }),
+        body: JSON.stringify({
+          topic: genTopic.trim(),
+          brief: genBrief.trim(),
+          ...(genImage ? { featuredImageUrl: genImage } : {}),
+        }),
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(j.error || `HTTP ${res.status}`);
-      setGenOpen(false); setGenTopic(''); setGenBrief('');
+      setGenOpen(false); setGenTopic(''); setGenBrief(''); setGenImage('');
       const nFix = Array.isArray(j.fixes) ? j.fixes.length : 0;
       flash(`Bozza generata: "${j.title}".${nFix ? ` ${nFix} correzioni di formato applicate.` : ''} Aprila per revisionare.`);
       router.refresh();
@@ -224,6 +281,38 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
       </div>
 
       {notice && <div className="border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs text-emerald-800">{notice}</div>}
+
+      {/* AI key (OpenRouter) — used by drafts, translations and the other AI tools */}
+      <div className={`border px-4 py-3 text-xs ${aiKey && !aiKey.valid ? 'border-red-200 bg-red-50' : 'border-pearl-grey bg-white'}`}>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <span className="text-soft-black/80">
+            <span className="uppercase tracking-[0.2em] text-[10px] text-soft-grey mr-2">Chiave AI (OpenRouter)</span>
+            {!aiKey ? 'verifica…'
+              : aiKey.valid
+                ? `attiva …${aiKey.last4 ?? ''}${aiKey.remaining != null ? ` · credito residuo $${aiKey.remaining.toFixed(2)}` : ''}`
+                : `non funziona${aiKey.error ? ` (${aiKey.error})` : ''} — inseriscine una nuova`}
+          </span>
+          <button onClick={() => setKeyOpen((v) => !v)} className="text-[11px] uppercase tracking-[0.2em] underline text-soft-black">
+            {keyOpen ? 'Chiudi' : 'Cambia chiave'}
+          </button>
+        </div>
+        {keyOpen && (
+          <div className="mt-3 flex gap-2 flex-wrap items-center">
+            <input
+              type="password"
+              autoComplete="off"
+              value={keyInput}
+              onChange={(e) => setKeyInput(e.target.value)}
+              placeholder="sk-or-v1-…"
+              className="flex-1 min-w-[260px] border border-pearl-grey bg-white px-3 py-2 text-sm font-mono focus:outline-none focus:border-soft-black"
+            />
+            <button onClick={saveAiKey} disabled={busy || !keyInput.trim()} className="inline-flex items-center gap-2 px-4 py-2 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black disabled:opacity-40">
+              <Check className="w-3.5 h-3.5" /> Salva e verifica
+            </button>
+            <p className="w-full text-[11px] text-soft-grey/80">La crei su openrouter.ai → Keys. Viene verificata prima del salvataggio e conservata cifrata: qui si vedono solo le ultime 4 cifre.</p>
+          </div>
+        )}
+      </div>
       {err && !editing && !genOpen && <div className="border border-red-200 bg-red-50 px-4 py-2 text-xs text-red-700">{err}</div>}
 
       {/* Generate draft inline panel */}
@@ -240,7 +329,7 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
             <button onClick={generate} disabled={busy} className="inline-flex items-center gap-2 px-4 py-2 bg-soft-black text-warm-white text-[11px] uppercase tracking-[0.2em] hover:bg-gold-primary hover:text-soft-black disabled:opacity-40">
               {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />} Genera
             </button>
-            <button onClick={() => { setGenOpen(false); setGenTopic(''); setGenBrief(''); }} className="px-4 py-2 border border-pearl-grey text-[11px] uppercase tracking-[0.2em] hover:border-soft-black">Annulla</button>
+            <button onClick={() => { setGenOpen(false); setGenTopic(''); setGenBrief(''); setGenImage(''); }} className="px-4 py-2 border border-pearl-grey text-[11px] uppercase tracking-[0.2em] hover:border-soft-black">Annulla</button>
           </div>
           <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey">Brief (facoltativo)</label>
           <textarea
@@ -250,6 +339,25 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
             placeholder="Protagonista, pubblico e angolo. es. Solo pashmina Bellagio Cipria, per direttori d'hotel 5 stelle: welcome gift e servizio serale in terrazza."
             className="w-full border border-pearl-grey bg-white px-3 py-2 text-sm focus:outline-none focus:border-soft-black"
           />
+          <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey">Foto di copertina (facoltativa — l'AI la guarda e scrive coerente con la scena)</label>
+          <div className="flex items-center gap-3">
+            {genImage && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={genImage} alt="" className="w-16 h-20 object-cover border border-pearl-grey" />
+            )}
+            <label className={`inline-flex items-center gap-2 border border-pearl-grey bg-white px-3 py-2 text-[11px] uppercase tracking-[0.2em] cursor-pointer hover:border-soft-black ${busy ? 'opacity-40 pointer-events-none' : ''}`}>
+              <ImagePlus className="w-3.5 h-3.5" /> {genImage ? 'Cambia foto' : 'Carica foto'}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadGenImage(f); e.target.value = ''; }}
+              />
+            </label>
+            {genImage && (
+              <button type="button" onClick={() => setGenImage('')} className="text-[11px] text-soft-grey hover:text-soft-black underline">rimuovi</button>
+            )}
+          </div>
           {err && genOpen && <p className="text-xs text-red-700">{err}</p>}
           <p className="text-[11px] text-soft-grey/70">Bozza italiana secondo lo standard Trame di Como: dati reali dal catalogo, link solo a pagine esistenti, domande finali per Google e AI. Poi la revisioni, traduci con AI e pubblichi. La foto di copertina scegli tu: controlla che non sia già uscita sui social.</p>
         </div>

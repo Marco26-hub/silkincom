@@ -8,8 +8,10 @@
  * keyword-front-loaded title, 13 long-tail tags (≤20 chars each), and a
  * description whose key terms land in the first ~160 characters.
  *
- * Env: OPENROUTER_API_KEY.
+ * Key: admin-saved OpenRouter key, else OPENROUTER_API_KEY (see lib/secrets/openrouter).
  */
+
+import { getOpenRouterKey } from '@/lib/secrets/openrouter';
 
 const OPENROUTER_BASE = 'https://openrouter.ai/api/v1/chat/completions';
 // Tried in order until one resolves on OpenRouter. The old
@@ -77,8 +79,9 @@ export async function translateListing(
   it: { title: string; description: string; tags: string[]; materials?: string[] },
   targetLang: string = 'en',
 ): Promise<ListingTranslation> {
-  if (!process.env.OPENROUTER_API_KEY) {
-    throw new Error('OPENROUTER_API_KEY non configurato');
+  const apiKey = await getOpenRouterKey();
+  if (!apiKey) {
+    throw new Error('Chiave OpenRouter non configurata (Admin → Blog)');
   }
   const langName = ETSY_TRANSLATION_LANGS[targetLang];
   if (!langName) throw new Error(`Lingua non supportata: ${targetLang}`);
@@ -100,7 +103,7 @@ export async function translateListing(
     const res = await fetch(OPENROUTER_BASE, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://www.silkincom.com',
         'X-Title': 'SILKinCOM Etsy Translate',
