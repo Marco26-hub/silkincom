@@ -70,8 +70,8 @@ export async function getOpenRouterKey(): Promise<string | null> {
 export type OpenRouterKeyInfo = {
   ok: boolean;
   label?: string;
-  /** Remaining credit in USD when the key has a limit, else null. */
-  remaining?: number | null;
+  /** Account balance in USD (credits bought minus used), null if unknown. */
+  balance?: number | null;
   error?: string;
 };
 
@@ -82,11 +82,23 @@ export async function checkOpenRouterKey(key: string): Promise<OpenRouterKeyInfo
       headers: { Authorization: `Bearer ${key}` },
     });
     const j = (await res.json().catch(() => ({}))) as {
-      data?: { label?: string; limit_remaining?: number | null };
+      data?: { label?: string };
       error?: { message?: string };
     };
     if (!res.ok) return { ok: false, error: j.error?.message || `HTTP ${res.status}` };
-    return { ok: true, label: j.data?.label, remaining: j.data?.limit_remaining ?? null };
+    // The key's own spending limit is not what runs out: the account balance
+    // is (calls fail with 402 when it's too low), so report that.
+    let balance: number | null = null;
+    const cr = await fetch('https://openrouter.ai/api/v1/credits', {
+      headers: { Authorization: `Bearer ${key}` },
+    }).catch(() => null);
+    if (cr?.ok) {
+      const c = (await cr.json().catch(() => ({}))) as { data?: { total_credits?: number; total_usage?: number } };
+      if (typeof c.data?.total_credits === 'number' && typeof c.data?.total_usage === 'number') {
+        balance = Math.max(0, c.data.total_credits - c.data.total_usage);
+      }
+    }
+    return { ok: true, label: j.data?.label, balance };
   } catch (e) {
     return { ok: false, error: (e as Error).message };
   }

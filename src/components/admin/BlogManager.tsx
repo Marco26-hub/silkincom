@@ -78,7 +78,8 @@ type AiKeyStatus = {
   source: 'admin' | 'env' | null;
   last4: string | null;
   valid: boolean;
-  remaining: number | null;
+  /** Account balance in USD; calls start failing (402) when it runs low. */
+  balance: number | null;
   error: string | null;
 };
 
@@ -283,13 +284,13 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
       {notice && <div className="border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs text-emerald-800">{notice}</div>}
 
       {/* AI key (OpenRouter) — used by drafts, translations and the other AI tools */}
-      <div className={`border px-4 py-3 text-xs ${aiKey && !aiKey.valid ? 'border-red-200 bg-red-50' : 'border-pearl-grey bg-white'}`}>
+      <div className={`border px-4 py-3 text-xs ${aiKey && (!aiKey.valid || (aiKey.balance != null && aiKey.balance < 1)) ? 'border-red-200 bg-red-50' : 'border-pearl-grey bg-white'}`}>
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <span className="text-soft-black/80">
             <span className="uppercase tracking-[0.2em] text-[10px] text-soft-grey mr-2">Chiave AI (OpenRouter)</span>
             {!aiKey ? 'verifica…'
               : aiKey.valid
-                ? `attiva …${aiKey.last4 ?? ''}${aiKey.remaining != null ? ` · credito residuo $${aiKey.remaining.toFixed(2)}` : ''}`
+                ? `attiva …${aiKey.last4 ?? ''}${aiKey.balance != null ? ` · saldo conto $${aiKey.balance.toFixed(2)}${aiKey.balance < 1 ? ' — quasi esaurito: ricarica su openrouter.ai/credits' : ''}` : ''}`
                 : `non funziona${aiKey.error ? ` (${aiKey.error})` : ''} — inseriscine una nuova`}
           </span>
           <button onClick={() => setKeyOpen((v) => !v)} className="text-[11px] uppercase tracking-[0.2em] underline text-soft-black">

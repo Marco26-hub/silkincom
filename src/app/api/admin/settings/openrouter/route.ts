@@ -2,7 +2,7 @@
  * Admin — OpenRouter API key used by every AI feature (blog drafts and
  * translations, product/Etsy translations, ad copy, UGC briefs).
  *
- *   GET  → { source, last4, valid, remaining }  (never the key itself)
+ *   GET  → { source, last4, valid, balance }  (never the key itself)
  *   POST { key } → verifies the key with OpenRouter, then stores it encrypted.
  */
 import { NextRequest, NextResponse } from 'next/server';
@@ -28,7 +28,7 @@ export async function GET() {
   return NextResponse.json({
     ...status,
     valid: check.ok,
-    remaining: check.ok ? check.remaining ?? null : null,
+    balance: check.ok ? check.balance ?? null : null,
     error: check.ok ? null : check.error,
   });
 }
@@ -50,5 +50,5 @@ export async function POST(req: NextRequest) {
 
   await saveOpenRouterKey(key);
   await logAdminAction(auth.userId, 'update', 'integration', 'openrouter', { last4: key.slice(-4) });
-  return NextResponse.json({ ok: true, last4: key.slice(-4), remaining: check.remaining ?? null });
+  return NextResponse.json({ ok: true, last4: key.slice(-4), balance: check.balance ?? null });
 }
