@@ -205,6 +205,51 @@ export async function generateSocialPosts(input: SocialAutomationInput) {
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const BLOG_MODELS = ['anthropic/claude-sonnet-4.5', 'anthropic/claude-3.7-sonnet', 'openai/gpt-4o'];
 
+/**
+ * Models often return JSON with raw line breaks inside string values (invalid
+ * JSON). Escape control characters that sit inside strings, then parse.
+ */
+function parseLooseJson(text: string): unknown {
+  const raw = text.match(/\{[\s\S]*\}/)?.[0] ?? text;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    let out = '';
+    let inString = false;
+    let escaped = false;
+    for (const ch of raw) {
+      if (inString) {
+        if (escaped) { out += ch; escaped = false; continue; }
+        if (ch === '\\') { out += ch; escaped = true; continue; }
+        if (ch === '"') { inString = false; out += ch; continue; }
+        if (ch === '\n') { out += '\\n'; continue; }
+        if (ch === '\r') { out += '\\r'; continue; }
+        if (ch === '\t') { out += '\\t'; continue; }
+        out += ch;
+      } else {
+        if (ch === '"') inString = true;
+        out += ch;
+      }
+    }
+    return JSON.parse(out);
+  }
+}
+
+// Accept snake_case keys too (seo_title → seoTitle): models drift on naming.
+function camelKeys(value: unknown): unknown {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([k, v]) => [
+      k.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase()),
+      v,
+    ]),
+  );
+}
+
+/**
+ * Tries each model in turn. Returns the parsed result, or the reason every
+ * model failed so the admin sees what went wrong (credit, auth, bad JSON…).
+ */
 async function runOpenRouterJson<T>({
   system,
   user,
@@ -213,39 +258,59 @@ async function runOpenRouterJson<T>({
   system: string;
   user: string;
   schema: z.ZodType<T>;
-}): Promise<T | null> {
-  if (!process.env.OPENROUTER_API_KEY) return null;
+}): Promise<{ data: T | null; errors: string[] }> {
+  const errors: string[] = [];
+  if (!process.env.OPENROUTER_API_KEY) return { data: null, errors: ['OPENROUTER_API_KEY mancante'] };
 
   for (const model of BLOG_MODELS) {
-    const resp = await fetch(OPENROUTER_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://www.silkincom.com',
-        'X-Title': 'SILKinCOM Blog Draft',
-      },
-      body: JSON.stringify({
-        model,
-        temperature: 0.7,
-        max_tokens: 7000,
-        response_format: { type: 'json_object' },
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user },
-        ],
-      }),
-    }).catch(() => null);
-    if (!resp?.ok) continue;
+    let resp: Response;
+    try {
+      resp = await fetch(OPENROUTER_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://www.silkincom.com',
+          'X-Title': 'SILKinCOM Blog Draft',
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0.7,
+          max_tokens: 7000,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user', content: user },
+          ],
+        }),
+      });
+    } catch (e) {
+      errors.push(`${model}: rete (${(e as Error).message})`);
+      continue;
+    }
+    if (!resp.ok) {
+      errors.push(`${model}: HTTP ${resp.status} ${(await resp.text()).slice(0, 180)}`);
+      continue;
+    }
 
-    const payload = await resp.json();
+    const payload = await resp.json().catch(() => null);
     const text: unknown = payload?.choices?.[0]?.message?.content;
-    if (typeof text !== 'string' || !text) continue;
-    const json = text.match(/\{[\s\S]*\}/)?.[0] ?? text;
-    const result = safeJsonParse(json, schema);
-    if (result) return result;
+    if (typeof text !== 'string' || !text) {
+      errors.push(`${model}: risposta vuota${payload?.error ? ` (${JSON.stringify(payload.error).slice(0, 160)})` : ''}`);
+      continue;
+    }
+    let json: unknown;
+    try {
+      json = camelKeys(parseLooseJson(text));
+    } catch {
+      errors.push(`${model}: JSON non valido`);
+      continue;
+    }
+    const parsed = schema.safeParse(json);
+    if (parsed.success) return { data: parsed.data, errors };
+    errors.push(`${model}: campi non validi (${parsed.error.issues.map((i) => i.path.join('.') + ' ' + i.message).join('; ').slice(0, 160)})`);
   }
-  return null;
+  return { data: null, errors };
 }
 
 /**
@@ -268,10 +333,12 @@ export async function generateBlogDraft(input: BlogAutomationInput) {
     ctx.text,
   ].filter(Boolean).join('\n');
 
+  const openrouter = await runOpenRouterJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema });
   const ai =
-    (await runOpenRouterJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema })) ??
-    (await runOpenAIJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema }));
-  if (!ai) throw new Error('Nessun modello AI ha risposto (OPENROUTER_API_KEY / OPENAI_API_KEY)');
+    openrouter.data ?? (await runOpenAIJson({ system: EDITORIAL_RULES, user, schema: blogDraftSchema }));
+  if (!ai) {
+    throw new Error(`Nessun modello AI ha prodotto una bozza valida — ${openrouter.errors.join(' | ')}`);
+  }
 
   const { content, fixes } = lintBlogContent(ai.content, ctx.allowedPaths);
   const seoTitle = ai.seoTitle.length > 60
