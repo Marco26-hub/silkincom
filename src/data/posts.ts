@@ -30,6 +30,13 @@ export type Post = {
   body: string;
 };
 
+// A published post with a future published_at is *scheduled*: it stays off
+// the journal, the post page and the sitemap until that moment (ISR picks it
+// up within the revalidate window). Evaluated per request, never at import.
+function nowIso(): string {
+  return new Date().toISOString();
+}
+
 function normLocale(locale: string): Locale {
   return (LOCALES as readonly string[]).includes(locale) ? (locale as Locale) : 'it';
 }
@@ -69,7 +76,13 @@ function localizeDb(r: DbRow, locale: Locale): Post {
 
 // ---------- blog.json fallback ----------
 
-const rawPosts = postsJson as RawPost[];
+const allRawPosts = postsJson as RawPost[];
+
+// Same scheduling rule for the bundled fallback.
+function liveRawPosts(): RawPost[] {
+  const now = Date.now();
+  return allRawPosts.filter((p) => !p.date || new Date(p.date).getTime() <= now);
+}
 
 function pickJson(field: L10n, locale: Locale): string {
   return field[locale] ?? field.en ?? field.it;
@@ -96,6 +109,7 @@ export async function getPosts(locale: string): Promise<Post[]> {
       .from('blog_posts')
       .select(DB_SELECT)
       .eq('status', 'published')
+      .lte('published_at', nowIso())
       .order('published_at', { ascending: false });
     if (!error && data && data.length > 0) {
       return (data as unknown as DbRow[]).map((r) => localizeDb(r, l));
@@ -103,7 +117,7 @@ export async function getPosts(locale: string): Promise<Post[]> {
   } catch {
     // fall through to bundled content
   }
-  return rawPosts.map((p) => localizeJson(p, l));
+  return liveRawPosts().map((p) => localizeJson(p, l));
 }
 
 export async function getPost(slug: string, locale: string): Promise<Post | undefined> {
@@ -115,22 +129,27 @@ export async function getPost(slug: string, locale: string): Promise<Post | unde
       .select(DB_SELECT)
       .eq('slug', slug)
       .eq('status', 'published')
+      .lte('published_at', nowIso())
       .maybeSingle();
     if (data) return localizeDb(data as unknown as DbRow, l);
   } catch {
     // fall through to bundled content
   }
-  const p = rawPosts.find((x) => x.slug === slug);
+  const p = liveRawPosts().find((x) => x.slug === slug);
   return p ? localizeJson(p, l) : undefined;
 }
 
 export async function getPostSlugs(): Promise<string[]> {
   try {
     const supabase = createServiceClient();
-    const { data } = await supabase.from('blog_posts').select('slug').eq('status', 'published');
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('slug')
+      .eq('status', 'published')
+      .lte('published_at', nowIso());
     if (data && data.length > 0) return (data as Array<{ slug: string }>).map((r) => r.slug);
   } catch {
     // fall through to bundled content
   }
-  return rawPosts.map((p) => p.slug);
+  return liveRawPosts().map((p) => p.slug);
 }

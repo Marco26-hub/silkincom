@@ -238,6 +238,8 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
             {initialPosts.map((p) => {
               const langs = translatedLocales(p);
               const published = p.status === 'published';
+              // Published with a future date = scheduled; the public site hides it until then.
+              const scheduled = published && !!p.published_at && new Date(p.published_at).getTime() > Date.now();
               return (
                 <tr key={p.id} className="hover:bg-ivory/40">
                   <td className="px-5 py-3">
@@ -245,8 +247,10 @@ export function BlogManager({ initialPosts }: { initialPosts: AdminPost[] }) {
                     <div className="text-[11px] text-soft-grey font-mono">/{p.slug}</div>
                   </td>
                   <td className="px-5 py-3">
-                    <span className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${published ? 'bg-emerald-100 text-emerald-800' : 'bg-pearl-grey/50 text-soft-grey'}`}>
-                      {published ? 'Pubblicato' : 'Bozza'}
+                    <span className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] ${scheduled ? 'bg-amber-100 text-amber-800' : published ? 'bg-emerald-100 text-emerald-800' : 'bg-pearl-grey/50 text-soft-grey'}`}>
+                      {scheduled
+                        ? `Programmato · ${new Date(p.published_at as string).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}`
+                        : published ? 'Pubblicato' : 'Bozza'}
                     </span>
                   </td>
                   <td className="px-5 py-3">

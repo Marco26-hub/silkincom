@@ -118,15 +118,21 @@ export async function PATCH(req: NextRequest) {
   if (body.featured_image_url !== undefined) update.featured_image_url = String(body.featured_image_url) || null;
   if (body.seo_title !== undefined) update.seo_title = String(body.seo_title) || null;
   if (body.seo_description !== undefined) update.seo_description = String(body.seo_description) || null;
+  const supabase = createServiceClient();
   if (body.status !== undefined) {
     const status = body.status === 'published' ? 'published' : 'draft';
     update.status = status;
-    // Stamp publish date the first time it goes live.
-    if (status === 'published') update.published_at = body.published_at || new Date().toISOString();
+    // Stamp publish date the first time it goes live. The editor form doesn't
+    // send published_at, so keep an existing date: re-saving must not bump an
+    // old article to the top of the journal, nor release a scheduled one early.
+    if (status === 'published') {
+      const { data: current } = await supabase
+        .from('blog_posts').select('published_at').eq('id', id).maybeSingle();
+      update.published_at = body.published_at || current?.published_at || new Date().toISOString();
+    }
   }
   update.updated_at = new Date().toISOString();
 
-  const supabase = createServiceClient();
   const { error } = await supabase.from('blog_posts').update(update).eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
