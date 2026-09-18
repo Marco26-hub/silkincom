@@ -30,7 +30,18 @@ export type BlogFields = {
   seo_description: string;
 };
 
-function buildSystem(langName: string): string {
+// House style per locale, so every translation reads as if written natively
+// and the register never drifts inside one article.
+const LANG_STYLE: Record<string, string> = {
+  en: 'British English spelling (colour, programme, personalise). Powder pink = "powder pink".',
+  es: 'Spanish of Spain. Address the reader formally with usted/ustedes and su/sus; never mix in vosotros forms. Powder pink = "rosa empolvado".',
+  fr: 'Vouvoiement throughout. Powder pink = "rose poudré". Turndown = "couverture du soir"; boutique hotel = "hôtel de charme".',
+  de: 'Sie-Form throughout; generic "man" is fine. Powder pink = "Puderrosa".',
+  pt: 'European Portuguese (PT-PT, Acordo Ortográfico 1990): pequeno-almoço, receção, farda, equipa. Address the reader as vocês with vosso/vossa, consistently. Powder pink = "rosa-pó".',
+  nl: 'Formal "u" throughout; do not use generic "je" in running text (reported speech may keep it). Powder pink = "poederroze".',
+};
+
+function buildSystem(langName: string, lang: string): string {
   return `You are the senior ${langName} editorial translator for SILKinCOM, a
 luxury silk & cashmere atelier in Como, Italy (silk-weaving tradition since
 1400). Translate the Italian blog article into fluent, idiomatic ${langName}
@@ -52,7 +63,10 @@ Rules:
 - Correct ${langName} accents/diacritics. Natural, premium register.
 - Preserve factual accuracy (figures, prices, sizes, materials, care instructions).
 - Keep every [anchor](/path) link: translate the anchor text, never change the
-  /path. Do not add links, bold, italics, bullet lists or "# " headings.`;
+  /path. Do not add links, bold, italics, bullet lists or "# " headings.
+- Product and line names stay in Italian (Bellagio Cipria, Como Puro, Tremezzo…).
+  Trade terms hotel managers use as-is may stay (amenity, turndown, concierge).
+- ${LANG_STYLE[lang] ?? 'One consistent, formal register throughout.'}`;
 }
 
 export async function translateBlog(it: BlogFields, targetLang: string): Promise<BlogFields> {
@@ -87,7 +101,7 @@ export async function translateBlog(it: BlogFields, targetLang: string): Promise
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: buildSystem(langName) },
+          { role: 'system', content: buildSystem(langName, targetLang) },
           { role: 'user', content: user },
         ],
         temperature: 0.4,
