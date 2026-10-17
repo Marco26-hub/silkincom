@@ -19,6 +19,7 @@ const FALLBACK_SOCIAL = {
   instagram: 'https://www.instagram.com/silkincom.official/',
   facebook: 'https://www.facebook.com/profile.php?id=61581900780447',
   pinterest: 'https://it.pinterest.com/silkincomofficial',
+  tiktok: 'https://www.tiktok.com/@silkincom',
 };
 
 export function InstagramFeed({ section }: { section?: HomeSectionLocalized | null }) {
@@ -32,6 +33,7 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
     ...(section?.images || []),
   ].slice(0, 14);
   const socials = (section?.socialLinks && Object.keys(section.socialLinks).length) ? section.socialLinks : FALLBACK_SOCIAL;
+  const tiktokUrl = section?.socialLinks?.tiktok || FALLBACK_SOCIAL.tiktok;
 
   const titleStart = content.titleStart || t('titleStart');
   const titleEmphasis = content.titleEmphasis || t('titleEmphasis');
@@ -107,7 +109,7 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
           <span className="block text-[10px] uppercase tracking-[0.5em] text-gold-primary mb-6">
             {followEyebrow}
           </span>
-          <div className="flex items-center justify-center gap-7">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-5">
             {socials.instagram ? (
               <a
                 href={socials.instagram}
@@ -152,6 +154,20 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
                 <span className="text-[10px] uppercase tracking-[0.3em]">Pinterest</span>
               </a>
             ) : null}
+            <a
+              href={tiktokUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+              className="group inline-flex flex-col items-center gap-2 text-soft-black hover:text-gold-primary transition-colors"
+            >
+              <span className="w-12 h-12 flex items-center justify-center border border-soft-black/20 group-hover:border-gold-primary group-hover:bg-gold-primary/5 transition-all rounded-full">
+                <svg aria-hidden="true" className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12v-3.14a5.7 5.7 0 0 0-.78-.05A5.69 5.69 0 1 0 15.54 15.4V9.01a7.34 7.34 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.24-1.48z" />
+                </svg>
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.3em]">TikTok</span>
+            </a>
           </div>
         </motion.div>
       </div>
