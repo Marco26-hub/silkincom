@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
-import { PRODUCT_SLUGS, CATEGORY_SLUGS } from '@/data/catalog';
+import { PRODUCT_SLUGS, CATEGORY_SLUGS, getProducts } from '@/data/catalog';
+import { WINTER_PRODUCTS } from '@/data/winter-2026';
+import { WINTER_AREAS, winterAreaProducts } from '@/data/winter-categories';
 import { SEO_CATEGORY_SLUGS } from '@/data/seo-categories';
 import { getPosts } from '@/data/posts';
 import { routing } from '@/i18n/routing';
@@ -53,11 +55,17 @@ async function getDbLastMod(): Promise<{
 
   try {
     const supabase = createPublicClient();
-    const [{ data: prods }, { data: cols }, { data: slides }] = await Promise.all([
+    const [productResult, collectionResult, slideResult] = await Promise.all([
       supabase.from('products').select('slug, updated_at').eq('status', 'published'),
       supabase.from('collections').select('slug, updated_at').eq('is_active', true),
       supabase.from('home_slides').select('updated_at').eq('is_active', true).order('updated_at', { ascending: false }).limit(1),
     ]);
+    for (const [name, result] of [['products', productResult], ['collections', collectionResult], ['home_slides', slideResult]] as const) {
+      if (result.error) console.error(`[sitemap] ${name} read failed; last-modified data unavailable:`, result.error.message);
+    }
+    const prods = productResult.data;
+    const cols = collectionResult.data;
+    const slides = slideResult.data;
     (prods ?? []).forEach((p: { slug: string; updated_at: string }) => {
       if (p.slug && p.updated_at) products.set(p.slug, new Date(p.updated_at));
     });
@@ -105,7 +113,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry('/accessibilita', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
   ];
 
-  const productRoutes: MetadataRoute.Sitemap = PRODUCT_SLUGS.map((slug) =>
+  const productRoutes: MetadataRoute.Sitemap = [...new Set([...PRODUCT_SLUGS, ...lastMod.products.keys()])].map((slug) =>
     entry(`/prodotto/${slug}`, {
       lastModified: lastMod.products.get(slug) ?? now,
       changeFrequency: 'weekly',
@@ -113,13 +121,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  const collectionRoutes: MetadataRoute.Sitemap = CATEGORY_SLUGS.map((slug) =>
+  const collectionRoutes: MetadataRoute.Sitemap = CATEGORY_SLUGS.filter(slug => {
+    const winterProduct = WINTER_PRODUCTS.find(product => product.key === slug);
+    return !winterProduct || lastMod.products.has(winterProduct.slug);
+  }).map((slug) =>
     entry(`/collezioni/${slug}`, {
       lastModified: lastMod.collections.get(slug) ?? now,
       changeFrequency: 'weekly',
       priority: 0.7,
     })
   );
+
+  // Only published products make a category indexable. Development drafts
+  // must never leak into the sitemap through the local preview flag.
+  const winterPublished = (await getProducts('it')).filter(product =>
+    lastMod.products.has(product.slug) && product.collections.includes('inverno'));
+  const winterCategoryRoutes: MetadataRoute.Sitemap = WINTER_AREAS
+    .filter(area => winterAreaProducts(winterPublished, area).length > 0)
+    .map(area => entry(`/collezioni/inverno/${area}`, {
+      lastModified: new Date(Math.max(...winterAreaProducts(winterPublished, area).map(product => lastMod.products.get(product.slug)!.getTime()))),
+      changeFrequency: 'weekly', priority: 0.7,
+    }));
+  if (winterPublished.length) winterCategoryRoutes.push(entry('/collezioni/inverno/tutti', {
+    lastModified: new Date(Math.max(...winterPublished.map(product => lastMod.products.get(product.slug)!.getTime()))),
+    changeFrequency: 'weekly', priority: 0.6,
+  }));
 
   const seoCategoryRoutes: MetadataRoute.Sitemap = SEO_CATEGORY_SLUGS.map((slug) =>
     entry(`/${slug}`, { lastModified: now, changeFrequency: 'weekly', priority: 0.9 })
@@ -133,5 +159,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  return [...staticRoutes, ...seoCategoryRoutes, ...productRoutes, ...collectionRoutes, ...journalRoutes];
+  return [...staticRoutes, ...seoCategoryRoutes, ...productRoutes, ...collectionRoutes, ...winterCategoryRoutes, ...journalRoutes];
 }

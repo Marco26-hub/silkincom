@@ -330,7 +330,10 @@
       "tshirt": "T-Shirt",
       "shorts": "Bermuda",
       "shirt": "Hemd",
-      "beachTowel": "Seebadetuch"
+      "beachTowel": "Seebadetuch",
+      "sweater": "Rundhalspullover",
+      "beanie": "Mütze",
+      "turtleneck": "Rollkragenpullover"
     },
     "size": {
       "label": "Größe",
@@ -465,7 +468,8 @@
       "continueToPayment": "Weiter zur Zahlung",
       "confirmPayment": "Zahlung bestätigen",
       "processing": "Wird verarbeitet…",
-      "backToCart": "Zurück zum Warenkorb"
+      "backToCart": "Zurück zum Warenkorb",
+      "editDetails": "Angaben bearbeiten"
     },
     "security": {
       "stripe": "Sichere Zahlung über Stripe",
@@ -477,13 +481,27 @@
       "description": "Sie erhalten eine Bestätigungs-E-Mail mit den Versanddetails.",
       "orderNumber": "Bestellnummer",
       "viewOrders": "Meine Bestellungen",
-      "continueShopping": "Weiter einkaufen"
+      "continueShopping": "Weiter einkaufen",
+      "verifyingTitle": "Zahlung wird geprüft",
+      "verifyingDescription": "Wir prüfen die Zahlung für Ihre Bestellung.",
+      "processingTitle": "Zahlung wird bearbeitet",
+      "processingDescription": "Ihre Zahlung wird bearbeitet. Bitte warten Sie die Bestätigung ab, bevor Sie es erneut versuchen.",
+      "failedTitle": "Zahlung fehlgeschlagen",
+      "cancelledTitle": "Zahlung abgebrochen",
+      "unverifiedTitle": "Zahlung noch nicht bestätigt",
+      "unverifiedDescription": "Wir können diese Zahlung noch nicht bestätigen. Ihr Warenkorb wurde beibehalten.",
+      "testDescription": "Testzahlung bestätigt. Keine echte Belastung, Lieferung oder Bestell-E-Mail.",
+      "backToCart": "Zurück zum Warenkorb",
+      "checkAgain": "Erneut prüfen",
+      "refundedTitle": "Bestellung erstattet",
+      "refundedDescription": "Die Erstattung dieser Bestellung wurde erfasst."
     },
     "errors": {
       "emptyCart": "Der Warenkorb ist leer",
       "missingData": "Bitte alle Pflichtfelder ausfüllen",
       "paymentFailed": "Zahlung fehlgeschlagen. Bitte erneut versuchen.",
-      "networkError": "Netzwerkfehler. Bitte erneut versuchen."
+      "networkError": "Netzwerkfehler. Bitte erneut versuchen.",
+      "cancelFailed": "Diese Zahlung kann derzeit nicht abgebrochen werden. Bitte warten Sie auf die Bestätigung."
     },
     "countries": {
       "IT": "Italien",
@@ -503,7 +521,8 @@
       "standard": "Standardversand",
       "handDelivery": "Persönliche Übergabe",
       "handDeliveryNote": "Persönliche Übergabe — keine Versandkosten"
-    }
+    },
+    "testMode": "Testmodus — keine echte Belastung"
   },
   "account": {
     "title": "Mein Bereich",

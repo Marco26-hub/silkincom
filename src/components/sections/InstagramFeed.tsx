@@ -42,8 +42,8 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
     <section className="bg-warm-white py-24 md:py-32">
       <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8 }}
           className="mb-14 grid items-end gap-7 border-t border-soft-black/20 pt-7 text-left md:grid-cols-[0.75fr_1.25fr] md:gap-12 lg:mb-20"
@@ -72,10 +72,10 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
                 href={socials.instagram || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true, margin: '-30px' }}
-                transition={{ duration: 0.5, delay: index * 0.04, ease: 'easeOut' }}
+                transition={{ duration: 1.2, delay: index * 0.03, ease: 'easeInOut' }}
                 className={`group relative block overflow-hidden bg-ivory ${placement}`}
                 aria-label={t('photoAriaLabel', { number: index + 1 })}
               >
@@ -84,7 +84,7 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
                   alt={alt}
                   fill
                   sizes="(max-width: 768px) 33vw, 16vw"
-                  className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                  className="object-cover transition-transform duration-1000 ease-out"
                 />
                 <div className="absolute inset-0 bg-soft-black/0 group-hover:bg-soft-black/55 transition-all duration-500 flex items-center justify-center">
                   <Instagram

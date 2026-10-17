@@ -4,6 +4,9 @@ import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { getCategories, getMaterials, getProducts } from '@/data/catalog';
 import { getFeaturedCollections } from '@/data/collections-db';
+import { normLocale } from '@/data/catalog-meta';
+import { WINTER_CATEGORY_COPY } from '@/data/winter-category-copy';
+import { getCollectionNavigation } from '@/data/collection-navigation';
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
@@ -63,6 +66,10 @@ export default async function CollezioniPage() {
   ]);
   const categories = getCategories(locale);
   const materials = getMaterials(locale);
+  const winterCopy = WINTER_CATEGORY_COPY[normLocale(locale)];
+  const collectionLinks = Object.fromEntries(
+    getCollectionNavigation(locale).map(collection => [collection.slug, collection.links]),
+  );
 
   // CollectionPage + ItemList so the main catalog hub is eligible for rich
   // results / product-carousel treatment (the SEO landings already emit this).
@@ -132,7 +139,7 @@ export default async function CollezioniPage() {
             {t('eyebrow')}
           </span>
           <div className="grid items-end gap-7 md:grid-cols-[1fr_0.55fr]">
-            <h1 className="max-w-4xl font-display text-[3.4rem] font-light leading-[0.88] tracking-[-0.035em] sm:text-7xl md:text-8xl lg:text-[7.5rem]">
+            <h1 className="max-w-4xl font-display text-[clamp(3rem,7vw,6.5rem)] font-light leading-[1.02] tracking-[-0.035em]">
               {t('titlePlain')} <em className="block italic text-gold-primary">{t('titleAccent')}</em>
             </h1>
             <div className="max-w-md md:justify-self-end">
@@ -148,7 +155,7 @@ export default async function CollezioniPage() {
         </div>
       </section>
 
-      <section id="collezioni-editoriali" className="bg-[#11100e] py-20 text-warm-white md:py-28">
+      <section id="collezioni-editoriali" className="scroll-mt-36 bg-[#11100e] py-20 text-warm-white md:py-28">
         <div className="mx-auto max-w-[1500px] px-6 lg:px-10">
           <div className="mb-12 flex items-end justify-between border-b border-gold-primary/20 pb-6">
             <div>
@@ -159,8 +166,8 @@ export default async function CollezioniPage() {
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:gap-7">
             {collections.map((collection, index) => (
+              <article key={collection.slug} className="min-w-0">
               <Link
-                key={collection.slug}
                 href={`/collezioni/${collection.slug}`}
                 className="group relative block aspect-[4/5] overflow-hidden border border-gold-primary/20 bg-[#1b1916]"
               >
@@ -178,12 +185,26 @@ export default async function CollezioniPage() {
                   <h3 className="font-display text-4xl font-light leading-none md:text-5xl">
                     {collection.shortName || collection.name.replace('Collezione ', '')}
                   </h3>
-                  <p className="mt-3 max-w-xs text-xs font-light leading-relaxed text-warm-white/70">{collection.tagline}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 border-b border-gold-primary/40 pb-1 text-[9px] uppercase tracking-[0.3em] text-gold-primary">
+                  <p className="mt-3 max-w-xs text-[13px] font-light leading-relaxed text-warm-white/80">{collection.tagline}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 border-b border-gold-primary/40 pb-1 text-[11px] uppercase tracking-[0.12em] text-gold-primary">
                     {t('explore')} <ArrowUpRight className="h-3 w-3 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </span>
                 </div>
               </Link>
+              {collectionLinks[collection.slug]?.length > 0 && (
+                <nav aria-label={`${collection.name} — ${winterCopy.categories}`} className="mt-3 flex flex-wrap gap-2">
+                  {collectionLinks[collection.slug].map(item => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="inline-flex min-h-11 flex-1 items-center justify-center border border-gold-primary/30 px-3 py-3 text-center text-[11px] uppercase tracking-[0.06em] text-warm-white/85 transition-colors hover:border-gold-primary hover:bg-gold-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-primary"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </nav>
+              )}
+              </article>
             ))}
           </div>
         </div>

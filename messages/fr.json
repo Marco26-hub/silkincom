@@ -330,7 +330,10 @@
       "tshirt": "T-shirt",
       "shorts": "Bermuda",
       "shirt": "Chemise",
-      "beachTowel": "Serviette de lac"
+      "beachTowel": "Serviette de lac",
+      "sweater": "Pull col rond",
+      "beanie": "Bonnet",
+      "turtleneck": "Pull col roulé"
     },
     "size": {
       "label": "Taille",
@@ -465,7 +468,8 @@
       "continueToPayment": "Passer au paiement",
       "confirmPayment": "Confirmer le paiement",
       "processing": "Traitement…",
-      "backToCart": "Retour au panier"
+      "backToCart": "Retour au panier",
+      "editDetails": "Modifier les coordonnées"
     },
     "security": {
       "stripe": "Paiement sécurisé via Stripe",
@@ -477,13 +481,27 @@
       "description": "Vous recevrez un e-mail de confirmation avec les détails de la livraison.",
       "orderNumber": "Numéro de commande",
       "viewOrders": "Mes commandes",
-      "continueShopping": "Continuer mes achats"
+      "continueShopping": "Continuer mes achats",
+      "verifyingTitle": "Vérification du paiement",
+      "verifyingDescription": "Nous vérifions le paiement de votre commande.",
+      "processingTitle": "Paiement en cours",
+      "processingDescription": "Votre paiement est en cours. Veuillez attendre la confirmation avant de réessayer.",
+      "failedTitle": "Échec du paiement",
+      "cancelledTitle": "Paiement annulé",
+      "unverifiedTitle": "Paiement à vérifier",
+      "unverifiedDescription": "Nous ne pouvons pas encore confirmer ce paiement. Votre panier a été conservé.",
+      "testDescription": "Paiement de test confirmé. Aucun débit réel, envoi ni e-mail de commande.",
+      "backToCart": "Retour au panier",
+      "checkAgain": "Vérifier à nouveau",
+      "refundedTitle": "Commande remboursée",
+      "refundedDescription": "Le remboursement de cette commande a été enregistré."
     },
     "errors": {
       "emptyCart": "Le panier est vide",
       "missingData": "Veuillez remplir tous les champs obligatoires",
       "paymentFailed": "Paiement échoué. Veuillez réessayer.",
-      "networkError": "Erreur de réseau. Veuillez réessayer."
+      "networkError": "Erreur de réseau. Veuillez réessayer.",
+      "cancelFailed": "Ce paiement ne peut pas être annulé pour le moment. Veuillez attendre la confirmation."
     },
     "countries": {
       "IT": "Italie",
@@ -503,7 +521,8 @@
       "standard": "Livraison standard",
       "handDelivery": "Remise en main propre",
       "handDeliveryNote": "Remise en main propre — sans frais de livraison"
-    }
+    },
+    "testMode": "Mode test — aucun débit réel"
   },
   "account": {
     "title": "Espace personnel",

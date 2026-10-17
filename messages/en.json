@@ -330,7 +330,10 @@
       "tshirt": "T-shirt",
       "shorts": "Shorts",
       "shirt": "Shirt",
-      "beachTowel": "Lake Towel"
+      "beachTowel": "Lake Towel",
+      "sweater": "Crew-neck sweater",
+      "beanie": "Beanie",
+      "turtleneck": "Turtleneck"
     },
     "size": {
       "label": "Size",
@@ -465,7 +468,8 @@
       "continueToPayment": "Continue to payment",
       "confirmPayment": "Confirm payment",
       "processing": "Processing…",
-      "backToCart": "Back to cart"
+      "backToCart": "Back to cart",
+      "editDetails": "Edit your details"
     },
     "security": {
       "stripe": "Secure payment via Stripe",
@@ -477,13 +481,27 @@
       "description": "You will receive a confirmation email with shipping details.",
       "orderNumber": "Order number",
       "viewOrders": "My orders",
-      "continueShopping": "Continue shopping"
+      "continueShopping": "Continue shopping",
+      "verifyingTitle": "Checking your payment",
+      "verifyingDescription": "We are checking the payment for your order.",
+      "processingTitle": "Payment processing",
+      "processingDescription": "Your payment is processing. Please wait for confirmation before trying again.",
+      "failedTitle": "Payment unsuccessful",
+      "cancelledTitle": "Payment cancelled",
+      "unverifiedTitle": "Payment not yet verified",
+      "unverifiedDescription": "We cannot confirm this payment yet. Your cart has been kept.",
+      "testDescription": "Test payment confirmed. No real charge, shipment or order email.",
+      "backToCart": "Back to cart",
+      "checkAgain": "Check again",
+      "refundedTitle": "Order refunded",
+      "refundedDescription": "The refund for this order has been recorded."
     },
     "errors": {
       "emptyCart": "Cart is empty",
       "missingData": "Please fill in all required fields",
       "paymentFailed": "Payment failed. Please try again.",
-      "networkError": "Network error. Please try again."
+      "networkError": "Network error. Please try again.",
+      "cancelFailed": "This payment cannot be cancelled now. Please wait for confirmation."
     },
     "countries": {
       "IT": "Italy",
@@ -503,7 +521,8 @@
       "standard": "Standard shipping",
       "handDelivery": "Hand delivery",
       "handDeliveryNote": "Hand delivery — no shipping cost"
-    }
+    },
+    "testMode": "Test mode — no real charge"
   },
   "account": {
     "title": "My account",

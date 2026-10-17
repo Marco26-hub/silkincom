@@ -3,7 +3,10 @@
 // client components. For types and sync taxonomy getters use catalog-meta.ts.
 
 import { unstable_cache } from 'next/cache';
-import { createPublicClient } from '@/lib/supabase/server';
+import { createPublicClient, createServiceClient } from '@/lib/supabase/server';
+import { getWinterContent, getWinterProduct, WINTER_CARE, WINTER_SLUGS } from './winter-2026';
+import { WINTER_VISUALS } from './winter-2026-visuals';
+import {readStorefrontStock} from '@/lib/storefront-stock';
 import type { Locale } from '@/i18n/routing';
 import {
   type Product,
@@ -38,12 +41,15 @@ type DBProduct = {
   description_short: string;
   composition: string;
   dimensions: string;
+  care_instructions: string;
+  origin: string;
   product_type: string | null;
   name_i18n: I18nMap;
   description_long_i18n: I18nMap;
   description_short_i18n: I18nMap;
   composition_i18n: I18nMap;
   product_images: Array<{ image_url: string; display_order: number }>;
+  inventory: Array<{variant_id: string | null; quantity_available: number}>;
   product_categories: Array<{ category_id: string; categories: { slug: string } | null }>;
   product_collections: Array<{ collection_id: string; collections: { slug: string } | null }>;
   product_variants: Array<{
@@ -60,9 +66,9 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
   const { data: products, error } = await supabase
     .from('products')
     .select(
-      `id, slug, name, sku, price, description_long, description_short, composition, dimensions, product_type,
+      `id, slug, name, sku, price, description_long, description_short, composition, dimensions, care_instructions, origin, product_type,
        name_i18n, description_long_i18n, description_short_i18n, composition_i18n,
-       product_images(image_url, display_order),
+       product_images(image_url, display_order), inventory(variant_id, quantity_available),
        product_categories(
          category_id,
          categories(slug)
@@ -87,7 +93,16 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
     return [];
   }
 
-  return (products as unknown as DBProduct[]) || [];
+  const rows = (products as unknown as DBProduct[]) || [];
+  const stock = await readStorefrontStock(supabase);
+  if (stock) {
+    for (const product of rows) {
+      const available = stock.filter(row => row.product_id === product.id);
+      product.inventory = available;
+      for (const variant of product.product_variants) variant.inventory = available.filter(row => row.variant_id === variant.id);
+    }
+  }
+  return rows;
 }
 
 // Cached at the data layer. Admin mutations call revalidateTag('products')
@@ -102,9 +117,31 @@ const getCachedProducts = unstable_cache(
 // reflects admin edits immediately. For the other 6 locales the resolution
 // order is: DB *_i18n column (filled by the admin "Translate" button) ->
 // products.json (legacy translation pipeline) -> DB source (Italian).
+// Production always reads through anon RLS. Only explicit local development
+// preview can append the three named winter drafts using the service role.
+async function getStorefrontProducts(): Promise<DBProduct[]> {
+  const published = await getCachedProducts();
+  if (process.env.NODE_ENV !== 'development' || process.env.WINTER_2026_LOCAL_PREVIEW !== 'true') return published;
+  const missingSlugs = WINTER_SLUGS.filter(slug => !published.some(product => product.slug === slug));
+  if (missingSlugs.length === 0) return published;
+  const { data, error } = await createServiceClient()
+    .from('products')
+    .select('*, inventory(variant_id,quantity_available), product_images(image_url, display_order), product_categories(category_id, categories(slug)), product_collections(collection_id, collections(slug)), product_variants(id, variant_sku, size, price_override, inventory(quantity_available))')
+    .in('slug', missingSlugs)
+    .eq('status', 'draft');
+  if (error) throw new Error(`Winter draft preview failed: ${error.message}`);
+  if (data?.length !== missingSlugs.length) throw new Error('Winter draft preview incomplete: expected every unpublished winter product.');
+  console.info(`[winter-2026] Local-only preview: including ${data.length} winter drafts; publication remains disabled.`);
+  return [...published, ...(data as unknown as DBProduct[])];
+}
+
 function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
   const translations = translationMap.get(dbProduct.slug);
   const meta = buildProductMeta(dbProduct.slug);
+  const winter = getWinterContent(dbProduct.slug, locale);
+  const winterProduct = getWinterProduct(dbProduct.slug);
+  const previewVisuals = process.env.NODE_ENV === 'development' && process.env.WINTER_2026_LOCAL_PREVIEW === 'true' && winterProduct
+    ? WINTER_VISUALS[winterProduct.key as keyof typeof WINTER_VISUALS] : undefined;
 
   function resolve(i18n: I18nMap, fileField: 'name' | 'description' | 'composition', source: string): string {
     if (locale === 'it') return source;
@@ -164,16 +201,21 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
     description,
     descriptionShort,
     composition: resolve(dbProduct.composition_i18n, 'composition', dbProduct.composition),
-    dimensions: dbProduct.dimensions,
-    images: [...dbProduct.product_images]
+    dimensions: winter?.dimensions ?? dbProduct.dimensions,
+    careInstructions: winter ? WINTER_CARE[locale] : dbProduct.care_instructions,
+    origin: dbProduct.origin,
+    images: previewVisuals && winterProduct?.key !== 'domaso'
+      ? [previewVisuals.product, previewVisuals.cinematic, ...previewVisuals.originals]
+      : [...dbProduct.product_images]
       .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
       .map((img) => img.image_url),
     category: meta.category,
     collections: meta.collections,
     material: meta.material,
     group: meta.group,
-    productType: dbProduct.product_type,
+    productType: dbProduct.product_type ?? getWinterProduct(dbProduct.slug)?.type,
     variants,
+    available: (dbProduct.inventory ?? []).reduce((sum, row) => sum+row.quantity_available, 0),
   };
 }
 
@@ -181,12 +223,12 @@ function localizeProduct(dbProduct: DBProduct, locale: Locale): Product {
 
 export async function getProducts(locale: string): Promise<Product[]> {
   const l = normLocale(locale);
-  const dbProducts = await getCachedProducts();
+  const dbProducts = await getStorefrontProducts();
   return dbProducts.map((p) => localizeProduct(p, l));
 }
 
 export async function getProduct(slug: string, locale: string): Promise<Product | undefined> {
-  const dbProducts = await getCachedProducts();
+  const dbProducts = await getStorefrontProducts();
   const p = dbProducts.find((x) => x.slug === slug);
   return p ? localizeProduct(p, normLocale(locale)) : undefined;
 }

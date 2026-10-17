@@ -330,7 +330,10 @@
       "tshirt": "T-shirt",
       "shorts": "Bermuda",
       "shirt": "Camisa",
-      "beachTowel": "Toalha de lago"
+      "beachTowel": "Toalha de lago",
+      "sweater": "Camisola de gola redonda",
+      "beanie": "Gorro",
+      "turtleneck": "Camisola de gola alta"
     },
     "size": {
       "label": "Tamanho",
@@ -465,7 +468,8 @@
       "continueToPayment": "Continuar para o pagamento",
       "confirmPayment": "Confirmar pagamento",
       "processing": "A processar…",
-      "backToCart": "Voltar ao carrinho"
+      "backToCart": "Voltar ao carrinho",
+      "editDetails": "Alterar os dados"
     },
     "security": {
       "stripe": "Pagamento seguro via Stripe",
@@ -477,13 +481,27 @@
       "description": "Receberá um e-mail de confirmação com os detalhes do envio.",
       "orderNumber": "Número da encomenda",
       "viewOrders": "As minhas encomendas",
-      "continueShopping": "Continuar a comprar"
+      "continueShopping": "Continuar a comprar",
+      "verifyingTitle": "A verificar o pagamento",
+      "verifyingDescription": "Estamos a verificar o pagamento da sua encomenda.",
+      "processingTitle": "Pagamento em processamento",
+      "processingDescription": "O pagamento está em processamento. Aguarde a confirmação antes de tentar novamente.",
+      "failedTitle": "Pagamento não concluído",
+      "cancelledTitle": "Pagamento cancelado",
+      "unverifiedTitle": "Pagamento por verificar",
+      "unverifiedDescription": "Ainda não podemos confirmar este pagamento. O seu carrinho foi conservado.",
+      "testDescription": "Pagamento de teste confirmado. Sem cobrança real, envio ou email de encomenda.",
+      "backToCart": "Voltar ao carrinho",
+      "checkAgain": "Verificar novamente",
+      "refundedTitle": "Encomenda reembolsada",
+      "refundedDescription": "O reembolso desta encomenda foi registado."
     },
     "errors": {
       "emptyCart": "O carrinho está vazio",
       "missingData": "Preencha todos os campos obrigatórios",
       "paymentFailed": "Pagamento não realizado. Tente novamente.",
-      "networkError": "Erro de rede. Tente novamente."
+      "networkError": "Erro de rede. Tente novamente.",
+      "cancelFailed": "Não é possível cancelar este pagamento agora. Aguarde a confirmação."
     },
     "countries": {
       "IT": "Itália",
@@ -503,7 +521,8 @@
       "standard": "Envio padrão",
       "handDelivery": "Entrega em mãos",
       "handDeliveryNote": "Entrega em mãos — sem custos de envio"
-    }
+    },
+    "testMode": "Modo de teste — sem cobrança real"
   },
   "account": {
     "title": "Área reservada",

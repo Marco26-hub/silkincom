@@ -17,8 +17,8 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 1.2, ease: [0.21, 0.47, 0.32, 0.98] } },
 };
 
 function MaterialCardComponent({ material, index }: { material: HomeMaterialCard; index: number }) {
@@ -29,8 +29,8 @@ function MaterialCardComponent({ material, index }: { material: HomeMaterialCard
   return (
     <motion.div
       variants={cardVariants}
-      className={`group flex flex-col overflow-hidden border border-gold-primary/20 bg-[#11100e] p-6 text-warm-white transition-all duration-500 hover:border-gold-primary/55 sm:p-7 md:p-9 ${
-        index < 2 ? 'xl:col-span-3' : 'xl:col-span-2'
+      className={`group flex flex-col overflow-hidden border border-gold-primary/20 bg-[#11100e] p-6 text-warm-white transition-all duration-500 hover:border-gold-primary/55 sm:p-6 xl:p-8 ${
+        index < 2 ? 'lg:col-span-3' : 'lg:col-span-2'
       }`}
       style={{
         boxShadow: '0 24px 70px -42px rgba(23,23,23,0.65)',
@@ -59,7 +59,7 @@ function MaterialCardComponent({ material, index }: { material: HomeMaterialCard
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
             quality={92}
-            className="object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04]"
+            className="object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)]"
           />
         ) : null}
         <div className="pointer-events-none absolute inset-3 border border-warm-white/15" />
@@ -122,8 +122,8 @@ export function Materials({ materials }: { materials?: HomeMaterialCard[] }) {
     <section className="overflow-hidden bg-[#f2ede4] py-24 text-soft-black md:py-32">
       <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8 }}
           className="mb-16 grid items-end gap-8 border-t border-soft-black/20 pt-7 text-left md:grid-cols-[0.65fr_1.35fr] md:gap-12 lg:mb-20"
@@ -143,7 +143,7 @@ export function Materials({ materials }: { materials?: HomeMaterialCard[] }) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-6"
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-6"
         >
           {materials.map((material, index) => (
             <MaterialCardComponent key={material.id} material={material} index={index} />

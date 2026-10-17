@@ -9,6 +9,8 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_COST, computeShipping } from '@/config/shipping';
+import { WINTER_AVAILABILITY } from '@/data/winter-2026';
+import { normLocale } from '@/data/catalog-meta';
 
 export function CartPageClient() {
   const t = useTranslations('cart');
@@ -94,7 +96,7 @@ export function CartPageClient() {
                         <p className="text-soft-grey text-sm">{item.slug}</p>
                         {item.size ? (
                           <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-gold-primary">
-                            Taglia {item.size}
+                            {item.size === 'UNI' ? WINTER_AVAILABILITY.oneSize[normLocale(locale)] : `Taglia ${item.size}`}
                           </p>
                         ) : null}
                       </div>
@@ -113,7 +115,8 @@ export function CartPageClient() {
                         <span className="w-10 text-center text-sm">{item.quantity}</span>
                         <button
                           onClick={() => updateQty(item.slug, item.quantity + 1, item.variantId)}
-                          className="p-2 hover:text-gold-primary transition-colors"
+                          disabled={item.maxQuantity !== undefined && item.quantity >= item.maxQuantity}
+                          className="p-2 hover:text-gold-primary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           aria-label="+"
                         >
                           <Plus className="w-4 h-4" />

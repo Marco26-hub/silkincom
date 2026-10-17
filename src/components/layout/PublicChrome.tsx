@@ -10,6 +10,7 @@ import { CartDrawer } from '@/components/cart/CartDrawer';
 import { FloatingNav } from '@/components/ui/FloatingNav';
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import { WelcomePopup } from '@/components/ui/WelcomePopup';
+import { MotionConfig } from 'framer-motion';
 import type { HomeSectionLocalized } from '@/data/home-content';
 
 export function PublicChrome({
@@ -27,7 +28,7 @@ export function PublicChrome({
   }
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <AnnouncementBar section={announcementSection} />
       <Header />
       <CartDrawer />
@@ -38,6 +39,6 @@ export function PublicChrome({
       <WelcomePopup />
       <CookieBanner />
       <SalesNotification />
-    </>
+    </MotionConfig>
   );
 }

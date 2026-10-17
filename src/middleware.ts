@@ -4,6 +4,8 @@ import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 import { isRecessoEnabled } from '@/lib/recesso';
 import { getValidProductSlugs } from '@/lib/product-slugs';
+import { WINTER_SLUGS } from '@/data/winter-2026';
+import { isWinterView } from '@/data/winter-categories';
 
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
@@ -62,6 +64,16 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Unknown winter categories must return an actual 404 before streaming
+  // the locale layout; page-level notFound() otherwise becomes a soft 404.
+  if (rest.startsWith('/collezioni/inverno/')) {
+    const view = rest.slice('/collezioni/inverno/'.length).replace(/\/$/, '');
+    if (!isWinterView(view)) {
+      console.info('[winter-catalog] Unknown category rejected with HTTP 404:', view);
+      return new NextResponse('Not Found', { status: 404 });
+    }
+  }
+
   // 1c. Real 404 for unknown product slugs. The PDP calls notFound() for missing
   //     slugs, but notFound() in a [locale] page renders with a 200 status here
   //     (next-intl + Next 15 soft-404). Enforce a true 404 in middleware against
@@ -71,7 +83,8 @@ export async function middleware(request: NextRequest) {
     const slug = rest.slice('/prodotto/'.length).split('/')[0];
     if (slug) {
       const valid = await getValidProductSlugs();
-      if (valid && !valid.has(decodeURIComponent(slug))) {
+      const localWinterPreview = process.env.NODE_ENV === 'development' && process.env.WINTER_2026_LOCAL_PREVIEW === 'true' && WINTER_SLUGS.includes(decodeURIComponent(slug));
+      if (valid && !valid.has(decodeURIComponent(slug)) && !localWinterPreview) {
         return new NextResponse('Not Found', { status: 404 });
       }
     }

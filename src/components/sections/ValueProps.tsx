@@ -52,8 +52,8 @@ export function ValueProps({ section }: { section?: HomeSectionLocalized | null 
           >
             <value.icon className="mt-0.5 h-4 w-4 stroke-1 text-gold-primary" />
             <div>
-              <h3 className="mb-1 text-[9px] font-medium uppercase tracking-[0.2em] text-warm-white">{value.title}</h3>
-              <p className="max-w-[210px] text-[10px] font-light leading-relaxed text-warm-white/50 md:text-[11px]">{value.desc}</p>
+              <h3 className="mb-1 font-body text-[11px] font-medium uppercase tracking-[0.08em] text-warm-white">{value.title}</h3>
+              <p className="max-w-[210px] text-xs font-light leading-relaxed text-warm-white/70">{value.desc}</p>
             </div>
           </motion.div>
         ))}

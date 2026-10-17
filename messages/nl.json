@@ -330,7 +330,10 @@
       "tshirt": "T-shirt",
       "shorts": "Bermuda",
       "shirt": "Overhemd",
-      "beachTowel": "Meerlaken"
+      "beachTowel": "Meerlaken",
+      "sweater": "Trui met ronde hals",
+      "beanie": "Muts",
+      "turtleneck": "Coltrui"
     },
     "size": {
       "label": "Maat",
@@ -465,7 +468,8 @@
       "continueToPayment": "Verder naar betaling",
       "confirmPayment": "Betaling bevestigen",
       "processing": "Bezig…",
-      "backToCart": "Terug naar winkelmand"
+      "backToCart": "Terug naar winkelmand",
+      "editDetails": "Gegevens wijzigen"
     },
     "security": {
       "stripe": "Veilige betaling via Stripe",
@@ -477,13 +481,27 @@
       "description": "U ontvangt een bevestigingsmail met de verzendgegevens.",
       "orderNumber": "Bestelnummer",
       "viewOrders": "Mijn bestellingen",
-      "continueShopping": "Verder winkelen"
+      "continueShopping": "Verder winkelen",
+      "verifyingTitle": "Betaling controleren",
+      "verifyingDescription": "We controleren de betaling voor uw bestelling.",
+      "processingTitle": "Betaling wordt verwerkt",
+      "processingDescription": "Uw betaling wordt verwerkt. Wacht op de bevestiging voordat u het opnieuw probeert.",
+      "failedTitle": "Betaling mislukt",
+      "cancelledTitle": "Betaling geannuleerd",
+      "unverifiedTitle": "Betaling nog niet bevestigd",
+      "unverifiedDescription": "We kunnen deze betaling nog niet bevestigen. Uw winkelwagen is behouden.",
+      "testDescription": "Testbetaling bevestigd. Geen echte afschrijving, verzending of bestelmail.",
+      "backToCart": "Terug naar winkelwagen",
+      "checkAgain": "Opnieuw controleren",
+      "refundedTitle": "Bestelling terugbetaald",
+      "refundedDescription": "De terugbetaling voor deze bestelling is geregistreerd."
     },
     "errors": {
       "emptyCart": "De winkelmand is leeg",
       "missingData": "Vul alle verplichte velden in",
       "paymentFailed": "Betaling mislukt. Probeer het opnieuw.",
-      "networkError": "Netwerkfout. Probeer het opnieuw."
+      "networkError": "Netwerkfout. Probeer het opnieuw.",
+      "cancelFailed": "Deze betaling kan nu niet worden geannuleerd. Wacht op de bevestiging."
     },
     "countries": {
       "IT": "Italië",
@@ -503,7 +521,8 @@
       "standard": "Standaardverzending",
       "handDelivery": "Persoonlijke overhandiging",
       "handDeliveryNote": "Persoonlijke overhandiging — geen verzendkosten"
-    }
+    },
+    "testMode": "Testmodus — geen echte afschrijving"
   },
   "account": {
     "title": "Mijn account",

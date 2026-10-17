@@ -5,7 +5,13 @@ import { getFeaturedCollections, getFeaturedCollection } from '@/data/collection
 import { localizedAlternates } from '@/i18n/routing';
 import { ProductFilters } from '@/components/collezioni/ProductFilters';
 import { LarioGrouped } from '@/components/collezioni/LarioGrouped';
+import { Winter2026Preview } from '@/components/collezioni/Winter2026Preview';
 import { APP_URL } from '@/lib/app-url';
+import { WINTER_COPY } from '@/data/winter-2026-copy';
+import { normLocale } from '@/data/catalog-meta';
+import { WINTER_CATEGORY_COPY } from '@/data/winter-category-copy';
+import { WINTER_AREAS, winterAreaProducts } from '@/data/winter-categories';
+import { WINTER_VISUALS } from '@/data/winter-2026-visuals';
 
 export function generateStaticParams() {
   return TAXONOMY_SLUGS.map((slug) => ({ slug }));
@@ -17,6 +23,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const collection = await getFeaturedCollection(slug, locale);
   const cat = collection || [...getCategories(locale), ...getMaterials(locale)].find((c) => c.slug === slug);
   if (!cat) return {};
+  if (slug === 'inverno') {
+    const copy = WINTER_COPY[normLocale(locale)];
+    return {
+      title: copy.catalog,
+      description: WINTER_CATEGORY_COPY[normLocale(locale)].intro,
+      alternates: localizedAlternates(locale, `/collezioni/${slug}`),
+      openGraph: {
+        title: `${copy.title} ${copy.accent}`,
+        description: copy.intro,
+        images: [{
+          url: WINTER_VISUALS.brunate.cinematic,
+          alt: 'Brunate, girocollo uomo in lana pregiata SILKinCOM',
+        }],
+      },
+    };
+  }
   return {
     title: cat.name,
     description: cat.description,
@@ -49,6 +71,10 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
     description: meta.description,
     url: `${APP_URL}${prefix}/collezioni/${slug}`,
     inLanguage: locale,
+    ...(slug === 'inverno' ? { hasPart: WINTER_AREAS.filter(area => winterAreaProducts(inList, area).length > 0).map(area => ({
+      '@type': 'CollectionPage', name: WINTER_CATEGORY_COPY[normLocale(locale)].areas[area].name,
+      url: `${APP_URL}${prefix}/collezioni/inverno/${area}`,
+    })) } : {}),
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: inList.length,
@@ -60,11 +86,27 @@ export default async function CollezioneSlugPage({ params }: { params: Promise<{
           name: p.name,
           url: `${APP_URL}${prefix}/prodotto/${p.slug}`,
           image: p.images?.[0],
-          offers: { '@type': 'Offer', price: p.price.toFixed(2), priceCurrency: 'EUR' },
+          offers: {
+            '@type': 'Offer', price: p.price.toFixed(2), priceCurrency: 'EUR',
+            availability: p.variants.length && p.variants.every(variant => variant.available <= 0)
+              ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+          },
         },
       })),
     },
   };
+
+  if (slug === 'inverno') {
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema).replace(/</g, '\\u003c') }} />
+        <Winter2026Preview
+          locale={locale}
+          products={inList}
+        />
+      </>
+    );
+  }
 
   return (
     <>

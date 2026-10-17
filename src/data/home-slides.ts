@@ -9,7 +9,24 @@ import type { Locale } from '@/i18n/routing';
 type I18nMap = Partial<Record<string, string>> | null;
 
 const SLIDE_TRANSLATION_OVERRIDES: Record<string, { title: Record<string, string>; subtitle: Record<string, string>; alt: Record<string, string> }> = {
-  '5d699b03-9cdb-4a6e-baf1-166bcafe54fb': {
+  'f7685d9b-de4b-4a06-8c92-0fcc044350a3': {
+    title: {
+      it: 'Il twilly||che danza al vento.', en: 'The twilly||dancing in the breeze.',
+      es: 'El twilly||que baila con el viento.', fr: 'Le twilly||qui danse au vent.',
+      de: 'Der Twilly||der im Wind tanzt.', pt: 'O twilly||que dança ao vento.', nl: 'De twilly||die danst in de wind.',
+    },
+    subtitle: {
+      it: 'Un nastro di seta, mille interpretazioni. Al collo, fra i capelli o sulla borsa: il dettaglio che firma il tuo stile.',
+      en: 'A silk ribbon, endless interpretations. Around the neck, in your hair or on a bag: the detail that defines your style.',
+      es: 'Una cinta de seda, mil interpretaciones. Al cuello, en el pelo o en el bolso: el detalle que define su estilo.',
+      fr: 'Un ruban de soie, mille interprétations. Autour du cou, dans les cheveux ou sur un sac : le détail qui signe votre style.',
+      de: 'Ein Seidenband, unzählige Möglichkeiten. Am Hals, im Haar oder an der Tasche: das Detail, das Ihren Stil prägt.',
+      pt: 'Uma fita de seda, mil interpretações. Ao pescoço, no cabelo ou na mala: o detalhe que assina o seu estilo.',
+      nl: 'Een zijden lint, eindeloze mogelijkheden. Om de hals, in het haar of aan een tas: het detail dat uw stijl tekent.',
+    },
+    alt: {},
+  },
+  'ed37153e-7d85-4cd5-a191-c236986d66ad': {
     title: {
       it: "Sinfonia d'estate||il candore del cotone.", en: 'A summer symphony||the purity of cotton.',
       es: 'Sinfonía de verano||la pureza del algodón.', fr: "Symphonie d'été||la pureté du coton.",
@@ -35,7 +52,39 @@ const SLIDE_TRANSLATION_OVERRIDES: Record<string, { title: Record<string, string
       nl: 'Vrouw in een wit katoenen T-shirt en pet met een cocktail op een terras aan het Comomeer.',
     },
   },
+  '5d699b03-9cdb-4a6e-baf1-166bcafe54fb': {
+    title: {
+      it: 'Una sera sul Lago||la leggerezza del bianco.', en: 'An evening by the Lake||the lightness of white.',
+      es: 'Una tarde junto al Lago||la ligereza del blanco.', fr: 'Un soir au bord du Lac||la légèreté du blanc.',
+      de: 'Ein Abend am See||die Leichtigkeit von Weiß.', pt: 'Uma tarde junto ao Lago||a leveza do branco.',
+      nl: 'Een avond aan het meer||de lichtheid van wit.',
+    },
+    subtitle: {
+      it: 'Una camicia bianca, una linea essenziale e la luce del tramonto sul Lago di Como.',
+      en: 'A white shirt, a clean silhouette and sunset light on Lake Como.',
+      es: 'Una camisa blanca, una silueta sencilla y la luz del atardecer sobre el Lago de Como.',
+      fr: 'Une chemise blanche, une ligne épurée et la lumière du couchant sur le lac de Côme.',
+      de: 'Ein weißes Hemd, eine klare Silhouette und Abendlicht am Comer See.',
+      pt: 'Uma camisa branca, uma silhueta simples e a luz do entardecer sobre o Lago de Como.',
+      nl: 'Een wit overhemd, een zuivere lijn en het licht van de zonsondergang aan het Comomeer.',
+    },
+    alt: {
+      it: 'Donna con camicia bianca e occhiali da sole sul Lago di Como al tramonto.',
+      en: 'Woman in a white shirt and sunglasses by Lake Como at sunset.',
+      es: 'Mujer con camisa blanca y gafas de sol junto al Lago de Como al atardecer.',
+      fr: 'Femme en chemise blanche et lunettes de soleil au bord du lac de Côme au coucher du soleil.',
+      de: 'Frau in weißem Hemd und Sonnenbrille am Comer See bei Sonnenuntergang.',
+      pt: 'Mulher com camisa branca e óculos de sol junto ao Lago de Como ao pôr do sol.',
+      nl: 'Vrouw met een wit overhemd en zonnebril aan het Comomeer bij zonsondergang.',
+    },
+  },
 };
+
+const PORTRAIT_SLIDE_IDS = new Set([
+  'f7685d9b-de4b-4a06-8c92-0fcc044350a3',
+  'ed37153e-7d85-4cd5-a191-c236986d66ad',
+  '5d699b03-9cdb-4a6e-baf1-166bcafe54fb',
+]);
 
 export type HomeSlideRow = {
   id: string;
@@ -54,9 +103,11 @@ export type HomeSlide = {
   src: string;
   alt: string;
   focus: string;
+  portrait: boolean;
   titleMain: string;
   titleAccent: string;
   subtitle: string;
+  href?: string;
 };
 
 function pickI18n(map: I18nMap, locale: string): string {
@@ -92,11 +143,17 @@ function localize(row: HomeSlideRow, locale: string): HomeSlide {
   return {
     id: row.id,
     src: row.image_url,
-    alt: pickI18n(override?.alt ?? row.alt_i18n, locale),
-    focus: row.focus || 'center',
+    alt: pickI18n(Object.keys(override?.alt ?? {}).length ? override!.alt : row.alt_i18n, locale),
+    focus: PORTRAIT_SLIDE_IDS.has(row.id) ? '50% 0%' : row.focus || 'center',
+    portrait: PORTRAIT_SLIDE_IDS.has(row.id),
     titleMain: titleMain || '',
     titleAccent,
     subtitle: pickI18n(override?.subtitle ?? row.subtitle_i18n, locale),
+    href: ({
+      'f7685d9b-de4b-4a06-8c92-0fcc044350a3': '/collezioni/twilly-como',
+      'ed37153e-7d85-4cd5-a191-c236986d66ad': '/collezioni/lario',
+      '5d699b03-9cdb-4a6e-baf1-166bcafe54fb': '/collezioni/riva',
+    } as Record<string, string>)[row.id],
   };
 }
 

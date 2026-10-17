@@ -47,6 +47,8 @@
     @apply font-display font-light;
     font-feature-settings: 'dlig' 1, 'kern' 1, 'liga' 1, 'calt' 1, 'swsh' 1;
     letter-spacing: -0.01em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
   }
 
   h1 { @apply text-display-lg md:text-display-xl; }
@@ -233,6 +235,55 @@
 }
 
 @layer components {
+  .home-hero {
+    @apply relative isolate grid overflow-hidden bg-[#181b18] text-[#f5f1e9];
+  }
+  .home-hero-media {
+    @apply relative order-1 mt-[112px] overflow-hidden;
+    height: max(390px, 54svh);
+  }
+  .home-hero-copy {
+    @apply order-2 min-w-0 px-6 pb-10 pt-9 sm:px-10;
+  }
+  .home-hero-title {
+    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    font-feature-settings: 'dlig' 1, 'kern' 1, 'liga' 1, 'calt' 1, 'swsh' 1;
+  }
+  .home-hero-description {
+    @apply mt-7 max-w-[42ch] text-[15px] font-light leading-[1.75] text-white/75;
+  }
+  .home-hero-controls {
+    @apply relative z-10 order-3 mx-6 flex items-center gap-5 border-t border-white/10 pb-5 pt-4 sm:mx-10;
+  }
+  @media (min-width: 1024px) {
+    .home-hero {
+      grid-template-columns: 46% 54%;
+      min-height: max(800px, 100svh);
+    }
+    .home-hero-media {
+      @apply absolute bottom-[110px] right-0 top-[124px] mt-0 h-auto w-[54%];
+    }
+    .home-hero-copy {
+      @apply relative z-10 col-start-1 row-start-1 flex flex-col justify-center;
+      padding: 180px clamp(2rem, 4vw, 5rem) 170px;
+    }
+    .home-hero-title { font-size: clamp(3.25rem, 5.2vw, 5.6rem); }
+    .home-hero-controls {
+      @apply absolute bottom-0 left-0 right-0 mx-10 border-t border-white/25 pb-7 pt-5;
+      background: #181b18;
+    }
+  }
+  .home-restyled > section:not(.home-hero) {
+    scroll-margin-top: 140px;
+  }
+  .home-restyled > section:not(.home-hero) h2 {
+    font-size: clamp(2.5rem, 4.3vw, 4.75rem);
+    line-height: 1.02;
+  }
   /* Legal & FAQ pages — typographic rhythm */
   .legal-content h2 {
     @apply font-display font-light text-2xl md:text-3xl text-soft-black mt-14 mb-5 leading-[1.15];

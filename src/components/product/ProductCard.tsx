@@ -6,6 +6,8 @@ import { Heart } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { getMaterials, type Product } from '@/data/catalog-meta';
+import { getWinterProduct, WINTER_AVAILABILITY } from '@/data/winter-2026';
+import { winterPhotoClass } from '@/data/winter-2026-visuals';
 
 // Each storefront category maps to a product TYPE shown as the secondary
 // eyebrow above the product name (e.g. "T-shirt", "Cappellino"). Keeps the
@@ -99,6 +101,8 @@ export function ProductCard({ product }: { product: Product }) {
   }, []);
   const t = useTranslations('product');
   const locale = useLocale();
+  const winter = getWinterProduct(product.slug);
+  const unavailable = product.available !== undefined ? product.available <= 0 : product.variants.length > 0 && product.variants.every((variant) => variant.available <= 0);
   const taxonomyName = product.material
     ? getMaterials(locale).find((m) => m.slug === product.material)?.name ?? ''
     : '';
@@ -110,7 +114,7 @@ export function ProductCard({ product }: { product: Product }) {
   const typeKey = product.productType?.trim() || CATEGORY_TYPE[product.category] || '';
   // i18n keys live under product.types.* — fall back to '' (no badge) if the
   // type doesn't map to a known key so we don't render an empty chip.
-  const KNOWN_TYPES = ['pashmina', 'scarf', 'twilly', 'cap', 'tshirt', 'shorts', 'shirt', 'beachTowel'];
+  const KNOWN_TYPES = ['pashmina', 'scarf', 'twilly', 'cap', 'tshirt', 'shorts', 'shirt', 'beachTowel', 'sweater', 'beanie', 'turtleneck'];
   const typeLabel = typeKey && KNOWN_TYPES.includes(typeKey) ? t(`types.${typeKey}`) : '';
   // Bellagio variants embed their colourway in the name ("… logo marrone").
   const logoMatch = product.name.match(/logo\s+(bianco|bordeaux|marrone)/i);
@@ -119,7 +123,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article ref={cardRef} className="group relative min-w-0">
       <Link href={`/prodotto/${product.slug}`} className="block">
         <div
-          className="relative isolate mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] md:group-hover:-translate-y-1"
+          className="relative isolate mb-4 aspect-[4/5] overflow-hidden bg-[#d8d0c3] transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)]"
           style={{
             background:
               'radial-gradient(ellipse at 50% 26%, #fdfaf4 0%, #f4eee3 60%, #e7dfd0 116%)',
@@ -133,9 +137,10 @@ export function ProductCard({ product }: { product: Product }) {
               revealed ? 'max-md:border-gold-primary/55' : ''
             }`}
           />
-          <span className="pointer-events-none absolute left-4 top-4 z-10 whitespace-nowrap text-[8px] uppercase tracking-[0.28em] text-soft-black/65 [text-shadow:0_1px_5px_rgba(255,253,248,0.85),0_0_2px_rgba(255,253,248,0.7)] sm:left-5 sm:top-5 sm:tracking-[0.32em]">
+          {(!winter || product.origin) && <span className="pointer-events-none absolute left-4 top-4 z-10 whitespace-nowrap text-[8px] uppercase tracking-[0.28em] text-soft-black/65 [text-shadow:0_1px_5px_rgba(255,253,248,0.85),0_0_2px_rgba(255,253,248,0.7)] sm:left-5 sm:top-5 sm:tracking-[0.32em]">
             Made in Como
-          </span>
+          </span>}
+          {unavailable && <span className="absolute left-3 top-3 z-20 bg-soft-black px-3 py-2 text-[8px] uppercase tracking-[0.2em] text-warm-white">{WINTER_AVAILABILITY.unavailable[locale as keyof typeof WINTER_AVAILABILITY.unavailable]}</span>}
 
           {img1 && (
             <Image
@@ -144,10 +149,10 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className={`object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transform-gpu [backface-visibility:hidden] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)] ${
+              className={`${winter ? winterPhotoClass(img1) : 'object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]'} transform-gpu [backface-visibility:hidden] transition-all ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${
                 img2
-                  ? 'duration-[1100ms] md:group-hover:opacity-0 md:group-hover:scale-[1.02]'
-                  : 'duration-[1500ms] md:group-hover:scale-[1.05]'
+                  ? '[transition-duration:1400ms] md:group-hover:opacity-0'
+                  : '[transition-duration:1400ms]'
               }`}
             />
           )}
@@ -158,7 +163,7 @@ export function ProductCard({ product }: { product: Product }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 320px"
               quality={92}
-              className="object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] transform-gpu [backface-visibility:hidden] transition-all duration-[1100ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 md:group-hover:opacity-100 scale-[1.02] md:group-hover:scale-100 drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]"
+              className={`${winter ? winterPhotoClass(img2) : 'object-contain p-3 pt-7 sm:p-6 sm:pt-9 md:p-9 md:pt-12 mix-blend-multiply brightness-[1.06] drop-shadow-[0_12px_18px_rgba(23,23,23,0.12)]'} transform-gpu [backface-visibility:hidden] transition-all [transition-duration:1400ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] opacity-0 md:group-hover:opacity-100`}
             />
           )}
 

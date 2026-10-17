@@ -9,11 +9,13 @@ import { Materials } from '@/components/sections/Materials';
 import { EditorialBanner } from '@/components/sections/EditorialBanner';
 import { InstagramFeed } from '@/components/sections/InstagramFeed';
 import { Newsletter } from '@/components/sections/Newsletter';
+import { Winter2026HomeEntry } from '@/components/sections/Winter2026HomeEntry';
 import { getLocale } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
-import { getHomeSlides } from '@/data/home-slides';
 import { getFeaturedCollections } from '@/data/collections-db';
 import { getHomeSection, getHomeMaterials } from '@/data/home-content';
+import { getWinter2026HomeSlides } from '@/data/winter-2026-home';
+import { getHomeSlides } from '@/data/home-slides';
 
 // Per-locale homepage title + description. Without these the page inherited the
 // root layout's Italian default for EVERY locale, so a German/French/English
@@ -55,9 +57,17 @@ export default async function HomePage() {
   ]);
   const pick = <T,>(i: number, fallback: T): T => {
     const r = results[i];
-    return r.status === 'fulfilled' ? (r.value as unknown as T) : fallback;
+    if (r.status === 'fulfilled') return r.value as unknown as T;
+    console.error(`[home] Section ${i} unavailable; using its declared fallback:`, r.reason);
+    return fallback;
   };
-  const slides = pick(0, []);
+  const existingSlides = pick<Awaited<ReturnType<typeof getHomeSlides>>>(0, []);
+  // The owner requested people in every hero slide. The fabric close-up
+  // belongs in product/editorial details, not in the opening slideshow.
+  const retainedSlides = existingSlides.filter((slide) => slide.id !== 'b4e9a1ab-7516-4e73-acb8-8da9ca0c7b68');
+  if (!retainedSlides.length) console.warn('[home] No active CMS slides; using the two bundled winter editorials.');
+  const winterSlides = getWinter2026HomeSlides(locale);
+  const slides = [...winterSlides.slice(0, 1), ...retainedSlides, ...winterSlides.slice(1)];
   const featured = pick(1, []);
   const brandStory = pick(2, null);
   const editorial = pick(3, null);
@@ -66,17 +76,20 @@ export default async function HomePage() {
   const valueProps = pick(6, null);
   return (
     <>
+      <div className="home-restyled">
       <Hero slides={slides} />
-      <ShopStrip />
-      <TrustpilotReviews />
       <ValueProps section={valueProps} />
       <FeaturedCollections collections={featured} />
-      <BrandStory section={brandStory} />
+      <Winter2026HomeEntry locale={locale} />
       <BestsellerSection />
+      <ShopStrip />
+      <BrandStory section={brandStory} />
       <Materials materials={materials} />
       <EditorialBanner section={editorial} />
+      <TrustpilotReviews compact />
       <InstagramFeed section={instagram} />
       <Newsletter />
+      </div>
     </>
   );
 }

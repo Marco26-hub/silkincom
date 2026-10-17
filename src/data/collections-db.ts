@@ -5,6 +5,7 @@
 import { unstable_cache } from 'next/cache';
 import { createPublicClient } from '@/lib/supabase/server';
 import type { Locale } from '@/i18n/routing';
+import { getCollections } from './catalog-meta';
 
 type I18nMap = Partial<Record<string, string>> | null;
 
@@ -55,8 +56,7 @@ async function fetchCollectionsFromDB(): Promise<CollectionRow[]> {
     .order('display_order', { ascending: true, nullsFirst: false });
 
   if (error) {
-    console.error('Error fetching collections:', error);
-    return [];
+    throw new Error(`Collections query failed: ${error.code || 'unknown database error'}`);
   }
   return (data as CollectionRow[]) || [];
 }
@@ -83,12 +83,18 @@ function localize(row: CollectionRow, locale: string): FeaturedCollection {
 }
 
 export async function getFeaturedCollections(locale: Locale | string): Promise<FeaturedCollection[]> {
-  const rows = await getCachedCollections();
-  return rows.map((r) => localize(r, locale));
+  try {
+    const rows = await getCachedCollections();
+    return rows.map((r) => localize(r, locale));
+  } catch (error) {
+    console.error('[collections] CMS unavailable; using the bundled collection navigation.', error);
+    return getCollections(locale).map((collection, displayOrder) => ({
+      ...collection, id: `fallback-${collection.slug}`, displayOrder, isActive: true,
+    }));
+  }
 }
 
 export async function getFeaturedCollection(slug: string, locale: Locale | string): Promise<FeaturedCollection | null> {
-  const rows = await getCachedCollections();
-  const row = rows.find((r) => r.slug === slug);
-  return row ? localize(row, locale) : null;
+  const collections = await getFeaturedCollections(locale);
+  return collections.find(collection => collection.slug === slug) ?? null;
 }

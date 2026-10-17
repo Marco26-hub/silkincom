@@ -7,6 +7,7 @@ import '../globals.css';
 import { PublicChrome } from '@/components/layout/PublicChrome';
 import { Analytics } from '@/components/analytics/Analytics';
 import { FirstPartyBeacon } from '@/components/analytics/FirstPartyBeacon';
+import { Trustpilot } from '@/components/analytics/Trustpilot';
 import { routing } from '@/i18n/routing';
 import { getHomeSection } from '@/data/home-content';
 import { APP_URL } from '@/lib/app-url';
@@ -218,8 +219,14 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-screen bg-warm-white text-soft-black antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Analytics />
-          <FirstPartyBeacon />
+          {process.env.NODE_ENV === 'development' && process.env.WINTER_2026_LOCAL_PREVIEW === 'true' && (
+            <div className="fixed inset-x-0 top-0 z-[100] bg-[#d3ad58] px-4 py-2 text-center text-[10px] font-medium text-[#11100e]">
+              Anteprima locale · Tre bozze Inverno 2026 · Prodotti non pubblicati
+            </div>
+          )}
+          {!(process.env.NODE_ENV === 'development' && process.env.WINTER_2026_LOCAL_PREVIEW === 'true') && <Analytics />}
+          <Trustpilot />
+          {!(process.env.NODE_ENV === 'development' && process.env.WINTER_2026_LOCAL_PREVIEW === 'true') && <FirstPartyBeacon />}
           <PublicChrome announcementSection={announcementSection}>{children}</PublicChrome>
         </NextIntlClientProvider>
       </body>

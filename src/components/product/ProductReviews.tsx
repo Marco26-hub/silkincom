@@ -30,6 +30,7 @@ const REPLY_LABEL: Record<string, string> = {
 type Props = {
   productSlug: string;
   isAuthenticated: boolean;
+  originConfirmed?: boolean;
 };
 
 type Review = {
@@ -43,7 +44,7 @@ type Review = {
   admin_reply: string | null;
 };
 
-export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
+export async function ProductReviews({ productSlug, isAuthenticated, originConfirmed = true }: Props) {
   const t = await getTranslations('product');
   const locale = await getLocale();
   const tr = (m: Record<string, string>) => m[locale] ?? m.en ?? m.it;
@@ -124,7 +125,7 @@ export async function ProductReviews({ productSlug, isAuthenticated }: Props) {
           </h3>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 text-left mb-8">
             {[
-              { Icon: MapPin, text: tr(TRUST.heritage) },
+              ...(originConfirmed ? [{ Icon: MapPin, text: tr(TRUST.heritage) }] : []),
               { Icon: RotateCcw, text: tr(TRUST.guarantee) },
               { Icon: ShieldCheck, text: tr(TRUST.secure) },
               { Icon: BadgeCheck, text: tr(TRUST.company) },

@@ -16,6 +16,9 @@ import { SizeGuideModal } from '@/components/product/SizeGuideModal';
 import { StarRating } from '@/components/product/StarRating';
 import { createServerClient, createServiceClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
+import { getWinterProduct } from '@/data/winter-2026';
+import { WINTER_MACRO_ALT, WINTER_MAGAZINE_ALT, winterPhotoClass, isWinterMacro, isWinterMagazine } from '@/data/winter-2026-visuals';
+import { normLocale } from '@/data/catalog-meta';
 
 function materialName(slug: string | undefined, locale: string): string {
   if (!slug) return '';
@@ -89,13 +92,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const locale = await getLocale();
   const p = await getProduct(slug, locale);
   if (!p) return {};
+  const winter = getWinterProduct(p.slug);
   const mat = materialName(p.material, locale);
   const rawColor = colorFromSlug(p.slug, p.category);
-  const color = rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? titleCase(rawColor) : '';
+  const color = !winter && rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? titleCase(rawColor) : '';
   const colorBit = color ? ` ${color}` : '';
-  const type = TYPE_BY_CAT[p.category]?.[locale] ?? '';
+  const type = winter ? (await getTranslations('product'))(`types.${winter.type}`) : TYPE_BY_CAT[p.category]?.[locale] ?? '';
   const typeMat = [type, mat].filter(Boolean).join(' · ');         // e.g. "Foulard · Seta"
-  const ship = SHIP_SUFFIX[locale] ?? SHIP_SUFFIX.it;
+  const shipSuffix = SHIP_SUFFIX[locale] ?? SHIP_SUFFIX.it;
+  const ship = winter && !p.origin ? shipSuffix.replace(/^Made in Como\. /, '') : shipSuffix;
 
   // The root layout applies a "%s | SILKinCOM" title template, so the brand is
   // appended automatically — don't add it here (it doubled before).
@@ -103,7 +108,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = ogTitle;
   // Keyword-first description: type+material+name up front (so the buying query
   // matches), then the native short copy, then the commercial shipping hook.
-  const lead = `${type ? type + ' ' : ''}${p.name}${colorBit}${mat ? ' in ' + mat : ''}`.trim();
+  const lead = winter ? p.name : `${type ? type + ' ' : ''}${p.name}${colorBit}${mat ? ' in ' + mat : ''}`.trim();
   const base = (p.descriptionShort || '').replace(/\s+/g, ' ').trim();
   let description = `${lead}. ${base ? base + ' ' : ''}${ship}`.replace(/\s+/g, ' ').trim();
   if (description.length > 160) description = description.slice(0, 157).trimEnd() + '…';
@@ -144,15 +149,16 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   const materialLabel = materialName(p.material, locale);
   const rawColor = colorFromSlug(p.slug, p.category);
   const color = rawColor && !p.name.toLowerCase().includes(rawColor.toLowerCase()) ? rawColor : '';
-  const colorLabel = color ? titleCase(color) : '';
-  const altDescriptor = [p.name, color, materialLabel].filter(Boolean).join(' ');
+  const winter = getWinterProduct(p.slug);
+  const colorLabel = !winter && color ? titleCase(color) : '';
+  const altDescriptor = winter ? p.name : [p.name, color, materialLabel].filter(Boolean).join(' ');
   const related = (await getProducts(locale)).filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
   const seoCatSlug = PRODUCT_CAT_TO_SEO[p.category];
   const seoCat = seoCatSlug ? getSeoCategory(seoCatSlug) : undefined;
 
   const prefix = locale === 'it' ? '' : `/${locale}`;
   const productUrl = `${APP_URL}${prefix}/prodotto/${p.slug}`;
-  const availability = p.variants.length > 0 && p.variants.every((variant) => variant.available <= 0)
+  const availability = (p.available !== undefined && p.available <= 0) || (p.variants.length > 0 && p.variants.every((variant) => variant.available <= 0))
     ? 'https://schema.org/OutOfStock'
     : 'https://schema.org/InStock';
 
@@ -194,17 +200,17 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     '@id': `${productUrl}#product`,
     name: productFullName,
     description: p.description,
-    sku: p.slug,
+    sku: winter ? p.sku : p.slug,
     // mpn (manufacturer part number) as the global identifier — artisan goods
     // have no GTIN, so brand + mpn satisfies Google. (Was `gtin: p.slug`, an
     // INVALID GTIN that triggered the Merchant "GTIN non valido" warning.)
-    mpn: p.slug,
+    mpn: winter ? p.sku : p.slug,
     image: p.images,
     url: productUrl,
     brand: { '@type': 'Brand', name: 'SILKinCOM' },
     material: materialLabel || 'Fibra naturale pregiata',
     color: colorLabel || undefined,
-    countryOfOrigin: 'IT',
+    countryOfOrigin: !winter || p.origin ? 'IT' : undefined,
     category: cat?.name,
     manufacturer: { '@type': 'Organization', name: 'SILKinCOM', url: APP_URL },
     offers: {
@@ -290,7 +296,8 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
               {p.images.map((img, i) => (
                 <div
                   key={i}
-                  className={`group relative overflow-hidden border border-gold-primary/15 ${
+                  id={isWinterMacro(img) ? 'macro-ricamo' : isWinterMagazine(img) ? 'foto-magazine' : undefined}
+                  className={`group relative scroll-mt-32 overflow-hidden border border-gold-primary/15 ${
                     i === 0 ? 'col-span-2 aspect-[4/5]' : 'aspect-square'
                   }`}
                   style={{
@@ -300,21 +307,19 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                 >
                   <div className="pointer-events-none absolute inset-3 z-10 border border-warm-white/45 transition-colors duration-700 group-hover:border-gold-primary/65" />
                   {/* Floor shadow under product */}
-                  <div
+                  {!winter && <div
                     className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[8%] w-[55%] h-4 opacity-50 blur-md"
                     style={{
                       background: 'radial-gradient(ellipse at center, rgba(23,23,23,0.30) 0%, transparent 70%)',
                     }}
-                  />
+                  />}
                   <Image
                     src={img}
-                    alt={`${altDescriptor} — vista ${i + 1}`}
+                    alt={isWinterMacro(img) ? WINTER_MACRO_ALT[normLocale(locale)] : isWinterMagazine(img) ? WINTER_MAGAZINE_ALT[normLocale(locale)] : `${altDescriptor} — vista ${i + 1}`}
                     fill
                     sizes={i === 0 ? '(max-width: 1024px) 100vw, 60vw' : '(max-width: 1024px) 50vw, 30vw'}
                     quality={95}
-                    className={`object-contain mix-blend-multiply brightness-[1.06] transition-transform duration-[1800ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04] drop-shadow-[0_12px_24px_rgba(23,23,23,0.12)] ${
-                      i === 0 ? 'p-10 md:p-20 lg:p-24' : 'p-6 md:p-12'
-                    }`}
+                    className={`${winter ? winterPhotoClass(img) : `object-contain mix-blend-multiply brightness-[1.06] drop-shadow-[0_12px_24px_rgba(23,23,23,0.12)] ${i === 0 ? 'p-10 md:p-20 lg:p-24' : 'p-6 md:p-12'}`} transition-transform duration-[1800ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.04]`}
                     priority={i === 0}
                   />
                 </div>
@@ -359,7 +364,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
 
               {/* Inventory urgency */}
               <div className="mb-3">
-                <InventoryBadge productSlug={p.slug} />
+                <InventoryBadge productSlug={p.slug} variantStock={p.available} />
               </div>
 
               {/* CTA — size selector (apparel) + AddToCart + Wishlist */}
@@ -370,19 +375,21 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                   price={p.price}
                   image={p.images[0] || ''}
                   variants={p.variants}
+                  available={p.available}
+                  previewOnly={process.env.NODE_ENV === 'development' && process.env.WINTER_2026_LOCAL_PREVIEW === 'true'}
                 />
               </div>
 
               {/* Heritage strip */}
               <div className="grid grid-cols-2 gap-4 py-6 border-y border-pearl-grey/60 mb-10 text-[10px] uppercase tracking-[0.2em] text-soft-grey font-light">
-                <div className="flex items-start gap-2">
+                {(!winter || p.origin) && <div className="flex items-start gap-2">
                   <MapPin className="w-3 h-3 text-gold-primary mt-0.5 flex-shrink-0" />
                   <span>{t('perks.madeInComo')}</span>
-                </div>
-                <div className="flex items-start gap-2">
+                </div>}
+                {(!winter || p.origin) && <div className="flex items-start gap-2">
                   <Sparkles className="w-3 h-3 text-gold-primary mt-0.5 flex-shrink-0" />
                   <span>{t('perks.artisan')}</span>
-                </div>
+                </div>}
                 <div className="flex items-start gap-2">
                   <Truck className="w-3 h-3 text-gold-primary mt-0.5 flex-shrink-0" />
                   <span>{t('perks.shipping')}</span>
@@ -433,10 +440,17 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
                     <Link href="/cura-prodotto" className="inline-block text-[11px] uppercase tracking-[0.25em] text-gold-primary border-b border-gold-primary/40 hover:border-gold-primary pb-0.5">
                       {t('tabs.care')}
                     </Link>
-                    <SizeGuideModal />
+                    {!winter && <SizeGuideModal />}
                   </div>
                 </div>
               </details>
+
+              {p.careInstructions && <details className="group border-b border-pearl-grey/60 py-5">
+                <summary className="flex justify-between items-center cursor-pointer list-none text-[11px] uppercase tracking-[0.3em] text-soft-black">
+                  <span>{t('tabs.care')}</span><span className="text-gold-primary">+</span>
+                </summary>
+                <p className="mt-5 text-sm font-light text-soft-black/80 leading-[1.8]">{p.careInstructions}</p>
+              </details>}
 
               <details className="group border-b border-pearl-grey/60 py-5">
                 <summary className="flex justify-between items-center cursor-pointer list-none text-[11px] uppercase tracking-[0.3em] text-soft-black hover:text-gold-primary transition-colors">
@@ -471,7 +485,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
               })}
             </h2>
           </div>
-          <ProductReviews productSlug={p.slug} isAuthenticated={isAuthenticated} />
+          <ProductReviews productSlug={p.slug} isAuthenticated={isAuthenticated} originConfirmed={!winter || Boolean(p.origin)} />
         </div>
       </section>
 

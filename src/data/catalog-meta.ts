@@ -5,6 +5,8 @@
 import catalogI18n from './catalog-i18n.json';
 import productsJson from './products.json';
 import { LOCALES, type Locale } from '@/i18n/routing';
+import { getWinterProduct, WINTER_PRODUCTS } from './winter-2026';
+import { WINTER_VISUALS } from './winter-2026-visuals';
 
 export type Material = 'seta' | 'cashmere' | 'lana' | 'lino' | 'cotone' | 'misto';
 export type ProductGroup = 'abbigliamento' | 'accessori';
@@ -57,6 +59,8 @@ export type Product = {
   descriptionShort: string;
   composition: string;
   dimensions: string;
+  careInstructions?: string;
+  origin?: string;
   images: string[];
   category: string;
   collections: string[];
@@ -71,6 +75,7 @@ export type Product = {
   // tivan). Empty array for accessories (scarves, foulards). Sorted in
   // canonical XS→XXXL order.
   variants: ProductVariant[];
+  available?: number;
 };
 
 export type RawProduct = {
@@ -148,6 +153,8 @@ function collectionsOf(category: string): string[] {
 export type ProductMeta = { category: string; collections: string[]; material: Material; group?: ProductGroup };
 
 export function buildProductMeta(slug: string): ProductMeta {
+  const winter = getWinterProduct(slug);
+  if (winter) return { category: winter.key, collections: ['inverno'], material: winter.material as Material, group: winter.group as ProductGroup };
   const category = categoryOf(slug);
   return {
     category,
@@ -185,6 +192,16 @@ const CATEGORIES_RAW: RawCategory[] = CATEGORY_META.map((c) => ({
   description: i18n.categoryDescription[c.slug],
   image: c.image,
 }));
+
+for (const product of WINTER_PRODUCTS) {
+  CATEGORIES_RAW.push({
+    slug: product.key,
+    name: product.key[0].toUpperCase() + product.key.slice(1),
+    material: i18n.materialName[product.material],
+    description: Object.fromEntries(Object.entries(product.content).map(([locale, copy]) => [locale, copy.short])) as L10n,
+    image: WINTER_VISUALS[product.key as keyof typeof WINTER_VISUALS].product,
+  });
+}
 
 export const CATEGORY_SLUGS: string[] = CATEGORIES_RAW.map((c) => c.slug);
 
@@ -289,8 +306,8 @@ type RawGroup = { slug: ProductGroup; name: L10n; categories: string[] };
 export type Group = { slug: ProductGroup; name: string; categories: string[] };
 
 const GROUPS_RAW: RawGroup[] = [
-  { slug: 'abbigliamento', name: i18n.groupName.abbigliamento, categories: ['lario', 'riva', 'melzi', 'darsena'] },
-  { slug: 'accessori',     name: i18n.groupName.accessori,     categories: ['bellagio', 'cernobbio', 'tremezzo', 'varenna', 'twilly-como', 'tivan'] },
+  { slug: 'abbigliamento', name: i18n.groupName.abbigliamento, categories: ['lario', 'riva', 'melzi', 'darsena', 'brunate', 'domaso'] },
+  { slug: 'accessori',     name: i18n.groupName.accessori,     categories: ['bellagio', 'cernobbio', 'tremezzo', 'varenna', 'twilly-como', 'tivan', 'menaggio'] },
 ];
 
 export function getGroups(locale: string): Group[] {

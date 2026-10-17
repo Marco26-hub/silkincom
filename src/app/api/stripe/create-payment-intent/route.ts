@@ -5,6 +5,8 @@ import { createServiceClient, createServerClient } from '@/lib/supabase/server';
 import { computeShipping } from '@/config/shipping';
 import { rateLimit } from '@/lib/rate-limit';
 import { antibotGate } from '@/lib/antibot';
+import { WINTER_SLUGS } from '@/data/winter-2026';
+import { validateWinterStock } from '@/lib/winter-stock';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -88,6 +90,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (dbProducts?.some(product => product.status !== 'published')) {
+      console.info('[checkout] Unpublished product refused before order creation.');
+      return NextResponse.json({ error: 'Prodotto non disponibile.' }, { status: 409 });
+    }
+
     // Resolve variants (size + price_override) for the items that carry one.
     const variantIds = Array.from(
       new Set(items.map((i) => i.variant_id).filter((v): v is string => !!v))
@@ -110,6 +117,26 @@ export async function POST(req: NextRequest) {
           { error: `Varianti non trovate: ${missingV.join(', ')}` },
           { status: 400 }
         );
+      }
+    }
+
+    // Winter launch uses the current payment flow with an explicit size/stock guard.
+    const winterItems = items.filter(item => WINTER_SLUGS.includes(item.slug)).map(item => ({
+      product_id: productMap.get(item.slug)!.id, product_slug: item.slug,
+      variant_id: item.variant_id ?? null, quantity: item.quantity,
+    }));
+    if (winterItems.length) {
+      const { data: inventory, error: inventoryError } = await supabase.from('inventory')
+        .select('product_id,variant_id,quantity_available')
+        .in('product_id', Array.from(new Set(winterItems.map(item => item.product_id))));
+      if (inventoryError) {
+        console.error('[checkout] Winter inventory read failed:', inventoryError.code);
+        return NextResponse.json({ error: 'Disponibilità temporaneamente non verificabile.' }, { status: 503 });
+      }
+      const stockError = validateWinterStock(winterItems, Array.from(variantMap.values()), inventory ?? []);
+      if (stockError) {
+        console.info('[checkout] Winter stock refusal:', stockError);
+        return NextResponse.json({ error: stockError }, { status: 409 });
       }
     }
 

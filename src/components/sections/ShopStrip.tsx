@@ -13,7 +13,7 @@ type Tile = { href: string; label: Record<string, string>; priceFrom: number; im
 
 const TILES: Tile[] = [
   { href: '/foulard-seta', priceFrom: 75, image: '/instagram/ig-02.webp', label: { it: 'Foulard di seta', en: 'Silk foulards', de: 'Seidentücher', fr: 'Foulards en soie', es: 'Foulards de seda', pt: 'Lenços de seda', nl: 'Zijden foulards' } },
-  { href: '/sciarpe-seta', priceFrom: 70, image: '/instagram/ig-10.webp', label: { it: 'Sciarpe in cashmere', en: 'Cashmere scarves', de: 'Kaschmirschals', fr: 'Écharpes cachemire', es: 'Bufandas de cachemir', pt: 'Cachecóis de caxemira', nl: 'Kasjmier sjaals' } },
+  { href: '/sciarpe-seta', priceFrom: 70, image: '/instagram/ig-10.webp', label: { it: 'Sciarpe', en: 'Scarves', de: 'Schals', fr: 'Écharpes', es: 'Bufandas', pt: 'Cachecóis', nl: 'Sjaals' } },
   { href: '/pashmine-cashmere', priceFrom: 120, image: '/instagram/ig-05.webp', label: { it: 'Pashmine in cashmere', en: 'Cashmere pashminas', de: 'Kaschmir-Pashminas', fr: 'Pashminas cachemire', es: 'Pashminas de cachemir', pt: 'Pashminas de caxemira', nl: 'Kasjmier pashmina’s' } },
   { href: '/camicie-lino', priceFrom: 75, image: '/instagram/ig-01.webp', label: { it: 'Camicie in lino', en: 'Linen shirts', de: 'Leinenhemden', fr: 'Chemises en lin', es: 'Camisas de lino', pt: 'Camisas de linho', nl: 'Linnen overhemden' } },
   { href: '/regalo-seta-donna', priceFrom: 0, image: '/instagram/ig-08.webp', label: { it: 'Idee regalo', en: 'Gift ideas', de: 'Geschenkideen', fr: 'Idées cadeaux', es: 'Ideas de regalo', pt: 'Ideias de presente', nl: 'Cadeau-ideeën' } },
@@ -46,25 +46,25 @@ export function ShopStrip() {
             <Link
               key={tile.href}
               href={tile.href}
-              className="group relative min-w-[76vw] snap-center overflow-hidden border border-gold-primary/25 bg-soft-black aspect-[4/5] sm:min-w-[44vw] md:min-w-0 md:aspect-[3/4]"
+              className="group relative min-w-[76vw] snap-center overflow-hidden bg-soft-black aspect-[4/5] sm:min-w-[44vw] md:min-w-0 md:aspect-[3/4]"
             >
               <Image
                 src={tile.image}
                 alt={pick(tile.label)}
                 fill
                 sizes="(max-width: 767px) 76vw, 20vw"
-                className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)] group-hover:scale-[1.06]"
+                className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.21,0.47,0.32,0.98)]"
               />
               <span className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-black/10 transition-colors duration-700 group-hover:from-black" />
-              <span className="absolute inset-3 border border-warm-white/15 transition-colors duration-700 group-hover:border-gold-primary/60" />
+
               <span className="absolute left-6 top-6 text-[9px] uppercase tracking-[0.35em] text-gold-primary">
                 0{index + 1}
               </span>
-              <span className="absolute inset-x-0 bottom-0 p-7">
+              <span className="absolute inset-x-0 bottom-0 p-5">
                 <span className="font-display block text-[2rem] md:text-2xl lg:text-[1.7rem] font-light leading-[1.02] text-warm-white">
                   {pick(tile.label)}
                 </span>
-                <span className="mt-4 flex items-center justify-between border-t border-warm-white/25 pt-4 text-[9px] uppercase tracking-[0.24em] text-warm-white/70">
+                <span className="mt-4 flex items-center justify-between border-t border-warm-white/25 pt-4 text-[11px] uppercase tracking-[0.1em] text-warm-white/70">
                   <span>{tile.priceFrom > 0 ? `${pick(FROM)} €${tile.priceFrom}` : 'SILKinCOM'}</span>
                   <ArrowUpRight className="w-4 h-4 text-gold-primary transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </span>

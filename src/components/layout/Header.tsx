@@ -2,13 +2,15 @@
 
 import { Link } from '@/i18n/navigation';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Search, User, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu } from 'lucide-react';
 import { useCart } from '@/store/cart';
 import { Logo } from './Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SearchOverlay } from './SearchOverlay';
+import { PremiumMobileMenu } from './PremiumMobileMenu';
 
 export function Header() {
   const t = useTranslations('nav');
@@ -19,11 +21,11 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const { openCart, count } = useCart();
   const cartCount = count();
+  const closeMobileMenu = useCallback(() => setMobileOpen(false), []);
 
-  // Homepage carries a full-bleed dark hero. Until the user scrolls past
-  // it the header is transparent with ivory text + drop-shadow so the
-  // luxury photography breathes. Every other route uses the solid warm-
-  // white treatment for crisp readability.
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
+  // Keep the opening navigation restrained; every destination remains in the drawer.
   const isHome = /^\/(?:it|en|es|fr|de|pt|nl)?\/?$/.test(pathname || '/');
   const overHero = isHome && !scrolled;
 
@@ -51,107 +53,23 @@ export function Header() {
 
   return (
     <>
-      <header
-        className={`fixed top-9 left-0 right-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] ${
-          overHero
-            ? 'bg-transparent py-3 md:py-4'
-            : scrolled
-            ? 'bg-[#11100e]/95 backdrop-blur-xl border-b border-gold-primary/20 py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.2)]'
-            : 'bg-[#11100e]/95 backdrop-blur-xl py-3 md:py-4 border-b border-gold-primary/15 shadow-[0_12px_40px_rgba(0,0,0,0.18)]'
-        }`}
-      >
-        {/* Hero scrim — only over homepage hero, gives links a contrast
-            cushion without committing to a solid bar. */}
-        {overHero ? (
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 -top-9 h-[200%] bg-gradient-to-b from-soft-black/55 via-soft-black/25 to-transparent"
-          />
-        ) : null}
-
-        <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-warm-white">
-          {/* Left nav (desktop) */}
-          <nav className={`hidden lg:flex items-center lg:justify-end gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
-            {NAV_LINKS.slice(0, 4).map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="whitespace-nowrap hover:text-gold-primary transition-colors duration-300 relative group"
-              >
-                {l.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-primary group-hover:w-full transition-all duration-300" />
-              </Link>
-            ))}
-          </nav>
-
-          {/* Mobile menu button */}
-          <button
-            className="lg:hidden text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]"
-            onClick={() => setMobileOpen(true)}
-            aria-label={tc('menu')}
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
-          {/* Logo — hero brand presence. Over the dark hero the default
-              (halo) treatment pops; on the solid cream bar the gold is
-              deepened so it never washes out. */}
-          <div className="flex justify-center">
-            <Logo
-              size={scrolled ? 'md' : 'lg'}
-              variant={overHero ? 'default' : 'gold'}
-              withMark
-            />
+      <header className={`fixed left-0 right-0 top-9 z-40 border-b transition-[background-color,border-color] duration-300 ${overHero ? 'border-white/15 bg-[#181b18]/75 backdrop-blur-md' : 'border-white/15 bg-[#181b18]/95 backdrop-blur-xl'}`}>
+        <div className="mx-auto grid h-[76px] max-w-[1680px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 text-warm-white sm:px-10 lg:h-[88px]">
+          <div className="flex min-w-0 items-center gap-6">
+            <button className="inline-flex min-h-11 min-w-11 items-center gap-3 text-warm-white transition-colors hover:text-[#d8bf89]" onClick={() => setMobileOpen(true)} aria-label={tc('menu')} aria-expanded={mobileOpen} aria-controls="mobile-navigation" aria-haspopup="dialog">
+              <Menu aria-hidden="true" className="h-5 w-5" strokeWidth={1.3} />
+              <span className="hidden text-[11px] uppercase tracking-[0.16em] sm:inline">{tc('menu')}</span>
+            </button>
+            <Link href="/collezioni" className="hidden min-h-11 items-center text-[11px] uppercase tracking-[0.14em] transition-colors hover:text-[#d8bf89] lg:inline-flex">{t('collections')}</Link>
           </div>
-
-          {/* Right nav + icons */}
-          <div className={`hidden lg:flex items-center justify-start gap-6 xl:gap-8 text-[11px] uppercase tracking-[0.28em] font-light ${overHero ? '[text-shadow:0_1px_3px_rgba(0,0,0,0.55)]' : ''}`}>
-            {NAV_LINKS.slice(4).map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="whitespace-nowrap hover:text-gold-primary transition-colors duration-300 relative group"
-              >
-                {l.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-primary group-hover:w-full transition-all duration-300" />
-              </Link>
-            ))}
-            <div className={`ml-auto flex items-center gap-4 pl-4 border-l ${overHero ? 'border-warm-white/30' : 'border-pearl-grey/60'}`}>
-              <button aria-label={t('search')} onClick={() => setSearchOpen(true)} className="hover:text-gold-primary transition-colors">
-                <Search className="w-[18px] h-[18px]" />
-              </button>
-              <Link href="/account" aria-label={t('account')} className="hover:text-gold-primary transition-colors">
-                <User className="w-[18px] h-[18px]" />
-              </Link>
-              <button
-                aria-label={`${t('cart')} (${cartCount})`}
-                onClick={openCart}
-                className="relative hover:text-gold-primary transition-colors"
-              >
-                <ShoppingBag className="w-[18px] h-[18px]" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-gold-primary text-warm-white text-[9px] rounded-full flex items-center justify-center font-medium">
-                    {cartCount > 9 ? '9+' : cartCount}
-                  </span>
-                )}
-              </button>
-              <LanguageSwitcher variant="minimal" />
-            </div>
-          </div>
-
-          {/* Mobile right icons */}
-          <div className="lg:hidden flex justify-end gap-4 text-warm-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-            <button
-              aria-label={`${t('cart')} (${cartCount})`}
-              onClick={openCart}
-              className="relative"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-gold-primary text-warm-white text-[8px] rounded-full flex items-center justify-center">
-                  {cartCount > 9 ? '9+' : cartCount}
-                </span>
-              )}
+          <div className="flex justify-center"><Logo size="md" variant="default" withMark /></div>
+          <div className="flex min-w-0 items-center justify-end gap-0 sm:gap-2">
+            <div className="mr-2 hidden xl:block"><LanguageSwitcher variant="minimal" /></div>
+            <button aria-label={t('search')} onClick={() => setSearchOpen(true)} className="hidden h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89] sm:flex"><Search aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.3} /></button>
+            <Link href="/account" aria-label={t('account')} className="hidden h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89] md:flex"><User aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.3} /></Link>
+            <button aria-label={`${t('cart')} (${cartCount})`} onClick={openCart} className="relative flex h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89]">
+              <ShoppingBag aria-hidden="true" className="h-5 w-5" strokeWidth={1.3} />
+              {cartCount > 0 && <span className="absolute right-0 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#d8bf89] px-1 text-[9px] font-medium text-[#181b18]">{cartCount > 9 ? '9+' : cartCount}</span>}
             </button>
           </div>
         </div>
@@ -159,43 +77,17 @@ export function Header() {
 
       {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-[#11100e] text-warm-white lg:hidden">
-          <div className="flex justify-between items-center p-6 border-b border-gold-primary/20">
-            <Logo size="sm" variant="gold" href={null} withMark />
-            <button onClick={() => setMobileOpen(false)} aria-label={tc('close')}>
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-          <nav className="flex flex-col p-6 gap-6 text-sm uppercase tracking-[0.2em]">
-            {NAV_LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setMobileOpen(false)}
-                className="hover:text-gold-primary transition-colors"
-              >
-                {l.label}
-              </Link>
-            ))}
-            <div className="border-t border-gold-primary/20 pt-6 mt-2 flex flex-col gap-4 text-xs text-warm-white/75">
-              <Link href="/account" onClick={() => setMobileOpen(false)}>
-                {t('account')}
-              </Link>
-              <button
-                onClick={() => { setMobileOpen(false); openCart(); }}
-                className="text-left"
-              >
-                {t('cart')} {cartCount > 0 && `(${cartCount})`}
-              </button>
-              <div className="pt-2">
-                <LanguageSwitcher />
-              </div>
-            </div>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <PremiumMobileMenu
+            links={NAV_LINKS}
+            cartCount={cartCount}
+            onClose={closeMobileMenu}
+            onCart={() => { closeMobileMenu(); openCart(); }}
+            onSearch={() => { closeMobileMenu(); setSearchOpen(true); }}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

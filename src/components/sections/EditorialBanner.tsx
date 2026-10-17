@@ -38,8 +38,8 @@ export function EditorialBanner({ section }: { section?: HomeSectionLocalized | 
 
       <div className="relative z-10 mx-auto flex h-full max-w-[1500px] items-end px-8 pb-16 text-left text-warm-white sm:px-12 md:pb-24 lg:px-16">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="max-w-5xl"
@@ -54,8 +54,8 @@ export function EditorialBanner({ section }: { section?: HomeSectionLocalized | 
             {eyebrow}
           </motion.span>
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.3 }}
             className="mb-8 font-display text-[3.5rem] font-light leading-[0.88] tracking-[-0.04em] sm:text-6xl md:text-7xl lg:text-8xl"
@@ -73,8 +73,8 @@ export function EditorialBanner({ section }: { section?: HomeSectionLocalized | 
             {description}
           </motion.p>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >

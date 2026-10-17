@@ -13,8 +13,8 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 1.2, ease: [0.21, 0.47, 0.32, 0.98] } },
 };
 
 export function BestsellerContent({ products }: { products: Product[] }) {
@@ -25,8 +25,8 @@ export function BestsellerContent({ products }: { products: Product[] }) {
       <div className="mx-auto max-w-[1500px] px-6 lg:px-10">
         <div className="grid gap-12 lg:grid-cols-[0.32fr_0.68fr] lg:gap-14 xl:gap-20">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7 }}
           className="lg:sticky lg:top-32 lg:self-start"

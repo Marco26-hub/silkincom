@@ -12,6 +12,8 @@ export type CartItem = {
   // two separate rows in the cart.
   variantId?: string;
   size?: string;
+  // Variant stock captured on the product page; checkout verifies it again.
+  maxQuantity?: number;
 };
 
 function keyOf(slug: string, variantId?: string): string {
@@ -56,10 +58,15 @@ export const useCart = create<CartState>()(
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find((i) => sameLine(i, item.slug, item.variantId));
+          const limit = item.maxQuantity ?? existing?.maxQuantity;
+          if (limit !== undefined && (existing?.quantity ?? 0) >= limit) {
+            console.info(`[cart] Add refused for ${item.slug}: variant stock limit ${limit}.`);
+            return state;
+          }
           if (existing) {
             return {
               items: state.items.map((i) =>
-                sameLine(i, item.slug, item.variantId) ? { ...i, quantity: i.quantity + 1 } : i
+                sameLine(i, item.slug, item.variantId) ? { ...i, maxQuantity: limit, quantity: i.quantity + 1 } : i
               ),
               isOpen: true,
             };
@@ -73,14 +80,21 @@ export const useCart = create<CartState>()(
         })),
 
       updateQty: (slug, qty, variantId) =>
-        set((state) => ({
+        set((state) => {
+          const line = state.items.find(i => sameLine(i, slug, variantId));
+          if (line?.maxQuantity !== undefined && qty > line.maxQuantity) {
+            console.info(`[cart] Quantity update refused for ${slug}: variant stock limit ${line.maxQuantity}.`);
+            return state;
+          }
+          return {
           items:
             qty <= 0
               ? state.items.filter((i) => !sameLine(i, slug, variantId))
               : state.items.map((i) =>
                   sameLine(i, slug, variantId) ? { ...i, quantity: qty } : i
                 ),
-        })),
+          };
+        }),
 
       clearCart: () => set({ items: [], coupon: null }),
       openCart: () => set({ isOpen: true }),

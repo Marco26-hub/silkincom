@@ -4,9 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Check, Lock, Truck, RotateCcw, MessageCircle } from 'lucide-react';
 import { useCart } from '@/store/cart';
+import { trackViewItem } from '@/lib/analytics';
 import { WishlistButton } from './WishlistButton';
 import { SizeGuideModal } from './SizeGuideModal';
 import type { ProductVariant } from '@/data/catalog-meta';
+import { Link } from '@/i18n/navigation';
+import { getWinterProduct, WINTER_AVAILABILITY } from '@/data/winter-2026';
 
 type Props = {
   slug: string;
@@ -14,6 +17,8 @@ type Props = {
   price: number;
   image: string;
   variants: ProductVariant[];
+  previewOnly?: boolean;
+  available?: number;
 };
 
 // Trust line shown right under the CTA — the purchase-decision moment. Self
@@ -32,14 +37,21 @@ function fmtPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }
 
-export function ProductPurchaseSection({ slug, name, price, image, variants }: Props) {
+export function ProductPurchaseSection({ slug, name, price, image, variants, available, previewOnly = false }: Props) {
   const t = useTranslations('product');
   const locale = useLocale();
   const r = (m: Record<string, string>) => m[locale] ?? m.en ?? m.it;
-  const { addItem } = useCart();
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const { addItem, items } = useCart();
+  const winter = getWinterProduct(slug);
+  const [selectedSize, setSelectedSize] = useState<string | null>(() => variants.length === 1 && variants[0].size === 'UNI' ? 'UNI' : null);
   const [added, setAdded] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  // Vista prodotto: è il segnale su cui Meta costruisce il retargeting e GA4
+  // il tasso di conversione per scheda. Una volta sola per prodotto montato.
+  useEffect(() => {
+    if (!previewOnly) trackViewItem({ id: slug, name, price });
+  }, [slug, name, price, previewOnly]);
   // Mobile sticky add-to-cart: surfaces a fixed price + CTA bar once the inline
   // button scrolls out of view, so the buy action is always one tap away on
   // phones (where the whole audience is).
@@ -60,8 +72,17 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
   const selectedVariant = hasSizes
     ? variants.find((v) => v.size === selectedSize) ?? null
     : null;
+  const unavailable = hasSizes ? variants.every((variant) => variant.available <= 0) : available !== undefined ? available <= 0 : Boolean(winter);
+  const alreadyInCart = items.find((item) => item.slug === slug && item.variantId === selectedVariant?.id)?.quantity ?? 0;
+  const selectedStock = selectedVariant?.available ?? available;
+  const stockLimitReached = selectedStock !== undefined && alreadyInCart >= selectedStock;
+  const addDisabled = added || unavailable || stockLimitReached || Boolean(selectedVariant && selectedVariant.available <= 0);
 
   function handleAdd() {
+    if (addDisabled) {
+      console.info(`[cart] Add refused for ${slug}: unavailable or stock limit reached.`);
+      return;
+    }
     if (hasSizes && !selectedVariant) {
       setShowError(true);
       return;
@@ -75,10 +96,11 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
       image,
       variantId: selectedVariant?.id,
       size: selectedVariant?.size,
+      maxQuantity: selectedStock,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-    if (typeof window !== 'undefined' && window.silkincomTrack) {
+    if (!previewOnly && typeof window !== 'undefined' && window.silkincomTrack) {
       window.silkincomTrack('add_to_cart', {
         currency: 'EUR',
         value: effectivePrice,
@@ -94,7 +116,7 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
       });
     }
     // First-party beacon (always, aggregate).
-    window.silkincomAnalytics?.('add_to_cart', { product: slug, value: effectivePrice });
+    if (!previewOnly) window.silkincomAnalytics?.('add_to_cart', { product: slug, value: effectivePrice });
   }
 
   return (
@@ -109,9 +131,9 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
                 of scrolling to an in-page anchor — the previous scroll-to
                 approach failed on mobile (no anchor in viewport, and the
                 target modal showed scarf formats, not S/M/L/XL/XXL). */}
-            <SizeGuideModal mode="apparel" />
+            {!winter && <SizeGuideModal mode="apparel" />}
           </div>
-          <div className="grid grid-cols-5 gap-2">
+          <div className={`grid gap-2 ${variants.length === 1 ? 'grid-cols-1' : 'grid-cols-5'}`}>
             {variants.map((v) => {
               const isSelected = v.size === selectedSize;
               const outOfStock = v.available <= 0;
@@ -131,9 +153,9 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
                         ? 'border-pearl-grey/60 text-soft-grey/50 cursor-not-allowed line-through'
                         : 'border-pearl-grey text-soft-black hover:border-soft-black'
                   }`}
-                  aria-label={`${t('size.label')} ${v.size}${outOfStock ? ` — ${t('size.outOfStock')}` : ''}`}
+                  aria-label={`${t('size.label')} ${v.size}${outOfStock ? ` — ${winter ? r(WINTER_AVAILABILITY.unavailable) : t('size.outOfStock')}` : ''}`}
                 >
-                  {v.size}
+                  {v.size === 'UNI' ? r(WINTER_AVAILABILITY.oneSize) : v.size}
                 </button>
               );
             })}
@@ -157,14 +179,14 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
         ref={ctaRef}
         type="button"
         onClick={handleAdd}
-        disabled={added}
+        disabled={addDisabled}
         className={`w-full px-8 py-4 text-[11px] uppercase tracking-[0.25em] transition-all duration-300 flex items-center justify-center gap-3 ${
-          added
+          unavailable || stockLimitReached ? 'cursor-not-allowed bg-pearl-grey text-soft-grey' : added
             ? 'bg-gold-primary text-soft-black'
             : 'bg-soft-black text-warm-white hover:bg-gold-primary hover:text-soft-black'
         }`}
       >
-        {added ? (
+        {unavailable ? r(WINTER_AVAILABILITY.unavailable) : stockLimitReached ? r(WINTER_AVAILABILITY.cartLimit) : added ? (
           <>
             <Check className="w-4 h-4" />
             {t('addedToCart')}
@@ -173,6 +195,11 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
           t('addToCart')
         )}
       </button>
+      {unavailable && winter && (
+        <Link href={`/collezioni/inverno?interesse=${winter.key}#anteprima-inverno`} className="text-center text-[11px] uppercase tracking-[0.2em] text-gold-dark underline underline-offset-4">
+          {r(WINTER_AVAILABILITY.notify)}
+        </Link>
+      )}
 
       {/* Reassurance — the trust signals that unblock the purchase decision,
           placed immediately under the CTA. */}
@@ -199,9 +226,10 @@ export function ProductPurchaseSection({ slug, name, price, image, variants }: P
         <button
           type="button"
           onClick={handleAdd}
-          className="ml-auto flex-1 max-w-[60%] bg-soft-black px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-warm-white"
+          disabled={addDisabled}
+          className="ml-auto flex-1 max-w-[60%] bg-soft-black px-6 py-3 text-[11px] uppercase tracking-[0.25em] text-warm-white disabled:cursor-not-allowed disabled:bg-pearl-grey disabled:text-soft-grey"
         >
-          {t('addToCart')}
+          {unavailable ? r(WINTER_AVAILABILITY.unavailable) : stockLimitReached ? r(WINTER_AVAILABILITY.cartLimit) : t('addToCart')}
         </button>
       </div>
     </div>

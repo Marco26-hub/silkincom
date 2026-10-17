@@ -330,7 +330,10 @@
       "tshirt": "T-shirt",
       "shorts": "Bermuda",
       "shirt": "Camicia",
-      "beachTowel": "Telo Lago"
+      "beachTowel": "Telo Lago",
+      "sweater": "Girocollo",
+      "beanie": "Berretto",
+      "turtleneck": "Dolcevita"
     },
     "size": {
       "label": "Taglia",
@@ -465,7 +468,8 @@
       "continueToPayment": "Continua al pagamento",
       "confirmPayment": "Conferma pagamento",
       "processing": "Elaborazione…",
-      "backToCart": "Torna al carrello"
+      "backToCart": "Torna al carrello",
+      "editDetails": "Modifica i dati"
     },
     "security": {
       "stripe": "Pagamento sicuro tramite Stripe",
@@ -477,13 +481,27 @@
       "description": "Riceverai una conferma via email con i dettagli della spedizione.",
       "orderNumber": "Numero ordine",
       "viewOrders": "I miei ordini",
-      "continueShopping": "Continua lo shopping"
+      "continueShopping": "Continua lo shopping",
+      "verifyingTitle": "Verifica del pagamento",
+      "verifyingDescription": "Stiamo verificando il pagamento del tuo ordine.",
+      "processingTitle": "Pagamento in elaborazione",
+      "processingDescription": "Il pagamento è in elaborazione. Attendi la conferma prima di riprovare.",
+      "failedTitle": "Pagamento non riuscito",
+      "cancelledTitle": "Pagamento annullato",
+      "unverifiedTitle": "Pagamento da verificare",
+      "unverifiedDescription": "Non possiamo ancora confermare questo pagamento. Il carrello è stato conservato.",
+      "testDescription": "Pagamento di prova confermato. Nessun addebito reale, spedizione o email di ordine.",
+      "backToCart": "Torna al carrello",
+      "checkAgain": "Verifica di nuovo",
+      "refundedTitle": "Ordine rimborsato",
+      "refundedDescription": "Il rimborso di questo ordine risulta registrato."
     },
     "errors": {
       "emptyCart": "Il carrello è vuoto",
       "missingData": "Compila tutti i campi obbligatori",
       "paymentFailed": "Pagamento non riuscito. Riprova.",
-      "networkError": "Errore di rete. Riprova."
+      "networkError": "Errore di rete. Riprova.",
+      "cancelFailed": "Non è possibile annullare questo pagamento ora. Attendi la conferma."
     },
     "countries": {
       "IT": "Italia",
@@ -503,7 +521,8 @@
       "standard": "Spedizione standard",
       "handDelivery": "Consegna a mano",
       "handDeliveryNote": "Consegna a mano — nessun costo di spedizione"
-    }
+    },
+    "testMode": "Modalità di prova — nessun addebito reale"
   },
   "account": {
     "title": "Area riservata",

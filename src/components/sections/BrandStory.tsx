@@ -33,8 +33,8 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
     <section className="overflow-hidden bg-[#11100e] py-24 text-warm-white md:py-32">
       <div className="mx-auto grid max-w-[1500px] grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20 lg:px-10 xl:gap-28">
         <motion.div
-          initial={{ opacity: 0, x: -60 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="relative order-2 lg:order-1 lg:pb-20"
@@ -45,14 +45,14 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
               alt={imageMainAlt}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover transition-transform [transition-duration:1500ms] hover:scale-105"
+              className="object-cover transition-transform [transition-duration:1500ms]"
             />
             <div className="absolute inset-4 border border-warm-white/20 md:inset-6" />
             <span className="absolute bottom-8 left-8 text-[8px] uppercase tracking-[0.36em] text-gold-primary md:bottom-11 md:left-11">Como · Atelier</span>
           </div>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
             className="absolute bottom-0 right-[-1.5rem] hidden max-w-[300px] overflow-hidden border border-gold-primary/20 bg-[#f2ede4] text-soft-black shadow-[0_30px_80px_-35px_rgba(0,0,0,0.8)] md:block lg:right-[-2.5rem]"
@@ -78,15 +78,15 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 60 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="order-1 max-w-xl lg:order-2"
         >
           <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="mb-5 block text-[9px] uppercase tracking-[0.44em] text-gold-primary"
@@ -94,8 +94,8 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
             {eyebrow}
           </motion.span>
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.1 }}
             className="mb-9 font-display text-5xl font-light leading-[0.92] tracking-[-0.035em] md:text-6xl lg:text-7xl"
@@ -104,8 +104,8 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
             <em className="italic text-gold-primary">{titleAccent}</em>
           </motion.h2>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-5 text-[14px] font-light leading-[1.9] text-warm-white/65 md:text-[15px]"
@@ -114,8 +114,8 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
             <p>{paragraph2}</p>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >

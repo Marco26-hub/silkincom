@@ -18,19 +18,29 @@ export async function getValidProductSlugs(): Promise<Set<string> | null> {
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) return null;
+    if (!url || !key) {
+      console.warn('[product-slugs] Public catalog configuration missing; allowing the product page to resolve the request.');
+      return null;
+    }
     const supabase = createClient(url, key, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
     const { data, error } = await supabase.from('products').select('slug');
-    if (error || !data) return null;
+    if (error || !data) {
+      console.warn('[product-slugs] Catalog lookup unavailable; allowing the product page to resolve the request.', error?.code || 'No data returned');
+      return null;
+    }
     const slugs = new Set<string>(
       data.map((r) => (r as { slug: string }).slug).filter(Boolean),
     );
-    if (slugs.size === 0) return null; // never 404 everything on an empty read
+    if (slugs.size === 0) {
+      console.warn('[product-slugs] Empty catalog lookup; skipping the middleware guard to avoid rejecting valid products.');
+      return null;
+    }
     _cache = { slugs, at: Date.now() };
     return slugs;
-  } catch {
+  } catch (error) {
+    console.warn('[product-slugs] Catalog lookup failed; allowing the product page to resolve the request.', error instanceof Error ? error.name : 'Unknown error');
     return null;
   }
 }
