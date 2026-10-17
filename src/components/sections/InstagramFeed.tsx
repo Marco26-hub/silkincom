@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Instagram, Facebook } from 'lucide-react';
+import { Instagram, Facebook, Youtube } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import type { HomeSectionLocalized } from '@/data/home-content';
@@ -20,6 +20,7 @@ const FALLBACK_SOCIAL = {
   facebook: 'https://www.facebook.com/profile.php?id=61581900780447',
   pinterest: 'https://it.pinterest.com/silkincomofficial',
   tiktok: 'https://www.tiktok.com/@silkincom',
+  youtube: 'https://www.youtube.com/channel/UCg7ATWu5glDOuDydp6t4m7g',
 };
 
 export function InstagramFeed({ section }: { section?: HomeSectionLocalized | null }) {
@@ -34,6 +35,7 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
   ].slice(0, 14);
   const socials = (section?.socialLinks && Object.keys(section.socialLinks).length) ? section.socialLinks : FALLBACK_SOCIAL;
   const tiktokUrl = section?.socialLinks?.tiktok || FALLBACK_SOCIAL.tiktok;
+  const youtubeUrl = section?.socialLinks?.youtube || FALLBACK_SOCIAL.youtube;
 
   const titleStart = content.titleStart || t('titleStart');
   const titleEmphasis = content.titleEmphasis || t('titleEmphasis');
@@ -154,6 +156,18 @@ export function InstagramFeed({ section }: { section?: HomeSectionLocalized | nu
                 <span className="text-[10px] uppercase tracking-[0.3em]">Pinterest</span>
               </a>
             ) : null}
+            <a
+              href={youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="group inline-flex flex-col items-center gap-2 text-soft-black hover:text-gold-primary transition-colors"
+            >
+              <span className="w-12 h-12 flex items-center justify-center border border-soft-black/20 group-hover:border-gold-primary group-hover:bg-gold-primary/5 transition-all rounded-full">
+                <Youtube className="w-[18px] h-[18px]" strokeWidth={1.4} />
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.3em]">YouTube</span>
+            </a>
             <a
               href={tiktokUrl}
               target="_blank"
