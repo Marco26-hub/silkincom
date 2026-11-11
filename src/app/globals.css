@@ -245,6 +245,18 @@
   .home-hero-copy {
     @apply order-2 min-w-0 px-6 pb-10 pt-9 sm:px-10;
   }
+  @keyframes home-hero-drift {
+    from { transform: scale(1.01); }
+    to { transform: scale(1.08); }
+  }
+  .home-hero-photograph {
+    animation-name: home-hero-drift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero-photograph { animation: none; }
+  }
   .home-hero-title {
     font-size: clamp(2.75rem, 7vw, 4.5rem);
     line-height: 0.98;

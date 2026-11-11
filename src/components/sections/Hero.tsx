@@ -72,7 +72,7 @@ const CONTROLS = {
     unavailable: "Afbeelding tijdelijk niet beschikbaar",
   },
 } as const;
-const SLIDE_DURATION = 8500;
+const SLIDE_DURATION = 5000;
 
 export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
   const t = useTranslations("home.hero");
@@ -157,7 +157,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               opacity: i === index ? 1 : 0,
               transition: reducedMotion
                 ? "none"
-                : "opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                : "opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
             {failedImages.includes(slide.id) ? (
@@ -176,12 +176,24 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
                 loading={i === 0 ? undefined : "eager"}
                 sizes="(min-width: 1024px) 54vw, 100vw"
                 quality={85}
-                className="object-cover"
+                className="home-hero-photograph object-cover"
                 style={{
                   objectPosition:
                     !slide.focus || slide.focus === "center"
                       ? "50% 20%"
                       : slide.focus,
+                  transformOrigin:
+                    !slide.focus || slide.focus === "center"
+                      ? "50% 20%"
+                      : slide.focus,
+                  animationName: reducedMotion ? "none" : undefined,
+                  animationDuration: `${SLIDE_DURATION}ms`,
+                  animationDirection: i % 2 ? "alternate-reverse" : "alternate",
+                  // Freeze outgoing images at their current crop during the fade.
+                  animationPlayState:
+                    playing && i === index && readyImages.includes(slide.id)
+                      ? "running"
+                      : "paused",
                 }}
                 onLoad={async (event) => {
                   const photograph = event.currentTarget;
