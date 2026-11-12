@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Search, User, ShoppingBag, Menu, Compass } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu } from 'lucide-react';
 import { useCart } from '@/store/cart';
 import { Logo } from './Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -55,22 +55,20 @@ export function Header() {
   return (
     <>
       <header className={`fixed left-0 right-0 top-9 z-40 border-b transition-[background-color,border-color] duration-300 ${overHero ? 'border-white/15 bg-[#181b18]/75 backdrop-blur-md' : 'border-white/15 bg-[#181b18]/95 backdrop-blur-xl'}`}>
-        <div className="mx-auto grid h-[76px] max-w-[1680px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 text-warm-white sm:px-10 lg:h-[88px]">
-          <div className="flex min-w-0 items-center gap-6">
-            <button className="inline-flex min-h-11 min-w-11 items-center gap-3 text-warm-white transition-colors hover:text-[#d8bf89]" onClick={() => setMobileOpen(true)} aria-label={tc('menu')} aria-expanded={mobileOpen} aria-controls="mobile-navigation" aria-haspopup="dialog">
+        <div className="mx-auto grid h-[76px] max-w-[1680px] grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 text-warm-white min-[360px]:px-4 sm:gap-3 sm:px-10 lg:h-[88px]">
+          <div className="order-2 flex min-w-0 items-center justify-center gap-3 sm:gap-4 md:order-none md:justify-start lg:gap-6">
+            <button className="inline-flex min-h-11 min-w-11 items-center gap-2 text-warm-white transition-colors hover:text-[#d8bf89]" onClick={() => setMobileOpen(true)} aria-label={tc('menu')} aria-expanded={mobileOpen} aria-controls="mobile-navigation" aria-haspopup="dialog">
               <Menu aria-hidden="true" className="h-5 w-5" strokeWidth={1.3} />
-              <span className="hidden text-[11px] uppercase tracking-[0.16em] sm:inline">{tc('menu')}</span>
+              <span className="text-[10px] uppercase tracking-[0.1em] sm:text-[11px] sm:tracking-[0.14em]">{tc('menu')}</span>
             </button>
+            <Link href="/experience" aria-label="VIP Experience" aria-current={pathname?.endsWith('/experience') ? 'page' : undefined} className="inline-flex min-h-11 shrink-0 items-center text-[10px] font-normal uppercase tracking-[0.1em] text-[#d8bf89] transition-colors duration-200 hover:text-[#f0dfb8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8bf89] sm:text-[11px] sm:tracking-[0.14em]">
+              VIP Experience
+            </Link>
             <Link href="/collezioni" className="hidden min-h-11 items-center text-[11px] uppercase tracking-[0.14em] transition-colors hover:text-[#d8bf89] lg:inline-flex">{t('collections')}</Link>
-            <Link href="/experience" aria-label="VIP Experience" className="hidden min-h-11 shrink-0 items-center gap-2 border border-gold-primary bg-gold-primary px-3 text-[10px] font-medium tracking-[0.06em] text-soft-black transition-colors hover:bg-warm-white lg:inline-flex">
-              <Compass size={15} aria-hidden="true" /> VIP Experience
-            </Link>
           </div>
-          <div className="flex justify-center"><Logo size="md" variant="default" withMark /></div>
-          <div className="flex min-w-0 items-center justify-end gap-0 sm:gap-2">
-            <Link href="/experience" aria-label="VIP Experience" title="VIP Experience" className="mr-1 flex min-h-11 w-16 shrink-0 flex-col items-center justify-center gap-1 border border-gold-primary bg-gold-primary text-soft-black transition-colors hover:bg-warm-white lg:hidden">
-              <Compass size={15} aria-hidden="true" /><span className="text-[8px] font-semibold uppercase leading-none tracking-[0.03em]">VIP Experience</span>
-            </Link>
+          <div className="order-1 flex justify-center md:order-none"><Logo size="md" variant="default" className="!h-11 sm:!h-14 md:!h-16" withMark /></div>
+          <div className="order-3 flex min-w-0 items-center justify-end gap-0 sm:gap-2 md:order-none">
+
             <div className="mr-2 hidden xl:block"><LanguageSwitcher variant="minimal" /></div>
             <button aria-label={t('search')} onClick={() => setSearchOpen(true)} className="hidden h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89] sm:flex"><Search aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.3} /></button>
             <Link href="/account" aria-label={t('account')} className="hidden h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89] md:flex"><User aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.3} /></Link>

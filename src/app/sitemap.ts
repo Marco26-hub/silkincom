@@ -85,7 +85,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastMod = await getDbLastMod();
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    entry('/experience', { changeFrequency: 'monthly', priority: 0.7, lastModified: new Date('2026-11-12T12:00:00Z') }),
+    ...routing.locales.map((locale): MetadataRoute.Sitemap[number] => ({
+      url: localizedUrl(locale, '/experience'),
+      alternates: { languages: languageAlternates('/experience') },
+      changeFrequency: 'monthly',
+      priority: 0.7,
+      lastModified: new Date('2026-11-12T18:31:50Z'),
+    })),
     entry('/', { changeFrequency: 'daily', priority: 1.0, lastModified: lastMod.home }),
     entry('/collezioni', { changeFrequency: 'weekly', priority: 0.9, lastModified: now }),
     entry('/materiali', { changeFrequency: 'monthly', priority: 0.8, lastModified: now }),

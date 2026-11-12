@@ -30,14 +30,12 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!(routing.locales as readonly string[]).includes(locale)) return {};
   const { t } = await getExperienceLocale(locale);
-  const title = t("Experience Lago di Como e Lago Maggiore");
-  const description = t(
-    "Esperienze sul Lago di Como e sul Lago Maggiore: barca privata, golf, ville e Como Silk Experience. Richieda un percorso con accompagnamento e pick-up da aeroporto o stazione.",
-  );
+  const title = "SILKinCOM VIP Experience";
+  const description = `${title}. ${t("Barca privata, ville, golf e sapori sul Lago di Como e sul Lago Maggiore. Crei il suo itinerario su misura, con accompagnamento e trasferimenti.")}`;
   return {
     metadataBase: new URL(ORIGIN),
     category: "travel",
-    title,
+    title: { absolute: `${title} · ${t("Lago di Como")} & ${t("Lago Maggiore")}` },
     description,
     alternates: { canonical: pageUrl(locale), languages },
     keywords: [
@@ -94,7 +92,7 @@ export default async function ExperiencePage({
     "@type": "WebPage",
     "@id": `${pageUrl(locale)}#webpage`,
     url: pageUrl(locale),
-    name: t("SILKinCOM Experience — Lago di Como e Lago Maggiore"),
+    name: `SILKinCOM VIP Experience · ${t("Lago di Como")} & ${t("Lago Maggiore")}`,
     description: t(
       "Progetto di esperienze su misura sui due laghi. Attività, operatori e condizioni da confermare dopo la richiesta.",
     ),

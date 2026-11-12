@@ -8,6 +8,7 @@ import {
   Bike,
   Check,
   ChefHat,
+  ChevronDown,
   Compass,
   Factory,
   Flag,
@@ -512,6 +513,35 @@ export function LakeExperience({
       </section>
 
       <nav className={styles.pageNav} aria-label={t("Esplora Experience")}>
+        <details
+          className={styles.mobileSectionMenu}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.currentTarget.open = false;
+              event.currentTarget.querySelector("summary")?.focus();
+            }
+          }}
+        >
+          <summary>
+            {t("Esplora")}
+            <ChevronDown size={15} aria-hidden="true" />
+          </summary>
+          <div
+            className={styles.mobileSectionLinks}
+            onClick={(event) => {
+              if ((event.target as HTMLElement).closest("a")) {
+                const menu = event.currentTarget.closest("details");
+                if (menu) menu.open = false;
+              }
+            }}
+          >
+            <a href="#destinazioni">{t("I due laghi")}</a>
+            <a href="#esperienze">{t("Le esperienze")}</a>
+            <a href="#in-barca">{t("In barca")}</a>
+            <a href="#percorsi">{t("Itinerari")}</a>
+            <a href="#organizzazione">{t("Come funziona")}</a>
+          </div>
+        </details>
         <div className={styles.pageNavLinks}>
           <a href="#destinazioni">{t("I due laghi")}</a>
           <a href="#esperienze">{t("Le esperienze")}</a>
@@ -837,7 +867,7 @@ export function LakeExperience({
                   })}
                   onClick={() => toggleInterest(item.title)}
                 >
-                  {selected ? t("Nella sua selezione") : t("Mi piacerebbe")}
+                  {selected ? t("Nel suo viaggio") : t("Aggiunga al viaggio")}
                   {selected ? (
                     <Check size={17} aria-hidden="true" />
                   ) : (

@@ -16,6 +16,7 @@ for (const locale of locales) {
  assert.equal(r.status,200,`${locale}: HTTP`);
  assert.equal((html.match(/<h1\b/g)||[]).length,1,`${locale}: one H1`);
  assert.ok(html.includes('id="experience-form"'),`${locale}: form target`);
+ assert.ok(html.includes('property="og:title" content="SILKinCOM VIP Experience"'),`${locale}: branded sharing title`);
  assert.ok(html.includes(`href="https://www.silkincom.com${path}"`),`${locale}: canonical`);
  for(const language of [...locales,'x-default'])assert.ok(html.includes(`hrefLang="${language}"`),`${locale}: alternate ${language}`);
  const jsonld=[...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));

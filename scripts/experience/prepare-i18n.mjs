@@ -29,7 +29,7 @@ for (const file of files) {
         record(node.initializer.text);
         if(migrate)return f.updateJsxAttribute(node,node.name,f.createJsxExpression(undefined,call(node.initializer.text)));
       }
-      if (ts.isStringLiteral(node) && /[A-ZÀ-ÿ]|\s/.test(node.text) && !/^(https?:|\/|\[experience)/.test(node.text) && !node.text.includes('className')) record(node.text);
+      if (ts.isStringLiteral(node) && node.text !== 'Escape' && /[A-ZÀ-ÿ]|\s/.test(node.text) && !/^(https?:|\/|\[experience)/.test(node.text) && !node.text.includes('className')) record(node.text);
       if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text==='t' && ts.isStringLiteral(node.arguments[0])) record(node.arguments[0].text);
       const visited=ts.visitEachChild(node,visit,context);
       if (migrate && ts.isJsxExpression(visited) && visited.expression && (!ts.isJsxAttribute(node.parent) || faceAttributes.has(node.parent.name.text))) return f.updateJsxExpression(visited,display(visited.expression));
