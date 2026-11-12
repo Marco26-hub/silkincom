@@ -1,0 +1,65 @@
+[
+  {
+    "id": "villages",
+    "title": "File:20160623 Varenna 05.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:20160623_Varenna_05.jpg",
+    "author": "Pomptidom",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "changes": "WebP conversion; responsive display crop"
+  },
+  {
+    "id": "brunate",
+    "title": "File:Edificio funicolare Como-Brunate.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Edificio_funicolare_Como-Brunate.jpg",
+    "author": "Ivan Ruggiero (Wikimedia)",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "changes": "WebP conversion; responsive display crop"
+  },
+  {
+    "id": "villas",
+    "title": "File:Tremezzo Villa Carlotta exterior (21).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Tremezzo_Villa_Carlotta_exterior_(21).jpg",
+    "author": "Pierre André Leclercq",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "changes": "WebP conversion; responsive display crop"
+  },
+  {
+    "id": "caterina",
+    "title": "File:Leggiuno Monastero di Santa Caterina del Sasso Chiesa Esterno 6.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Leggiuno_Monastero_di_Santa_Caterina_del_Sasso_Chiesa_Esterno_6.jpg",
+    "author": "Zairon",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "changes": "WebP conversion; responsive display crop"
+  },
+  {
+    "id": "villages-maggiore",
+    "title": "File:Italy-01940 - Stresa (22385720167).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Italy-01940_-_Stresa_(22385720167).jpg",
+    "author": "Dennis G. Jarvis",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "changes": "WebP conversion; responsive display crop"
+  },
+  {
+    "id": "milano",
+    "title": "File:Duomo di Milano di notte.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Duomo_di_Milano_di_notte.jpg",
+    "author": "Alecasola",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "changes": "WebP conversion; responsive display crop"
+  },
+  {
+    "id": "milano-maggiore",
+    "title": "File:Galleria Vittorio Emanuele II, Milan, interior.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Galleria_Vittorio_Emanuele_II,_Milan,_interior.jpg",
+    "author": "Gerda Arendt",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "changes": "WebP conversion; responsive display crop"
+  }
+]

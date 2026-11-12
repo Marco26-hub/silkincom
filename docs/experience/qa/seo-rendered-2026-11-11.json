@@ -1,0 +1,234 @@
+{
+  "allSchemaTypes": [
+    [
+      "Organization",
+      "LocalBusiness"
+    ],
+    "WebSite",
+    "WebPage"
+  ],
+  "brokenAnchors": [],
+  "canonical": "https://www.silkincom.com/experience",
+  "description": "Esperienze sul Lago di Como e sul Lago Maggiore: barca privata, golf, ville e Como Silk Experience. Richieda un percorso con accompagnamento e pick-up da aeroporto o stazione.",
+  "duplicateIds": [],
+  "h1": [
+    "Lago di Como.Lago Maggiore.Il suo viaggio."
+  ],
+  "og": "https://www.silkincom.com/experience",
+  "ownSchema": {
+    "@context": "https://schema.org",
+    "@id": "https://www.silkincom.com/experience#webpage",
+    "@type": "WebPage",
+    "about": [
+      {
+        "@type": "Place",
+        "name": "Lago di Como"
+      },
+      {
+        "@type": "Place",
+        "name": "Lago Maggiore"
+      }
+    ],
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://www.silkincom.com/",
+          "name": "SILKinCOM",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://www.silkincom.com/experience",
+          "name": "Experience",
+          "position": 2
+        }
+      ]
+    },
+    "description": "Progetto di esperienze su misura sui due laghi. Attività, operatori e condizioni da confermare dopo la richiesta.",
+    "inLanguage": "it-IT",
+    "isPartOf": {
+      "@id": "https://www.silkincom.com/#website"
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Le ville viste dall’acqua, una sosta in un borgo, la luce che cambia sulle rive. Scelga tra noleggio 40 CV, tour con capitano, aperitivo a bordo e giornata privata.",
+            "name": "Il lago, dalla barca"
+          },
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Villa del Balbianello, Villa Carlotta, i giardini di Villa Melzi o Villa Monastero. Un itinerario culturale accompagnato, scegliendo le dimore più coerenti con il soggiorno.",
+            "name": "Le ville del Lago di Como"
+          },
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Una visita al centro di Como, la salita in funicolare e il paesaggio del Lario dall’alto. Un percorso accompagnato da completare con una passeggiata o una sosta panoramica.",
+            "name": "Como e la funicolare di Brunate"
+          },
+          "position": 3
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Bellagio e Varenna sul Lago di Como; Stresa e i borghi del Verbano sul Maggiore. Una visita accompagnata, con poche tappe e il tempo per conoscere ciascun luogo.",
+            "name": "Borghi e passeggiate sul lago"
+          },
+          "position": 4
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Un pranzo affacciato sull’acqua, una cena con menu degustazione, una tavola capace di raccontare il territorio. Appuntamenti gastronomici coordinati nel corso del soggiorno.",
+            "name": "Itinerari gourmet sul lago"
+          },
+          "position": 5
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Un calice raccontato da chi lo produce, una specialità locale, una visita che dà un volto al gusto. Incontri guidati da abbinare agli altri momenti del viaggio.",
+            "name": "Degustazioni e incontri con i produttori"
+          },
+          "position": 6
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "La pasta preparata a mano, una ricetta da apprendere insieme a un cuoco, il piacere di assaggiare ciò che si è realizzato. Un’esperienza conviviale da condividere.",
+            "name": "Lezioni di cucina italiana"
+          },
+          "position": 7
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Dalla trama al colore, fino al prodotto da scegliere. Un percorso guidato nella seta di Como, tra tessitura, tintoria e showroom, per incontrare le competenze che rendono unico il territorio.",
+            "name": "Como Silk Experience"
+          },
+          "position": 8
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Una partita nel paesaggio del Lario, con il tempo per il gioco e per una cena sul lago. Il Menaggio & Cadenabbia Golf Club è uno dei circoli da valutare per il soggiorno.",
+            "name": "Golf sul Lago di Como"
+          },
+          "position": 9
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Sentieri panoramici, borghi e percorsi in bicicletta accompagnati da personale competente. Si scelgono dislivello, durata e ritmo in base all’esperienza degli ospiti.",
+            "name": "Passeggiate guidate ed e-bike"
+          },
+          "position": 10
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Una lezione o un’uscita accompagnata per conoscere il lago da vicino. Il piacere dell’acqua, con un’attività scelta insieme a istruttori e operatori del territorio.",
+            "name": "Kayak, SUP e vela"
+          },
+          "position": 11
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Una pausa in spa, una sessione di yoga o un appuntamento dedicato al relax. Un momento da riservare tra una visita e una cena, seguendo il ritmo del soggiorno.",
+            "name": "Benessere e tempo per sé"
+          },
+          "position": 12
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Il lungolago di Stresa, un palazzo sull’acqua, un giardino da attraversare con una guida. Isola Bella e Isola Madre offrono percorsi diversi, da scegliere secondo stagione e aperture.",
+            "name": "Stresa e le Isole Borromee"
+          },
+          "position": 13
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "L’eremo affacciato sul Lago Maggiore, una visita accompagnata e una sosta a tavola sulla stessa sponda. Un percorso per chi desidera conoscere il Verbano oltre le isole.",
+            "name": "Santa Caterina del Sasso"
+          },
+          "position": 14
+        },
+        {
+          "@type": "ListItem",
+          "item": {
+            "@type": "Thing",
+            "description": "Una partita nel territorio del Lago Maggiore, con trasferimenti coordinati e il piacere di una cena dopo il gioco. Il Golf Des Iles Borromées è uno dei circoli da valutare.",
+            "name": "Golf tra Stresa e il Vergante"
+          },
+          "position": 15
+        }
+      ],
+      "name": "Idee di esperienze da personalizzare",
+      "numberOfItems": 15
+    },
+    "name": "SILKinCOM Experience — Lago di Como e Lago Maggiore",
+    "publisher": {
+      "@id": "https://www.silkincom.com/#organization"
+    },
+    "url": "https://www.silkincom.com/experience"
+  },
+  "robots": [
+    {
+      "content": "noindex, nofollow",
+      "name": "robots"
+    },
+    {
+      "content": "noindex, nofollow",
+      "name": "googlebot"
+    }
+  ],
+  "schemaItems": 15,
+  "schemaNames": [
+    "Il lago, dalla barca",
+    "Le ville del Lago di Como",
+    "Como e la funicolare di Brunate",
+    "Borghi e passeggiate sul lago",
+    "Itinerari gourmet sul lago",
+    "Degustazioni e incontri con i produttori",
+    "Lezioni di cucina italiana",
+    "Como Silk Experience",
+    "Golf sul Lago di Como",
+    "Passeggiate guidate ed e-bike",
+    "Kayak, SUP e vela",
+    "Benessere e tempo per sé",
+    "Stresa e le Isole Borromee",
+    "Santa Caterina del Sasso",
+    "Golf tra Stresa e il Vergante"
+  ],
+  "schemaType": "WebPage",
+  "title": "Experience Lago di Como e Lago Maggiore | SILKinCOM",
+  "unloadedImages": [],
+  "schemaMatchesCards": true
+}

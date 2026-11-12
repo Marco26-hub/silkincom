@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Search, User, ShoppingBag, Menu } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu, Compass } from 'lucide-react';
 import { useCart } from '@/store/cart';
 import { Logo } from './Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -36,6 +36,7 @@ export function Header() {
     { href: '/la-nostra-storia', label: t('story') },
     { href: '/maison/marco-dibenedetto', label: t('founder') },
     { href: '/trame-di-como', label: 'Journal' },
+    { href: '/experience', label: 'Experience' },
     { href: '/b2b', label: 'B2B' },
     { href: '/contatti', label: t('contacts') },
   ];
@@ -61,9 +62,15 @@ export function Header() {
               <span className="hidden text-[11px] uppercase tracking-[0.16em] sm:inline">{tc('menu')}</span>
             </button>
             <Link href="/collezioni" className="hidden min-h-11 items-center text-[11px] uppercase tracking-[0.14em] transition-colors hover:text-[#d8bf89] lg:inline-flex">{t('collections')}</Link>
+            <Link href="/experience" aria-label="VIP Experience" className="hidden min-h-11 shrink-0 items-center gap-2 border border-gold-primary bg-gold-primary px-3 text-[10px] font-medium tracking-[0.06em] text-soft-black transition-colors hover:bg-warm-white lg:inline-flex">
+              <Compass size={15} aria-hidden="true" /> VIP Experience
+            </Link>
           </div>
           <div className="flex justify-center"><Logo size="md" variant="default" withMark /></div>
           <div className="flex min-w-0 items-center justify-end gap-0 sm:gap-2">
+            <Link href="/experience" aria-label="VIP Experience" title="VIP Experience" className="mr-1 flex min-h-11 w-16 shrink-0 flex-col items-center justify-center gap-1 border border-gold-primary bg-gold-primary text-soft-black transition-colors hover:bg-warm-white lg:hidden">
+              <Compass size={15} aria-hidden="true" /><span className="text-[8px] font-semibold uppercase leading-none tracking-[0.03em]">VIP Experience</span>
+            </Link>
             <div className="mr-2 hidden xl:block"><LanguageSwitcher variant="minimal" /></div>
             <button aria-label={t('search')} onClick={() => setSearchOpen(true)} className="hidden h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89] sm:flex"><Search aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.3} /></button>
             <Link href="/account" aria-label={t('account')} className="hidden h-11 w-11 items-center justify-center transition-colors hover:text-[#d8bf89] md:flex"><User aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.3} /></Link>
