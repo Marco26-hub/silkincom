@@ -7,6 +7,7 @@ import { rateLimit } from '@/lib/rate-limit';
 import { antibotGate } from '@/lib/antibot';
 import { WINTER_SLUGS } from '@/data/winter-2026';
 import { validateWinterStock } from '@/lib/winter-stock';
+import { shippingAddressSchema } from '@/lib/checkout-validation';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,18 +21,11 @@ const paymentIntentSchema = z.object({
     variant_id: z.string().uuid().optional(),
     size: z.string().min(1).max(10).optional(),
   })).min(1).max(50),
-  customer_email: z.string().email().max(254),
-  customer_name: z.string().min(1).max(200),
+  customer_email: z.string().trim().email().max(254),
+  customer_name: z.string().trim().min(1).max(200),
   coupon_code: z.string().max(50).optional(),
   delivery_method: z.enum(['standard', 'hand_delivery']).optional().default('standard'),
-  shipping_address: z.object({
-    full_name: z.string().min(1).max(200),
-    street_address: z.string().min(1).max(500),
-    city: z.string().min(1).max(100),
-    postal_code: z.string().min(1).max(20),
-    country: z.string().length(2),
-    phone: z.string().max(30).optional(),
-  }),
+  shipping_address: shippingAddressSchema,
 });
 
 export async function POST(req: NextRequest) {
@@ -48,8 +42,10 @@ export async function POST(req: NextRequest) {
 
     const parsed = paymentIntentSchema.safeParse(rawBody);
     if (!parsed.success) {
+      console.info('[checkout] Refused incomplete or invalid checkout data:',
+        parsed.error.issues.map((issue) => issue.path.join('.')));
       return NextResponse.json(
-        { error: 'Dati non validi', details: parsed.error.flatten() },
+        { error: 'Dati non validi', code: 'INVALID_CHECKOUT_DATA', details: parsed.error.flatten() },
         { status: 400 }
       );
     }

@@ -4,6 +4,7 @@ import { createServiceClient } from '@/lib/supabase/server';
 import { OrderStatusForm } from '@/components/admin/OrderStatusForm';
 import { PacklinkShipPanel } from '@/components/admin/PacklinkShipPanel';
 import { ResendConfirmationButton } from '@/components/admin/ResendConfirmationButton';
+import { OrderShippingDetails } from '@/components/admin/OrderShippingDetails';
 import { ArrowLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -121,6 +122,8 @@ export default async function AdminOrderDetail({ params }: { params: Promise<{ i
         </div>
 
         <aside className="space-y-6">
+          <OrderShippingDetails address={order.shipping_address} customerEmail={order.customer_email} />
+
           <OrderStatusForm
             orderId={order.id}
             currentStatus={order.status}

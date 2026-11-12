@@ -16,6 +16,7 @@ import { formatPrice } from '@/lib/utils';
 import { computeShipping } from '@/config/shipping';
 import { ArrowLeft, Lock, MessageCircle } from 'lucide-react';
 import { useAntibot } from '@/components/antibot/useAntibot';
+import { checkoutContactSchema, shippingAddressSchema } from '@/lib/checkout-validation';
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
@@ -136,6 +137,7 @@ export function CheckoutClient() {
   const [initData, setInitData] = useState<InitData | null>(null);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [deliveryMethod, setDeliveryMethod] = useState<'standard' | 'hand_delivery'>('standard');
   const { fields: antibotFields, Honeypot } = useAntibot();
 
@@ -184,22 +186,38 @@ export function CheckoutClient() {
 
   function setField(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
+    setInvalidFields((fields) => fields.filter((field) => field !== key));
   }
 
   function setAddress(key: keyof ShippingAddress, value: string) {
     setForm((f) => ({ ...f, address: { ...f.address, [key]: value } }));
+    setInvalidFields((fields) => fields.filter((field) => field !== `address.${key}`));
   }
 
   async function handleInfoSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
+    if (loading) return;
     setApiError(null);
 
-    const customerName = `${form.first_name.trim()} ${form.last_name.trim()}`.trim();
-    const shippingAddress: ShippingAddress = {
+    const contact = checkoutContactSchema.safeParse(form);
+    const address = shippingAddressSchema.safeParse({
       ...form.address,
-      full_name: customerName,
-    };
+      full_name: `${form.first_name.trim()} ${form.last_name.trim()}`.trim(),
+    });
+    const invalid = [
+      ...(!contact.success ? contact.error.issues.map((issue) => issue.path.join('.')) : []),
+      ...(!address.success ? address.error.issues.map((issue) => `address.${issue.path.join('.')}`) : []),
+    ];
+    setInvalidFields(invalid);
+    if (!contact.success || !address.success) {
+      console.info('[checkout] Incomplete contact or shipping data; payment not requested:', invalid);
+      setApiError(t('errors.missingData'));
+      document.getElementById(invalid[0])?.focus();
+      return;
+    }
+    const customerName = `${contact.data.first_name} ${contact.data.last_name}`;
+    const shippingAddress = address.data;
+    setLoading(true);
 
     try {
       const res = await fetch('/api/stripe/create-payment-intent', {
@@ -214,7 +232,7 @@ export function CheckoutClient() {
             ...(i.variantId ? { variant_id: i.variantId } : {}),
             ...(i.size ? { size: i.size } : {}),
           })),
-          customer_email: form.customer_email,
+          customer_email: contact.data.customer_email,
           customer_name: customerName,
           shipping_address: shippingAddress,
           delivery_method: deliveryMethod,
@@ -226,7 +244,7 @@ export function CheckoutClient() {
       const data = await res.json();
 
       if (!res.ok) {
-        setApiError(data.error ?? t('errors.paymentFailed'));
+        setApiError(data.code === 'INVALID_CHECKOUT_DATA' ? t('errors.missingData') : data.error ?? t('errors.paymentFailed'));
         return;
       }
 
@@ -235,7 +253,7 @@ export function CheckoutClient() {
         orderId: data.order_id,
         orderNumber: data.order_number,
         totalAmount: data.total_amount,
-        customerEmail: form.customer_email,
+        customerEmail: contact.data.customer_email,
       });
       setStep('payment');
     } catch {
@@ -290,10 +308,15 @@ export function CheckoutClient() {
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.firstName')} *</label>
+                      <label htmlFor="first_name" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.firstName')} *</label>
                       <input
                         required
                         autoComplete="given-name"
+                        id="first_name"
+                        name="first_name"
+                        aria-invalid={invalidFields.includes('first_name')}
+                        aria-describedby={invalidFields.includes('first_name') ? 'checkout-data-error' : undefined}
+                        maxLength={100}
                         value={form.first_name}
                         onChange={(e) => setField('first_name', e.target.value)}
                         className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -301,10 +324,15 @@ export function CheckoutClient() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.lastName')} *</label>
+                      <label htmlFor="last_name" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.lastName')} *</label>
                       <input
                         required
                         autoComplete="family-name"
+                        id="last_name"
+                        name="last_name"
+                        aria-invalid={invalidFields.includes('last_name')}
+                        aria-describedby={invalidFields.includes('last_name') ? 'checkout-data-error' : undefined}
+                        maxLength={100}
                         value={form.last_name}
                         onChange={(e) => setField('last_name', e.target.value)}
                         className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -314,11 +342,16 @@ export function CheckoutClient() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.email')} *</label>
+                      <label htmlFor="customer_email" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.email')} *</label>
                       <input
                         required
                         type="email"
                         autoComplete="email"
+                        id="customer_email"
+                        name="customer_email"
+                        aria-invalid={invalidFields.includes('customer_email')}
+                        aria-describedby={invalidFields.includes('customer_email') ? 'checkout-data-error' : undefined}
+                        maxLength={254}
                         value={form.customer_email}
                         onChange={(e) => setField('customer_email', e.target.value)}
                         className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -326,10 +359,16 @@ export function CheckoutClient() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.phone')}</label>
+                      <label htmlFor="address.phone" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.phone')} *</label>
                       <input
                         type="tel"
                         autoComplete="tel"
+                        id="address.phone"
+                        name="address.phone"
+                        aria-invalid={invalidFields.includes('address.phone')}
+                        aria-describedby={invalidFields.includes('address.phone') ? 'checkout-data-error' : undefined}
+                        maxLength={30}
+                        required
                         value={form.address.phone}
                         onChange={(e) => setAddress('phone', e.target.value)}
                         className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -371,10 +410,15 @@ export function CheckoutClient() {
                     {t('sections.shipping')}
                   </p>
                   <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.address')} *</label>
+                    <label htmlFor="address.street_address" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.address')} *</label>
                     <input
                       required
                       autoComplete="street-address"
+                      id="address.street_address"
+                      name="address.street_address"
+                      aria-invalid={invalidFields.includes('address.street_address')}
+                      aria-describedby={invalidFields.includes('address.street_address') ? 'checkout-data-error' : undefined}
+                      maxLength={500}
                       value={form.address.street_address}
                       onChange={(e) => setAddress('street_address', e.target.value)}
                       className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -384,10 +428,15 @@ export function CheckoutClient() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.city')} *</label>
+                      <label htmlFor="address.city" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.city')} *</label>
                       <input
                         required
                         autoComplete="address-level2"
+                        id="address.city"
+                        name="address.city"
+                        aria-invalid={invalidFields.includes('address.city')}
+                        aria-describedby={invalidFields.includes('address.city') ? 'checkout-data-error' : undefined}
+                        maxLength={100}
                         value={form.address.city}
                         onChange={(e) => setAddress('city', e.target.value)}
                         className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -395,10 +444,15 @@ export function CheckoutClient() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.postalCode')} *</label>
+                      <label htmlFor="address.postal_code" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.postalCode')} *</label>
                       <input
                         required
                         autoComplete="postal-code"
+                        id="address.postal_code"
+                        name="address.postal_code"
+                        aria-invalid={invalidFields.includes('address.postal_code')}
+                        aria-describedby={invalidFields.includes('address.postal_code') ? 'checkout-data-error' : undefined}
+                        maxLength={20}
                         value={form.address.postal_code}
                         onChange={(e) => setAddress('postal_code', e.target.value)}
                         className="w-full border border-pearl-grey px-4 py-3 text-sm font-light focus:outline-none focus:border-soft-black transition-colors"
@@ -408,8 +462,13 @@ export function CheckoutClient() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.country')} *</label>
+                    <label htmlFor="address.country" className="block text-[10px] uppercase tracking-[0.2em] text-soft-grey mb-2">{t('fields.country')} *</label>
                     <select
+                      id="address.country"
+                      name="address.country"
+                      aria-invalid={invalidFields.includes('address.country')}
+                      aria-describedby={invalidFields.includes('address.country') ? 'checkout-data-error' : undefined}
+                      required
                       value={form.address.country}
                       onChange={(e) => setAddress('country', e.target.value)}
                       autoComplete="country"
@@ -431,7 +490,7 @@ export function CheckoutClient() {
                 </section>
 
                 {apiError && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 px-4 py-3">
+                  <p id="checkout-data-error" role="alert" className="text-sm text-red-600 bg-red-50 border border-red-200 px-4 py-3">
                     {apiError}
                   </p>
                 )}
