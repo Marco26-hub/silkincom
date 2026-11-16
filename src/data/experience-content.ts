@@ -26,7 +26,8 @@ export const EXPERIENCE_CATEGORIES = [
   {
     id: "city",
     label: "Arte, moda e città",
-    description: "Una parentesi urbana tra cultura, shopping e indirizzi da scoprire.",
+    description:
+      "Una parentesi urbana tra cultura, shopping e indirizzi da scoprire.",
   },
   {
     id: "active",
@@ -46,12 +47,16 @@ type Experience = {
   summary: string;
   description: string;
   detail: string;
+  duration: string;
+  format: string;
   icon: string;
   featured?: boolean;
 };
 export const EXPERIENCES: readonly Experience[] = [
   {
     id: "boat",
+    duration: "2–4 ore",
+    format: "In autonomia o con capitano",
     lakes: ["como", "maggiore"],
     category: "lake",
     title: "Il lago, dalla barca",
@@ -66,6 +71,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "villas",
+    duration: "2–3 ore",
+    format: "Visita con guida da concordare",
     lakes: ["como"],
     category: "lake",
     title: "Le ville del Lago di Como",
@@ -80,6 +87,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "brunate",
+    duration: "3–4 ore",
+    format: "Passeggiata con guida",
     lakes: ["como"],
     category: "lake",
     title: "Como e la funicolare di Brunate",
@@ -94,6 +103,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "villages",
+    duration: "2–3 ore",
+    format: "Itinerario con guida",
     lakes: ["como", "maggiore"],
     category: "lake",
     title: "Borghi e passeggiate sul lago",
@@ -107,6 +118,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "gourmet",
+    duration: "Pranzo o cena",
+    format: "Tavolo e menu su richiesta",
     lakes: ["como", "maggiore"],
     category: "taste",
     title: "Itinerari gourmet sul lago",
@@ -122,6 +135,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "tasting",
+    duration: "1–2 ore",
+    format: "Degustazione da concordare",
     lakes: ["como", "maggiore"],
     category: "taste",
     title: "Gin & Wine Experience",
@@ -135,6 +150,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "cooking",
+    duration: "Circa 3 ore",
+    format: "Privata o condivisa da valutare",
     lakes: ["como", "maggiore"],
     category: "taste",
     title: "Lezioni di cucina italiana",
@@ -148,6 +165,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "silk",
+    duration: "Circa 2 ore",
+    format: "Accessi produttivi da concordare",
     lakes: ["como"],
     category: "silk",
     title: "Como Silk Experience",
@@ -163,6 +182,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "golf",
+    duration: "Mezza giornata",
+    format: "Partita o lezione su richiesta",
     lakes: ["como"],
     category: "active",
     title: "Golf sul Lago di Como",
@@ -177,6 +198,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "outdoor",
+    duration: "2–4 ore",
+    format: "Guida o noleggio da scegliere",
     lakes: ["como", "maggiore"],
     category: "active",
     title: "Passeggiate guidate ed e-bike",
@@ -190,6 +213,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "paddle",
+    duration: "1–2 ore",
+    format: "Uscita guidata o noleggio",
     lakes: ["como", "maggiore"],
     category: "active",
     title: "Kayak, SUP e vela",
@@ -203,6 +228,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "wellness",
+    duration: "90 minuti–3 ore",
+    format: "Accesso e trattamenti su richiesta",
     lakes: ["como", "maggiore"],
     category: "active",
     title: "Benessere e tempo per sé",
@@ -216,6 +243,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "jet-ski",
+    duration: "Da concordare",
+    format: "Mezzo e requisiti da verificare",
     lakes: ["como", "maggiore"],
     category: "active",
     title: "Jet Ski Experience",
@@ -229,17 +258,23 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "milano",
+    duration: "3 ore o una giornata",
+    format: "Guida e trasferimenti da valutare",
     lakes: ["como", "maggiore"],
     category: "city",
     title: "Visit Milano",
     location: "Milano · escursione dal lago",
     icon: "landmark",
     summary: "Arte, moda e shopping: una giornata nel carattere di Milano.",
-    description: "Dal lago a Milano per una giornata tra il Duomo, la Galleria Vittorio Emanuele II e i quartieri della moda. La visita può abbinare accompagnamento culturale, appuntamenti per lo shopping e una sosta gourmet, seguendo i suoi interessi.",
-    detail: "Escursione da organizzare dalla base del soggiorno sul Lago di Como o sul Lago Maggiore. Trasferimenti, accompagnamento, durata, ingressi e appuntamenti sono da concordare e quotare. Non sono inclusi automaticamente accessi prioritari, visite agli interni o servizi di personal shopping.",
+    description:
+      "Dal lago a Milano per una giornata tra il Duomo, la Galleria Vittorio Emanuele II e i quartieri della moda. La visita può abbinare accompagnamento culturale, appuntamenti per lo shopping e una sosta gourmet, seguendo i suoi interessi.",
+    detail:
+      "Escursione da organizzare dalla base del soggiorno sul Lago di Como o sul Lago Maggiore. Trasferimenti, accompagnamento, durata, ingressi e appuntamenti sono da concordare e quotare. Non sono inclusi automaticamente accessi prioritari, visite agli interni o servizi di personal shopping.",
   },
   {
     id: "go-kart",
+    duration: "Sessioni o mini GP",
+    format: "Formula per coppie o gruppi",
     lakes: ["como", "maggiore"],
     category: "active",
     title: "Go Kart Experience",
@@ -254,6 +289,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "jungle-park",
+    duration: "Mezza giornata",
+    format: "Percorsi secondo età e preparazione",
     lakes: ["como", "maggiore"],
     category: "active",
     title: "Jungle Park Experience",
@@ -269,6 +306,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "islands",
+    duration: "Mezza giornata o giornata",
+    format: "Barca, guida e ingressi da definire",
     lakes: ["maggiore"],
     category: "lake",
     title: "Stresa e le Isole Borromee",
@@ -283,6 +322,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "caterina",
+    duration: "Circa 2 ore",
+    format: "Visita e arrivo da coordinare",
     lakes: ["maggiore"],
     category: "lake",
     title: "Santa Caterina del Sasso",
@@ -297,6 +338,8 @@ export const EXPERIENCES: readonly Experience[] = [
   },
   {
     id: "golf-maggiore",
+    duration: "Mezza giornata",
+    format: "Accesso al campo ed extra da definire",
     lakes: ["maggiore"],
     category: "active",
     title: "Golf tra Stresa e il Vergante",
@@ -308,32 +351,14 @@ export const EXPERIENCES: readonly Experience[] = [
     description:
       "Una giornata di golf tra Stresa e il Vergante, con il tempo per concentrarsi sulla partita. Trasferimenti, attrezzatura ed eventuale lezione si possono coordinare, insieme a una sosta gourmet dopo il gioco.",
     detail:
-      "Tee time, requisiti, maestro, attrezzatura, gare e calendario invernale vanno verificati. La presenza del circolo nella proposta non indica un accordo commerciale già concluso.",
+      "Orari di partenza, requisiti, maestro, attrezzatura, gare e calendario invernale vanno verificati. La presenza del circolo nella proposta non indica un accordo commerciale già concluso.",
   },
 ];
 
 export const BOAT_PACKAGES = [
   {
-    id: "freedom",
-    number: "01",
-    title: "Libertà sul lago",
-    format: "Noleggio 40 CV · guida autonoma",
-    summary:
-      "La libertà di condurre la barca, con briefing e assistenza. Senza patente solo se i requisiti lo consentono.",
-    audience: "Per chi desidera condurre la propria uscita",
-    description:
-      "Una barca da guidare personalmente, un itinerario suggerito e il tempo per osservare le rive. La formula senza patente è proposta soltanto per natanti e conducenti che ne rispettino i requisiti.",
-    features: [
-      "Noleggio dell’imbarcazione idonea",
-      "Accoglienza, briefing e assistenza dell’operatore",
-      "Percorso e durata da concordare",
-    ],
-    detail:
-      "Prima della conferma vengono verificati caratteristiche complete di barca e motore, requisiti del conducente, cauzione, carburante, coperture e condizioni. La potenza di 40 CV, da sola, non garantisce la conduzione senza patente. Il capitano non è incluso nella formula a guida autonoma.",
-  },
-  {
     id: "captain",
-    number: "02",
+    number: "01",
     title: "Il lago con capitano",
     format: "Tour privato · capitano a bordo",
     summary:
@@ -349,9 +374,10 @@ export const BOAT_PACKAGES = [
     detail:
       "Modello, capienza, durata, personale e punto di imbarco vengono precisati nel preventivo. Approdi, ingressi alle ville, trasferimenti e ristorazione sono inclusi soltanto se espressamente indicati.",
   },
+
   {
     id: "aperitif",
-    number: "03",
+    number: "02",
     title: "Aperitivo sull’acqua",
     format: "Capitano · aperitivo a bordo",
     summary:
@@ -367,9 +393,10 @@ export const BOAT_PACKAGES = [
     detail:
       "Bevande, assaggi, eventuali alternative analcoliche, durata e numero di ospiti vengono definiti con l’operatore. La luce del tramonto dipende da periodo e meteo; champagne, fotografo e allestimenti sono eventuali extra da quotare.",
   },
+
   {
     id: "signature",
-    number: "04",
+    number: "03",
     title: "Una giornata privata sul lago",
     format: "Capitano · itinerario su misura",
     summary:
@@ -384,6 +411,25 @@ export const BOAT_PACKAGES = [
     ],
     detail:
       "La proposta distingue ore di navigazione, visite, guida, ingressi, pasti e trasferimenti. Non è garantito il prelievo dal pontile dell’hotel: l’approdo va verificato. Costi, inclusioni e alternative meteo sono indicati prima di ogni conferma.",
+  },
+
+  {
+    id: "freedom",
+    number: "04",
+    title: "Libertà sul lago",
+    format: "Noleggio 40 CV · guida autonoma",
+    summary:
+      "La libertà di condurre la barca, con briefing e assistenza. Senza patente solo se i requisiti lo consentono.",
+    audience: "Per chi desidera condurre la propria uscita",
+    description:
+      "Una barca da guidare personalmente, un itinerario suggerito e il tempo per osservare le rive. La formula senza patente è proposta soltanto per natanti e conducenti che ne rispettino i requisiti.",
+    features: [
+      "Noleggio dell’imbarcazione idonea",
+      "Accoglienza, briefing e assistenza dell’operatore",
+      "Percorso e durata da concordare",
+    ],
+    detail:
+      "Prima della conferma vengono verificati caratteristiche complete di barca e motore, requisiti del conducente, cauzione, carburante, coperture e condizioni. La potenza di 40 CV, da sola, non garantisce la conduzione senza patente. Il capitano non è incluso nella formula a guida autonoma.",
   },
 ] as const;
 
@@ -457,15 +503,18 @@ export const JOURNEYS = [
 ] as const;
 export const LOGISTICS = [
   {
+    id: "pickup",
     title: "Pick-up in aeroporto o in stazione",
     summary: "Accoglienza e trasferimento verso l’hotel o la prima tappa.",
   },
   {
+    id: "hotel",
     title: "Hotel da scegliere insieme",
     summary:
       "Una struttura da valutare in base a stile, posizione e soggiorno.",
   },
   {
+    id: "car",
     title: "Noleggio auto",
     summary:
       "Un’auto per gli spostamenti, con ritiro e riconsegna da concordare.",
@@ -474,7 +523,7 @@ export const LOGISTICS = [
 export const FAQ = [
   [
     "Come si crea un pacchetto personalizzato?",
-    "Nel modulo è possibile selezionare più esperienze e servizi, scegliere una formula in barca e indicare ospiti, periodo, arrivo e hotel. Il riepilogo raccoglie le preferenze per una proposta su misura: non calcola un prezzo e non conferma prenotazioni. È possibile contattarci anche direttamente su WhatsApp o via email, senza compilare il modulo.",
+    "Compili un unico modulo in tre passaggi: lago, ospiti e periodo; esperienze da selezionare; recapiti e servizi utili. Le formule in barca si scelgono nella stessa scheda. Può aggiungere o rimuovere le attività con le caselle e rivedere tutto prima dell’invio. Il salvataggio facoltativo nell’account e la richiesta non confermano una prenotazione. Può anche scriverci su WhatsApp o via email.",
   ],
   [
     "È possibile richiedere una sola esperienza?",
@@ -518,7 +567,6 @@ export type ExperienceContent = {
   EXPERIENCE_CATEGORIES: typeof EXPERIENCE_CATEGORIES;
   EXPERIENCES: typeof EXPERIENCES;
   BOAT_PACKAGES: typeof BOAT_PACKAGES;
-  JOURNEYS: typeof JOURNEYS;
   LOGISTICS: typeof LOGISTICS;
   FAQ: typeof FAQ;
 };

@@ -536,7 +536,10 @@
       "wishlist": "Liste d'envies",
       "wishlistDescription": "Éditions préférées",
       "profile": "Profil",
-      "profileDescription": "Données personnelles"
+      "profileDescription": "Données personnelles",
+      "trips": "Expériences enregistrées",
+      "tripsDescription": "Expériences enregistrées et devis personnalisés",
+      "reviews": "Avis"
     },
     "orders": {
       "title": "Vos commandes",

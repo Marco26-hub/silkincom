@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
+import { safeAuthRedirect } from '@/lib/auth-redirect';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useState, Suspense } from 'react';
@@ -14,7 +15,7 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const redirectParam = params.get('redirect');
-  const redirect = redirectParam || '/account';
+  const redirect = safeAuthRedirect(redirectParam);
   // /auth/callback bounces failed confirmation/OAuth links here with ?error=.
   const errorParam = params.get('error');
   const [email, setEmail] = useState('');
@@ -57,7 +58,7 @@ function LoginForm() {
         const ADMIN_ROLES = ['admin', 'super_admin', 'editor', 'order_manager'];
         if (profile && ADMIN_ROLES.includes(profile.role)) {
           // Staff → /admin, unless deep-linked to a specific admin page.
-          dest = redirectParam && redirectParam.startsWith('/admin') ? redirectParam : '/admin';
+          dest = redirect.startsWith('/admin') ? redirect : '/admin';
         }
       }
 
@@ -77,7 +78,7 @@ function LoginForm() {
       const supabase = createBrowserClient();
       const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` }
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}` }
       });
       if (authError) {
         setError(authError.message);

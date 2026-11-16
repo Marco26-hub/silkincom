@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import {
   ArrowDown,
@@ -13,12 +13,9 @@ import {
   Factory,
   Flag,
   Landmark,
-  Mail,
-  MessageCircle,
   Mountain,
   Palette,
   Pause,
-  Plane,
   Play,
   Plus,
   Ship,
@@ -27,7 +24,6 @@ import {
   Utensils,
   Waves,
   Wine,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -40,6 +36,14 @@ import { createExperienceTranslator } from "@/lib/experience-i18n";
 import styles from "./experience.module.css";
 import photoCredits from "../../../public/experience/cards/credits.json";
 import { JourneyMapFields } from "./JourneyMapFields";
+import { SaveTripAccount } from "./SaveTripAccount";
+import { useExperienceDraft } from "./useExperienceDraft";
+import {
+  tripPayloadSchema,
+  savedTripSchema,
+  type TripPayload,
+  type SavedTripDraft,
+} from "@/lib/experience-trips";
 const SHARED_IMAGE_IDS = new Set([
   "boat",
   "villages",
@@ -56,6 +60,7 @@ const SHARED_IMAGE_IDS = new Set([
 ]);
 function cardImage(id: string, lake: "como" | "maggiore") {
   if (id === "jet-ski") return "/experience/cards/jet-ski-user.webp";
+  if (id === "golf") return "/experience/cards/golf-inland.webp";
   if (id === "silk") return "/artisans/tessitore-tessitura-como.webp";
   if (id === "golf-maggiore") return "/experience/cards/golf-maggiore.webp";
   return `/experience/cards/${id}${lake === "maggiore" && SHARED_IMAGE_IDS.has(id) ? "-maggiore" : ""}.webp`;
@@ -75,13 +80,6 @@ const ICONS: Record<string, LucideIcon> = {
   bike: Bike,
   waves: Waves,
   sparkles: Sparkles,
-};
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  lake: Waves,
-  taste: Utensils,
-  silk: Factory,
-  active: Flag,
-  city: Landmark,
 };
 function displayDate(value: string, fallback: string, locale: string) {
   return value
@@ -126,7 +124,7 @@ const EXPERIENCE_SOURCES: Record<
   },
 };
 type Brief = {
-  journey: string;
+  savedTrip: { id: string; title: string; updated_at: string } | null;
   name: string;
   email: string;
   phone: string;
@@ -138,6 +136,7 @@ type Brief = {
   departure: string;
   guests: string;
   budget: string;
+  experienceStyle: string;
   interests: string[];
   notes: string;
 };
@@ -152,20 +151,42 @@ export function LakeExperience({
   content: ExperienceContent;
   copy: Record<string, string>;
 }) {
-  const {
-    EXPERIENCES,
-    BOAT_PACKAGES,
-    EXPERIENCE_CATEGORIES,
-    JOURNEYS,
-    LOGISTICS,
-    FAQ,
-  } = content;
-  const t = createExperienceTranslator(locale, copy);
+  const { EXPERIENCES, BOAT_PACKAGES, EXPERIENCE_CATEGORIES, LOGISTICS, FAQ } =
+    content;
+  const t = useMemo(
+    () => createExperienceTranslator(locale, copy),
+    [locale, copy],
+  );
   const displayInterest = (value: string) =>
     value.startsWith("Barca · ")
       ? `${t("Barca")} · ${value.slice("Barca · ".length)}`
       : value;
-  const [lake, setLake] = useState("Da scegliere insieme");
+  const selectionOptions = useMemo(
+    () => [
+      ...EXPERIENCES.map((item) => ({
+        id: `activity:${item.id}`,
+        value: item.title,
+      })),
+      ...BOAT_PACKAGES.map((item) => ({
+        id: `boat:${item.id}`,
+        value: `Barca · ${item.title}`,
+      })),
+      ...LOGISTICS.map((item) => ({
+        id: `service:${item.id}`,
+        value: item.title,
+      })),
+    ],
+    [EXPERIENCES, BOAT_PACKAGES, LOGISTICS],
+  );
+  const {
+    lake,
+    setLake,
+    interests,
+    setInterests,
+    payload,
+    loadDraft,
+    draftWarning,
+  } = useExperienceDraft(selectionOptions);
   const [heroSlide, setHeroSlide] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -177,24 +198,87 @@ export function LakeExperience({
     }, 8000);
     return () => window.clearInterval(timer);
   }, [heroPaused, reducedMotion]);
-  const [journeyTitle, setJourneyTitle] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState(false);
   const [category, setCategory] = useState<ExperienceCategory>("selection");
   const [experienceLake, setExperienceLake] = useState<"como" | "maggiore">(
     "como",
   );
+  useEffect(() => {
+    if (lake === "Lago di Como" || lake === "Lago Maggiore") {
+      setExperienceLake(lake === "Lago Maggiore" ? "maggiore" : "como");
+    }
+  }, [lake]);
+  const [activeStep, setActiveStep] = useState(1);
+  useEffect(() => {
+    const update = () => {
+      const anchors = ["stay-details", "esperienze", "travel-details"];
+      let next = 1;
+      anchors.forEach((id, index) => {
+        const element = document.getElementById(id);
+        if (element && element.getBoundingClientRect().top <= 230)
+          next = index + 1;
+      });
+      setActiveStep(next);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
   const [arrival, setArrival] = useState("");
+  const [savedDetails, setSavedDetails] = useState<TripPayload["details"]>();
+  const [formVersion, setFormVersion] = useState(0);
   const [brief, setBrief] = useState<Brief | null>(null);
+  const [accountTrip, setAccountTrip] = useState<SavedTripDraft | null>(null);
+  const [preparing, setPreparing] = useState(false);
+  const updateAccountTrip = useCallback((trip: SavedTripDraft | null) => {
+    setAccountTrip(trip);
+    setBrief(null);
+  }, []);
   const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
   const [error, setError] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
+  const loadAccountDraft = useCallback(
+    (saved: TripPayload) => {
+      loadDraft(saved);
+      setSavedDetails(saved.details);
+      setArrival(saved.details?.arrival || "");
+      setBrief(null);
+      setFormVersion((current) => current + 1);
+    },
+    [loadDraft],
+  );
+  function readTripPayload(): TripPayload {
+    if (!formRef.current)
+      throw new Error("[experience] Travel form is unavailable for saving.");
+    const data = new FormData(formRef.current);
+    const value = (name: string) => String(data.get(name) || "").trim();
+    return {
+      ...payload,
+      details: {
+        arrival: value("arrival"),
+        departure: value("departure"),
+        guests: Number(value("guests")),
+        budget: value("budget"),
+        experienceStyle: value("experienceStyle") as "" | "private" | "shared",
+        arrivalPoint: value("arrivalPoint"),
+        hotel: value("hotel"),
+        stops: [
+          value("extraStop0"),
+          value("extraStop1"),
+          value("extraStop2"),
+        ].filter(Boolean),
+        notes: value("notes"),
+      },
+    };
+  }
   const { fields, Honeypot } = useAntibot();
   const today = new Date().toLocaleDateString("en-CA", {
     timeZone: "Europe/Rome",
   });
   const visibleExperiences = EXPERIENCES.filter(
     (item) =>
+      item.id !== "boat" &&
       item.lakes.includes(experienceLake) &&
       (category === "selection" || item.category === category),
   );
@@ -204,32 +288,27 @@ export function LakeExperience({
       : lake === "Lago Maggiore"
         ? "maggiore"
         : undefined;
-  const packageExperiences = EXPERIENCES.filter(
-    (item) => !packageLake || item.lakes.includes(packageLake),
-  );
   const lakeName = experienceLake === "como" ? "Lago di Como" : "Lago Maggiore";
-  const contactMessage = [
-    t(
-      "Buongiorno SILKinCOM, desidero una proposta per un’esperienza su misura sui laghi.",
-    ),
-    t("Destinazione: {lake}.", { lake: t(lake) }),
-    ...(journeyTitle
-      ? [t("Itinerario di interesse: {journey}.", { journey: journeyTitle })]
-      : []),
-    ...(interests.length
-      ? [
-          t("Esperienze e servizi di interesse: {interests}.", {
-            interests: interests.map(displayInterest).join(", "),
-          }),
-        ]
-      : []),
-    t("Vorrei concordare con voi periodo, ospiti e dettagli del soggiorno."),
-  ].join("\n\n");
-  const whatsappHref = `https://wa.me/393477196603?text=${encodeURIComponent(contactMessage)}`;
-  const emailHref = `mailto:info@silkincom.com?subject=${encodeURIComponent(t("SILKinCOM Experience — Proposta personalizzata"))}&body=${encodeURIComponent(contactMessage)}`;
-  const visibleJourneys = JOURNEYS.filter(
-    (journey) => journey.lake === lakeName,
+  const priority =
+    experienceLake === "como"
+      ? ["boat", "silk", "gourmet", "golf", "milano"]
+      : ["boat", "islands", "gourmet", "golf-maggiore", "milano"];
+  const orderedExperiences = [...EXPERIENCES].sort((a, b) => {
+    const rank = (id: string) =>
+      priority.includes(id) ? priority.indexOf(id) : priority.length;
+    return rank(a.id) - rank(b.id);
+  });
+  const filteredExperiences = orderedExperiences.filter((item) =>
+    visibleExperiences.some((visible) => visible.id === item.id),
   );
+  const displayedExperiences =
+    category === "selection" && !showAll
+      ? filteredExperiences.slice(0, 6)
+      : filteredExperiences;
+  const selectionAcrossLakes = interests.some((value) => {
+    const item = EXPERIENCES.find((activity) => activity.title === value);
+    return item && packageLake && !item.lakes.includes(packageLake);
+  });
   const brunateNotice = t(
     today <= "2026-11-27"
       ? "Avviso ATM: chiusura della funicolare Como–Brunate annunciata dal 9 al 27 novembre 2026. Verifichiamo il servizio per le date del suo viaggio."
@@ -241,14 +320,26 @@ export function LakeExperience({
     setStatus("idle");
   }
   function toggleInterest(title: string) {
+    const boatTitle = EXPERIENCES.find((item) => item.id === "boat")!.title;
     setInterests((current) =>
-      current.includes(title)
-        ? current.filter((item) => item !== title)
-        : [...current, title],
+      title === boatTitle && current.some((item) => item.startsWith("Barca · "))
+        ? current.filter(
+            (item) => item !== boatTitle && !item.startsWith("Barca · "),
+          )
+        : current.includes(title)
+          ? current.filter((item) => item !== title)
+          : [...current, title],
     );
     setBrief(null);
     setError("");
     setStatus("idle");
+  }
+  function isInterestSelected(title: string) {
+    return (
+      interests.includes(title) ||
+      (EXPERIENCES.find((item) => item.id === "boat")?.title === title &&
+        interests.some((item) => item.startsWith("Barca · ")))
+    );
   }
   function chooseBoatPackage(
     option: (typeof BOAT_PACKAGES)[number],
@@ -270,41 +361,21 @@ export function LakeExperience({
         : "smooth",
     });
   }
-  function chooseJourney(journey: (typeof JOURNEYS)[number]) {
-    setJourneyTitle(journey.title);
-    setLake(journey.lake);
-    setExperienceLake(journey.lake === "Lago Maggiore" ? "maggiore" : "como");
-    const titles = EXPERIENCES.filter((item) =>
-      (journey.interests as readonly string[]).includes(item.id),
-    ).map((item) => item.title);
-    setInterests((current) => [...new Set([...current, ...titles])]);
-    setBrief(null);
-    setError("");
-    setStatus("idle");
-    document.getElementById("richiesta")?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
-  }
-  function chooseLake(value: string) {
-    setLake(value);
-    setExperienceLake(value === "Lago Maggiore" ? "maggiore" : "como");
-    setCategory("selection");
-    setJourneyTitle("");
-    setBrief(null);
-    document.getElementById("esperienze")?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
-  }
-  function prepareRequest(event: React.FormEvent<HTMLFormElement>) {
+  async function prepareRequest(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    if (preparing) return;
+    const form = event.currentTarget;
+    const snapshot = JSON.stringify([...new FormData(form)]);
+    const data = new FormData(form);
     const value = (key: string) => String(data.get(key) ?? "").trim();
     const next: Brief = {
-      journey: journeyTitle,
+      savedTrip: accountTrip
+        ? {
+            id: accountTrip.id,
+            title: accountTrip.title,
+            updated_at: accountTrip.updated_at,
+          }
+        : null,
       name: value("name"),
       email: value("email"),
       phone: value("phone"),
@@ -320,6 +391,12 @@ export function LakeExperience({
       departure: value("departure"),
       guests: value("guests"),
       budget: value("budget"),
+      experienceStyle:
+        value("experienceStyle") === "private"
+          ? t("Preferisco esperienze private")
+          : value("experienceStyle") === "shared"
+            ? t("Valuto anche attività condivise")
+            : "",
       interests: [...interests],
       notes: value("notes"),
     };
@@ -335,8 +412,55 @@ export function LakeExperience({
       return;
     }
     setError("");
-    setBrief(next);
-    requestAnimationFrame(() => reviewRef.current?.focus());
+    setPreparing(true);
+    try {
+      if (accountTrip) {
+        const current = tripPayloadSchema.parse(readTripPayload());
+        if (
+          JSON.stringify(current) !==
+          JSON.stringify(tripPayloadSchema.parse(accountTrip.payload))
+        ) {
+          const response = await fetch("/api/experience/trips", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: accountTrip.id,
+              updated_at: accountTrip.updated_at,
+              title: accountTrip.title,
+              payload: current,
+            }),
+          });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error);
+          const saved = savedTripSchema.parse(result.trip);
+          updateAccountTrip(saved);
+          next.savedTrip = {
+            id: saved.id,
+            title: saved.title,
+            updated_at: saved.updated_at,
+          };
+        }
+      }
+      if (
+        formRef.current !== form ||
+        JSON.stringify([...new FormData(form)]) !== snapshot
+      )
+        throw new Error("form_changed");
+      setBrief(next);
+      requestAnimationFrame(() => reviewRef.current?.focus());
+    } catch (cause) {
+      console.error(
+        "[experience] Request preparation failed:",
+        cause instanceof Error ? cause.message : cause,
+      );
+      setError(
+        t(
+          "Non è stato possibile preparare il riepilogo. Verifichi i dati e la versione del viaggio salvato, quindi riprovi.",
+        ),
+      );
+    } finally {
+      setPreparing(false);
+    }
   }
   async function sendRequest() {
     if (!brief || status === "sending") return;
@@ -350,7 +474,6 @@ export function LakeExperience({
     setError("");
     const messaggio = [
       "SILKinCOM EXPERIENCE — Richiesta di itinerario",
-      `Idea di partenza: ${brief.journey || "Percorso da costruire insieme"}`,
       `Destinazione: ${t(brief.lake)}`,
       `Punto di arrivo: ${brief.arrivalPoint || "Da definire"}`,
       `Hotel: ${brief.hotel || "Da definire"}`,
@@ -360,6 +483,7 @@ export function LakeExperience({
       `Ospiti: ${brief.guests}`,
       `Budget totale indicativo: ${brief.budget || "Da definire"}`,
       `Interessi: ${brief.interests.join(", ") || "Da scegliere insieme"}`,
+      `Formula desiderata: ${brief.experienceStyle || "Da concordare"}`,
       `Note: ${brief.notes || "Nessuna"}`,
       "Informativa privacy presa in visione. Nessuna prenotazione o pagamento.",
     ].join("\n");
@@ -371,6 +495,8 @@ export function LakeExperience({
           nome: brief.name,
           email: brief.email,
           telefono: brief.phone,
+          experienceTripId: brief.savedTrip?.id,
+          experienceTripVersion: brief.savedTrip?.updated_at,
           messaggio,
           ...fields(),
         }),
@@ -389,6 +515,226 @@ export function LakeExperience({
       );
       setStatus("idle");
     }
+  }
+  function renderExperience(item: (typeof EXPERIENCES)[number]) {
+    const Icon = ICONS[item.icon];
+    const selected = isInterestSelected(item.title);
+    const chosenBoat = BOAT_PACKAGES.find((option) =>
+      interests.includes(`Barca · ${option.title}`),
+    );
+    return (
+      <article
+        hidden={
+          item.id !== "boat" &&
+          !displayedExperiences.some((visible) => visible.id === item.id)
+        }
+        id={`experience-${item.id}`}
+        key={item.id}
+        className={`${styles.experienceCard} ${item.id === "boat" ? styles.boatFeatured : ""} ${selected ? styles.cardSelected : ""}`}
+      >
+        {item.id === "boat" && (
+          <span
+            id="in-barca"
+            className={styles.legacyAnchor}
+            aria-hidden="true"
+          />
+        )}
+        <figure className={styles.cardImage}>
+          <Image
+            src={cardImage(item.id, experienceLake)}
+            alt={item.title}
+            fill
+            sizes="(max-width: 599px) 92vw, (max-width: 1100px) 45vw, 24vw"
+            className={styles.cardPhoto}
+          />
+          <figcaption className={styles.imageDisclaimer}>
+            {t("Immagine illustrativa")}
+          </figcaption>
+        </figure>
+        <div className={styles.cardTop}>
+          <Icon size={23} strokeWidth={1.1} aria-hidden="true" />
+          <span>
+            {item.lakes.length > 1 && item.id !== "milano"
+              ? t(lakeName)
+              : item.location}
+          </span>
+        </div>
+        <h3>{item.title}</h3>
+        <p>{item.summary}</p>
+        <dl className={styles.cardFacts}>
+          <div>
+            <dt>{t("Tempo suggerito")}</dt>
+            <dd>{item.duration}</dd>
+          </div>
+          <div>
+            <dt>{t("Formula")}</dt>
+            <dd>{item.format}</dd>
+          </div>
+        </dl>
+        <details className={styles.cardDetails}>
+          <summary>
+            {t("Da sapere ")}
+            <ChevronDown size={14} aria-hidden="true" />
+          </summary>
+          <p>{item.description}</p>
+          <p>{item.detail}</p>
+          {item.id === "brunate" && (
+            <p className={styles.serviceNotice}>
+              {brunateNotice}{" "}
+              <a
+                href="https://www.atm.it/en/AltriServizi/Trasporto/Pages/FunicolareComoBrunate.aspx"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t("Avviso del gestore")}
+              </a>
+            </p>
+          )}
+          {item.id === "islands" &&
+            today >= "2026-11-09" &&
+            today <= "2026-11-22" && (
+              <p className={styles.serviceNotice}>
+                {t(
+                  "Terre Borromeo segnala un\u2019apertura straordinaria di Isola Bella fino al 22 novembre 2026. Aperture delle altre mete e collegamenti sono da verificare separatamente.",
+                )}{" "}
+                <a
+                  href="https://terreborromeo.it/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t("Informazioni del gestore")}
+                </a>
+              </p>
+            )}
+
+          {item.id === "silk" && (
+            <p className={styles.referenceLink}>
+              <Link href="/artigiani">
+                {t("Scopra la cultura artigiana SILKinCOM")}
+              </Link>
+            </p>
+          )}
+          {EXPERIENCE_SOURCES[item.id] && (
+            <p className={styles.referenceLink}>
+              <a
+                href={EXPERIENCE_SOURCES[item.id].url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t(EXPERIENCE_SOURCES[item.id].label)}
+              </a>
+            </p>
+          )}
+        </details>
+        <label className={styles.activityChoice}>
+          <input
+            type="checkbox"
+            name="activity"
+            value={item.id}
+            checked={selected}
+            onChange={() => toggleInterest(item.title)}
+          />
+          <span>
+            {selected ? t("Selezionata") : t("Scelga questa esperienza")}
+          </span>
+          <span className="sr-only">: {item.title}</span>
+        </label>
+        {item.id === "boat" && selected && (
+          <div className={styles.boatChoices}>
+            <p className={styles.boatChoiceLabel}>
+              {t("La sua formula in barca")}
+            </p>
+            <details
+              className={styles.boatChooser}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  event.currentTarget.open = false;
+                  event.currentTarget.querySelector("summary")?.focus();
+                }
+              }}
+            >
+              <summary>
+                <span>
+                  <span className="sr-only">
+                    {t("La sua formula in barca")}:{" "}
+                  </span>
+                  {chosenBoat?.title || t("Da scegliere insieme")}
+                </span>
+                <ChevronDown size={16} aria-hidden="true" />
+              </summary>
+              <fieldset>
+                <legend className="sr-only">
+                  {t("La sua formula in barca")}
+                </legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="boatPackage"
+                    value="undecided"
+                    checked={!chosenBoat}
+                    onChange={() =>
+                      setInterests((current) => [
+                        ...current.filter(
+                          (value) => !value.startsWith("Barca · "),
+                        ),
+                        item.title,
+                      ])
+                    }
+                  />
+                  <span>{t("Da scegliere insieme")}</span>
+                </label>
+                {BOAT_PACKAGES.map((option) => (
+                  <label key={option.id}>
+                    <input
+                      type="radio"
+                      name="boatPackage"
+                      value={option.id}
+                      checked={chosenBoat?.id === option.id}
+                      onChange={() => chooseBoatPackage(option, false)}
+                    />
+                    <span>
+                      <strong>{option.title}</strong>
+                      <small>{option.format}</small>
+                    </span>
+                  </label>
+                ))}
+              </fieldset>
+            </details>
+            {chosenBoat && (
+              <>
+                <p>{chosenBoat.format}</p>
+                <details className={styles.boatChoiceDetail}>
+                  <summary>{t("Dettagli della formula")}</summary>
+                  <p>{chosenBoat.description}</p>
+                  <ul>
+                    {chosenBoat.features.map((feature) => (
+                      <li key={feature}>{feature}</li>
+                    ))}
+                  </ul>
+                  <p>{chosenBoat.detail}</p>
+                  {chosenBoat.id === "freedom" && (
+                    <a
+                      href="https://www.mit.gov.it/node/2658"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t(
+                        "Indicazioni del Ministero sui requisiti di conduzione",
+                      )}
+                    </a>
+                  )}
+                </details>
+              </>
+            )}
+            <p>
+              {t(
+                "Imbarcazione, personale, durata, servizi e costi sono da confermare nella proposta.",
+              )}
+            </p>
+          </div>
+        )}
+      </article>
+    );
   }
   return (
     <div className={styles.page}>
@@ -454,12 +800,12 @@ export function LakeExperience({
             )}
             <br />
             {t(
-              "Un itinerario pensato per lei, dall\u2019accoglienza alle esperienze accompagnate.",
+              "Un unico referente per comporre esperienze, soggiorno e trasferimenti da aeroporto o stazione.",
             )}
           </p>
           <div className={styles.heroActions}>
             <a href="#experience-form" className={styles.lightButton}>
-              {t("Crea la tua Experience")}
+              {t("Crei la sua Experience")}
               <ArrowRight size={16} aria-hidden="true" />
             </a>
             <a href="#esperienze" className={styles.heroSecondary}>
@@ -512,812 +858,84 @@ export function LakeExperience({
         </div>
       </section>
 
-      <nav className={styles.pageNav} aria-label={t("Esplora Experience")}>
-        <details
-          className={styles.mobileSectionMenu}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              event.currentTarget.open = false;
-              event.currentTarget.querySelector("summary")?.focus();
-            }
-          }}
-        >
-          <summary>
-            {t("Esplora")}
-            <ChevronDown size={15} aria-hidden="true" />
-          </summary>
-          <div
-            className={styles.mobileSectionLinks}
-            onClick={(event) => {
-              if ((event.target as HTMLElement).closest("a")) {
-                const menu = event.currentTarget.closest("details");
-                if (menu) menu.open = false;
-              }
-            }}
-          >
-            <a href="#destinazioni">{t("I due laghi")}</a>
-            <a href="#esperienze">{t("Le esperienze")}</a>
-            <a href="#in-barca">{t("In barca")}</a>
-            <a href="#percorsi">{t("Itinerari")}</a>
-            <a href="#organizzazione">{t("Come funziona")}</a>
-          </div>
-        </details>
-        <div className={styles.pageNavLinks}>
-          <a href="#destinazioni">{t("I due laghi")}</a>
-          <a href="#esperienze">{t("Le esperienze")}</a>
-          <a href="#in-barca">{t("In barca")}</a>
-          <a href="#percorsi">{t("Itinerari")}</a>
-          <a href="#organizzazione">{t("Come funziona")}</a>
-        </div>
-        <a href="#experience-form" className={styles.navCreate}>
-          {t("Crea la tua Experience")}
-          <ArrowRight size={13} aria-hidden="true" />
-        </a>
-      </nav>
-
-      <section id="il-progetto" className={`${styles.section} ${styles.intro}`}>
-        <p className={styles.eyebrow}>
-          {t("Un altro modo di incontrare il territorio")}
-        </p>
-        <div>
-          <h2>
-            {t("Esperienze sui laghi.")}
-            <br />
-            <em>{t("Scelte intorno a lei.")}</em>
-          </h2>
-          <p>
-            {t(
-              "SILKinCOM Experience nasce per far conoscere il Lago di Como e il Lago Maggiore attraverso il paesaggio, la cultura e gli incontri con il territorio. Una giornata o un soggiorno, costruiti intorno ai suoi interessi.",
-            )}
-          </p>
-          <p>
-            {t(
-              "Una villa affacciata sull\u2019acqua, una tavola da scoprire, una partita a golf o un incontro con la seta di Como. Le esperienze possono intrecciarsi in un percorso personale, con accoglienza in aeroporto o in stazione e trasferimenti dal suo hotel.",
-            )}
-          </p>
-          <p>
-            {t(
-              "Un referente segue l\u2019organizzazione; personale competente accompagna le singole attivit\u00E0. Il programma presenta servizi, disponibilit\u00E0 e costi prima di ogni conferma.",
-            )}
-          </p>
-          <div className={styles.introNotes}>
-            <span>{t("Un lago o entrambi")}</span>
-            <span>{t("Una giornata o un soggiorno")}</span>
-            <span>{t("Richiesta senza impegno")}</span>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="destinazioni"
-        className={`${styles.section} ${styles.destinations}`}
-        aria-labelledby="destinations-title"
-      >
-        <div className={styles.sectionHeading}>
-          <div>
-            <p className={styles.eyebrow}>
-              {t("Prima il luogo, poi il percorso")}
-            </p>
-            <h2 id="destinations-title">
-              {t("Due laghi, ")}
-              <em>{t("due caratteri.")}</em>
-            </h2>
-          </div>
-          <p>
-            {t(
-              "Partiamo dal luogo in cui desidera soggiornare. Gli spostamenti seguono il viaggio, non lo riempiono.",
-            )}
-          </p>
-        </div>
-        <div className={styles.lakes}>
-          <article className={styles.lake}>
-            <div className={styles.lakeImage}>
-              <Image
-                src="/experience/lago-di-como.webp"
-                alt={t("Varenna, sulla sponda orientale del Lago di Como")}
-                fill
-                sizes="(max-width: 760px) 100vw, 50vw"
-              />
-            </div>
-            <div className={styles.lakeText}>
-              <span className={styles.number}>{t("01 / IL LARIO")}</span>
-              <h3>{t("Lago di Como")}</h3>
-              <p>
-                {t(
-                  "Le ville e i borghi di Bellagio e Varenna, Como e Brunate, una partita a golf e la cultura della seta. Da abbinare scegliendo la parte di lago pi\u00F9 adatta al suo soggiorno.",
-                )}
-              </p>
-              <button type="button" onClick={() => chooseLake("Lago di Como")}>
-                {t("Esplori il Lago di Como")}{" "}
-                <ArrowRight size={17} aria-hidden="true" />
-              </button>
-            </div>
-          </article>
-          <article className={styles.lake}>
-            <div className={styles.lakeImage}>
-              <Image
-                src="/experience/lago-maggiore.webp"
-                alt={t(
-                  "Isola Bella, nel gruppo delle Isole Borromee sul Lago Maggiore",
-                )}
-                fill
-                sizes="(max-width: 760px) 100vw, 50vw"
-              />
-            </div>
-            <div className={styles.lakeText}>
-              <span className={styles.number}>{t("02 / IL VERBANO")}</span>
-              <h3>{t("Lago Maggiore")}</h3>
-              <p>
-                {t(
-                  "Stresa, le Isole Borromee e i giardini, con il tempo per una sosta gourmet o un\u2019uscita nella natura. Un soggiorno con una propria base e un proprio ritmo.",
-                )}
-              </p>
-              <button type="button" onClick={() => chooseLake("Lago Maggiore")}>
-                {t("Esplori il Lago Maggiore")}{" "}
-                <ArrowRight size={17} aria-hidden="true" />
-              </button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section
-        id="esperienze"
-        className={`${styles.section} ${styles.explore}`}
-        aria-labelledby="services-title"
-      >
-        <div className={styles.sectionHeading}>
-          <div>
-            <p className={styles.eyebrow}>
-              {t("Il viaggio nasce dai suoi interessi")}
-            </p>
-            <h2 id="services-title">
-              {t("Le esperienze, ")}
-              <em>{t("da scegliere.")}</em>
-            </h2>
-          </div>
-          <p>
-            {t(
-              "Selezioni le esperienze che desidera approfondire. \u00C8 una lista di desideri: nessuna attivit\u00E0 viene prenotata.",
-            )}
-          </p>
-        </div>
-        <div
-          className={styles.destinationSwitch}
-          role="group"
-          aria-label={t("Scelga il lago delle esperienze")}
-        >
-          {(
-            [
-              {
-                id: "como",
-                label: "Lago di Como",
-                detail: "Ville, borghi e cultura della seta",
-              },
-              {
-                id: "maggiore",
-                label: "Lago Maggiore",
-                detail: "Isole, giardini e paesaggi del Verbano",
-              },
-            ] as const
-          ).map((destination) => (
-            <button
-              key={destination.id}
-              type="button"
-              aria-label={t(destination.label)}
-              aria-pressed={experienceLake === destination.id}
-              onClick={() => {
-                setExperienceLake(destination.id);
-                setLake(
-                  destination.id === "maggiore"
-                    ? "Lago Maggiore"
-                    : "Lago di Como",
-                );
-                setJourneyTitle("");
-                setBrief(null);
-                setCategory("selection");
-              }}
-            >
-              <span>
-                <strong>{t(destination.label)}</strong>
-                <small>{t(destination.detail)}</small>
-              </span>
-              {experienceLake === destination.id ? (
-                <Check size={19} aria-hidden="true" />
-              ) : (
-                <ArrowRight size={19} aria-hidden="true" />
-              )}
-            </button>
-          ))}
-        </div>
-        <div
-          className={styles.filters}
-          role="group"
-          aria-label={t("Filtra le esperienze per interesse")}
-        >
-          {EXPERIENCE_CATEGORIES.filter(
-            (group) =>
-              group.id === "selection" ||
-              EXPERIENCES.some(
-                (item) =>
-                  item.lakes.includes(experienceLake) &&
-                  item.category === group.id,
-              ),
-          ).map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              aria-pressed={category === item.id}
-              aria-controls="experience-results"
-              onClick={() => setCategory(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-        <div className={styles.resultsHeading}>
-          <p>
-            {
-              EXPERIENCE_CATEGORIES.find((item) => item.id === category)
-                ?.description
-            }
-          </p>
-          <span role="status">
-            {t(lakeName)}
-            {t(" \u00B7 ")}
-            {visibleExperiences.length}{" "}
-            {visibleExperiences.length === 1 ? t("proposta") : t("proposte")}
-            {" · "}
-            {t("selezione")}: {interests.length}
-          </span>
-        </div>
-        <div id="experience-results" className={styles.experienceGrid}>
-          {EXPERIENCES.map((item) => {
-            const Icon = ICONS[item.icon];
-            const selected = interests.includes(item.title);
-            return (
-              <article
-                hidden={
-                  !visibleExperiences.some((visible) => visible.id === item.id)
-                }
-                id={`experience-${item.id}`}
-                key={item.id}
-                className={`${styles.experienceCard} ${selected ? styles.cardSelected : ""}`}
-              >
-                <div className={styles.cardImage}>
-                  <Image
-                    src={cardImage(item.id, experienceLake)}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 599px) 92vw, (max-width: 1100px) 45vw, 24vw"
-                    className={styles.cardPhoto}
-                  />
-                </div>
-                <div className={styles.cardTop}>
-                  <Icon size={23} strokeWidth={1.1} aria-hidden="true" />
-                  <span>
-                    {item.lakes.length > 1 && item.id !== "milano"
-                      ? t(lakeName)
-                      : item.location}
-                  </span>
-                </div>
-                <h3>{item.title}</h3>
-                <p>{item.summary}</p>
-                {item.id === "boat" && (
-                  <a href="#in-barca" className={styles.boatLink}>
-                    {t("Scopra le formule in barca")}{" "}
-                    <ArrowRight size={15} aria-hidden="true" />
-                  </a>
-                )}
-                <details className={styles.cardDetails}>
-                  <summary>
-                    {t("Da sapere ")}
-                    <Plus size={14} aria-hidden="true" />
-                  </summary>
-                  <p>{item.description}</p>
-                  <p>{item.detail}</p>
-                  {item.id === "brunate" && (
-                    <p className={styles.serviceNotice}>
-                      {brunateNotice}{" "}
-                      <a
-                        href="https://www.atm.it/en/AltriServizi/Trasporto/Pages/FunicolareComoBrunate.aspx"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {t("Avviso del gestore")}
-                      </a>
-                    </p>
-                  )}
-                  {item.id === "islands" &&
-                    today >= "2026-11-09" &&
-                    today <= "2026-11-22" && (
-                      <p className={styles.serviceNotice}>
-                        {t(
-                          "Terre Borromeo segnala un\u2019apertura straordinaria di Isola Bella fino al 22 novembre 2026. Aperture delle altre mete e collegamenti sono da verificare separatamente.",
-                        )}{" "}
-                        <a
-                          href="https://terreborromeo.it/"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {t("Informazioni del gestore")}
-                        </a>
-                      </p>
-                    )}
-
-                  {EXPERIENCE_SOURCES[item.id] && (
-                    <p className={styles.referenceLink}>
-                      <a
-                        href={EXPERIENCE_SOURCES[item.id].url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {t(EXPERIENCE_SOURCES[item.id].label)}
-                      </a>
-                    </p>
-                  )}
-                </details>
-                <button
-                  type="button"
-                  className={styles.selectExperience}
-                  aria-pressed={selected}
-                  aria-label={t("{value0} {value1}", {
-                    value0: selected ? t("Rimuovi") : t("Aggiungi"),
-                    value1: item.title,
-                  })}
-                  onClick={() => toggleInterest(item.title)}
-                >
-                  {selected ? t("Nel suo viaggio") : t("Aggiunga al viaggio")}
-                  {selected ? (
-                    <Check size={17} aria-hidden="true" />
-                  ) : (
-                    <Plus size={17} aria-hidden="true" />
-                  )}
-                </button>
-              </article>
-            );
-          })}
-        </div>
-        <div className={styles.selectionBar}>
-          <p>
-            {interests.length
-              ? t(
-                  "{value0} idee nella sua selezione. \u00C8 possibile continuare a esplorare o passare alla richiesta.",
-                  { value0: interests.length },
-                )
-              : t(
-                  "Desidera un consiglio? La proposta pu\u00F2 partire anche da una conversazione.",
-                )}
-          </p>
-          <a href="#richiesta">
-            {interests.length
-              ? t("Personalizzi il suo viaggio")
-              : t("Ci racconti i suoi desideri")}{" "}
-            <ArrowRight size={17} aria-hidden="true" />
-          </a>
-        </div>
-      </section>
-
-      <section
-        id="in-barca"
-        className={`${styles.section} ${styles.boatSection}`}
-        aria-labelledby="boat-title"
-      >
-        <div className={styles.sectionHeading}>
-          <div>
-            <p className={styles.eyebrow}>
-              {t("SILKinCOM \u00B7 Lake Collection")}
-            </p>
-            <h2 id="boat-title">
-              {t("Il lago, ")}
-              <em>{t("nella sua forma pi\u00F9 personale.")}</em>
-            </h2>
-          </div>
-          <p>
-            {t(
-              "Quattro formule per il Lago di Como e il Lago Maggiore. La selezione avvia una proposta su misura: imbarcazioni, personale, servizi e costi sono da confermare.",
-            )}
-          </p>
-        </div>
-        <div className={styles.boatGrid}>
-          {BOAT_PACKAGES.map((option) => {
-            const selected = interests.includes(`Barca · ${option.title}`);
-            return (
-              <article
-                key={option.id}
-                className={selected ? styles.boatSelected : ""}
-              >
-                <div className={styles.boatNumber}>
-                  {option.number}
-                  <Ship size={25} strokeWidth={1} aria-hidden="true" />
-                </div>
-                <p className={styles.eyebrow}>{option.format}</p>
-                <h3>{option.title}</h3>
-                <p className={styles.boatAudience}>{option.audience}</p>
-                <p>{option.description}</p>
-                <ul>
-                  {option.features.map((feature) => (
-                    <li key={feature}>
-                      <Check size={14} aria-hidden="true" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <details className={styles.cardDetails}>
-                  <summary>
-                    {t("Dettagli della proposta")}{" "}
-                    <Plus size={15} aria-hidden="true" />
-                  </summary>
-                  <p>{option.detail}</p>
-                  {option.id === "freedom" && (
-                    <p>
-                      <a
-                        href="https://www.mit.gov.it/node/2658"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {t(
-                          "Indicazioni del Ministero sui requisiti di conduzione",
-                        )}
-                      </a>
-                    </p>
-                  )}
-                </details>
-                <button
-                  type="button"
-                  aria-pressed={selected}
-                  onClick={() => chooseBoatPackage(option)}
-                >
-                  {selected
-                    ? t("Formula selezionata")
-                    : t("Richieda questa formula")}
-                  {selected ? (
-                    <Check size={17} aria-hidden="true" />
-                  ) : (
-                    <ArrowRight size={17} aria-hidden="true" />
-                  )}
-                  <span className="sr-only">
-                    {t(": ")}
-                    {option.title}
-                  </span>
-                </button>
-              </article>
-            );
-          })}
-        </div>
-        <p className={styles.boatFootnote}>
-          {t(
-            "Durata, capienza, modello, carburante, cauzione, bevande, ingressi e trasferimenti vengono dettagliati nel preventivo. Fotografo, allestimenti e occasioni speciali possono essere valutati come servizi aggiuntivi.",
-          )}
-        </p>
-      </section>
-
-      {experienceLake === "como" && (
-        <section className={styles.signature} aria-labelledby="signature-title">
-          <div>
-            <p className={styles.eyebrow}>{t("Il legame con SILKinCOM")}</p>
-            <h2 id="signature-title">
-              {t("Como")}
-              <br />
-              <em>{t("Silk Experience.")}</em>
-            </h2>
-            <p>
-              {t(
-                "La seta non \u00E8 soltanto un ricordo da portare a casa. \u00C8 una chiave per conoscere il territorio: il lavoro del telaio, la ricerca del colore, il dialogo con chi sceglie e lavora i tessuti.",
-              )}
-            </p>
-            <Link href="/artigiani" className={styles.textLink}>
-              {t("Scopra la cultura artigiana SILKinCOM")}{" "}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </div>
-          <div className={styles.silkSteps}>
-            <p>
-              <span>{t("01")}</span>
-              <strong>{t("Osservare")}</strong>
-              {t(
-                "Una visita guidata in tessitura o tintoria, con accessi concordati.",
-              )}
-            </p>
-            <p>
-              <span>{t("02")}</span>
-              <strong>{t("Riconoscere")}</strong>
-              {t(
-                "Materiali, trame e lavorazioni raccontati attraverso il prodotto.",
-              )}
-            </p>
-            <p>
-              <span>{t("03")}</span>
-              <strong>{t("Scegliere")}</strong>
-              {t("Uno showroom da visitare, con acquisti sempre facoltativi.")}
-            </p>
-            <button type="button" onClick={() => chooseJourney(JOURNEYS[1])}>
-              {t("Richieda Como Silk Experience")}{" "}
-              <ArrowRight size={17} aria-hidden="true" />
-            </button>
-          </div>
-        </section>
-      )}
-
-      <section
-        id="percorsi"
-        className={`${styles.section} ${styles.routes}`}
-        aria-labelledby="routes-title"
-      >
-        <div className={styles.sectionHeading}>
-          <div>
-            <p className={styles.eyebrow}>
-              {t("Poche tappe, un filo conduttore")}
-            </p>
-            <h2 id="routes-title">
-              {t("Il suo itinerario, ")}
-              <em>{t("un incontro dopo l\u2019altro.")}</em>
-            </h2>
-          </div>
-          <p>
-            {t(
-              "Esempi di percorso da personalizzare. Durata, ordine delle tappe e costi dipendono dal soggiorno e dalle disponibilit\u00E0.",
-            )}
-          </p>
-        </div>
-        <div className={styles.routeGrid}>
-          {visibleJourneys.map((journey) => (
-            <article key={journey.id}>
-              <div className={styles.routeNumber}>
-                {journey.number}
-                <span>{t(journey.lake)}</span>
-              </div>
-              <p className={styles.eyebrow}>{journey.subtitle}</p>
-              <h3>{journey.title}</h3>
-              <p>{journey.description}</p>
-              <ol>
-                {journey.stops.map((stop) => (
-                  <li key={stop}>{stop}</li>
-                ))}
-              </ol>
-              <button type="button" onClick={() => chooseJourney(journey)}>
-                {t("Personalizzi questo percorso")}{" "}
-                <ArrowRight size={17} aria-hidden="true" />
-                <span className="sr-only">
-                  {t(": ")}
-                  {journey.title}
-                </span>
-              </button>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section
-        id="organizzazione"
-        className={styles.arrival}
-        aria-labelledby="arrival-title"
-      >
-        <div className={styles.arrivalIcon}>
-          <Plane size={30} strokeWidth={1} aria-hidden="true" />
-          <span>{t("ARRIVI")}</span>
-        </div>
-        <div>
-          <p className={styles.eyebrow}>
-            {t("Arrivo, soggiorno, spostamenti")}
-          </p>
-          <h2 id="arrival-title">
-            {t("Dall\u2019aeroporto o dalla stazione, ")}
-            <em>{t("al suo lago.")}</em>
-          </h2>
-          <p>
-            {t(
-              "Indichi l\u2019aeroporto o la stazione di arrivo e l\u2019hotel, se gi\u00E0 scelto. Nella proposta possiamo valutare accoglienza, trasferimenti di andata e ritorno, soggiorno e noleggio auto, scegliendo prima le esperienze e poi gli spostamenti necessari.",
-            )}
-          </p>
-        </div>
-        <a href="#richiesta" className={styles.textLink}>
-          {t("Organizziamo il suo arrivo ")}
-          <ArrowRight size={17} aria-hidden="true" />
-        </a>
-      </section>
-
-      <section
-        className={`${styles.section} ${styles.journey}`}
-        aria-labelledby="journey-title"
-      >
-        <p className={styles.eyebrow}>{t("Come nasce la proposta")}</p>
-        <h2 id="journey-title">
-          {t("Prima i desideri. ")}
-          <em>{t("Poi i dettagli.")}</em>
-        </h2>
-        <ol>
-          <li>
-            <span>{t("01")}</span>
-            <h3>{t("Condivida i suoi desideri")}</h3>
-            <p>
-              {t(
-                "Il lago, il periodo e qualche idea. Non serve avere gi\u00E0 deciso tutto.",
-              )}
-            </p>
-          </li>
-          <li>
-            <span>{t("02")}</span>
-            <h3>{t("Disegniamo il percorso")}</h3>
-            <p>
-              {t(
-                "Mettiamo in relazione tappe, tempi e disponibilit\u00E0 di strutture e operatori.",
-              )}
-            </p>
-          </li>
-          <li>
-            <span>{t("03")}</span>
-            <h3>{t("La proposta, nei dettagli")}</h3>
-            <p>
-              {t(
-                "Servizi, costi e condizioni arrivano prima di ogni conferma o pagamento.",
-              )}
-            </p>
-          </li>
-        </ol>
-      </section>
-
       <section
         id="richiesta"
-        className={`${styles.section} ${styles.request}`}
+        className={`${styles.section} ${styles.unifiedRequest}`}
         aria-labelledby="request-title"
       >
-        <div className={styles.requestIntro}>
-          <div className={styles.requestLead}>
-            <div>
-              <p className={styles.eyebrow}>
-                {t("Il lago, come desidera viverlo")}
-              </p>
-              <h2 id="request-title">
-                {t("Il suo viaggio,")}
-                <br />
-                <em>{t("su misura.")}</em>
-              </h2>
-              <p>
-                {t(
-                  "Un giro in barca, una villa da scoprire, una cena vista lago. Scelga ci\u00F2 che desidera vivere: costruiremo insieme un percorso che unisce le sue passioni al tempo a disposizione.",
-                )}
-              </p>
-              <p>
-                {t(
-                  "Pu\u00F2 abbinare pi\u00F9 esperienze nel modulo oppure iniziare con un messaggio su WhatsApp o via email. Anche una sola idea \u00E8 un buon punto di partenza.",
-                )}
-              </p>
-            </div>
-            <figure className={styles.requestVisual}>
-              <Image
-                src={
-                  lake === "Lago Maggiore"
-                    ? "/experience/lago-maggiore.webp"
-                    : "/experience/lago-di-como.webp"
-                }
-                alt={
-                  lake === "Lago Maggiore"
-                    ? t("Isola Bella sul Lago Maggiore")
-                    : t("Varenna affacciata sul Lago di Como")
-                }
-                fill
-                sizes="(max-width: 760px) 100vw, 45vw"
-              />
-              <figcaption>
-                {lake === "Lago Maggiore"
-                  ? t("Lago Maggiore \u00B7 Isola Bella")
-                  : t("Lago di Como \u00B7 Varenna")}
-              </figcaption>
-            </figure>
-          </div>
-          <div
-            className={styles.contactOptions}
-            aria-label={t("Come richiedere la sua esperienza")}
-          >
-            <a href="#experience-form">
-              <Compass size={20} aria-hidden="true" />
-              <span>
-                <strong>{t("Pacchetto personalizzato")}</strong>
-                <small>
-                  {t("Scelga le esperienze e ci racconti il suo viaggio.")}
-                </small>
-              </span>
-              <ArrowDown size={16} aria-hidden="true" />
-            </a>
-            <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
-              <MessageCircle size={20} aria-hidden="true" />
-              <span>
-                <strong>{t("WhatsApp")}</strong>
-                <small>
-                  {t("Un messaggio per iniziare, senza compilare il modulo.")}
-                </small>
-              </span>
-              <ArrowRight size={16} aria-hidden="true" />
-            </a>
-            <a href={emailHref}>
-              <Mail size={20} aria-hidden="true" />
-              <span>
-                <strong>{t("Email")}</strong>
-                <small>{t("Le sue idee, con calma. info@silkincom.com")}</small>
-              </span>
-              <ArrowRight size={16} aria-hidden="true" />
-            </a>
-          </div>
-          <p className={styles.contactNote}>
+        <header className={styles.unifiedHeading}>
+          <p className={styles.eyebrow}>
+            {t("SILKinCOM · Experience su misura")}
+          </p>
+          <h2 id="request-title">
+            {t("La sua esperienza, ")}
+            <em>{t("su misura.")}</em>
+          </h2>
+          <p>
             {t(
-              "La richiesta \u00E8 senza impegno. Il pacchetto viene definito insieme, con disponibilit\u00E0 e costi prima di ogni prenotazione. WhatsApp ed email aprono una bozza con il lago e gli interessi selezionati, da completare e inviare.",
+              "Scelga il lago, selezioni le esperienze e ci racconti i suoi desideri. Un unico modulo per ricevere una proposta con servizi, disponibilità e costi, prima di ogni conferma.",
             )}
           </p>
-        </div>
-        <div>
-          <form
-            id="experience-form"
-            ref={formRef}
-            onSubmit={prepareRequest}
-            onChange={invalidateBrief}
-            onInvalidCapture={(event) => {
-              (event.target as HTMLElement)
-                .closest("details")
-                ?.setAttribute("open", "");
-            }}
-            className={styles.form}
+        </header>
+        <form
+          id="experience-form"
+          aria-labelledby="request-title"
+          tabIndex={-1}
+          ref={formRef}
+          onSubmit={prepareRequest}
+          onChange={invalidateBrief}
+          onInvalidCapture={(event) => {
+            (event.target as HTMLElement)
+              .closest("details")
+              ?.setAttribute("open", "");
+          }}
+          className={`${styles.form} ${styles.unifiedForm}`}
+        >
+          <Honeypot />
+          <nav
+            className={styles.formSteps}
+            aria-label={t("Sezioni del modulo Experience")}
           >
-            <Honeypot />
-            <div className={styles.formHeading}>
-              <span>
-                {t("Un viaggio che prende forma, una scelta alla volta.")}
-              </span>
-              <p>
-                {t(
-                  "Destinazione, esperienze e qualche dettaglio: al resto pensiamo insieme. I campi con * sono necessari; le date possono restare aperte.",
-                )}
-              </p>
-              <nav
-                className={styles.formSteps}
-                aria-label={t("Sezioni del pacchetto personalizzato")}
-              >
-                <a href="#stay-details">
-                  <span>{t("01")}</span>
-                  {t(" Soggiorno")}
-                </a>
-                <a href="#package-choices-title">
-                  <span>{t("02")}</span>
-                  {t(" Esperienze")}
-                </a>
-                <a href="#travel-details">
-                  <span>{t("03")}</span>
-                  {t(" Dettagli")}
-                </a>
-              </nav>
-            </div>
+            <a
+              href="#stay-details"
+              aria-current={activeStep === 1 ? "step" : undefined}
+            >
+              <span>01</span>
+              {t("Lago e periodo")}
+            </a>
+            <a
+              href="#esperienze"
+              aria-current={activeStep === 2 ? "step" : undefined}
+            >
+              <span>02</span>
+              {t("Esperienze")}
+            </a>
+            <a
+              href="#travel-details"
+              aria-current={activeStep === 3 ? "step" : undefined}
+            >
+              <span>03</span>
+              {t("Recapiti")}
+            </a>
+          </nav>
+          {draftWarning && (
+            <p role="alert" className={styles.selectionNotice}>
+              {t(
+                "Le scelte non possono essere conservate in questa scheda. Può comunque compilare il modulo oppure salvarle nel suo account.",
+              )}
+            </p>
+          )}
+          <div className={styles.unifiedStep}>
             <div id="stay-details" className={styles.formSectionTitle}>
-              <span>{t("01")}</span>
+              <span>01</span>
               <div>
-                <h3>{t("Il suo soggiorno")}</h3>
+                <h3>{t("Lago, ospiti e periodo")}</h3>
                 <p>
                   {t(
-                    "Il lago, gli ospiti e il periodo in cui desidera partire.",
+                    "Può lasciare le date aperte. I campi con * sono necessari.",
                   )}
                 </p>
               </div>
-            </div>
-            <div className={styles.formRow}>
-              <label>
-                {t("Nome e cognome *")}
-                <input
-                  name="name"
-                  autoComplete="name"
-                  required
-                  maxLength={120}
-                />
-              </label>
-              <label>
-                {t("Email *")}
-                <input
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  spellCheck={false}
-                  required
-                  maxLength={200}
-                />
-              </label>
             </div>
             <div className={styles.formRow}>
               <label>
@@ -1337,8 +955,8 @@ export function LakeExperience({
                           : "como",
                       );
                       setCategory("selection");
+                      setShowAll(false);
                     }
-                    setJourneyTitle("");
                   }}
                 >
                   <option value="Da scegliere insieme">
@@ -1354,11 +972,13 @@ export function LakeExperience({
               <label>
                 {t("Numero di ospiti *")}
                 <input
+                  key={`guests-${formVersion}`}
                   name="guests"
+                  inputMode="numeric"
                   type="number"
                   min="1"
                   max="100"
-                  defaultValue="2"
+                  defaultValue={savedDetails?.guests || 2}
                   required
                 />
               </label>
@@ -1376,181 +996,266 @@ export function LakeExperience({
               </label>
               <label>
                 {t("Partenza indicativa")}
-                <input name="departure" type="date" min={arrival || today} />
+                <input
+                  key={`departure-${formVersion}`}
+                  name="departure"
+                  type="date"
+                  min={arrival || today}
+                  defaultValue={savedDetails?.departure || ""}
+                />
               </label>
             </div>
-            <div
-              className={styles.chosenInterests}
-              aria-label={t("Le sue esperienze selezionate")}
-            >
-              {interests.length ? (
-                <>
-                  <p>{t("Esperienze selezionate")}</p>
-                  <div>
-                    {interests.map((interest) => (
-                      <button
-                        type="button"
-                        key={displayInterest(interest)}
-                        onClick={() => toggleInterest(interest)}
-                        aria-label={t("Rimuovi dalla richiesta: {value0}", {
-                          value0: displayInterest(interest),
-                        })}
-                      >
-                        {displayInterest(interest)}
-                        <X size={13} aria-hidden="true" />
-                      </button>
-                    ))}
-                  </div>
-                  <a href="#request-submit" className={styles.reviewShortcut}>
-                    {t("Al riepilogo della richiesta")}{" "}
-                    <ArrowDown size={14} aria-hidden="true" />
-                  </a>
-                </>
-              ) : (
+            <p className={styles.destinationContext}>
+              {packageLake === "como"
+                ? t(
+                    "Lago di Como: ville e borghi del Lario, tradizione della seta e attività nell’entroterra comasco.",
+                  )
+                : packageLake === "maggiore"
+                  ? t(
+                      "Lago Maggiore: Stresa, Isole Borromee, giardini del Verbano e attività nel Vergante.",
+                    )
+                  : t(
+                      "Lago di Como e Lago Maggiore sono destinazioni distinte. Scegliamo insieme le tappe e valutiamo gli spostamenti in base al tempo disponibile.",
+                    )}
+            </p>
+          </div>
+          <div id="esperienze" className={styles.unifiedStep}>
+            <span
+              id="percorsi"
+              className={styles.legacyAnchor}
+              aria-hidden="true"
+            />
+            <div className={styles.formSectionTitle}>
+              <span>02</span>
+              <div>
+                <h3 id="package-choices-title">
+                  {t("Le esperienze che desidera vivere")}
+                </h3>
                 <p>
                   {t(
-                    "Nessuna esperienza selezionata: pu\u00F2 chiedere un consiglio oppure esplorare le idee qui sopra.",
+                    "Selezioni le attività da inserire nella sua proposta. Può modificarle in qualsiasi momento; la richiesta non comporta prenotazioni.",
                   )}
                 </p>
-              )}
+              </div>
             </div>
-            <section
-              className={styles.packagePicker}
-              aria-labelledby="package-choices-title"
-            >
-              <div className={styles.formSectionTitle}>
-                <span>{t("02")}</span>
-                <div>
-                  <h3 id="package-choices-title">
-                    {t("Le esperienze che desidera")}
-                  </h3>
-                  <p>
+            {!packageLake && (
+              <div
+                id="destinazioni"
+                className={styles.lakeTabs}
+                role="group"
+                aria-label={t("Visualizzi le proposte di")}
+              >
+                <span>{t("Visualizzi le proposte di")}</span>
+                {(["como", "maggiore"] as const).map((destination) => (
+                  <button
+                    key={destination}
+                    type="button"
+                    aria-pressed={experienceLake === destination}
+                    onClick={() => {
+                      setExperienceLake(destination);
+                      setCategory("selection");
+                      setShowAll(false);
+                    }}
+                  >
                     {t(
-                      "Selezioni una o pi\u00F9 proposte, anche di categorie diverse. Il percorso sar\u00E0 adattato al lago e al tempo disponibile.",
+                      destination === "como" ? "Lago di Como" : "Lago Maggiore",
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className={styles.activitiesLayout}>
+              <aside
+                className={styles.boatAside}
+                aria-label={t("L’esperienza in barca")}
+              >
+                {renderExperience(
+                  EXPERIENCES.find((item) => item.id === "boat")!,
+                )}
+              </aside>
+              <div className={styles.activityCatalogue}>
+                <div
+                  className={styles.filters}
+                  role="group"
+                  aria-label={t("Filtra le esperienze per interesse")}
+                >
+                  {EXPERIENCE_CATEGORIES.filter(
+                    (group) =>
+                      group.id === "selection" ||
+                      EXPERIENCES.some(
+                        (item) =>
+                          item.lakes.includes(experienceLake) &&
+                          item.category === group.id,
+                      ),
+                  ).map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-pressed={category === item.id}
+                      aria-controls="experience-results"
+                      onClick={() => setCategory(item.id)}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.resultsHeading}>
+                  <p>
+                    {
+                      EXPERIENCE_CATEGORIES.find((item) => item.id === category)
+                        ?.description
+                    }
+                  </p>
+                  <span role="status">
+                    {t(lakeName)}
+                    {t(" \u00B7 ")}
+                    {displayedExperiences.length < visibleExperiences.length
+                      ? t("{shown} di {total}", {
+                          shown: displayedExperiences.length,
+                          total: visibleExperiences.length,
+                        })
+                      : visibleExperiences.length}{" "}
+                    {visibleExperiences.length === 1
+                      ? t("proposta")
+                      : t("proposte")}
+                    {" · "}
+                    {t("selezionate")}:{" "}
+                    {
+                      interests.filter(
+                        (value) =>
+                          !LOGISTICS.some((service) => service.title === value),
+                      ).length
+                    }
+                  </span>
+                </div>
+                <p className={styles.planningNote}>
+                  {t(
+                    "Tempi suggeriti per costruire il programma. Durata effettiva, formula e disponibilità vengono definite nella proposta.",
+                  )}
+                </p>
+                {selectionAcrossLakes && (
+                  <p className={styles.selectionNotice}>
+                    {t(
+                      "La sua selezione comprende anche attività dell’altro lago. Le organizzeremo in programmi distinti, con gli spostamenti necessari da valutare.",
                     )}
                   </p>
+                )}
+                <div id="experience-results" className={styles.experienceGrid}>
+                  {orderedExperiences
+                    .filter((item) => item.id !== "boat")
+                    .map(renderExperience)}
                 </div>
-              </div>
-              {EXPERIENCE_CATEGORIES.filter(
-                (item) =>
-                  item.id !== "selection" &&
-                  packageExperiences.some(
-                    (experience) => experience.category === item.id,
-                  ),
-              ).map((group) => (
-                <fieldset key={group.id} className={styles.choiceGroup}>
-                  <legend>
-                    {(() => {
-                      const Icon = CATEGORY_ICONS[group.id];
-                      return (
-                        <Icon size={20} strokeWidth={1.3} aria-hidden="true" />
-                      );
-                    })()}
-                    {group.label}
-                  </legend>
-                  <p className={styles.categoryDescription}>
-                    {group.description}
-                  </p>
-                  <div className={styles.choiceGrid}>
-                    {packageExperiences
-                      .filter((item) => item.category === group.id)
-                      .map((item) => (
-                        <label
-                          key={item.id}
-                          className={`${styles.choiceCard} ${interests.includes(item.title) ? styles.choiceSelected : ""}`}
-                        >
-                          <input
-                            type="checkbox"
-                            aria-label={item.title}
-                            aria-describedby={`choice-${item.id}-description`}
-                            checked={interests.includes(item.title)}
-                            onChange={() => toggleInterest(item.title)}
-                          />
-                          <span>
-                            <strong>{item.title}</strong>
-                            {item.lakes.length === 1 && (
-                              <span className={styles.choiceLocation}>
-                                {item.lakes[0] === "como"
-                                  ? t("Lago di Como")
-                                  : t("Lago Maggiore")}
-                              </span>
-                            )}
-                            <small id={`choice-${item.id}-description`}>
-                              {item.summary}
-                            </small>
-                          </span>
-                        </label>
-                      ))}
-                  </div>
-                </fieldset>
-              ))}
-              <fieldset
-                className={`${styles.choiceGroup} ${styles.boatChoices}`}
-              >
-                <legend>{t("Come desidera vivere il lago in barca?")}</legend>
-                <p className={styles.categoryDescription}>
-                  {t(
-                    "In autonomia o con capitano, per un aperitivo o un\u2019intera giornata. Una formula da scegliere, senza prenotare.",
-                  )}
-                </p>
-                <div className={styles.choiceGrid}>
-                  {BOAT_PACKAGES.map((option) => (
-                    <label
-                      key={option.id}
-                      className={`${styles.choiceCard} ${interests.includes(`Barca · ${option.title}`) ? styles.choiceSelected : ""}`}
+                {category === "selection" && filteredExperiences.length > 6 && (
+                  <div className={styles.catalogueMore}>
+                    <button
+                      type="button"
+                      aria-controls="experience-results"
+                      aria-expanded={showAll}
+                      onClick={() => {
+                        setShowAll((current) => !current);
+                        if (showAll)
+                          requestAnimationFrame(() =>
+                            document
+                              .getElementById("esperienze")
+                              ?.scrollIntoView({
+                                behavior: reducedMotion ? "instant" : "smooth",
+                              }),
+                          );
+                      }}
                     >
-                      <input
-                        type="radio"
-                        name="boatPackage"
-                        value={option.id}
-                        aria-label={option.title}
-                        aria-describedby={`boat-choice-${option.id}-description`}
-                        checked={interests.includes(`Barca · ${option.title}`)}
-                        onChange={() => chooseBoatPackage(option, false)}
-                      />
-                      <span>
-                        <strong>{option.title}</strong>
-                        <small className={styles.boatChoiceFormat}>
-                          {option.format}
-                        </small>
-                        <small id={`boat-choice-${option.id}-description`}>
-                          {option.summary}
-                        </small>
-                      </span>
-                    </label>
-                  ))}
-                  <label
-                    className={`${styles.choiceCard} ${styles.undecidedBoat}`}
-                  >
+                      {showAll
+                        ? t("Mostri meno esperienze")
+                        : t("Mostri tutte le {count} esperienze", {
+                            count: filteredExperiences.length,
+                          })}
+                      <ChevronDown size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <fieldset className={styles.experiencePreference}>
+              <legend>{t("Quale formula preferisce per le attività?")}</legend>
+              <p>
+                {t(
+                  "Le attività private sono riservate al suo gruppo; quelle condivise prevedono anche altri partecipanti. È una preferenza da valutare nella proposta. La formula in barca si sceglie nella scheda dedicata.",
+                )}
+              </p>
+              <div className={styles.preferenceGrid}>
+                {[
+                  {
+                    value: "private",
+                    title: "Preferisco esperienze private",
+                    description:
+                      "Attività riservate al suo gruppo, secondo disponibilità.",
+                  },
+                  {
+                    value: "shared",
+                    title: "Valuto anche attività condivise",
+                    description:
+                      "Possiamo proporle attività insieme ad altri ospiti.",
+                  },
+                  {
+                    value: "",
+                    title: "Da concordare insieme",
+                    description:
+                      "La aiutiamo a scegliere la formula più adatta.",
+                  },
+                ].map((choice) => (
+                  <label key={`${formVersion}-${choice.value}`}>
                     <input
                       type="radio"
-                      name="boatPackage"
-                      value="undecided"
-                      aria-label={t("Formula da scegliere insieme")}
-                      checked={
-                        !interests.some((item) => item.startsWith("Barca · "))
+                      name="experienceStyle"
+                      value={choice.value}
+                      defaultChecked={
+                        (savedDetails?.experienceStyle || "") === choice.value
                       }
-                      onChange={() => {
-                        setInterests((current) =>
-                          current.filter(
-                            (item) => !item.startsWith("Barca · "),
-                          ),
-                        );
-                        setBrief(null);
-                      }}
                     />
                     <span>
-                      <strong>{t("Preferisco un consiglio")}</strong>
-                      <small>
-                        {t(
-                          "La formula in barca pu\u00F2 essere scelta insieme.",
-                        )}
-                      </small>
+                      <strong>{t(choice.title)}</strong>
+                      <small>{t(choice.description)}</small>
                     </span>
                   </label>
-                </div>
-              </fieldset>
-            </section>
+                ))}
+              </div>
+            </fieldset>
+          </div>
+          <div id="travel-details" className={styles.unifiedStep}>
+            <div className={styles.formSectionTitle}>
+              <span>03</span>
+              <div>
+                <h3>{t("I suoi recapiti e i dettagli utili")}</h3>
+                <p>
+                  {t(
+                    "Ci indichi come contattarla e quali servizi desidera aggiungere. Un referente coordinerà la proposta e i professionisti per le attività richieste.",
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className={styles.formRow}>
+              <label>
+                {t("Nome e cognome *")}
+                <input
+                  key={`name-${formVersion}`}
+                  name="name"
+                  autoComplete="name"
+                  required
+                  maxLength={120}
+                />
+              </label>
+              <label>
+                {t("Email *")}
+                <input
+                  key={`email-${formVersion}`}
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  spellCheck={false}
+                  required
+                  maxLength={200}
+                />
+              </label>
+            </div>
             <fieldset className={styles.choiceGroup}>
               <legend>{t("Ci occupiamo anche dei dettagli")}</legend>
               <p className={styles.categoryDescription}>
@@ -1578,18 +1283,9 @@ export function LakeExperience({
                 ))}
               </div>
             </fieldset>
-            <div id="travel-details" className={styles.formSectionTitle}>
-              <span>{t("03")}</span>
-              <div>
-                <h3>{t("I dettagli che fanno la differenza")}</h3>
-                <p>
-                  {t(
-                    "Un hotel gi\u00E0 scelto, un\u2019occasione speciale o un desiderio da condividere.",
-                  )}
-                </p>
-              </div>
-            </div>
             <JourneyMapFields
+              key={`places-${formVersion}`}
+              initialValues={savedDetails}
               destination={lake}
               onPlacesChange={invalidateBrief}
               t={t}
@@ -1612,7 +1308,10 @@ export function LakeExperience({
                 <label>
                   {t("Budget totale indicativo (\u20AC)")}
                   <input
+                    key={`budget-${formVersion}`}
+                    inputMode="decimal"
                     name="budget"
+                    defaultValue={savedDetails?.budget || ""}
                     type="number"
                     min="0"
                     step="any"
@@ -1624,7 +1323,9 @@ export function LakeExperience({
             <label>
               {t("Desidera aggiungere una richiesta particolare?")}
               <textarea
+                key={`notes-${formVersion}`}
                 name="notes"
+                defaultValue={savedDetails?.notes || ""}
                 rows={3}
                 maxLength={3000}
                 placeholder={t(
@@ -1632,6 +1333,21 @@ export function LakeExperience({
                 )}
               />
             </label>
+
+            <details className={styles.formDetails}>
+              <summary>
+                {t("Salvi la sua Experience nell’account (facoltativo)")}
+                <Plus size={16} aria-hidden="true" />
+              </summary>
+              <SaveTripAccount
+                payload={payload}
+                active={accountTrip}
+                onActiveChange={updateAccountTrip}
+                getPayload={readTripPayload}
+                onLoad={loadAccountDraft}
+                t={t}
+              />
+            </details>
             <label className={styles.privacy}>
               <input name="privacy" type="checkbox" required />
               <span>
@@ -1642,191 +1358,200 @@ export function LakeExperience({
                 {t("per la gestione della mia richiesta. *")}
               </span>
             </label>
-            <div id="request-submit" className={styles.formActionBar}>
-              <div>
-                <strong>
-                  {interests.length === 1
-                    ? t("Una scelta nel suo pacchetto")
-                    : interests.length
-                      ? t("{value0} scelte nel suo pacchetto", {
-                          value0: interests.length,
-                        })
-                      : t(
-                          "Il suo viaggio pu\u00F2 iniziare anche da un consiglio",
-                        )}
-                </strong>
-                <p>
-                  {t(
-                    "Riveda i dettagli prima di inviare la richiesta. Nessun pagamento.",
-                  )}
-                </p>
-              </div>
-              <button type="submit" className={styles.darkButton}>
-                {t("Riepilogo e invio ")}
-                <ArrowRight size={17} aria-hidden="true" />
-              </button>
-            </div>
-            <p className={styles.small}>
-              {preview
-                ? t(
-                    "Anteprima locale: il modulo \u00E8 consultabile, senza inviare dati.",
-                  )
-                : t(
-                    "Nessun pagamento richiesto. Potr\u00E0 rivedere i dati prima dell\u2019invio.",
-                  )}
-            </p>
-          </form>
-          {brief && (
-            <div
-              ref={reviewRef}
-              tabIndex={-1}
-              className={styles.review}
-              aria-labelledby="review-title"
-            >
-              <p className={styles.eyebrow}>
-                {status === "success"
-                  ? t("Richiesta ricevuta")
-                  : t("Il suo pacchetto, in sintesi")}
-              </p>
-              <h3 id="review-title">
-                {status === "success"
-                  ? t("Grazie, il suo viaggio inizia qui.")
-                  : t("La sua proposta da costruire insieme")}
-              </h3>
-              <dl>
-                {brief.journey && (
-                  <div>
-                    <dt>{t("Idea di partenza")}</dt>
-                    <dd>{brief.journey}</dd>
-                  </div>
-                )}
+
+            {!brief && (
+              <div id="request-submit" className={styles.formActionBar}>
                 <div>
-                  <dt>{t("Ospite")}</dt>
-                  <dd>
-                    {brief.name}
-                    {t(" \u00B7 ")}
-                    {brief.email}
-                    {brief.phone && ` · ${brief.phone}`}
-                  </dd>
-                </div>
-                <div>
-                  <dt>{t("Destinazione")}</dt>
-                  <dd>{t(brief.lake)}</dd>
-                </div>
-                {brief.arrivalPoint && (
-                  <div>
-                    <dt>{t("Aeroporto o stazione")}</dt>
-                    <dd>{brief.arrivalPoint}</dd>
-                  </div>
-                )}
-                {brief.hotel && (
-                  <div>
-                    <dt>{t("Hotel o soggiorno")}</dt>
-                    <dd>{brief.hotel}</dd>
-                  </div>
-                )}
-                {brief.stops.length > 0 && (
-                  <div>
-                    <dt>{t("Tappe richieste")}</dt>
-                    <dd>{brief.stops.join(" → ")}</dd>
-                  </div>
-                )}
-                <div>
-                  <dt>{t("Soggiorno")}</dt>
-                  <dd>
-                    {displayDate(
-                      brief.arrival,
-                      t("Arrivo da definire"),
-                      locale,
+                  <p>
+                    {t(
+                      "Controlli il riepilogo: troverà poi il pulsante per inviare la richiesta.",
                     )}
-                    {t(" \u2192")}{" "}
-                    {displayDate(
-                      brief.departure,
-                      t("Partenza da definire"),
-                      locale,
-                    )}
-                    {t(" \u00B7")} {brief.guests}
-                    {t(" ospiti")}
-                  </dd>
+                  </p>
                 </div>
-                <div>
-                  <dt>{t("Budget totale")}</dt>
-                  <dd>
-                    {brief.budget
-                      ? new Intl.NumberFormat(locale, {
-                          style: "currency",
-                          currency: "EUR",
-                        }).format(Number(brief.budget))
-                      : t("Da definire")}
-                  </dd>
-                </div>
-                <div>
-                  <dt>{t("Interessi")}</dt>
-                  <dd>
-                    {brief.interests.map(displayInterest).join(" · ") ||
-                      t("Da scegliere insieme")}
-                  </dd>
-                </div>
-                {brief.notes && (
-                  <div>
-                    <dt>{t("I suoi desideri")}</dt>
-                    <dd>{brief.notes}</dd>
-                  </div>
-                )}
-              </dl>
-              {preview ? (
-                <p className={styles.previewNotice}>
-                  <Check size={18} aria-hidden="true" />
-                  {t(
-                    "Anteprima pronta. Nessun dato inviato: l\u2019invio sar\u00E0 attivato al lancio del servizio.",
-                  )}
-                </p>
-              ) : status === "success" ? (
-                <p role="status">
-                  {t(
-                    "La richiesta \u00E8 stata registrata. Sar\u00E0 contattato all\u2019indirizzo indicato per approfondire i dettagli.",
-                  )}
-                </p>
-              ) : (
                 <button
-                  type="button"
+                  type="submit"
                   className={styles.darkButton}
-                  disabled={status === "sending"}
-                  onClick={sendRequest}
+                  disabled={preparing}
                 >
-                  {status === "sending"
-                    ? t("Invio in corso\u2026")
-                    : t("Invia la richiesta")}
+                  {preparing
+                    ? t("Preparazione del riepilogo…")
+                    : t("Riveda la richiesta")}
                   <ArrowRight size={17} aria-hidden="true" />
                 </button>
-              )}
-              {status !== "success" && (
-                <button
-                  className={styles.editButton}
-                  type="button"
-                  disabled={status === "sending"}
-                  onClick={() => {
-                    setBrief(null);
-                    setError("");
-                    formRef.current
-                      ?.querySelector<HTMLInputElement>('input[name="name"]')
-                      ?.focus();
-                  }}
-                >
-                  {t("Modifica i dati")}
-                </button>
-              )}
-            </div>
-          )}
-          {error && (
-            <p role="alert" className={styles.error}>
-              {error}
-            </p>
-          )}
-        </div>
+              </div>
+            )}
+            {brief && (
+              <div
+                ref={reviewRef}
+                tabIndex={-1}
+                className={styles.review}
+                aria-labelledby="review-title"
+              >
+                <p className={styles.eyebrow}>
+                  {status === "success"
+                    ? t("Richiesta ricevuta")
+                    : t("La sua richiesta, in sintesi")}
+                </p>
+                <h3 id="review-title">
+                  {status === "success"
+                    ? t("Grazie, il suo viaggio inizia qui.")
+                    : t("La sua proposta da costruire insieme")}
+                </h3>
+                <dl>
+                  {brief.savedTrip && (
+                    <div>
+                      <dt>{t("Experience nel suo account")}</dt>
+                      <dd>{brief.savedTrip.title}</dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>{t("Ospite")}</dt>
+                    <dd>
+                      {brief.name}
+                      {t(" \u00B7 ")}
+                      {brief.email}
+                      {brief.phone && ` · ${brief.phone}`}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{t("Destinazione")}</dt>
+                    <dd>{t(brief.lake)}</dd>
+                  </div>
+                  {brief.arrivalPoint && (
+                    <div>
+                      <dt>{t("Aeroporto o stazione")}</dt>
+                      <dd>{brief.arrivalPoint}</dd>
+                    </div>
+                  )}
+                  {brief.hotel && (
+                    <div>
+                      <dt>{t("Hotel o soggiorno")}</dt>
+                      <dd>{brief.hotel}</dd>
+                    </div>
+                  )}
+                  {brief.stops.length > 0 && (
+                    <div>
+                      <dt>{t("Tappe richieste")}</dt>
+                      <dd>{brief.stops.join(" → ")}</dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>{t("Soggiorno")}</dt>
+                    <dd>
+                      {displayDate(
+                        brief.arrival,
+                        t("Arrivo da definire"),
+                        locale,
+                      )}
+                      {t(" \u2192")}{" "}
+                      {displayDate(
+                        brief.departure,
+                        t("Partenza da definire"),
+                        locale,
+                      )}
+                      {t(" \u00B7")} {brief.guests}
+                      {t(" ospiti")}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{t("Budget totale")}</dt>
+                    <dd>
+                      {brief.budget
+                        ? new Intl.NumberFormat(locale, {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(Number(brief.budget))
+                        : t("Da definire")}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{t("Interessi")}</dt>
+                    <dd>
+                      {brief.interests.map(displayInterest).join(" · ") ||
+                        t("Da scegliere insieme")}
+                    </dd>
+                  </div>
+                  {brief.experienceStyle && (
+                    <div>
+                      <dt>{t("Formula desiderata")}</dt>
+                      <dd>{brief.experienceStyle}</dd>
+                    </div>
+                  )}
+                  {brief.notes && (
+                    <div>
+                      <dt>{t("I suoi desideri")}</dt>
+                      <dd>{brief.notes}</dd>
+                    </div>
+                  )}
+                </dl>
+                {status === "success" ? (
+                  <p role="status">
+                    {t(
+                      "La richiesta è stata registrata. Sarà contattato all’indirizzo indicato per approfondire i dettagli.",
+                    )}
+                  </p>
+                ) : (
+                  <>
+                    <p className={styles.sendInstructions}>
+                      {t(
+                        "Il modulo invia la richiesta direttamente a SILKinCOM. Non crea una prenotazione e non richiede pagamenti.",
+                      )}
+                    </p>
+                    <button
+                      type="button"
+                      className={styles.darkButton}
+                      disabled={status === "sending" || preview}
+                      aria-describedby={
+                        preview ? "preview-send-explanation" : undefined
+                      }
+                      onClick={sendRequest}
+                    >
+                      {status === "sending"
+                        ? t("Invio in corso…")
+                        : t("Invii la richiesta")}
+                      <ArrowRight size={17} aria-hidden="true" />
+                    </button>
+                    {preview && (
+                      <p
+                        id="preview-send-explanation"
+                        className={styles.previewNotice}
+                      >
+                        {t(
+                          "Anteprima locale: il pulsante di invio è mostrato per verifica; da questa pagina non vengono inviate richieste.",
+                        )}
+                      </p>
+                    )}
+                  </>
+                )}
+                {status !== "success" && (
+                  <button
+                    className={styles.editButton}
+                    type="button"
+                    disabled={status === "sending"}
+                    onClick={() => {
+                      setBrief(null);
+                      setError("");
+                      formRef.current
+                        ?.querySelector<HTMLInputElement>('input[name="name"]')
+                        ?.focus();
+                    }}
+                  >
+                    {t("Modifichi i dati")}
+                  </button>
+                )}
+              </div>
+            )}
+            {error && (
+              <p role="alert" className={styles.error}>
+                {error}
+              </p>
+            )}
+          </div>
+        </form>
       </section>
 
       <section
+        id="organizzazione"
         className={`${styles.section} ${styles.faq}`}
         aria-labelledby="faq-title"
       >
@@ -1852,48 +1577,51 @@ export function LakeExperience({
       <div className={styles.credits}>
         <p>
           {t(
-            "Le immagini delle attività sono illustrative e non identificano operatori o strutture già convenzionati.",
+            "Le immagini delle attività sono a scopo illustrativo e non identificano operatori o strutture già convenzionati. Strutture, mezzi e servizi effettivi vengono precisati nella proposta.",
           )}
         </p>
-        {photoCredits.map((photo) => (
-          <span key={photo.id}>
-            <a href={photo.source} target="_blank" rel="noreferrer">
-              {photo.title.replace("File:", "")} · {photo.author}
-            </a>
-            {" ("}
-            <a href={photo.licenseUrl}>{photo.license}</a>
-            {") · "}
-          </span>
-        ))}
-        {t("Fotografie:")}{" "}
-        <a
-          href="https://commons.wikimedia.org/wiki/File:Varenna_-_View_from_Lake_Como.jpg"
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t("Varenna, Xavier Car\u00E9 / Wikimedia Commons")}
-        </a>{" "}
-        {t("(")}
-        <a href="https://creativecommons.org/licenses/by-sa/4.0/">
-          {t("CC BY-SA 4.0")}
-        </a>
-        {t(");")}{" "}
-        <a
-          href="https://commons.wikimedia.org/wiki/File:Isola_Bella.jpg"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <details className={styles.photoCredits}>
+          <summary>{t("Crediti fotografici e licenze")}</summary>
+          {photoCredits.map((photo) => (
+            <span key={photo.id}>
+              <a href={photo.source} target="_blank" rel="noreferrer">
+                {photo.title.replace("File:", "")} · {photo.author}
+              </a>
+              {" ("}
+              <a href={photo.licenseUrl}>{photo.license}</a>
+              {") · "}
+            </span>
+          ))}
+          {t("Fotografie:")}{" "}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Varenna_-_View_from_Lake_Como.jpg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t("Varenna, Xavier Car\u00E9 / Wikimedia Commons")}
+          </a>{" "}
+          {t("(")}
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/">
+            {t("CC BY-SA 4.0")}
+          </a>
+          {t(");")}{" "}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Isola_Bella.jpg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t(
+              "Isola Bella, Markus Bernet, ritocco B\u00E1thoryP\u00E9ter / Wikimedia Commons",
+            )}
+          </a>{" "}
+          {t("(")}
+          <a href="https://creativecommons.org/licenses/by-sa/2.0/">
+            {t("CC BY-SA 2.0")}
+          </a>
           {t(
-            "Isola Bella, Markus Bernet, ritocco B\u00E1thoryP\u00E9ter / Wikimedia Commons",
+            "). Ridimensionamento, conversione WebP e ritaglio di visualizzazione; immagini derivate disponibili con le rispettive licenze.",
           )}
-        </a>{" "}
-        {t("(")}
-        <a href="https://creativecommons.org/licenses/by-sa/2.0/">
-          {t("CC BY-SA 2.0")}
-        </a>
-        {t(
-          "). Ridimensionamento, conversione WebP e ritaglio di visualizzazione; immagini derivate disponibili con le rispettive licenze.",
-        )}
+        </details>
       </div>
     </div>
   );

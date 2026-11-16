@@ -239,65 +239,13 @@
   text-transform: uppercase;
   color: #fffdf8ad;
 }
-.pageNav {
-  position: sticky;
-  top: 124px;
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  padding: 7px 6%;
-  background: #11100ef5;
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid #d4af3740;
-  color: var(--white);
-}
-.pageNavLinks {
-  display: flex;
-  align-items: center;
-  gap: clamp(20px, 2.5vw, 38px);
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.mobileSectionMenu {
-  display: none;
-}
-.pageNav > a.navCreate {
-  background: var(--gold);
-  color: var(--night);
-  padding: 10px 16px;
-  flex-shrink: 0;
-  font-weight: 500;
-  max-width: 70%;
-  white-space: normal;
-  text-align: center;
-}
-.pageNav > a.navCreate:hover {
-  background: var(--white);
-}
-.pageNav a {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  white-space: nowrap;
-  font-size: 11px;
-  color: #fffdf8bd;
-}
-.pageNav a:hover {
-  color: var(--gold);
-}
 .section {
   max-width: 1400px;
   padding: 95px 6%;
   margin: auto;
 }
 .section,
-.arrival,
-.experienceCard,
-.signature {
+.experienceCard {
   scroll-margin-top: 205px;
 }
 .page h2 {
@@ -311,160 +259,6 @@
 .page h2 em {
   font-weight: 300;
   color: inherit;
-}
-.intro {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 65px;
-  border-bottom: 1px solid var(--line);
-}
-.intro > .eyebrow {
-  padding-top: 10px;
-  max-width: 220px;
-}
-.intro p:not(.eyebrow) {
-  max-width: 700px;
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--muted);
-  margin-bottom: 18px;
-}
-.introNotes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 22px;
-  padding-top: 20px;
-  margin-top: 26px;
-  border-top: 1px solid var(--line);
-}
-.introNotes span {
-  font-size: 11px;
-  line-height: 1.8;
-  color: var(--ink);
-}
-.sectionHeading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 40px;
-  margin-bottom: 40px;
-}
-.sectionHeading h2 {
-  margin: 0;
-}
-.sectionHeading > p {
-  max-width: 340px;
-  font-size: 14px;
-  line-height: 1.85;
-  color: var(--muted);
-}
-.lakes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-}
-.lake {
-  background: var(--white);
-  border: 1px solid var(--line);
-}
-.lakeImage {
-  position: relative;
-  aspect-ratio: 1.85;
-  overflow: hidden;
-}
-.lakeImage:after {
-  position: absolute;
-  inset: 14px;
-  content: "";
-  border: 1px solid #fffdf85e;
-  pointer-events: none;
-}
-.lakeImage img {
-  object-fit: cover;
-}
-.lakeText {
-  padding: 32px;
-}
-.number {
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  color: var(--muted);
-}
-.lake h3 {
-  font-family: var(--font-cormorant), serif;
-  font-size: 42px;
-  line-height: 1.05;
-  margin: 14px 0 18px;
-}
-.lake p {
-  font-size: 15px;
-  line-height: 1.85;
-  color: var(--muted);
-  margin-bottom: 22px;
-}
-.lake button {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  min-height: 44px;
-  border-bottom: 1px solid var(--gold-dark);
-  font-size: 10px;
-  line-height: 1.8;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: left;
-}
-.explore {
-  border-top: 1px solid var(--line);
-}
-.destinationSwitch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 26px;
-}
-.destinationSwitch button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px 26px;
-  min-height: 100px;
-  font-family: var(--font-cormorant), serif;
-  font-size: 28px;
-  color: var(--muted);
-  border-bottom: 2px solid transparent;
-}
-.destinationSwitch button > span {
-  min-width: 0;
-  text-align: left;
-}
-.destinationSwitch strong {
-  display: block;
-  font-weight: 400;
-  line-height: 1.15;
-}
-.destinationSwitch small {
-  display: block;
-  font-family: var(--font-inter), sans-serif;
-  font-size: 12px;
-  line-height: 1.7;
-  margin-top: 7px;
-  color: var(--ink);
-}
-.destinationSwitch button[aria-pressed="true"] small {
-  color: var(--white);
-}
-.destinationSwitch button > svg {
-  flex-shrink: 0;
-}
-.destinationSwitch button:hover {
-  border-bottom-color: var(--gold-dark);
-}
-.destinationSwitch button[aria-pressed="true"] {
-  background: var(--night);
-  color: var(--gold);
-  border-bottom-color: var(--gold);
 }
 .filters {
   display: flex;
@@ -586,16 +380,6 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.boatLink {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 44px;
-  font-size: 12px;
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--gold-dark);
-}
 .cardDetails {
   margin-top: auto;
   border-top: 1px solid var(--line);
@@ -628,466 +412,6 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.selectExperience {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  min-height: 46px;
-  padding: 12px 14px;
-  margin-top: 12px;
-  border: 1px solid #b8941c99;
-  border-radius: 2px;
-  background: transparent;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  text-align: left;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
-.selectExperience:hover {
-  background: var(--paper);
-  border-color: var(--gold-dark);
-}
-.selectExperience[aria-pressed="true"] {
-  background: var(--night);
-  border-color: var(--night);
-  color: var(--white);
-}
-.selectionBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 26px;
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
-}
-.selectionBar p {
-  max-width: 580px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.8;
-}
-.selectionBar a {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 44px;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-.boatSection {
-  background: var(--night);
-  color: var(--white);
-  max-width: none;
-  padding-inline: max(6%, calc((100vw - 1232px) / 2));
-}
-.boatSection .eyebrow,
-.boatSection h2 em {
-  color: var(--gold);
-}
-.boatSection .sectionHeading > p {
-  color: #fffdf8b0;
-}
-.boatGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-.boatGrid article {
-  display: flex;
-  flex-direction: column;
-  padding: 34px;
-  border: 1px solid #d4af3744;
-  background: #fffdf803;
-}
-.boatGrid article.boatSelected {
-  border-color: var(--gold);
-  box-shadow: inset 0 3px var(--gold);
-}
-.boatNumber {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  font-family: var(--font-cormorant), serif;
-  font-size: 46px;
-  line-height: 1;
-  color: var(--gold);
-}
-.boatGrid .eyebrow {
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  margin-bottom: 15px;
-}
-.boatGrid h3 {
-  font-family: var(--font-cormorant), serif;
-  font-size: 40px;
-  line-height: 1.05;
-  font-weight: 300;
-  margin-bottom: 18px;
-}
-.boatGrid article > p {
-  font-size: 14px;
-  line-height: 1.9;
-  color: #fffdf8bd;
-  margin-bottom: 20px;
-}
-.boatGrid p.boatAudience {
-  font-size: 12px;
-  color: #fffdf8e0;
-  margin-bottom: 15px;
-}
-.boatGrid ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 26px;
-}
-.boatGrid li {
-  display: flex;
-  align-items: start;
-  gap: 12px;
-  padding: 8px 0;
-  font-size: 12px;
-  line-height: 1.8;
-  color: #fffdf8c4;
-}
-.boatGrid li svg {
-  flex-shrink: 0;
-  color: var(--gold);
-  margin-top: 4px;
-}
-.boatGrid .cardDetails {
-  border-color: #fffdf826;
-}
-.boatGrid .cardDetails summary,
-.boatGrid .cardDetails p {
-  color: #fffdf8ad;
-}
-.boatGrid article > button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 50px;
-  padding-top: 16px;
-  border-top: 1px solid #d4af3755;
-  color: var(--gold);
-  font-size: 12px;
-  text-align: left;
-}
-.boatFootnote {
-  font-size: 11px;
-  line-height: 1.9;
-  color: #fffdf8a8;
-  margin-top: 28px;
-  max-width: 900px;
-}
-.signature {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 90px;
-  background: var(--paper);
-  color: var(--ink);
-  padding: 90px max(6%, calc((100vw - 1232px) / 2));
-  border-bottom: 1px solid var(--line);
-}
-.signature h2 {
-  font-size: clamp(48px, 5vw, 76px);
-}
-.signature > div > p:not(.eyebrow) {
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--muted);
-  max-width: 530px;
-}
-.textLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 44px;
-  border-bottom: 1px solid var(--gold-dark);
-  font-size: 10px;
-  line-height: 1.8;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.signature .textLink {
-  margin-top: 24px;
-}
-.silkSteps p {
-  display: grid;
-  grid-template-columns: 35px 1fr;
-  gap: 7px 15px;
-  padding: 22px 0;
-  border-top: 1px solid var(--line);
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--muted);
-}
-.silkSteps span {
-  grid-row: span 2;
-  font-size: 11px;
-  padding-top: 5px;
-  color: var(--muted);
-}
-.silkSteps strong {
-  font-family: var(--font-cormorant), serif;
-  font-size: 29px;
-  line-height: 1.1;
-  color: var(--ink);
-  font-weight: 400;
-}
-.silkSteps button {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  min-height: 48px;
-  font-size: 12px;
-  border-bottom: 1px solid var(--gold-dark);
-}
-.routeGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 35px;
-}
-.routeGrid article {
-  border-top: 1px solid var(--gold-dark);
-  padding: 28px 0 24px;
-}
-.routeNumber {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 23px;
-  font-family: var(--font-cormorant), serif;
-  font-size: 50px;
-  line-height: 1;
-  color: var(--muted);
-}
-.routeNumber > span {
-  font-family: var(--font-inter), sans-serif;
-  font-size: 9px;
-  line-height: 1.8;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: right;
-}
-.routeGrid .eyebrow {
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  margin-bottom: 14px;
-}
-.routeGrid h3 {
-  font-family: var(--font-cormorant), serif;
-  font-size: 34px;
-  line-height: 1.08;
-  margin-bottom: 20px;
-}
-.routeGrid article > p:not(.eyebrow) {
-  font-size: 14px;
-  line-height: 1.85;
-  color: var(--muted);
-}
-.routeGrid ol {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  gap: 9px 14px;
-  padding: 0;
-  margin: 24px 0;
-}
-.routeGrid li {
-  font-size: 10px;
-  line-height: 1.8;
-  color: var(--muted);
-}
-.routeGrid li + li:before {
-  content: "→";
-  margin-right: 12px;
-}
-.routeGrid button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 44px;
-  border-bottom: 1px solid var(--gold-dark);
-  font-size: 12px;
-  text-align: left;
-}
-.arrival {
-  display: grid;
-  grid-template-columns: 85px 1fr auto;
-  align-items: center;
-  gap: 40px;
-  padding: 60px max(6%, calc((100vw - 1232px) / 2));
-  background: var(--night);
-  color: var(--white);
-}
-.arrival .eyebrow,
-.arrival h2 em {
-  color: var(--gold);
-}
-.arrival h2 {
-  font-size: clamp(36px, 3.5vw, 48px);
-  max-width: 720px;
-}
-.arrival p:not(.eyebrow) {
-  font-size: 15px;
-  line-height: 1.9;
-  color: #fffdf8bd;
-  max-width: 670px;
-}
-.arrivalIcon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  border: 1px solid #d4af3755;
-  padding: 24px 12px;
-  color: var(--gold);
-}
-.arrivalIcon span {
-  font-size: 8px;
-  letter-spacing: 0.16em;
-}
-.arrival .textLink {
-  max-width: 180px;
-  color: var(--gold);
-  text-align: left;
-}
-.journey {
-  border-bottom: 1px solid var(--line);
-}
-.journey ol {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 45px;
-  list-style: none;
-  margin: 0;
-  padding: 28px 0 0;
-}
-.journey li > span {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.16em;
-  margin-bottom: 25px;
-}
-.journey h3 {
-  font-family: var(--font-cormorant), serif;
-  font-size: 29px;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-.journey li p {
-  font-size: 15px;
-  line-height: 1.85;
-  color: var(--muted);
-}
-.request {
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-}
-.requestLead {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-  align-items: center;
-}
-.requestIntro h2 {
-  font-size: clamp(45px, 4.7vw, 68px);
-}
-.requestLead p:not(.eyebrow) {
-  font-size: 15px;
-  line-height: 1.9;
-  color: var(--muted);
-  margin-top: 20px;
-}
-.requestVisual {
-  position: relative;
-  min-height: 340px;
-  height: 100%;
-  overflow: hidden;
-  border: 1px solid #b8941c55;
-}
-.requestVisual img {
-  object-fit: cover;
-}
-.requestVisual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, #11100eaa, transparent 50%);
-}
-.requestVisual figcaption {
-  position: absolute;
-  bottom: 24px;
-  left: 24px;
-  z-index: 1;
-  color: var(--white);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-.contactNote {
-  font-size: 12px;
-  line-height: 1.9;
-  color: var(--muted);
-}
-.contactOptions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 36px 0 20px;
-}
-.contactOptions > a {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 84px;
-  padding: 19px;
-  border: 1px solid var(--line);
-  background: var(--white);
-  transition: border-color 0.2s ease;
-}
-.contactOptions > a:hover {
-  border-color: var(--gold-dark);
-}
-.contactOptions > a:first-child {
-  background: var(--night);
-  color: var(--white);
-  border-color: var(--gold-dark);
-}
-.contactOptions > a > svg {
-  color: var(--gold-dark);
-  flex-shrink: 0;
-}
-.contactOptions > a:first-child > svg {
-  color: var(--gold);
-}
-.contactOptions > a > span {
-  min-width: 0;
-  flex: 1;
-}
-.contactOptions strong {
-  display: block;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-.contactOptions small {
-  display: block;
-  font-size: 11px;
-  line-height: 1.7;
-  opacity: 0.75;
-  overflow-wrap: anywhere;
-  margin-top: 4px;
-}
 .small {
   font-size: 11px;
   line-height: 1.8;
@@ -1103,18 +427,6 @@
   border: 1px solid var(--line);
   scroll-margin-top: 205px;
   box-shadow: 0 18px 60px #17171705;
-}
-.formHeading > span {
-  display: block;
-  font-family: var(--font-cormorant), serif;
-  font-size: clamp(30px, 3vw, 42px);
-  line-height: 1.1;
-  margin-bottom: 14px;
-}
-.formHeading p {
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--muted);
 }
 .formSteps {
   display: flex;
@@ -1158,7 +470,7 @@
   border-top: 1px solid var(--line);
   scroll-margin-top: 205px;
 }
-#package-choices-title,
+.page :global(#package-choices-title),
 .formActionBar {
   scroll-margin-top: 205px;
 }
@@ -1178,11 +490,6 @@
   line-height: 1.8;
   color: var(--muted);
   margin-top: 6px;
-}
-.packagePicker {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
 }
 .form .choiceGroup {
   padding: 0;
@@ -1255,32 +562,6 @@
   line-height: 1.8;
   color: var(--muted);
 }
-.choiceLocation {
-  display: inline-block;
-  margin-top: 7px;
-  padding: 2px 7px;
-  font-size: 10px;
-  line-height: 1.7;
-  color: var(--gold-text);
-  background: #d4af3714;
-}
-.form .boatChoices {
-  padding: 28px;
-  background: var(--paper);
-  border: 1px solid #b8941c55;
-}
-.boatChoices legend {
-  padding: 0 8px;
-  margin-left: -8px;
-}
-.boatChoices .choiceGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.form label.undecidedBoat {
-  grid-column: 1 / -1;
-  min-height: 72px;
-  background: transparent;
-}
 .form input:not([type="checkbox"]):not([type="radio"]),
 .form select,
 .form textarea {
@@ -1328,13 +609,7 @@
 .form fieldset {
   min-width: 0;
 }
-.interests {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 9px 16px;
-  margin-top: 14px;
-}
-.interests label,
+
 .form label.privacy {
   display: flex;
   align-items: start;
@@ -1346,46 +621,6 @@
   color: var(--muted);
 }
 .privacy a {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.chosenInterests {
-  border-top: 1px solid var(--line);
-  padding-top: 20px;
-}
-.chosenInterests > p {
-  font-size: 12px;
-  line-height: 1.8;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-.chosenInterests > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.chosenInterests button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 10px 12px;
-  background: var(--paper);
-  border: 1px solid #b8941c80;
-  font-size: 11px;
-  line-height: 1.6;
-  text-align: left;
-}
-.chosenInterests svg {
-  flex-shrink: 0;
-}
-.reviewShortcut {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  font-size: 12px;
-  margin-top: 10px;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -1446,13 +681,6 @@
 }
 .formDetails > .formRow {
   padding-bottom: 22px;
-}
-.boatChoiceFormat {
-  display: block;
-  font-size: 11px;
-  line-height: 1.7;
-  color: var(--muted);
-  margin-top: 3px;
 }
 .review {
   margin-top: 30px;
@@ -1566,51 +794,26 @@
   text-underline-offset: 3px;
 }
 @media (max-width: 1100px) {
-  .requestLead {
-    gap: 36px;
-  }
-  .contactOptions {
-    grid-template-columns: 1fr;
-  }
   .choiceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .experienceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .pageNav {
-    justify-content: flex-start;
-    gap: 16px;
-  }
-  .signature,
-  .request,
+
   .faq {
     gap: 40px;
-  }
-  .routeGrid {
-    gap: 24px;
-  }
-  .arrival {
-    grid-template-columns: 75px 1fr;
-  }
-  .arrival > .textLink {
-    grid-column: 2;
-    max-width: none;
-    justify-self: start;
   }
 }
 @media (max-width: 1023px) {
   .page {
     padding-top: 112px;
   }
-  .pageNav {
-    top: 112px;
-  }
   .section,
   .form,
   .formSectionTitle,
   .formActionBar,
-  #package-choices-title {
+  .page :global(#package-choices-title) {
     scroll-margin-top: 185px;
   }
 }
@@ -1661,75 +864,11 @@
   .heroBottom span:last-child {
     text-align: right;
   }
-  .pageNav {
-    top: 112px;
-    padding: 5px 7%;
-    gap: 12px;
-    justify-content: space-between;
-    padding-inline: 5%;
-  }
-  .pageNavLinks {
-    display: none;
-  }
-  .mobileSectionMenu {
-    position: relative;
-    display: block;
-    flex-shrink: 0;
-  }
-  .mobileSectionMenu summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 44px;
-    padding: 10px 0;
-    list-style: none;
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--white);
-  }
-  .mobileSectionMenu summary::-webkit-details-marker {
-    display: none;
-  }
-  .mobileSectionMenu[open] summary svg {
-    transform: rotate(180deg);
-  }
-  .mobileSectionMenu summary:focus-visible,
-  .mobileSectionLinks a:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 3px;
-  }
-  .mobileSectionLinks {
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    width: min(250px, 90vw);
-    padding: 8px 16px;
-    border: 1px solid #d4af3760;
-    background: var(--night);
-    box-shadow: 0 12px 32px #0004;
-  }
-  .pageNav .mobileSectionLinks a {
-    display: flex;
-    min-height: 48px;
-    font-size: 13px;
-    white-space: normal;
-    border-bottom: 1px solid #fffdf81a;
-  }
-  .pageNav .mobileSectionLinks a:last-child {
-    border-bottom: 0;
-  }
-  .pageNav > a.navCreate {
-    padding: 10px 12px;
-    font-size: 10px;
-  }
   .section {
     padding: 65px 7%;
   }
   .section,
-  .arrival,
   .experienceCard,
-  .signature,
   .review {
     scroll-margin-top: 185px;
   }
@@ -1738,46 +877,17 @@
   }
   .formSectionTitle,
   .formActionBar,
-  #package-choices-title {
+  .page :global(#package-choices-title) {
     scroll-margin-top: 185px;
   }
-  .intro,
-  .request,
+
   .faq {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  .intro > .eyebrow {
-    max-width: none;
-    padding: 0;
-    margin: 0;
-  }
-  .sectionHeading {
-    display: block;
-    margin-bottom: 28px;
-  }
-  .sectionHeading > p {
-    margin-top: 22px;
-    max-width: none;
-  }
-  .lakes,
-  .experienceGrid,
-  .boatGrid,
-  .signature,
-  .routeGrid {
+
+  .experienceGrid {
     grid-template-columns: 1fr;
-  }
-  .lakeText {
-    padding: 28px;
-  }
-  .lake h3 {
-    font-size: 38px;
-  }
-  .destinationSwitch button {
-    font-size: 24px;
-    padding: 17px 12px;
-    gap: 10px;
-    min-height: 66px;
   }
   .filters button {
     font-size: 11px;
@@ -1799,112 +909,21 @@
   .experienceCard > p {
     font-size: 15px;
   }
-  .selectionBar {
-    flex-direction: column;
-    align-items: start;
-    gap: 14px;
-  }
-  .boatSection {
-    padding: 65px 7%;
-  }
-  .boatGrid article {
-    padding: 28px;
-  }
-  .boatGrid h3 {
-    font-size: 37px;
-  }
-  .boatGrid article > p {
-    font-size: 15px;
-  }
-  .signature {
-    padding: 65px 7%;
-    gap: 35px;
-  }
-  .signature h2 {
-    font-size: 56px;
-  }
-  .routeGrid {
-    gap: 10px;
-  }
-  .routeGrid h3 {
-    font-size: 37px;
-  }
-  .routeGrid article > p:not(.eyebrow) {
-    font-size: 15px;
-  }
-  .arrival {
-    grid-template-columns: 1fr;
-    padding: 55px 7%;
-    gap: 25px;
-  }
-  .arrival > .textLink {
-    grid-column: auto;
-  }
-  .arrivalIcon {
-    flex-direction: row;
-    justify-self: start;
-    padding: 13px 18px;
-  }
-  .arrival h2 {
-    font-size: 39px;
-  }
-  .journey ol {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding-top: 15px;
-  }
-  .journey li {
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    gap: 0 20px;
-  }
-  .journey li > span {
-    grid-row: span 2;
-    margin: 0;
-    padding-top: 5px;
-  }
-  .journey li p {
-    grid-column: 2;
-  }
-  .journey h3 {
-    margin-bottom: 10px;
-  }
-  .request {
-    gap: 40px;
-  }
-  .requestIntro h2 {
-    font-size: 52px;
-  }
-  .requestLead {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .requestVisual {
-    min-height: 240px;
-  }
-  .choiceGrid,
-  .boatChoices .choiceGrid {
+  .choiceGrid {
     grid-template-columns: 1fr;
   }
   .form label.choiceCard {
     padding: 16px;
     min-height: 100px;
   }
-  .form .boatChoices {
-    padding: 20px 16px;
-  }
   .form {
     padding: 24px 20px;
   }
-  .formRow,
-  .interests {
+  .formRow {
     grid-template-columns: 1fr;
   }
   .formRow {
     gap: 20px;
-  }
-  .interests {
-    gap: 4px;
   }
   .form .darkButton {
     width: 100%;
@@ -2093,4 +1112,954 @@
   .experienceCard > p {
     font-size: 13px;
   }
+}
+
+/* Compact facts for each activity. */
+.cardFacts {
+  margin: -8px 0 22px;
+  display: grid;
+  gap: 10px;
+}
+.cardFacts dt {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+  margin-bottom: 3px;
+}
+.cardFacts dd {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.cardDetails[open] summary svg {
+  transform: rotate(180deg);
+}
+.planningNote {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin: -10px 0 24px;
+}
+.selectionNotice {
+  border-left: 2px solid var(--gold-dark);
+  padding: 12px 16px;
+  background: var(--white);
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+@media (max-width: 1100px) {
+  .section,
+  .experienceCard,
+  .review,
+  .form,
+  .formSectionTitle,
+  .formActionBar,
+  .page :global(#package-choices-title) {
+    scroll-margin-top: 245px;
+  }
+}
+.accountSave {
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+}
+.accountSave p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.accountSave label {
+  display: block;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.accountSave input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  font-size: 16px;
+  background: var(--white);
+  color: var(--ink);
+  margin: 8px 0 12px;
+}
+.accountSave button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 12px;
+  border: 1px solid #b8941c70;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.accountSave button:disabled {
+  opacity: 0.55;
+}
+.accountSave button:hover:not(:disabled) {
+  background: var(--paper);
+}
+.imageDisclaimer {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  max-width: calc(100% - 20px);
+  padding: 5px 8px;
+  background: #11100ed9;
+  color: #fffdf8;
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+/* A single destination selector and one selection flow. */
+.catalogueMore {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+.catalogueMore button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 48px;
+  padding: 14px 24px;
+  border: 1px solid var(--gold-text);
+  color: var(--ink);
+  font-size: 12px;
+  background: var(--white);
+}
+.catalogueMore button:hover {
+  background: var(--night);
+  color: var(--white);
+}
+.catalogueMore button[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+.page :global(#destinazioni) {
+  scroll-margin-top: 245px;
+}
+@media (min-width: 1101px) {
+  .experienceGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.legacyAnchor {
+  display: block;
+  height: 0;
+  scroll-margin-top: 245px;
+}
+
+/* One continuous Experience form: one place to select, review and send. */
+.unifiedRequest {
+  max-width: 1440px;
+  padding-top: 64px;
+}
+.unifiedHeading {
+  max-width: 780px;
+  margin-bottom: 34px;
+}
+.unifiedHeading > p:last-child {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 15px;
+}
+.unifiedForm {
+  padding: 0;
+  gap: 0;
+  scroll-margin-top: 120px;
+}
+.unifiedStep {
+  padding: 38px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 180px;
+}
+.unifiedForm .formSteps {
+  position: sticky;
+  top: 112px;
+  z-index: 25;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  gap: 0;
+  background: var(--night);
+  border-bottom: 1px solid var(--gold-dark);
+}
+.unifiedForm .formSteps a {
+  justify-content: center;
+  color: var(--white);
+  background: transparent;
+  border: 0;
+  border-right: 1px solid #ffffff24;
+  min-height: 60px;
+  padding: 14px 10px;
+  font-size: 13px;
+}
+.unifiedForm .formSteps a:last-child {
+  border-right: 0;
+}
+.unifiedForm .formSteps a:hover {
+  background: #ffffff0c;
+}
+.unifiedForm .formSteps a > span {
+  color: var(--gold);
+}
+.unifiedForm .formSectionTitle {
+  margin: 0;
+  scroll-margin-top: 185px;
+}
+.unifiedForm .formRow {
+  gap: 24px;
+}
+.unifiedForm .experienceGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.unifiedForm .experienceCard {
+  padding: 22px;
+  min-width: 0;
+}
+.unifiedForm .experienceCard h3 {
+  font-size: 28px;
+}
+.unifiedForm .cardImage {
+  margin: -22px -22px 22px;
+}
+.unifiedForm .experienceCard > p {
+  font-size: 14px;
+}
+.unifiedForm .cardTop {
+  min-height: 32px;
+  margin-bottom: 16px;
+}
+.unifiedForm .cardFacts {
+  padding: 16px 0;
+  margin-top: 16px;
+}
+.unifiedForm label.activityChoice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid var(--gold-dark);
+  margin-top: 18px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+  background: var(--paper);
+}
+.activityChoice:has(input:focus-visible) {
+  outline: 2px solid var(--gold-text);
+  outline-offset: 3px;
+}
+.activityChoice:has(input:checked) {
+  color: var(--gold-text);
+  background: #d4af3715;
+}
+.unifiedForm .boatChoices {
+  padding-top: 18px;
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.boatChoices legend {
+  padding-top: 20px;
+  font-weight: 600;
+}
+.boatChoices > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 12px 0;
+}
+.unifiedForm .boatChoices label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.boatChoices label input {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.boatChoices label strong {
+  font-weight: 500;
+  font-size: 13px;
+}
+.boatChoices label small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.boatChoiceDetail {
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 0 0 16px 30px;
+}
+.boatChoiceDetail p {
+  margin-bottom: 12px;
+}
+.boatChoiceDetail ul {
+  padding-left: 16px;
+  list-style: disc;
+  margin-bottom: 12px;
+}
+.boatChoiceDetail a {
+  text-decoration: underline;
+  color: var(--gold-text);
+}
+.lakeTabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.lakeTabs > span {
+  font-size: 13px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+.lakeTabs button {
+  border: 1px solid var(--line);
+  padding: 10px 18px;
+  min-height: 44px;
+  font-size: 13px;
+}
+.lakeTabs button[aria-pressed="true"] {
+  color: var(--gold-text);
+  border-color: var(--gold-dark);
+  background: var(--paper);
+}
+.formFooter {
+  padding: 28px 40px;
+  background: var(--paper);
+}
+.formFooter > p {
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.formFooter > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.formFooter a {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  padding: 12px 18px;
+  min-height: 48px;
+  font-size: 13px;
+}
+.formFooter a:hover {
+  border-color: var(--gold-dark);
+}
+.formFooter small {
+  display: block;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+@media (max-width: 1000px) {
+  .unifiedForm .experienceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .unifiedStep {
+    padding: 30px;
+  }
+}
+@media (max-width: 600px) {
+  .unifiedRequest {
+    padding: 40px 16px;
+  }
+  .unifiedHeading {
+    margin-bottom: 26px;
+  }
+  .unifiedHeading h2 {
+    font-size: 38px;
+  }
+  .unifiedStep {
+    padding: 26px 16px;
+    gap: 22px;
+  }
+  .unifiedForm .formSteps {
+    top: 102px;
+  }
+  .unifiedForm .formSteps a {
+    min-height: 56px;
+    font-size: 11px;
+    gap: 5px;
+    padding: 10px 4px;
+  }
+  .unifiedForm .formSteps a > span {
+    font-size: 10px;
+  }
+  .unifiedForm .formSectionTitle h3 {
+    font-size: 26px;
+  }
+  .unifiedForm .experienceGrid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .unifiedForm .experienceCard {
+    padding: 20px;
+  }
+  .unifiedForm .cardImage {
+    margin: -20px -20px 20px;
+    aspect-ratio: 1.75;
+  }
+  .unifiedForm .cardTop {
+    margin-bottom: 12px;
+  }
+  .unifiedForm .experienceCard h3 {
+    font-size: 28px;
+  }
+  .unifiedForm .formRow {
+    gap: 22px;
+  }
+  .unifiedForm .filters {
+    gap: 6px;
+  }
+  .unifiedForm .filters button {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+  .formFooter {
+    padding: 26px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .unifiedForm * {
+    scroll-behavior: auto;
+  }
+}
+.unifiedForm .experienceGrid {
+  align-items: start;
+}
+.unifiedForm .formSectionTitle {
+  padding-top: 0;
+  border-top: 0;
+}
+.unifiedForm .formSectionTitle h3 {
+  font-size: 32px;
+}
+.unifiedForm .formSectionTitle p {
+  text-align: left;
+}
+.boatChoiceDetail summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--gold-text);
+}
+@media (max-width: 600px) {
+  .unifiedForm .formSteps {
+    top: 112px;
+  }
+  .unifiedForm .formSectionTitle h3 {
+    font-size: 28px;
+  }
+}
+.activitiesLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 28px;
+  align-items: start;
+}
+.activityCatalogue {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.boatAside {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 195px;
+}
+.activityCatalogue {
+  grid-column: 1;
+  grid-row: 1;
+}
+.unifiedForm .activityCatalogue .experienceGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.unifiedForm .boatFeatured {
+  border-color: var(--gold-dark);
+  box-shadow:
+    inset 0 3px var(--gold),
+    0 12px 36px #17171708;
+}
+.unifiedForm .boatFeatured .cardImage {
+  aspect-ratio: 1.9;
+}
+.unifiedForm .boatChoices label {
+  display: block;
+}
+.unifiedForm .boatChoices select {
+  margin-top: 8px;
+  width: 100%;
+}
+.unifiedForm .boatChoiceDetail {
+  padding-left: 0;
+}
+@media (max-width: 1100px) {
+  .activitiesLayout {
+    grid-template-columns: minmax(0, 1fr) 270px;
+    gap: 20px;
+  }
+  .unifiedForm .activityCatalogue .experienceGrid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .activitiesLayout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .boatAside {
+    grid-column: 1;
+    grid-row: 1;
+    position: static;
+  }
+  .activityCatalogue {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+.unifiedForm .boatFeatured .cardImage {
+  aspect-ratio: 2.35;
+  margin-bottom: 14px;
+}
+.unifiedForm .boatFeatured .cardTop {
+  min-height: 0;
+  margin-bottom: 12px;
+}
+.unifiedForm .boatFeatured .cardTop > svg {
+  display: none;
+}
+.unifiedForm .boatFeatured .cardTop > span {
+  text-align: left;
+}
+.unifiedForm .boatFeatured h3 {
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+.unifiedForm .boatFeatured > p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.unifiedForm .boatFeatured .cardFacts {
+  display: none;
+}
+.unifiedForm .boatFeatured .cardDetails {
+  margin-top: 0;
+}
+.unifiedForm .boatFeatured .activityChoice {
+  margin-top: 12px;
+}
+.unifiedForm .boatFeatured .boatChoices {
+  margin-top: 16px;
+  padding-top: 12px;
+}
+.unifiedForm .boatFeatured .boatChoices label {
+  padding: 0;
+}
+.unifiedForm .boatFeatured .boatChoices > p {
+  margin: 10px 0 0;
+  font-size: 11px;
+}
+.unifiedForm .activityCatalogue .filters,
+.unifiedForm .activityCatalogue .resultsHeading,
+.unifiedForm .activityCatalogue .planningNote {
+  margin: 0;
+}
+@media (max-width: 700px) {
+  .unifiedForm .boatFeatured .cardImage {
+    aspect-ratio: 2.1;
+  }
+}
+.page {
+  --experience-header-offset: 125px;
+}
+.unifiedForm .formSteps {
+  top: var(--experience-header-offset);
+}
+.boatAside {
+  top: calc(var(--experience-header-offset) + 78px);
+}
+@media (max-width: 1023px) {
+  .page {
+    --experience-header-offset: 113px;
+  }
+}
+@media (max-width: 600px) {
+  .unifiedForm .formSteps a {
+    flex-direction: column;
+    gap: 2px;
+    min-height: 62px;
+  }
+}
+/* Editorial finishing: restrained hierarchy, compact facts and a visible current step. */
+.unifiedHeading .eyebrow {
+  color: var(--gold-text);
+  margin-bottom: 18px;
+}
+.unifiedHeading > p:last-child {
+  max-width: 700px;
+  text-wrap: pretty;
+}
+.unifiedForm .formSteps a[aria-current="step"] {
+  color: #e8d4a8;
+  background: #ffffff08;
+  box-shadow: inset 0 -3px var(--gold);
+}
+.unifiedForm .activityCatalogue .cardImage {
+  aspect-ratio: 1.8;
+  margin-bottom: 18px;
+}
+.unifiedForm .activityCatalogue .cardTop > svg {
+  padding: 6px;
+}
+.unifiedForm .activityCatalogue .experienceCard h3 {
+  font-size: 27px;
+  line-height: 1.12;
+  min-height: 2.24em;
+  margin-bottom: 12px;
+}
+.unifiedForm .activityCatalogue .experienceCard > p {
+  line-height: 1.75;
+  min-height: 3.5em;
+  margin-bottom: 14px;
+}
+.unifiedForm .activityCatalogue .cardFacts {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  margin: 0 0 16px;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+}
+.unifiedForm .activityCatalogue .activityChoice {
+  margin-top: 10px;
+}
+.destinationContext {
+  border-left: 2px solid var(--gold-dark);
+  padding: 10px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  background: var(--paper);
+}
+.photoCredits {
+  margin-top: 16px;
+}
+.photoCredits summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .unifiedForm .activityCatalogue .experienceCard h3 {
+    min-height: 0;
+  }
+  .unifiedForm .activityCatalogue .experienceCard > p {
+    min-height: 0;
+  }
+}
+/* Design audit: readable microcopy, stronger contrast and unconstrained sidebar details. */
+.page :focus-visible {
+  outline-color: var(--gold-text);
+}
+.unifiedForm .formSectionTitle > span {
+  color: var(--gold-text);
+}
+.unifiedForm .cardTop > span,
+.unifiedForm .cardFacts dt {
+  font-size: 11px;
+}
+.unifiedForm .resultsHeading > span {
+  font-size: 12px;
+}
+.unifiedForm .cardDetails summary {
+  font-size: 12px;
+}
+.boatAside {
+  position: static;
+}
+.unifiedForm input:not([type="checkbox"]):not([type="radio"]),
+.unifiedForm select,
+.unifiedForm textarea {
+  border-color: #8a8478;
+}
+.unifiedForm input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+.unifiedForm select:focus-visible,
+.unifiedForm textarea:focus-visible {
+  border-color: var(--gold-text);
+}
+/* Boat choices use an in-page disclosure: reliable in touch and embedded browsers. */
+.unifiedForm .boatChoices > .boatChoiceLabel {
+  font-size: 12px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.boatChooser {
+  border: 1px solid #8a8478;
+  background: var(--paper);
+}
+.boatChooser > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.boatChooser > summary::-webkit-details-marker {
+  display: none;
+}
+.boatChooser > summary > svg {
+  flex-shrink: 0;
+}
+.boatChooser[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.boatChooser > fieldset {
+  padding: 4px 12px 10px;
+  border-top: 1px solid var(--line);
+  background: var(--white);
+}
+.unifiedForm .boatChooser fieldset > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  min-height: 48px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+}
+.unifiedForm .boatChooser fieldset > label:last-child {
+  border-bottom: 0;
+}
+.boatChooser label > input {
+  margin-top: 4px;
+}
+.boatChooser label > span {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.6;
+}
+.boatChooser label strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.boatChooser label small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.boatChooser label:has(input:checked) {
+  color: var(--gold-text);
+}
+.experiencePreference {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-top: 4px;
+}
+.experiencePreference > legend {
+  font-family: var(--font-cormorant), serif;
+  font-size: 26px;
+  line-height: 1.25;
+  padding: 12px 0;
+}
+.experiencePreference > p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 18px;
+  max-width: 800px;
+}
+.preferenceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.unifiedForm .preferenceGrid > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid #8a8478;
+  background: var(--white);
+  cursor: pointer;
+  min-height: 72px;
+}
+.preferenceGrid label > input {
+  margin-top: 4px;
+}
+.preferenceGrid label > span {
+  flex: 1;
+  min-width: 0;
+}
+.preferenceGrid label strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.preferenceGrid label small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 6px;
+}
+.preferenceGrid label:has(input:checked) {
+  background: var(--paper);
+  border-color: var(--gold-text);
+  box-shadow: inset 0 3px var(--gold);
+}
+.preferenceGrid label:has(input:focus-visible) {
+  outline: 2px solid var(--gold-text);
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .preferenceGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.review > .darkButton {
+  width: 100%;
+  justify-content: center;
+  margin-top: 18px;
+}
+.review > .darkButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.sendInstructions {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 20px;
+}
+.review .previewNotice {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.formActionBar > button {
+  min-width: 260px;
+}
+@media (max-width: 600px) {
+  .formActionBar > button {
+    min-width: 0;
+    width: 100%;
+  }
+}
+.accountSave {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 0 6px;
+  margin: 0;
+  border-top: 0;
+}
+.accountSave p {
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 760px;
+  margin: 0;
+}
+.accountSave button {
+  margin: 0;
+  min-height: 48px;
+}
+.accountSave input {
+  margin-bottom: 0;
+}
+.accountOptional {
+  border-left: 2px solid var(--gold-text);
+  padding: 10px 14px;
+  background: var(--paper);
+}
+.accountActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.accountActions > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 18px;
+  border: 1px solid #8a8478;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+.accountActions > a:first-child {
+  background: var(--night);
+  color: var(--white);
+  border-color: var(--night);
+}
+.accountActions > a:hover {
+  border-color: var(--gold-text);
+}
+.accountSave > a {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .accountActions {
+    grid-template-columns: 1fr;
+  }
+}
+/* Keep labels clear of focus rings and adjacent controls. */
+.unifiedForm .boatFeatured .boatChoices > .boatChoiceLabel {
+  margin: 0 0 14px;
+  line-height: 1.7;
+}
+.boatChooser > summary:focus-visible {
+  outline-offset: -4px;
+}
+.unifiedForm input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+.unifiedForm select:focus-visible,
+.unifiedForm textarea:focus-visible {
+  outline-offset: 2px;
+}
+.unifiedForm .boatChoices > .boatChooser + p {
+  margin-top: 14px;
 }

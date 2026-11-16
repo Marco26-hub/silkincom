@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { safeAuthRedirect } from '@/lib/auth-redirect';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import type { EmailOtpType } from '@supabase/supabase-js';
 
@@ -33,8 +34,7 @@ export async function GET(request: NextRequest) {
 
   // Only allow relative paths to prevent open redirect attacks.
   const rawNext = searchParams.get('next');
-  const explicitNext =
-    rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : null;
+  const explicitNext = safeAuthRedirect(rawNext, '') || null;
 
   if (errParam) {
     return NextResponse.redirect(

@@ -8,21 +8,25 @@ export function JourneyMapFields({
   destination,
   onPlacesChange,
   t,
+  initialValues,
 }: {
   destination: string;
   onPlacesChange: () => void;
   t: ExperienceTranslator;
+  initialValues?: { arrivalPoint: string; hotel: string; stops: string[] };
 }) {
   const id = useId();
-  const [arrivalPoint, setArrivalPoint] = useState("");
-  const [hotel, setHotel] = useState("");
+  const [arrivalPoint, setArrivalPoint] = useState(
+    initialValues?.arrivalPoint || "",
+  );
+  const [hotel, setHotel] = useState(initialValues?.hotel || "");
   const [stops, setStops] = useState<
     {
       id: number;
       value: string;
     }[]
-  >([]);
-  const [nextId, setNextId] = useState(0);
+  >(initialValues?.stops.map((value, id) => ({ id, value })) || []);
+  const [nextId, setNextId] = useState(initialValues?.stops.length || 0);
   const route = googleMapsRoute([
     arrivalPoint,
     hotel,

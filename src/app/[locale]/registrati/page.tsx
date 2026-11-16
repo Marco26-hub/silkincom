@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
+import { safeAuthRedirect } from '@/lib/auth-redirect';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useState, Suspense } from 'react';
@@ -13,7 +14,7 @@ function RegisterForm() {
   const tc = useTranslations('common');
   const router = useRouter();
   const params = useSearchParams();
-  const redirect = params.get('redirect') || '/account';
+  const redirect = safeAuthRedirect(params.get('redirect'));
   const [form, setForm] = useState({ nome: '', cognome: '', email: '', password: '' });
   const [accept, setAccept] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -84,7 +85,7 @@ function RegisterForm() {
       const supabase = createBrowserClient();
       const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` }
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}` }
       });
       if (authError) {
         setError(authError.message);

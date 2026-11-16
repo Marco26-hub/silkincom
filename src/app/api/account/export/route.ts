@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
 
   const supabase = createServiceClient();
 
-  const [profile, customer, addresses, orders, orderItems, wishlist, reviews, returns, newsletter] = await Promise.all([
+  const [profile, customer, addresses, orders, orderItems, wishlist, reviews, returns, newsletter, trips] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
     supabase.from('customers').select('*').eq('id', user.id).single(),
     supabase.from('customer_addresses').select('*').eq('customer_id', user.id),
@@ -29,7 +29,13 @@ export async function GET(req: NextRequest) {
     supabase.from('reviews').select('*, products(name, slug)').eq('customer_id', user.id),
     supabase.from('returns').select('*').eq('customer_id', user.id),
     supabase.from('newsletter_subscribers').select('*').eq('email', user.email || ''),
+    auth.from('experience_trips').select('id,title,payload,created_at,updated_at,experience_quotes(id,total_cents,currency,inclusions,exclusions,conditions,valid_until,published_at)').eq('user_id', user.id),
   ]);
+
+  if (trips.error) {
+    console.error('[account-export] Experience export failed:', trips.error.code);
+    return NextResponse.json({ error: 'Export non disponibile. Riprova più tardi.' }, { status: 503 });
+  }
 
   const payload = {
     exported_at: new Date().toISOString(),
@@ -47,6 +53,7 @@ export async function GET(req: NextRequest) {
     reviews: reviews.data || [],
     returns: returns.data || [],
     newsletter: newsletter.data || [],
+    experience_trips: trips.data || [],
   };
 
   return new NextResponse(JSON.stringify(payload, null, 2), {

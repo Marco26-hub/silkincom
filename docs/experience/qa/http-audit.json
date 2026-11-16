@@ -1,12 +1,12 @@
 {
-  "date": "2026-11-12",
-  "base": "http://localhost:3014",
+  "date": "2026-11-16",
+  "base": "http://localhost:3015",
   "expectIndex": true,
   "results": [
     {
       "locale": "it",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/experience",
       "passed": true
@@ -14,7 +14,7 @@
     {
       "locale": "en",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/en/experience",
       "passed": true
@@ -22,7 +22,7 @@
     {
       "locale": "es",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/es/experience",
       "passed": true
@@ -30,7 +30,7 @@
     {
       "locale": "fr",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/fr/experience",
       "passed": true
@@ -38,7 +38,7 @@
     {
       "locale": "de",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/de/experience",
       "passed": true
@@ -46,7 +46,7 @@
     {
       "locale": "pt",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/pt/experience",
       "passed": true
@@ -54,7 +54,7 @@
     {
       "locale": "nl",
       "status": 200,
-      "strings": 505,
+      "strings": 490,
       "activities": 19,
       "canonical": "https://www.silkincom.com/nl/experience",
       "passed": true

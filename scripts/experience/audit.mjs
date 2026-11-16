@@ -16,6 +16,11 @@ for (const locale of locales) {
  assert.equal(r.status,200,`${locale}: HTTP`);
  assert.equal((html.match(/<h1\b/g)||[]).length,1,`${locale}: one H1`);
  assert.ok(html.includes('id="experience-form"'),`${locale}: form target`);
+ assert.equal((html.match(/id="experience-form"/g)||[]).length,1,`${locale}: one Experience form`);
+ assert.equal((html.match(/name="activity"/g)||[]).length,19,`${locale}: activity checkbox coverage`);
+ assert.ok(!html.includes('id="experience-selection"'),`${locale}: no separate selection drawer`);
+ assert.ok(html.includes('golf-inland.webp'),`${locale}: inland golf image`);
+ assert.equal((html.match(/<figcaption class="[^"]*imageDisclaimer[^"]*"/g)||[]).length,19,`${locale}: illustrative image captions`);
  assert.ok(html.includes('property="og:title" content="SILKinCOM VIP Experience"'),`${locale}: branded sharing title`);
  assert.ok(html.includes(`href="https://www.silkincom.com${path}"`),`${locale}: canonical`);
  for(const language of [...locales,'x-default'])assert.ok(html.includes(`hrefLang="${language}"`),`${locale}: alternate ${language}`);
@@ -28,4 +33,4 @@ for (const locale of locales) {
  results.push({locale,status:r.status,strings:Object.keys(source).length,activities:list.numberOfItems,canonical:`https://www.silkincom.com${path}`,passed:true});
  console.log(`${locale}: HTTP 200, metadata, 19 schema entries, translation coverage passed`);
 }
-fs.writeFileSync('docs/experience/qa/http-audit.json',JSON.stringify({date:'2026-11-12',base,expectIndex,results},null,2)+'\n');
+fs.writeFileSync('docs/experience/qa/http-audit.json',JSON.stringify({date:new Date().toISOString().slice(0,10),base,expectIndex,results},null,2)+'\n');

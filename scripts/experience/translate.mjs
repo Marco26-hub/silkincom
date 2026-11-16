@@ -7,7 +7,7 @@ nextEnv.loadEnvConfig(process.cwd());
 const directory = 'messages/experience';
 const ui = JSON.parse(fs.readFileSync(`${directory}/ui-source.json`, 'utf8'));
 const source = new Set(ui);
-const humanFields = new Set(['label','description','title','location','summary','detail','format','audience','subtitle','stops','features']);
+const humanFields = new Set(['label','description','title','location','summary','detail','duration','format','audience','subtitle','stops','features']);
 const javascript = ts.transpileModule(fs.readFileSync('src/data/experience-content.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
 const data = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`);
 function collect(value, key='', all=false) {
@@ -15,7 +15,7 @@ function collect(value, key='', all=false) {
   if(Array.isArray(value)) {value.forEach(v=>collect(v,key,all));return;}
   if(value && typeof value==='object') Object.entries(value).forEach(([k,v])=>collect(v,k,all));
 }
-for(const key of ['EXPERIENCE_CATEGORIES','EXPERIENCES','BOAT_PACKAGES','JOURNEYS','LOGISTICS']) collect(data[key]);
+for(const key of ['EXPERIENCE_CATEGORIES','EXPERIENCES','BOAT_PACKAGES','LOGISTICS']) collect(data[key]);
 collect(data.FAQ,'',true);
 for(const file of ['src/lib/experience-maps.ts','src/app/[locale]/experience/page.tsx']) {
   const ast=ts.createSourceFile(file,fs.readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true);

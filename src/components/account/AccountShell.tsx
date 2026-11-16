@@ -18,9 +18,10 @@ export function AccountShell({ title, children }: { title: string; children: Rea
   const NAV = [
     { href: '/account', label: 'Dashboard' },
     { href: '/account/ordini', label: td('orders') },
+    { href: '/account/viaggi', label: td('trips') },
     { href: '/account/indirizzi', label: td('addresses') },
     { href: '/account/wishlist', label: td('wishlist') },
-    { href: '/account/recensioni', label: 'Recensioni' },
+    { href: '/account/recensioni', label: td('reviews') },
     { href: '/account/profilo', label: td('profile') },
   ];
 
@@ -61,6 +62,7 @@ export function AccountShell({ title, children }: { title: string; children: Rea
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={active ? 'page' : undefined}
                   className={`block py-3 lg:py-3 border-b border-pearl-grey/40 text-sm font-light transition-colors min-h-[44px] flex items-center ${
                     active ? 'text-gold-primary border-gold-primary/40' : 'text-soft-black/80 hover:text-gold-primary'
                   }`}
@@ -72,17 +74,17 @@ export function AccountShell({ title, children }: { title: string; children: Rea
           </nav>
           <button
             onClick={logout}
-            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-soft-black/60 hover:text-gold-primary"
+            className="inline-flex min-h-11 items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-soft-black/60 hover:text-gold-primary"
           >
             <LogOut className="w-3.5 h-3.5" /> {tn('logout')}
           </button>
         </aside>
 
         {/* Main */}
-        <main>
+        <div className="min-w-0">
           <h1 className="font-display font-light text-3xl md:text-4xl mb-10 tracking-[-0.005em]">{title}</h1>
           {children}
-        </main>
+        </div>
       </div>
     </section>
   );

@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-13",
+  "tool": "built-in image_gen",
+  "asset": "public/experience/cards/golf-inland.webp",
+  "width": 1000,
+  "height": 667,
+  "bytes": 170288,
+  "prompt": "Use case: precise-object-edit. Asset type: premium travel website experience card, landscape 3:2. Edit target: the supplied golf photograph. Replace ALL of the lake and waterfront setting with a believable inland golf course: generous rolling fairways, a proper putting green with a small cream flag, sculpted pale sand bunkers, mature trees and gently wooded foothills. The course is on dry land, surrounded by countryside. Retain the premium photographic styling, warm natural late-afternoon light, muted bottle-green and cream colors, and an elegant unbranded golf bag in the foreground. Natural editorial photography, realistic scale and golf-course layout. Absolutely no lake, no water anywhere, no sea, no river, no swimming pool, no water hazards and no waterfront villas. Do not imitate or identify a specific golf club. No people, text, logos or watermark.",
+  "disclosure": "Immagine illustrativa; not an actual named golf club."
+}

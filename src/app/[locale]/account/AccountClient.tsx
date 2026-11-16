@@ -3,7 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
-import { User, Package, MapPin, Heart, LogOut } from 'lucide-react';
+import { User, Package, MapPin, Heart, LogOut, Compass } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { createBrowserClient } from '@/lib/supabase/client';
 
@@ -80,13 +80,14 @@ export function AccountClient() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <DashCard
             href="/account/ordini"
             icon={Package}
             title={t('dashboard.orders')}
             desc={t('dashboard.ordersDescription', { count: profile.ordersCount })}
           />
+          <DashCard href="/account/viaggi" icon={Compass} title={t('dashboard.trips')} desc={t('dashboard.tripsDescription')} />
           <DashCard href="/account/indirizzi" icon={MapPin} title={t('dashboard.addresses')} desc={t('dashboard.addressesDescription')} />
           <DashCard href="/account/wishlist" icon={Heart} title={t('dashboard.wishlist')} desc={t('dashboard.wishlistDescription')} />
           <DashCard href="/account/profilo" icon={User} title={t('dashboard.profile')} desc={t('dashboard.profileDescription')} />

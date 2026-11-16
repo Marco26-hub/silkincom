@@ -28,7 +28,8 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
-    await auth.auth.signInWithPassword({ email: user.email || '', password });
+    const { error: passwordError } = await auth.auth.signInWithPassword({ email: user.email || '', password });
+    if (passwordError) return NextResponse.json({ error: 'Password non valida' }, { status: 401 });
   } catch (err: any) {
     return NextResponse.json({ error: 'Password non valida' }, { status: 401 });
   }

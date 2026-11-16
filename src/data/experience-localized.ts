@@ -3,7 +3,6 @@ import {
   EXPERIENCES,
   EXPERIENCE_CATEGORIES,
   BOAT_PACKAGES,
-  JOURNEYS,
   LOGISTICS,
   FAQ,
   type ExperienceContent,
@@ -27,6 +26,7 @@ const humanFields = new Set([
   "location",
   "summary",
   "detail",
+  "duration",
   "format",
   "audience",
   "subtitle",
@@ -58,7 +58,6 @@ export async function getExperienceLocale(locale: string) {
     EXPERIENCE_CATEGORIES,
     EXPERIENCES,
     BOAT_PACKAGES,
-    JOURNEYS,
     LOGISTICS,
   }) as ExperienceContent;
   content.FAQ = localize(FAQ, "", true) as typeof FAQ;

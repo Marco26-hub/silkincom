@@ -1,7 +1,7 @@
 // One-time JSX migration and repeatable copy extraction. Italian remains the source.
 import fs from 'node:fs';
 import ts from 'typescript';
-const files = ['src/components/experience/LakeExperience.tsx','src/components/experience/JourneyMapFields.tsx'];
+const files = ['src/components/experience/LakeExperience.tsx','src/components/experience/JourneyMapFields.tsx','src/components/experience/SaveTripAccount.tsx','src/components/account/MyTrips.tsx'];
 const sources = new Set();
 const faceAttributes = new Set(['aria-label','alt','title','placeholder']);
 const normalize = text => text.split(/\r?\n/).map((line,index,lines)=>{let s=line.replace(/\t/g,' ');if(index)s=s.trimStart();if(index<lines.length-1)s=s.trimEnd();return s}).filter(Boolean).join(' ');

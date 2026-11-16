@@ -536,7 +536,10 @@
       "wishlist": "Verlanglijst",
       "wishlistDescription": "Favoriete edities",
       "profile": "Profiel",
-      "profileDescription": "Persoonsgegevens"
+      "profileDescription": "Persoonsgegevens",
+      "trips": "Opgeslagen ervaringen",
+      "tripsDescription": "Opgeslagen ervaringen en persoonlijke offertes",
+      "reviews": "Beoordelingen"
     },
     "orders": {
       "title": "Uw bestellingen",

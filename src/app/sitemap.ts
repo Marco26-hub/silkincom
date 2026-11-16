@@ -90,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       alternates: { languages: languageAlternates('/experience') },
       changeFrequency: 'monthly',
       priority: 0.7,
-      lastModified: new Date('2026-11-12T18:31:50Z'),
+      lastModified: new Date('2026-11-13T00:00:00Z'),
     })),
     entry('/', { changeFrequency: 'daily', priority: 1.0, lastModified: lastMod.home }),
     entry('/collezioni', { changeFrequency: 'weekly', priority: 0.9, lastModified: now }),

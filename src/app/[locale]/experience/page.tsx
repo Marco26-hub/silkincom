@@ -31,11 +31,15 @@ export async function generateMetadata({
   if (!(routing.locales as readonly string[]).includes(locale)) return {};
   const { t } = await getExperienceLocale(locale);
   const title = "SILKinCOM VIP Experience";
-  const description = `${title}. ${t("Barca privata, ville, golf e sapori sul Lago di Como e sul Lago Maggiore. Crei il suo itinerario su misura, con accompagnamento e trasferimenti.")}`;
+  const description = t(
+    "Esperienze su misura sul Lago di Como e sul Lago Maggiore: barca privata, ville, golf, degustazioni e seta di Como. Scopra SILKinCOM VIP Experience.",
+  );
   return {
     metadataBase: new URL(ORIGIN),
     category: "travel",
-    title: { absolute: `${title} · ${t("Lago di Como")} & ${t("Lago Maggiore")}` },
+    title: {
+      absolute: `${title} · ${t("Lago di Como")} & ${t("Lago Maggiore")}`,
+    },
     description,
     alternates: { canonical: pageUrl(locale), languages },
     keywords: [
