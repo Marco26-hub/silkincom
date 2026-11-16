@@ -302,7 +302,8 @@
       "collection": "Collection",
       "all": "All",
       "showResults": "Show {count} products",
-      "recommended": "Recommended"
+      "recommended": "Recommended",
+      "allCollections": "All collections"
     },
     "sort": {
       "newest": "New arrivals",
@@ -725,7 +726,7 @@
     "byMaterial": "Material",
     "byCategory": "Category",
     "allLabel": "All",
-    "allTitle": "Accessories"
+    "allTitle": "Collections"
   },
   "contatti": {
     "eyebrow": "Customer care",

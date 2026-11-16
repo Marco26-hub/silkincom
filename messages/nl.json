@@ -302,7 +302,8 @@
       "collection": "Collectie",
       "all": "Alle",
       "showResults": "{count} producten bekijken",
-      "recommended": "Aanbevolen"
+      "recommended": "Aanbevolen",
+      "allCollections": "Alle collecties"
     },
     "sort": {
       "newest": "Nieuw",
@@ -725,7 +726,7 @@
     "byMaterial": "Materiaal",
     "byCategory": "Categorie",
     "allLabel": "Alle",
-    "allTitle": "Accessoires"
+    "allTitle": "Collecties"
   },
   "contatti": {
     "eyebrow": "Klantenservice",

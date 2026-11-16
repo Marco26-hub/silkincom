@@ -302,7 +302,8 @@
       "collection": "Coleção",
       "all": "Todos",
       "showResults": "Ver {count} produtos",
-      "recommended": "Recomendados"
+      "recommended": "Recomendados",
+      "allCollections": "Todas as coleções"
     },
     "sort": {
       "newest": "Novidades",
@@ -724,8 +725,8 @@
     "browseBy": "Navegar por",
     "byMaterial": "Matéria",
     "byCategory": "Categoria",
-    "allLabel": "Todos os",
-    "allTitle": "Acessórios"
+    "allLabel": "Todas as",
+    "allTitle": "Coleções"
   },
   "contatti": {
     "eyebrow": "Apoio ao cliente",

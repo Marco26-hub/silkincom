@@ -95,7 +95,7 @@ export function ProductFilters({ products, categories, materials = [], collectio
                 !activeSlug ? 'text-gold-dark font-semibold bg-gold-primary/10' : 'text-soft-black/85 hover:text-gold-dark'
               }`}
             >
-              {t('filters.all')}
+              {t('filters.allCollections')}
             </Link>
             {collections.map((c) => (
               <Link

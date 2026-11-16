@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { ExperienceImage } from "./ExperienceImage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import {
@@ -189,15 +189,27 @@ export function LakeExperience({
   } = useExperienceDraft(selectionOptions);
   const [heroSlide, setHeroSlide] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
+  const [heroReady, setHeroReady] = useState(false);
+  const [loadedHeroSlides, setLoadedHeroSlides] = useState<number[]>([0]);
   const reducedMotion = useReducedMotion();
   useEffect(() => {
-    if (heroPaused || reducedMotion) return;
+    if (heroPaused || reducedMotion || !heroReady) return;
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible")
         setHeroSlide((current) => (current + 1) % 3);
     }, 8000);
     return () => window.clearInterval(timer);
-  }, [heroPaused, reducedMotion]);
+  }, [heroPaused, reducedMotion, heroReady]);
+  useEffect(() => {
+    if (!heroReady || heroPaused || reducedMotion) return;
+    const nextSlide = (heroSlide + 1) % 3;
+    const timer = window.setTimeout(() => {
+      setLoadedHeroSlides((current) =>
+        current.includes(nextSlide) ? current : [...current, nextSlide],
+      );
+    }, 2000);
+    return () => window.clearTimeout(timer);
+  }, [heroReady, heroSlide, heroPaused, reducedMotion]);
   const [showAll, setShowAll] = useState(false);
   const [category, setCategory] = useState<ExperienceCategory>("selection");
   const [experienceLake, setExperienceLake] = useState<"como" | "maggiore">(
@@ -540,11 +552,15 @@ export function LakeExperience({
           />
         )}
         <figure className={styles.cardImage}>
-          <Image
+          <ExperienceImage
             src={cardImage(item.id, experienceLake)}
+            loading="lazy"
             alt={item.title}
-            fill
-            sizes="(max-width: 599px) 92vw, (max-width: 1100px) 45vw, 24vw"
+            sizes={
+              item.id === "boat"
+                ? "(max-width: 700px) calc(100vw - 64px), (max-width: 1100px) 34vw, 30vw"
+                : "(max-width: 600px) calc(100vw - 64px), (max-width: 1100px) 30vw, 20vw"
+            }
             className={styles.cardPhoto}
           />
           <figcaption className={styles.imageDisclaimer}>
@@ -675,7 +691,8 @@ export function LakeExperience({
                   onChange={() => {
                     setInterests((current) => [
                       ...current.filter(
-                        (value) => value !== item.title && !value.startsWith("Barca · "),
+                        (value) =>
+                          value !== item.title && !value.startsWith("Barca · "),
                       ),
                       item.title,
                     ]);
@@ -749,7 +766,9 @@ export function LakeExperience({
           },
           {
             src: "/experience/como-stadio-sinigaglia.webp",
-            alt: t("Lo stadio Giuseppe Sinigaglia e il Lago di Como, visti dal Monte Croce"),
+            alt: t(
+              "Lo stadio Giuseppe Sinigaglia e il Lago di Como, visti dal Monte Croce",
+            ),
           },
         ].map((image, index) => (
           <div
@@ -757,14 +776,16 @@ export function LakeExperience({
             className={`${styles.heroSlide} ${index === 2 ? styles.heroSlideStadium : ""} ${heroSlide === index ? styles.heroSlideActive : ""}`}
             aria-hidden={heroSlide !== index}
           >
-            <Image
-              src={image.src}
-              alt={heroSlide === index ? image.alt : ""}
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className={styles.heroImage}
-            />
+            {(loadedHeroSlides.includes(index) || heroSlide === index) && (
+              <ExperienceImage
+                src={image.src}
+                alt={heroSlide === index ? image.alt : ""}
+                priority={index === 0}
+                sizes="100vw"
+                className={styles.heroImage}
+                onLoad={index === 0 ? () => setHeroReady(true) : undefined}
+              />
+            )}
           </div>
         ))}
         <div className={styles.heroShade} />
@@ -807,14 +828,22 @@ export function LakeExperience({
         </div>
         <div className={styles.heroBottom}>
           <span>
-            {heroSlide === 2 ? t("Como · Stadio Giuseppe Sinigaglia") : heroSlide === 0 ? t("Lago di Como") : t("Lago Maggiore")}
+            {heroSlide === 2
+              ? t("Como · Stadio Giuseppe Sinigaglia")
+              : heroSlide === 0
+                ? t("Lago di Como")
+                : t("Lago Maggiore")}
           </span>
           <div
             className={styles.heroControls}
             role="group"
             aria-label={t("Immagini dei due laghi")}
           >
-            {[t("Lago di Como"), t("Lago Maggiore"), t("Como · Stadio Giuseppe Sinigaglia")].map((name, index) => (
+            {[
+              t("Lago di Como"),
+              t("Lago Maggiore"),
+              t("Como · Stadio Giuseppe Sinigaglia"),
+            ].map((name, index) => (
               <button
                 type="button"
                 key={name}
@@ -1589,9 +1618,13 @@ export function LakeExperience({
               target="_blank"
               rel="noreferrer"
             >
-              {t("Como · Stadio Giuseppe Sinigaglia")} · Kaitu / Wikimedia Commons
-            </a>{" ("}
-            <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>
+              {t("Como · Stadio Giuseppe Sinigaglia")} · Kaitu / Wikimedia
+              Commons
+            </a>
+            {" ("}
+            <a href="https://creativecommons.org/publicdomain/zero/1.0/">
+              CC0 1.0
+            </a>
             {") · "}
           </span>
           {t("Fotografie:")}{" "}

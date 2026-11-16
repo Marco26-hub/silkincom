@@ -19,7 +19,8 @@ for (const locale of locales) {
  assert.equal((html.match(/id="experience-form"/g)||[]).length,1,`${locale}: one Experience form`);
  assert.equal((html.match(/name="activity"/g)||[]).length,19,`${locale}: activity checkbox coverage`);
  assert.ok(!html.includes('id="experience-selection"'),`${locale}: no separate selection drawer`);
- assert.ok(html.includes('golf-inland.webp'),`${locale}: inland golf image`);
+ assert.ok(html.includes('/golf-inland-'),`${locale}: responsive inland golf image`);
+ assert.ok(html.includes('srcSet=') || html.includes('srcset='),`${locale}: responsive image candidates`);
  assert.equal((html.match(/<figcaption class="[^"]*imageDisclaimer[^"]*"/g)||[]).length,19,`${locale}: illustrative image captions`);
  assert.ok(html.includes('property="og:title" content="SILKinCOM VIP Experience"'),`${locale}: branded sharing title`);
  assert.ok(html.includes(`href="https://www.silkincom.com${path}"`),`${locale}: canonical`);
