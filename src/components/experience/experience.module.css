@@ -33,11 +33,11 @@
   border-block: 1px solid #d4af3733;
   padding: 9px 20px;
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   text-transform: uppercase;
   letter-spacing: 0.3em;
@@ -108,7 +108,7 @@
   border: 1px solid #fffdf866;
   color: var(--white);
   background: #11100e66;
-  font-size: 11px;
+  font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
 .heroControls button[aria-pressed="true"],
@@ -156,7 +156,7 @@
   font-weight: 300;
 }
 .heroIntro {
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.9;
   max-width: 560px;
   color: #fffdf8c4;
@@ -173,7 +173,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   color: #fffdf8a8;
   margin-bottom: 24px;
@@ -190,7 +190,7 @@
   gap: 20px;
   min-height: 52px;
   padding: 17px 24px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   letter-spacing: 0.17em;
   text-transform: uppercase;
@@ -226,7 +226,7 @@
   align-items: center;
   gap: 12px;
   min-height: 48px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--white);
 }
 .heroSecondary:hover {
@@ -244,7 +244,7 @@
   gap: 20px;
   border-top: 1px solid #d4af3755;
   padding-top: 20px;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.8;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -281,7 +281,7 @@
   min-height: 44px;
   padding: 12px 17px;
   border: 1px solid #17171740;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--ink);
 }
@@ -303,11 +303,11 @@
 .resultsHeading p {
   max-width: 650px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
 }
 .resultsHeading > span {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   color: var(--muted);
   text-align: right;
@@ -348,7 +348,7 @@
   color: var(--gold-dark);
 }
 .cardTop > span {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -371,7 +371,7 @@
   margin-bottom: 18px;
 }
 .experienceCard > p {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.85;
   color: var(--muted);
   margin-bottom: 22px;
@@ -382,7 +382,7 @@
   background: var(--paper);
 }
 .experienceCard > p.serviceNotice {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.8;
   color: var(--ink);
 }
@@ -403,7 +403,7 @@
   min-height: 44px;
   padding: 12px 0;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   list-style: none;
 }
@@ -415,7 +415,7 @@
 }
 .cardDetails p {
   padding: 0 0 18px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.85;
   color: var(--muted);
 }
@@ -424,7 +424,7 @@
   text-underline-offset: 3px;
 }
 .small {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.8;
   color: var(--muted);
 }
@@ -452,7 +452,7 @@
   padding: 10px 15px;
   border: 1px solid var(--line);
   min-height: 44px;
-  font-size: 12px;
+  font-size: 14px;
   background: var(--paper);
 }
 .formSteps a:hover {
@@ -470,7 +470,7 @@
 .form label,
 .form legend {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
 }
 .formSectionTitle {
@@ -497,7 +497,7 @@
   line-height: 1.25;
 }
 .formSectionTitle p {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   color: var(--muted);
   margin-top: 6px;
@@ -520,7 +520,7 @@
   flex-shrink: 0;
 }
 .categoryDescription {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   color: var(--muted);
   margin-bottom: 16px;
@@ -562,14 +562,14 @@
 }
 .choiceCard strong {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
   font-weight: 500;
 }
 .choiceCard small {
   display: block;
   margin-top: 7px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
 }
@@ -606,7 +606,7 @@
 }
 .form input::placeholder,
 .form textarea::placeholder {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .form input[type="checkbox"],
@@ -652,7 +652,7 @@
   line-height: 1.2;
 }
 .formActionBar p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
   margin-top: 8px;
@@ -672,7 +672,7 @@
   padding: 12px 0;
   list-style: none;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
 }
 .formDetails summary::-webkit-details-marker {
   display: none;
@@ -685,7 +685,7 @@
   border-top: 1px solid var(--line);
 }
 .formDetails legend {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding-top: 18px;
@@ -710,7 +710,7 @@
   margin-bottom: 12px;
 }
 .review dl {
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 24px;
 }
 .review dl > div {
@@ -718,7 +718,7 @@
   padding: 12px 0;
 }
 .review dt {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -733,7 +733,7 @@
   display: flex;
   align-items: start;
   gap: 10px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
 }
 .previewNotice svg {
@@ -745,7 +745,7 @@
   min-height: 44px;
   text-decoration: underline;
   text-underline-offset: 4px;
-  font-size: 12px;
+  font-size: 14px;
   margin-top: 18px;
 }
 .error {
@@ -753,7 +753,7 @@
   margin-top: 20px;
   border: 1px solid #a13928;
   color: #822f24;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
 }
 .faq {
@@ -773,7 +773,7 @@
   padding: 22px 0;
   cursor: pointer;
   list-style: none;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.7;
 }
 .faq summary::-webkit-details-marker {
@@ -789,12 +789,12 @@
 }
 .faq details p {
   padding: 0 20px 25px 0;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.9;
   color: var(--muted);
 }
 .credits {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.9;
   color: var(--muted);
   padding: 24px 6% 35px;
@@ -833,7 +833,7 @@
     padding-top: 112px;
   }
   .preview {
-    font-size: 9px;
+    font-size: 12px;
     padding-inline: 16px;
   }
   .hero {
@@ -857,7 +857,7 @@
     line-height: 1.03;
   }
   .heroIntro {
-    font-size: 15px;
+    font-size: 17px;
   }
   .heroActions {
     flex-direction: column;
@@ -867,7 +867,7 @@
   .heroBottom {
     left: 7%;
     right: 7%;
-    font-size: 8px;
+    font-size: 11px;
   }
   .heroBottom span {
     max-width: 48%;
@@ -901,7 +901,7 @@
     grid-template-columns: 1fr;
   }
   .filters button {
-    font-size: 11px;
+    font-size: 13px;
     padding: 11px 13px;
   }
   .resultsHeading {
@@ -918,7 +918,7 @@
     font-size: 28px;
   }
   .experienceCard > p {
-    font-size: 15px;
+    font-size: 17px;
   }
   .choiceGrid {
     grid-template-columns: 1fr;
@@ -973,7 +973,7 @@
   min-height: 56px;
   cursor: pointer;
   list-style: none;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   padding: 12px 0;
 }
@@ -995,7 +995,7 @@
   padding-bottom: 22px;
 }
 .mapPlannerContent > p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.85;
   color: var(--muted);
 }
@@ -1004,7 +1004,7 @@
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  font-size: 10px;
+  font-size: 12px;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -1029,7 +1029,7 @@
   align-items: center;
   gap: 10px;
   min-height: 44px;
-  font-size: 12px;
+  font-size: 14px;
   align-self: start;
   border-bottom: 1px solid var(--gold-dark);
 }
@@ -1058,7 +1058,7 @@
   line-height: 1.2;
 }
 .mapPreview p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: #fffdf8b3;
   margin-top: 10px;
@@ -1070,7 +1070,7 @@
   gap: 14px;
   min-height: 44px;
   width: 100%;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--gold);
   border-top: 1px solid #d4af3744;
   padding-top: 14px;
@@ -1121,7 +1121,7 @@
     font-size: 26px;
   }
   .experienceCard > p {
-    font-size: 13px;
+    font-size: 15px;
   }
 }
 
@@ -1132,14 +1132,14 @@
   gap: 10px;
 }
 .cardFacts dt {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--gold-text);
   margin-bottom: 3px;
 }
 .cardFacts dd {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--ink);
 }
@@ -1147,7 +1147,7 @@
   transform: rotate(180deg);
 }
 .planningNote {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
   margin: -10px 0 24px;
@@ -1156,7 +1156,7 @@
   border-left: 2px solid var(--gold-dark);
   padding: 12px 16px;
   background: var(--white);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   margin-bottom: 24px;
 }
@@ -1177,13 +1177,13 @@
   margin-top: 12px;
 }
 .accountSave p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
 }
 .accountSave label {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
 }
 .accountSave input {
@@ -1202,7 +1202,7 @@
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 14px;
   border: 1px solid #b8941c70;
   margin-bottom: 8px;
   color: var(--ink);
@@ -1221,7 +1221,7 @@
   padding: 5px 8px;
   background: #11100ed9;
   color: #fffdf8;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.5;
   letter-spacing: 0.04em;
 }
@@ -1240,7 +1240,7 @@
   padding: 14px 24px;
   border: 1px solid var(--gold-text);
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
   background: var(--white);
 }
 .catalogueMore button:hover {
@@ -1277,7 +1277,7 @@
 .unifiedHeading > p:last-child {
   color: var(--muted);
   line-height: 1.8;
-  font-size: 15px;
+  font-size: 17px;
 }
 .unifiedForm {
   padding: 0;
@@ -1311,7 +1311,7 @@
   border-right: 1px solid #ffffff24;
   min-height: 60px;
   padding: 14px 10px;
-  font-size: 13px;
+  font-size: 15px;
 }
 .unifiedForm .formSteps a:last-child {
   border-right: 0;
@@ -1344,7 +1344,7 @@
   margin: -22px -22px 22px;
 }
 .unifiedForm .experienceCard > p {
-  font-size: 14px;
+  font-size: 16px;
 }
 .unifiedForm .cardTop {
   min-height: 32px;
@@ -1363,7 +1363,7 @@
   border: 1px solid var(--gold-dark);
   margin-top: 18px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
   background: var(--paper);
 }
@@ -1386,7 +1386,7 @@
 }
 .boatChoices > p {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   margin: 12px 0;
 }
@@ -1404,17 +1404,17 @@
 }
 .boatChoices label strong {
   font-weight: 500;
-  font-size: 13px;
+  font-size: 15px;
 }
 .boatChoices label small {
   display: block;
   margin-top: 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
 }
 .boatChoiceDetail {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   padding: 0 0 16px 30px;
 }
@@ -1437,7 +1437,7 @@
   gap: 10px;
 }
 .lakeTabs > span {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   margin-right: 4px;
 }
@@ -1445,7 +1445,7 @@
   border: 1px solid var(--line);
   padding: 10px 18px;
   min-height: 44px;
-  font-size: 13px;
+  font-size: 15px;
 }
 .lakeTabs button[aria-pressed="true"] {
   color: var(--gold-text);
@@ -1457,7 +1457,7 @@
   background: var(--paper);
 }
 .formFooter > p {
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 16px;
 }
 .formFooter > div {
@@ -1472,7 +1472,7 @@
   border: 1px solid var(--line);
   padding: 12px 18px;
   min-height: 48px;
-  font-size: 13px;
+  font-size: 15px;
 }
 .formFooter a:hover {
   border-color: var(--gold-dark);
@@ -1481,7 +1481,7 @@
   display: block;
   margin-top: 14px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
 }
 @media (max-width: 1000px) {
@@ -1511,12 +1511,12 @@
   }
   .unifiedForm .formSteps a {
     min-height: 56px;
-    font-size: 11px;
+    font-size: 13px;
     gap: 5px;
     padding: 10px 4px;
   }
   .unifiedForm .formSteps a > span {
-    font-size: 10px;
+    font-size: 12px;
   }
   .unifiedForm .formSectionTitle h3 {
     font-size: 26px;
@@ -1546,7 +1546,7 @@
   }
   .unifiedForm .filters button {
     padding: 10px 12px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .formFooter {
     padding: 26px 16px;
@@ -1674,7 +1674,7 @@
   margin-bottom: 12px;
 }
 .unifiedForm .boatFeatured > p {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.7;
   margin-bottom: 12px;
 }
@@ -1696,7 +1696,7 @@
 }
 .unifiedForm .boatFeatured .boatChoices > p {
   margin: 10px 0 0;
-  font-size: 11px;
+  font-size: 13px;
 }
 .unifiedForm .activityCatalogue .filters,
 .unifiedForm .activityCatalogue .resultsHeading,
@@ -1775,7 +1775,7 @@
   border-left: 2px solid var(--gold-dark);
   padding: 10px 16px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   background: var(--paper);
 }
@@ -1789,7 +1789,7 @@
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 4px;
-  font-size: 11px;
+  font-size: 13px;
 }
 @media (max-width: 600px) {
   .unifiedForm .activityCatalogue .experienceCard h3 {
@@ -1808,13 +1808,13 @@
 }
 .unifiedForm .cardTop > span,
 .unifiedForm .cardFacts dt {
-  font-size: 11px;
+  font-size: 13px;
 }
 .unifiedForm .resultsHeading > span {
-  font-size: 12px;
+  font-size: 14px;
 }
 .unifiedForm .cardDetails summary {
-  font-size: 12px;
+  font-size: 14px;
 }
 .boatAside {
   position: static;
@@ -1831,7 +1831,7 @@
 }
 /* Keep all four boat formulas visible before a selection is made. */
 .unifiedForm .boatChoices > .boatChoiceLabel {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink);
   margin-bottom: 14px;
 }
@@ -1842,7 +1842,7 @@
   padding: 0;
   min-width: 0;
 }
-.unifiedForm .boatChooser > label {
+.unifiedForm .boatFeatured .boatChooser > label {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -1854,21 +1854,21 @@
 }
 .boatChooser label > input { margin-top: 4px; }
 .boatChooser label > span { flex: 1; min-width: 0; line-height: 1.6; }
-.boatChooser label strong { font-size: 15px; font-weight: 500; }
+.boatChooser label strong { font-size: 17px; font-weight: 500; }
 .boatChooser label small {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--gold-text);
   margin-top: 4px;
 }
 .boatPackageSummary {
   display: block;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.65;
   color: var(--muted);
   margin-top: 8px;
 }
-.unifiedForm .boatChooser > label:has(input:checked) {
+.unifiedForm .boatFeatured .boatChooser > label:has(input:checked) {
   border-color: var(--gold-text);
   background: #d4af3710;
 }
@@ -1888,7 +1888,7 @@
   padding: 12px 0;
 }
 .experiencePreference > p {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   color: var(--muted);
   margin-bottom: 18px;
@@ -1918,13 +1918,13 @@
 }
 .preferenceGrid label strong {
   display: block;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 1.6;
 }
 .preferenceGrid label small {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.7;
   margin-top: 6px;
@@ -1953,14 +1953,14 @@
   cursor: not-allowed;
 }
 .sendInstructions {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   color: var(--muted);
   margin-top: 20px;
 }
 .review .previewNotice {
   margin-top: 14px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
 }
 .formActionBar > button {
@@ -1981,7 +1981,7 @@
   border-top: 0;
 }
 .accountSave p {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
   max-width: 760px;
   margin: 0;
@@ -2010,7 +2010,7 @@
   min-height: 48px;
   padding: 12px 18px;
   border: 1px solid #8a8478;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
   text-align: center;
 }
@@ -2029,7 +2029,7 @@
   min-height: 44px;
   text-decoration: underline;
   text-underline-offset: 4px;
-  font-size: 13px;
+  font-size: 15px;
 }
 @media (max-width: 600px) {
   .accountActions {
@@ -2048,4 +2048,10 @@
 }
 .unifiedForm .boatChoices > .boatChooser + p {
   margin-top: 14px;
+}
+
+/* Main descriptions remain readable on narrow screens. */
+.unifiedForm .experienceCard > p {
+  font-size: 16px;
+  line-height: 1.75;
 }
