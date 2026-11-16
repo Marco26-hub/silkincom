@@ -1184,10 +1184,11 @@ function QuoteEditor({
       {optionsError && <Alert>{optionsError}</Alert>}
       {!review ? (
         <>
+          <h3 className="font-display text-2xl">Servizi e prezzi</h3>
           <Field label="Aggiunga una voce dal listino (facoltativo)">
             <select
               className={cls}
-              disabled={loading}
+              disabled={loading || items.length >= 30}
               value=""
               onChange={(event) => {
                 const service = services.find(
@@ -1219,26 +1220,48 @@ function QuoteEditor({
               ))}
             </select>
           </Field>
-          <div className="space-y-4">
+          <div
+            role="table"
+            aria-label="Voci del preventivo"
+            className="overflow-hidden rounded-sm border border-pearl-grey"
+          >
+            <div
+              role="row"
+              className="sr-only xl:not-sr-only xl:grid xl:grid-cols-[minmax(0,2fr)_minmax(0,.65fr)_repeat(2,minmax(0,1fr))_minmax(0,1fr)_3rem] xl:gap-3 xl:bg-soft-black xl:px-4 xl:py-3 xl:text-sm xl:font-medium xl:text-white"
+            >
+              <span role="columnheader">Servizio</span>
+              <span role="columnheader">Quantità</span>
+              <span role="columnheader">Prezzo unitario (€)</span>
+              <span role="columnheader">Costo interno (€)</span>
+              <span role="columnheader">Totale cliente</span>
+              <span role="columnheader" className="sr-only">
+                Azioni
+              </span>
+            </div>
             {items.map((item, index) => (
-              <fieldset
+              <div
+                role="row"
                 key={index}
-                className="space-y-4 border border-pearl-grey bg-warm-white p-4"
+                className="grid min-w-0 grid-cols-2 items-center gap-3 border-b border-pearl-grey p-4 last:border-b-0 even:bg-warm-white xl:grid-cols-[minmax(0,2fr)_minmax(0,.65fr)_repeat(2,minmax(0,1fr))_minmax(0,1fr)_3rem]"
               >
-                <legend className="px-2 text-sm font-medium">
-                  Voce {index + 1}
-                </legend>
-                <Field label="Descrizione della voce *">
-                  <input
-                    required
-                    maxLength={200}
-                    className={cls}
-                    value={item.label}
-                    onChange={(e) => update(index, "label", e.target.value)}
-                  />
-                </Field>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Field label="Quantità *">
+                <div role="cell" className="col-span-2 min-w-0 xl:col-span-1">
+                  <label className="block text-sm font-medium">
+                    <span className="mb-2 block xl:sr-only">
+                      Servizio {index + 1}
+                    </span>
+                    <input
+                      required
+                      maxLength={200}
+                      placeholder="Es. Aperitivo in barca"
+                      className={cls}
+                      value={item.label}
+                      onChange={(e) => update(index, "label", e.target.value)}
+                    />
+                  </label>
+                </div>
+                <div role="cell" className="min-w-0">
+                  <label className="block text-sm font-medium">
+                    <span className="mb-2 block xl:sr-only">Quantità</span>
                     <input
                       type="number"
                       required
@@ -1250,22 +1273,13 @@ function QuoteEditor({
                         update(index, "quantity", Number(e.target.value))
                       }
                     />
-                  </Field>
-                  <Field label="Costo unitario interno (€)">
-                    <input
-                      type="number"
-                      min="0"
-                      max="1000000"
-                      step="0.01"
-                      className={cls}
-                      value={toEuro(item.cost_cents)}
-                      placeholder="Da definire"
-                      onChange={(e) =>
-                        update(index, "cost_cents", fromEuro(e.target.value))
-                      }
-                    />
-                  </Field>
-                  <Field label="Prezzo unitario cliente (€) *">
+                  </label>
+                </div>
+                <div role="cell" className="min-w-0">
+                  <label className="block text-sm font-medium">
+                    <span className="mb-2 block xl:sr-only">
+                      Prezzo unitario (€)
+                    </span>
                     <input
                       type="number"
                       required
@@ -1282,16 +1296,38 @@ function QuoteEditor({
                         )
                       }
                     />
-                  </Field>
+                  </label>
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="text-sm">
-                    Totale voce:{" "}
-                    <strong>{money(item.quantity * item.price_cents)}</strong>
-                  </p>
+                <div role="cell" className="min-w-0">
+                  <label className="block text-sm font-medium">
+                    <span className="mb-2 block xl:sr-only">
+                      Costo interno (€)
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="1000000"
+                      step="0.01"
+                      className={cls}
+                      value={toEuro(item.cost_cents)}
+                      placeholder="Facoltativo"
+                      onChange={(e) =>
+                        update(index, "cost_cents", fromEuro(e.target.value))
+                      }
+                    />
+                  </label>
+                </div>
+                <div role="cell" className="min-w-0 text-sm">
+                  <span className="mb-2 block xl:sr-only">Totale cliente</span>
+                  <output className="break-words text-base font-semibold tabular-nums">
+                    {money(item.quantity * item.price_cents)}
+                  </output>
+                </div>
+                <div role="cell" className="col-span-2 xl:col-span-1">
                   <button
                     type="button"
-                    className={button}
+                    className="inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-sm border border-pearl-grey px-2 text-sm hover:border-gold-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-dark disabled:opacity-40"
+                    aria-label={`Rimuovi voce ${index + 1}`}
                     disabled={items.length === 1}
                     onClick={() =>
                       setItems((current) =>
@@ -1299,10 +1335,11 @@ function QuoteEditor({
                       )
                     }
                   >
-                    Rimuovi voce
+                    <X size={16} aria-hidden="true" />
+                    <span className="xl:sr-only">Rimuovi</span>
                   </button>
                 </div>
-              </fieldset>
+              </div>
             ))}
           </div>
           <button
@@ -1326,13 +1363,13 @@ function QuoteEditor({
             <Plus size={16} />
             Aggiungi voce manuale
           </button>
-          <dl className="grid gap-4 border-y border-pearl-grey py-5 sm:grid-cols-3">
+          <dl className="grid gap-4 rounded-sm border border-pearl-grey bg-warm-white p-4 sm:grid-cols-3 sm:p-5">
             <div>
               <dt className="text-sm">Totale cliente</dt>
               <dd className="font-display text-3xl">{money(totals.revenue)}</dd>
             </div>
             <div>
-              <dt className="text-sm">Costi interni</dt>
+              <dt className="text-sm">Costi riservati all’admin</dt>
               <dd className="font-display text-3xl">{money(totals.cost)}</dd>
             </div>
             <div>
@@ -1345,6 +1382,9 @@ function QuoteEditor({
             confrontare con trattamento IVA coerente; tasse e costi generali non
             sono sottratti.
           </p>
+          <h3 className="border-t border-pearl-grey pt-5 font-display text-2xl">
+            Condizioni per il cliente
+          </h3>
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Servizi inclusi · una voce per riga">
               <textarea
@@ -1383,17 +1423,22 @@ function QuoteEditor({
               className={cls}
             />
           </Field>
-          <Field label="Note interne riservate">
-            <textarea
-              rows={3}
-              maxLength={4000}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className={cls}
-            />
-          </Field>
+          <details className="rounded-sm border border-pearl-grey bg-warm-white p-4">
+            <summary className="cursor-pointer py-1 font-medium">
+              Note riservate all’admin
+            </summary>
+            <Field label="Note interne riservate">
+              <textarea
+                rows={3}
+                maxLength={4000}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className={cls}
+              />
+            </Field>
+          </details>
           {error && <Alert>{error}</Alert>}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-3 border-t border-pearl-grey pt-5 sm:flex-row sm:justify-end">
             <button
               type="button"
               className={button}
@@ -1403,7 +1448,7 @@ function QuoteEditor({
               {busy ? "Salvataggio…" : "Salva bozza riservata"}
             </button>
             <button className={primary} disabled={busy}>
-              Rivedi prima di pubblicare
+              Rivedi il preventivo
             </button>
           </div>
         </>
