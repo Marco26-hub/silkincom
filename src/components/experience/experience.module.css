@@ -66,6 +66,17 @@
   overflow: hidden;
   transition: opacity 1.4s ease;
 }
+.heroSlideStadium .heroImage {
+  filter: sepia(0.22) saturate(0.82) contrast(1.08) brightness(0.96);
+}
+.heroSlideStadium::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(125deg, #202d2538, #b9953a26);
+  mix-blend-mode: soft-light;
+}
 .heroSlideActive {
   opacity: 1;
 }
@@ -1818,74 +1829,52 @@
 .unifiedForm textarea:focus-visible {
   border-color: var(--gold-text);
 }
-/* Boat choices use an in-page disclosure: reliable in touch and embedded browsers. */
+/* Keep all four boat formulas visible before a selection is made. */
 .unifiedForm .boatChoices > .boatChoiceLabel {
   font-size: 12px;
   color: var(--ink);
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 .boatChooser {
-  border: 1px solid #8a8478;
-  background: var(--paper);
+  display: grid;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+  min-width: 0;
 }
-.boatChooser > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 48px;
-  padding: 12px;
-  cursor: pointer;
-  list-style: none;
-  font-size: 15px;
-  line-height: 1.5;
-}
-.boatChooser > summary::-webkit-details-marker {
-  display: none;
-}
-.boatChooser > summary > svg {
-  flex-shrink: 0;
-}
-.boatChooser[open] > summary > svg {
-  transform: rotate(180deg);
-}
-.boatChooser > fieldset {
-  padding: 4px 12px 10px;
-  border-top: 1px solid var(--line);
-  background: var(--white);
-}
-.unifiedForm .boatChooser fieldset > label {
+.unifiedForm .boatChooser > label {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px 0;
+  gap: 12px;
+  padding: 16px;
   min-height: 48px;
+  border: 1px solid var(--line);
+  background: var(--white);
   cursor: pointer;
-  border-bottom: 1px solid var(--line);
 }
-.unifiedForm .boatChooser fieldset > label:last-child {
-  border-bottom: 0;
-}
-.boatChooser label > input {
-  margin-top: 4px;
-}
-.boatChooser label > span {
-  flex: 1;
-  min-width: 0;
-  line-height: 1.6;
-}
-.boatChooser label strong {
-  font-size: 13px;
-  font-weight: 500;
-}
+.boatChooser label > input { margin-top: 4px; }
+.boatChooser label > span { flex: 1; min-width: 0; line-height: 1.6; }
+.boatChooser label strong { font-size: 15px; font-weight: 500; }
 .boatChooser label small {
   display: block;
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 12px;
+  color: var(--gold-text);
   margin-top: 4px;
 }
-.boatChooser label:has(input:checked) {
-  color: var(--gold-text);
+.boatPackageSummary {
+  display: block;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.unifiedForm .boatChooser > label:has(input:checked) {
+  border-color: var(--gold-text);
+  background: #d4af3710;
+}
+.boatChooser > label:focus-within {
+  outline: 2px solid var(--gold-text);
+  outline-offset: 2px;
 }
 .experiencePreference {
   border-top: 1px solid var(--line);
@@ -2051,9 +2040,6 @@
 .unifiedForm .boatFeatured .boatChoices > .boatChoiceLabel {
   margin: 0 0 14px;
   line-height: 1.7;
-}
-.boatChooser > summary:focus-visible {
-  outline-offset: -4px;
 }
 .unifiedForm input:not([type="checkbox"]):not([type="radio"]):focus-visible,
 .unifiedForm select:focus-visible,

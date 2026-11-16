@@ -1,0 +1,14 @@
+{
+  "asset": "/experience/como-stadio-sinigaglia.webp",
+  "source": "https://commons.wikimedia.org/wiki/File:Stadium_Giuseppe_Sinigaglia_seen_from_Monte_Croce.jpg",
+  "original": "https://upload.wikimedia.org/wikipedia/commons/8/86/Stadium_Giuseppe_Sinigaglia_seen_from_Monte_Croce.jpg",
+  "author": "Kaitu",
+  "license": "CC0 1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "verified": "2026-11-16",
+  "description": "Real photograph of Giuseppe Sinigaglia stadium and Lake Como seen from Monte Croce.",
+  "processing": "Resized to 2200px width and compressed as WebP. No generative edits.",
+  "bytes": 357934,
+  "sha256": "8e17e13646c00f8f80dd621d4bb25ee376188aece6b99c9c91b668c84d4edef3",
+  "displayEffects": "CSS warm sepia 0.22, saturation 0.82, contrast 1.08, brightness 0.96; soft-light forest/gold overlay plus shared hero text gradient. Original image geometry preserved."
+}

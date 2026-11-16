@@ -194,7 +194,7 @@ export function LakeExperience({
     if (heroPaused || reducedMotion) return;
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible")
-        setHeroSlide((current) => (current + 1) % 2);
+        setHeroSlide((current) => (current + 1) % 3);
     }, 8000);
     return () => window.clearInterval(timer);
   }, [heroPaused, reducedMotion]);
@@ -639,67 +639,54 @@ export function LakeExperience({
           </span>
           <span className="sr-only">: {item.title}</span>
         </label>
-        {item.id === "boat" && selected && (
+        {item.id === "boat" && (
           <div className={styles.boatChoices}>
             <p className={styles.boatChoiceLabel}>
               {t("La sua formula in barca")}
             </p>
-            <details
-              className={styles.boatChooser}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  event.currentTarget.open = false;
-                  event.currentTarget.querySelector("summary")?.focus();
-                }
-              }}
-            >
-              <summary>
-                <span>
-                  <span className="sr-only">
-                    {t("La sua formula in barca")}:{" "}
-                  </span>
-                  {chosenBoat?.title || t("Da scegliere insieme")}
-                </span>
-                <ChevronDown size={16} aria-hidden="true" />
-              </summary>
-              <fieldset>
-                <legend className="sr-only">
-                  {t("La sua formula in barca")}
-                </legend>
-                <label>
+            <fieldset className={styles.boatChooser}>
+              <legend className="sr-only">
+                {t("La sua formula in barca")}
+              </legend>
+              {BOAT_PACKAGES.map((option) => (
+                <label key={option.id}>
                   <input
                     type="radio"
                     name="boatPackage"
-                    value="undecided"
-                    checked={!chosenBoat}
-                    onChange={() =>
-                      setInterests((current) => [
-                        ...current.filter(
-                          (value) => !value.startsWith("Barca · "),
-                        ),
-                        item.title,
-                      ])
-                    }
+                    value={option.id}
+                    checked={chosenBoat?.id === option.id}
+                    onChange={() => chooseBoatPackage(option, false)}
                   />
-                  <span>{t("Da scegliere insieme")}</span>
-                </label>
-                {BOAT_PACKAGES.map((option) => (
-                  <label key={option.id}>
-                    <input
-                      type="radio"
-                      name="boatPackage"
-                      value={option.id}
-                      checked={chosenBoat?.id === option.id}
-                      onChange={() => chooseBoatPackage(option, false)}
-                    />
-                    <span>
-                      <strong>{option.title}</strong>
-                      <small>{option.format}</small>
+                  <span>
+                    <strong>{option.title}</strong>
+                    <small>{option.format}</small>
+                    <span className={styles.boatPackageSummary}>
+                      {option.summary}
                     </span>
-                  </label>
-                ))}
-              </fieldset>
-            </details>
+                  </span>
+                </label>
+              ))}
+              <label>
+                <input
+                  type="radio"
+                  name="boatPackage"
+                  value="undecided"
+                  checked={selected && !chosenBoat}
+                  onChange={() => {
+                    setInterests((current) => [
+                      ...current.filter(
+                        (value) => value !== item.title && !value.startsWith("Barca · "),
+                      ),
+                      item.title,
+                    ]);
+                    setBrief(null);
+                    setError("");
+                    setStatus("idle");
+                  }}
+                />
+                <span>{t("Da scegliere insieme")}</span>
+              </label>
+            </fieldset>
             {chosenBoat && (
               <>
                 <p>{chosenBoat.format}</p>
@@ -760,10 +747,14 @@ export function LakeExperience({
             src: "/experience/lago-maggiore.webp",
             alt: t("Isola Bella sul Lago Maggiore"),
           },
+          {
+            src: "/experience/como-stadio-sinigaglia.webp",
+            alt: t("Lo stadio Giuseppe Sinigaglia e il Lago di Como, visti dal Monte Croce"),
+          },
         ].map((image, index) => (
           <div
             key={image.src}
-            className={`${styles.heroSlide} ${heroSlide === index ? styles.heroSlideActive : ""}`}
+            className={`${styles.heroSlide} ${index === 2 ? styles.heroSlideStadium : ""} ${heroSlide === index ? styles.heroSlideActive : ""}`}
             aria-hidden={heroSlide !== index}
           >
             <Image
@@ -816,18 +807,18 @@ export function LakeExperience({
         </div>
         <div className={styles.heroBottom}>
           <span>
-            {heroSlide === 0 ? t("Lago di Como") : t("Lago Maggiore")}
+            {heroSlide === 2 ? t("Como · Stadio Giuseppe Sinigaglia") : heroSlide === 0 ? t("Lago di Como") : t("Lago Maggiore")}
           </span>
           <div
             className={styles.heroControls}
             role="group"
             aria-label={t("Immagini dei due laghi")}
           >
-            {["Lago di Como", "Lago Maggiore"].map((name, index) => (
+            {[t("Lago di Como"), t("Lago Maggiore"), t("Como · Stadio Giuseppe Sinigaglia")].map((name, index) => (
               <button
                 type="button"
                 key={name}
-                aria-label={t(name)}
+                aria-label={name}
                 aria-pressed={heroSlide === index}
                 onClick={() => {
                   setHeroSlide(index);
@@ -1592,6 +1583,17 @@ export function LakeExperience({
               {") · "}
             </span>
           ))}
+          <span>
+            <a
+              href="https://commons.wikimedia.org/wiki/File:Stadium_Giuseppe_Sinigaglia_seen_from_Monte_Croce.jpg"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t("Como · Stadio Giuseppe Sinigaglia")} · Kaitu / Wikimedia Commons
+            </a>{" ("}
+            <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>
+            {") · "}
+          </span>
           {t("Fotografie:")}{" "}
           <a
             href="https://commons.wikimedia.org/wiki/File:Varenna_-_View_from_Lake_Como.jpg"
