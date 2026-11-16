@@ -33,6 +33,7 @@ import {
   Music2,
   LogOut,
   Building2,
+  Compass,
 } from 'lucide-react';
 
 type NavItem = {
@@ -58,6 +59,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
       { href: '/admin/resi', label: 'Resi', icon: Undo2, roles: ORDERS },
       { href: '/admin/recessi', label: 'Recessi', icon: ScrollText, roles: ORDERS },
       { href: '/admin/contatti', label: 'Contatti', icon: Mail, roles: ORDERS },
+      { href: '/admin/experience', label: 'Experience', icon: Compass, roles: ADMIN },
       { href: '/admin/pagamenti', label: 'Pagamenti', icon: CreditCard, roles: ADMIN },
       { href: '/admin/fatture', label: 'Fatture', icon: Receipt, roles: ADMIN },
     ],
@@ -117,6 +119,7 @@ const MOBILE_NAV: NavItem[] = [
   { href: '/admin/ordini', label: 'Ordini', icon: ShoppingBag, roles: ORDERS },
   { href: '/admin/prodotti', label: 'Prodotti', icon: Package, roles: EDITOR },
   { href: '/admin/magazzino', label: 'Magazzino', icon: Boxes, roles: ORDERS },
+  { href: '/admin/experience', label: 'Experience', icon: Compass, roles: ADMIN },
   { href: '/admin/impostazioni', label: 'Altro', icon: Settings, roles: ADMIN },
 ];
 
