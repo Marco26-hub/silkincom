@@ -187,11 +187,11 @@ export function ExperienceManager() {
       );
     }
   }
-  async function saved() {
+  async function saved(message = "Dati salvati.") {
     setEditing(null);
     setQuote(null);
     setTrip(null);
-    setNotice("Dati salvati. La pubblicazione non invia email o WhatsApp.");
+    setNotice(message);
     await load();
   }
   function openLinkedTrip(id: string) {
@@ -323,20 +323,30 @@ export function ExperienceManager() {
                     <p className="whitespace-pre-wrap text-sm leading-6">
                       {q.conditions}
                     </p>
-                    {q.status === "draft" ? (
-                      <button className={button} onClick={() => setQuote(q)}>
-                        Apri e modifica bozza
-                      </button>
-                    ) : (
-                      <button
+                    <div className="flex flex-wrap gap-2">
+                      <a
+                        href={`/api/admin/experience/quotes/${q.id}/pdf`}
                         className={button}
-                        onClick={() =>
-                          setQuote({ ...q, id: "", status: "draft" })
-                        }
                       >
-                        Crea una nuova revisione
-                      </button>
-                    )}
+                        {q.status === "draft"
+                          ? "Scarica PDF della bozza"
+                          : "Scarica PDF"}
+                      </a>
+                      {q.status === "draft" ? (
+                        <button className={button} onClick={() => setQuote(q)}>
+                          Apri e modifica bozza
+                        </button>
+                      ) : (
+                        <button
+                          className={button}
+                          onClick={() =>
+                            setQuote({ ...q, id: "", status: "draft" })
+                          }
+                        >
+                          Crea una nuova revisione
+                        </button>
+                      )}
+                    </div>
                   </article>
                 ))}
             </>
@@ -1030,7 +1040,7 @@ function QuoteEditor({
   trip: AdminTrip;
   quote: AdminQuote | "new";
   onCancel: () => void;
-  onSaved: () => Promise<void>;
+  onSaved: (message: string) => Promise<void>;
 }) {
   const existing = quote === "new" ? null : quote;
   const initial = existing?.experience_quote_details;
@@ -1139,7 +1149,11 @@ function QuoteEditor({
     setBusy(true);
     try {
       await apiSave({ ...data, data: parsed.data });
-      await onSaved();
+      await onSaved(
+        publish
+          ? "Preventivo pubblicato. Il cliente lo trova in «I miei viaggi» e può scaricarlo in PDF."
+          : "Bozza salvata. Puoi aprirla e scaricarne il PDF dall’elenco dei preventivi.",
+      );
     } catch (cause) {
       console.error("[experience-admin] Quote failed:", cause);
       setError(
@@ -1176,15 +1190,47 @@ function QuoteEditor({
           Chiudi
         </button>
       </div>
-      <p className="text-sm leading-6 text-soft-black/70">
-        L’importo deriva dalle voci qui sotto. I costi e le note interne non
-        appariranno al cliente. Un preventivo pubblicato resta immutato: per
-        modificarlo si crea una nuova revisione.
-      </p>
-      {optionsError && <Alert>{optionsError}</Alert>}
+      <div className="grid gap-3 rounded-sm border border-pearl-grey bg-warm-white p-4 sm:grid-cols-2">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold">Destinatario</p>
+          <p className="mt-1 break-words text-sm">
+            {trip.customer?.full_name || "Cliente registrato"}
+            {trip.customer?.email && (
+              <span className="block">{trip.customer.email}</span>
+            )}
+          </p>
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold">Viaggio</p>
+          <p className="mt-1 break-words text-sm">{trip.title}</p>
+          <p className="text-sm text-soft-black/70">{trip.payload.lake}</p>
+        </div>
+      </div>
+      <ol
+        aria-label="Passaggi del preventivo"
+        className="grid grid-cols-2 gap-2 text-sm"
+      >
+        <li
+          aria-current={!review ? "step" : undefined}
+          className={`border border-pearl-grey p-3 ${!review ? "bg-soft-black text-white" : "bg-warm-white"}`}
+        >
+          1. Compila
+        </li>
+        <li
+          aria-current={review ? "step" : undefined}
+          className={`border border-pearl-grey p-3 ${review ? "bg-soft-black text-white" : "bg-warm-white"}`}
+        >
+          2. Rivedi e pubblica
+        </li>
+      </ol>
       {!review ? (
         <>
           <h3 className="font-display text-2xl">Servizi e prezzi</h3>
+          <p className="text-sm leading-6 text-soft-black/75">
+            Aggiungi una riga per ogni servizio. Inserisci il costo a noi e il
+            prezzo cliente per unità. Il totale si aggiorna con la quantità.
+          </p>
+          {optionsError && <Alert>{optionsError}</Alert>}
           <Field label="Aggiunga una voce dal listino (facoltativo)">
             <select
               className={cls}
@@ -1231,8 +1277,8 @@ function QuoteEditor({
             >
               <span role="columnheader">Servizio</span>
               <span role="columnheader">Quantità</span>
-              <span role="columnheader">Prezzo unitario (€)</span>
-              <span role="columnheader">Costo interno (€)</span>
+              <span role="columnheader">Costo a noi (€)</span>
+              <span role="columnheader">Prezzo unitario cliente (€)</span>
               <span role="columnheader">Totale cliente</span>
               <span role="columnheader" className="sr-only">
                 Azioni
@@ -1278,7 +1324,26 @@ function QuoteEditor({
                 <div role="cell" className="min-w-0">
                   <label className="block text-sm font-medium">
                     <span className="mb-2 block xl:sr-only">
-                      Prezzo unitario (€)
+                      Costo a noi (€)
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="1000000"
+                      step="0.01"
+                      className={cls}
+                      value={toEuro(item.cost_cents)}
+                      placeholder="Facoltativo"
+                      onChange={(e) =>
+                        update(index, "cost_cents", fromEuro(e.target.value))
+                      }
+                    />
+                  </label>
+                </div>
+                <div role="cell" className="min-w-0">
+                  <label className="block text-sm font-medium">
+                    <span className="mb-2 block xl:sr-only">
+                      Prezzo unitario cliente (€)
                     </span>
                     <input
                       type="number"
@@ -1294,25 +1359,6 @@ function QuoteEditor({
                           "price_cents",
                           fromEuro(e.target.value) ?? 0,
                         )
-                      }
-                    />
-                  </label>
-                </div>
-                <div role="cell" className="min-w-0">
-                  <label className="block text-sm font-medium">
-                    <span className="mb-2 block xl:sr-only">
-                      Costo interno (€)
-                    </span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="1000000"
-                      step="0.01"
-                      className={cls}
-                      value={toEuro(item.cost_cents)}
-                      placeholder="Facoltativo"
-                      onChange={(e) =>
-                        update(index, "cost_cents", fromEuro(e.target.value))
                       }
                     />
                   </label>
@@ -1365,12 +1411,12 @@ function QuoteEditor({
           </button>
           <dl className="grid gap-4 rounded-sm border border-pearl-grey bg-warm-white p-4 sm:grid-cols-3 sm:p-5">
             <div>
-              <dt className="text-sm">Totale cliente</dt>
-              <dd className="font-display text-3xl">{money(totals.revenue)}</dd>
+              <dt className="text-sm">Costo totale a noi</dt>
+              <dd className="font-display text-3xl">{money(totals.cost)}</dd>
             </div>
             <div>
-              <dt className="text-sm">Costi riservati all’admin</dt>
-              <dd className="font-display text-3xl">{money(totals.cost)}</dd>
+              <dt className="text-sm">Totale cliente</dt>
+              <dd className="font-display text-3xl">{money(totals.revenue)}</dd>
             </div>
             <div>
               <dt className="text-sm">Margine lordo indicativo</dt>
@@ -1438,6 +1484,10 @@ function QuoteEditor({
             </Field>
           </details>
           {error && <Alert>{error}</Alert>}
+          <p className="text-sm leading-6 text-soft-black/75">
+            Salva la bozza per riprendere il lavoro più tardi. Per consegnare il
+            preventivo, apri l’anteprima e conferma la pubblicazione.
+          </p>
           <div className="flex flex-col gap-3 border-t border-pearl-grey pt-5 sm:flex-row sm:justify-end">
             <button
               type="button"
@@ -1459,16 +1509,43 @@ function QuoteEditor({
           className="space-y-5 focus:outline-none"
         >
           <h3 className="font-display text-3xl">Anteprima per il cliente</h3>
-          <p>
-            {trip.customer?.full_name || "Cliente"} · {trip.title}
-          </p>
-          <p className="font-display text-5xl">{money(totals.revenue)}</p>
-          <p className="text-sm">
-            Valido fino al{" "}
-            {validUntil
-              ? date(new Date(validUntil).toISOString())
-              : "Da definire"}
-          </p>
+          <div className="border border-gold-primary/40 bg-warm-white p-5">
+            <p className="text-sm font-semibold">Totale del preventivo</p>
+            <p className="mt-2 font-display text-5xl">
+              {money(totals.revenue)}
+            </p>
+            <p className="mt-2 text-sm">
+              Valido fino al{" "}
+              {validUntil
+                ? date(new Date(validUntil).toISOString())
+                : "Da definire"}
+            </p>
+          </div>
+          <section aria-labelledby="quote-review-lines">
+            <h4 id="quote-review-lines" className="mb-3 font-medium">
+              Dettaglio dei servizi
+            </h4>
+            <ul className="divide-y divide-pearl-grey border border-pearl-grey">
+              {items.map((item, index) => (
+                <li
+                  key={index}
+                  className="grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto]"
+                >
+                  <div className="min-w-0">
+                    <p className="break-words text-sm font-medium">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm text-soft-black/75">
+                      {item.quantity} × {money(item.price_cents)}
+                    </p>
+                  </div>
+                  <p className="self-center text-sm font-semibold tabular-nums">
+                    {money(item.quantity * item.price_cents)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
           <div>
             <h4 className="font-medium">Servizi inclusi</h4>
             <ul className="mt-2 list-disc pl-5 text-sm leading-7">
@@ -1487,9 +1564,8 @@ function QuoteEditor({
           </div>
           <p className="whitespace-pre-wrap text-sm leading-7">{conditions}</p>
           <p className="border border-gold-primary/40 bg-warm-white p-4 text-sm leading-6">
-            Pubblicando, il cliente proprietario del viaggio vedrà questa
-            proposta in «I miei viaggi». Non vengono inviate email o messaggi e
-            non viene creata una prenotazione.
+            «Pubblica nell’area cliente» rende disponibile il preventivo e il
+            PDF in «I miei viaggi» del destinatario.
           </p>
           {error && <Alert>{error}</Alert>}
           <div className="flex flex-wrap gap-3">

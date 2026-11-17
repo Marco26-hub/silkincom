@@ -232,6 +232,12 @@ export function MyTrips({
                     <p className="mt-4 whitespace-pre-wrap text-xs leading-6 text-soft-black/70">
                       {quote.conditions}
                     </p>
+                    <a
+                      href={`/api/experience/quotes/${quote.id}/pdf?locale=${encodeURIComponent(locale)}`}
+                      className="mt-4 inline-flex min-h-12 items-center border border-soft-black/30 px-4 py-2 text-sm font-medium hover:border-gold-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-dark"
+                    >
+                      {t("Scarica PDF")}
+                    </a>
                   </div>
                 ) : (
                   <p className="my-5 text-sm leading-7 text-soft-black/70">
