@@ -244,15 +244,15 @@ export const EXPERIENCES: readonly Experience[] = [
   {
     id: "jet-ski",
     duration: "Da concordare",
-    format: "Mezzo e requisiti da verificare",
+    format: "Patente nautica richiesta",
     lakes: ["como", "maggiore"],
     category: "active",
-    title: "Jet Ski Experience",
+    title: "Noleggio moto d’acqua con patente nautica",
     location: "Centro nautico da concordare sul lago scelto",
     icon: "waves",
-    summary: "L’energia dell’acqua, per un’esperienza dal ritmo più vivace.",
+    summary: "Richieda il noleggio di una moto d’acqua sul lago scelto.",
     description:
-      "Un’uscita in moto d’acqua per chi desidera aggiungere un momento dinamico al soggiorno. Valutiamo il centro nautico, la formula e i trasferimenti in base al lago scelto e all’esperienza dei partecipanti.",
+      "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.",
     detail:
       "Attività su richiesta, da confermare con un operatore autorizzato nell’area prescelta. Disponibilità, aree e orari consentiti, documenti, abilitazioni, età minima, briefing, dotazioni e condizioni meteo vengono verificati prima della prenotazione. La selezione non garantisce l’erogazione su entrambi i laghi.",
   },

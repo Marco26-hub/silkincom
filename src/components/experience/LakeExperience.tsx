@@ -24,6 +24,7 @@ import {
   Utensils,
   Waves,
   Wine,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -33,6 +34,7 @@ import type {
   ExperienceContent,
 } from "@/data/experience-content";
 import { createExperienceTranslator } from "@/lib/experience-i18n";
+import { trackExperienceStep, trackLead } from "@/lib/analytics";
 import styles from "./experience.module.css";
 import photoCredits from "../../../public/experience/cards/credits.json";
 import { JourneyMapFields } from "./JourneyMapFields";
@@ -55,7 +57,6 @@ const SHARED_IMAGE_IDS = new Set([
   "wellness",
   "go-kart",
   "jungle-park",
-  "jet-ski",
   "milano",
 ]);
 function cardImage(id: string, lake: "como" | "maggiore") {
@@ -221,6 +222,27 @@ export function LakeExperience({
     }
   }, [lake]);
   const [activeStep, setActiveStep] = useState(1);
+  const boatChoicesRef = useRef<HTMLDetailsElement>(null);
+  const trackedSteps = useRef(
+    new Set<Parameters<typeof trackExperienceStep>[0]>(),
+  );
+  const selectedExperiences = interests.filter(
+    (value) => !LOGISTICS.some((service) => service.title === value),
+  );
+  const boatTitle = EXPERIENCES.find((item) => item.id === "boat")!.title;
+  const boatSelected = interests.some(
+    (value) => value === boatTitle || value.startsWith("Barca · "),
+  );
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 701px)");
+    const update = () => {
+      if (boatChoicesRef.current)
+        boatChoicesRef.current.open = desktop.matches || boatSelected;
+    };
+    update();
+    desktop.addEventListener("change", update);
+    return () => desktop.removeEventListener("change", update);
+  }, [boatSelected]);
   useEffect(() => {
     const update = () => {
       const anchors = ["stay-details", "esperienze", "travel-details"];
@@ -303,8 +325,8 @@ export function LakeExperience({
   const lakeName = experienceLake === "como" ? "Lago di Como" : "Lago Maggiore";
   const priority =
     experienceLake === "como"
-      ? ["boat", "silk", "gourmet", "golf", "milano"]
-      : ["boat", "islands", "gourmet", "golf-maggiore", "milano"];
+      ? ["boat", "silk", "gourmet", "golf", "milano", "jet-ski"]
+      : ["boat", "islands", "gourmet", "golf-maggiore", "milano", "jet-ski"];
   const orderedExperiences = [...EXPERIENCES].sort((a, b) => {
     const rank = (id: string) =>
       priority.includes(id) ? priority.indexOf(id) : priority.length;
@@ -331,8 +353,17 @@ export function LakeExperience({
     setError("");
     setStatus("idle");
   }
+  function trackStep(step: Parameters<typeof trackExperienceStep>[0]) {
+    if (trackedSteps.current.has(step)) return;
+    trackedSteps.current.add(step);
+    trackExperienceStep(step);
+  }
   function toggleInterest(title: string) {
-    const boatTitle = EXPERIENCES.find((item) => item.id === "boat")!.title;
+    if (
+      !isInterestSelected(title) &&
+      !LOGISTICS.some((service) => service.title === title)
+    )
+      trackStep("selection");
     setInterests((current) =>
       title === boatTitle && current.some((item) => item.startsWith("Barca · "))
         ? current.filter(
@@ -347,31 +378,18 @@ export function LakeExperience({
     setStatus("idle");
   }
   function isInterestSelected(title: string) {
-    return (
-      interests.includes(title) ||
-      (EXPERIENCES.find((item) => item.id === "boat")?.title === title &&
-        interests.some((item) => item.startsWith("Barca · ")))
-    );
+    return interests.includes(title) || (title === boatTitle && boatSelected);
   }
-  function chooseBoatPackage(
-    option: (typeof BOAT_PACKAGES)[number],
-    scrollToRequest = true,
-  ) {
+  function chooseBoatPackage(option: (typeof BOAT_PACKAGES)[number]) {
+    trackStep("selection");
     const title = `Barca · ${option.title}`;
     setInterests((current) => [
       ...current.filter((item) => !item.startsWith("Barca · ")),
       title,
     ]);
-    if (scrollToRequest) setLake(lakeName);
     setBrief(null);
     setError("");
     setStatus("idle");
-    if (!scrollToRequest) return;
-    document.getElementById("richiesta")?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
   }
   async function prepareRequest(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -459,6 +477,7 @@ export function LakeExperience({
       )
         throw new Error("form_changed");
       setBrief(next);
+      trackStep("review");
       requestAnimationFrame(() => reviewRef.current?.focus());
     } catch (cause) {
       console.error(
@@ -520,6 +539,7 @@ export function LakeExperience({
             "Invio non riuscito. Riprovi oppure scriva a info@silkincom.com.",
         );
       setStatus("success");
+      trackLead("experience");
     } catch (cause) {
       console.error("[experience] Contact submission failed:", cause);
       setError(
@@ -656,86 +676,93 @@ export function LakeExperience({
           <span className="sr-only">: {item.title}</span>
         </label>
         {item.id === "boat" && (
-          <div className={styles.boatChoices}>
-            <p className={styles.boatChoiceLabel}>
-              {t("La sua formula in barca")}
-            </p>
-            <fieldset className={styles.boatChooser}>
-              <legend className="sr-only">
-                {t("La sua formula in barca")}
-              </legend>
-              {BOAT_PACKAGES.map((option) => (
-                <label key={option.id}>
+          <details className={styles.boatOptions} ref={boatChoicesRef}>
+            <summary>
+              <span>
+                {chosenBoat?.title || t("Scopra le formule in barca")}
+              </span>
+              <ChevronDown size={17} aria-hidden="true" />
+            </summary>
+            <div className={styles.boatChoices}>
+              <fieldset className={styles.boatChooser}>
+                <legend className="sr-only">
+                  {t("La sua formula in barca")}
+                </legend>
+                {BOAT_PACKAGES.map((option) => (
+                  <label key={option.id}>
+                    <input
+                      type="radio"
+                      name="boatPackage"
+                      value={option.id}
+                      checked={chosenBoat?.id === option.id}
+                      onChange={() => chooseBoatPackage(option)}
+                    />
+                    <span>
+                      <strong>{option.title}</strong>
+                      <small>{option.format}</small>
+                      <span className={styles.boatPackageSummary}>
+                        {option.summary}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+                <label>
                   <input
                     type="radio"
                     name="boatPackage"
-                    value={option.id}
-                    checked={chosenBoat?.id === option.id}
-                    onChange={() => chooseBoatPackage(option, false)}
+                    value="undecided"
+                    checked={selected && !chosenBoat}
+                    onChange={() => {
+                      trackStep("selection");
+                      setInterests((current) => [
+                        ...current.filter(
+                          (value) =>
+                            value !== item.title &&
+                            !value.startsWith("Barca · "),
+                        ),
+                        item.title,
+                      ]);
+                      setBrief(null);
+                      setError("");
+                      setStatus("idle");
+                    }}
                   />
-                  <span>
-                    <strong>{option.title}</strong>
-                    <small>{option.format}</small>
-                    <span className={styles.boatPackageSummary}>
-                      {option.summary}
-                    </span>
-                  </span>
+                  <span>{t("Da scegliere insieme")}</span>
                 </label>
-              ))}
-              <label>
-                <input
-                  type="radio"
-                  name="boatPackage"
-                  value="undecided"
-                  checked={selected && !chosenBoat}
-                  onChange={() => {
-                    setInterests((current) => [
-                      ...current.filter(
-                        (value) =>
-                          value !== item.title && !value.startsWith("Barca · "),
-                      ),
-                      item.title,
-                    ]);
-                    setBrief(null);
-                    setError("");
-                    setStatus("idle");
-                  }}
-                />
-                <span>{t("Da scegliere insieme")}</span>
-              </label>
-            </fieldset>
-            {chosenBoat && (
-              <>
-                <p>{chosenBoat.format}</p>
-                <details className={styles.boatChoiceDetail}>
-                  <summary>{t("Dettagli della formula")}</summary>
-                  <p>{chosenBoat.description}</p>
-                  <ul>
-                    {chosenBoat.features.map((feature) => (
-                      <li key={feature}>{feature}</li>
-                    ))}
-                  </ul>
-                  <p>{chosenBoat.detail}</p>
-                  {chosenBoat.id === "freedom" && (
-                    <a
-                      href="https://www.mit.gov.it/node/2658"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {t(
-                        "Indicazioni del Ministero sui requisiti di conduzione",
-                      )}
-                    </a>
-                  )}
-                </details>
-              </>
-            )}
-            <p>
-              {t(
-                "Imbarcazione, personale, durata, servizi e costi sono da confermare nella proposta.",
+              </fieldset>
+              {chosenBoat && (
+                <>
+                  <p>{chosenBoat.format}</p>
+                  <details className={styles.boatChoiceDetail}>
+                    <summary>{t("Dettagli della formula")}</summary>
+                    <p>{chosenBoat.description}</p>
+                    <ul>
+                      {chosenBoat.features.map((feature) => (
+                        <li key={feature}>{feature}</li>
+                      ))}
+                    </ul>
+                    <p>{chosenBoat.detail}</p>
+                    {chosenBoat.id === "freedom" && (
+                      <a
+                        href="https://www.mit.gov.it/node/2658"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {t(
+                          "Indicazioni del Ministero sui requisiti di conduzione",
+                        )}
+                      </a>
+                    )}
+                  </details>
+                </>
               )}
-            </p>
-          </div>
+              <p>
+                {t(
+                  "Imbarcazione, personale, durata, servizi e costi sono da confermare nella proposta.",
+                )}
+              </p>
+            </div>
+          </details>
         )}
       </article>
     );
@@ -808,15 +835,15 @@ export function LakeExperience({
           </h1>
           <p className={styles.heroIntro}>
             {t(
-              "Navigazione privata, dimore storiche, golf e incontri con la seta di Como.",
-            )}
-            <br />
-            {t(
-              "Un unico referente per comporre esperienze, soggiorno e trasferimenti da aeroporto o stazione.",
+              "Barca privata, ville, golf e seta di Como. Un unico referente per esperienze e trasferimenti da aeroporto o stazione.",
             )}
           </p>
           <div className={styles.heroActions}>
-            <a href="#experience-form" className={styles.lightButton}>
+            <a
+              href="#experience-form"
+              className={styles.lightButton}
+              onClick={() => trackStep("start")}
+            >
               {t("Crei la sua Experience")}
               <ArrowRight size={16} aria-hidden="true" />
             </a>
@@ -825,6 +852,11 @@ export function LakeExperience({
               <ArrowDown size={16} aria-hidden="true" />
             </a>
           </div>
+          <p className={styles.heroPromise}>
+            {t(
+              "Disponibilità e costi prima della conferma. Nessun pagamento per inviare la richiesta.",
+            )}
+          </p>
         </div>
         <div className={styles.heroBottom}>
           <span>
@@ -893,7 +925,7 @@ export function LakeExperience({
           </h2>
           <p>
             {t(
-              "Scelga il lago, selezioni le esperienze e ci racconti i suoi desideri. Un unico modulo per ricevere una proposta con servizi, disponibilità e costi, prima di ogni conferma.",
+              "Scelga il lago e le esperienze. Verifichiamo disponibilità e organizzazione, poi le presentiamo una proposta con servizi inclusi, costi e condizioni.",
             )}
           </p>
         </header>
@@ -903,6 +935,7 @@ export function LakeExperience({
           tabIndex={-1}
           ref={formRef}
           onSubmit={prepareRequest}
+          onFocus={() => trackStep("start")}
           onChange={invalidateBrief}
           onInvalidCapture={(event) => {
             (event.target as HTMLElement)
@@ -933,6 +966,7 @@ export function LakeExperience({
             <a
               href="#travel-details"
               aria-current={activeStep === 3 ? "step" : undefined}
+              onClick={() => trackStep("contacts")}
             >
               <span>03</span>
               {t("Recapiti")}
@@ -1038,8 +1072,15 @@ export function LakeExperience({
                       "Lago di Como e Lago Maggiore sono destinazioni distinte. Scegliamo insieme le tappe e valutiamo gli spostamenti in base al tempo disponibile.",
                     )}
             </p>
+            <a
+              href="#esperienze"
+              className={`${styles.darkButton} ${styles.stepAction}`}
+            >
+              {t("Scopra le esperienze")}
+              <ArrowRight size={17} aria-hidden="true" />
+            </a>
           </div>
-          <div id="esperienze" className={styles.unifiedStep}>
+          <div id="esperienze" className={styles.unifiedStep} tabIndex={-1}>
             <span
               id="percorsi"
               className={styles.legacyAnchor}
@@ -1194,53 +1235,124 @@ export function LakeExperience({
                 )}
               </div>
             </div>
-            <fieldset className={styles.experiencePreference}>
-              <legend>{t("Quale formula preferisce per le attività?")}</legend>
-              <p>
-                {t(
-                  "Le attività private sono riservate al suo gruppo; quelle condivise prevedono anche altri partecipanti. È una preferenza da valutare nella proposta. La formula in barca si sceglie nella scheda dedicata.",
-                )}
-              </p>
-              <div className={styles.preferenceGrid}>
-                {[
-                  {
-                    value: "private",
-                    title: "Preferisco esperienze private",
-                    description:
-                      "Attività riservate al suo gruppo, secondo disponibilità.",
-                  },
-                  {
-                    value: "shared",
-                    title: "Valuto anche attività condivise",
-                    description:
-                      "Possiamo proporle attività insieme ad altri ospiti.",
-                  },
-                  {
-                    value: "",
-                    title: "Da concordare insieme",
-                    description:
-                      "La aiutiamo a scegliere la formula più adatta.",
-                  },
-                ].map((choice) => (
-                  <label key={`${formVersion}-${choice.value}`}>
-                    <input
-                      type="radio"
-                      name="experienceStyle"
-                      value={choice.value}
-                      defaultChecked={
-                        (savedDetails?.experienceStyle || "") === choice.value
-                      }
-                    />
-                    <span>
-                      <strong>{t(choice.title)}</strong>
-                      <small>{t(choice.description)}</small>
-                    </span>
-                  </label>
-                ))}
+            <details className={styles.preferenceDetails}>
+              <summary>
+                {t("Quale formula preferisce per le attività?")}
+                <ChevronDown size={17} aria-hidden="true" />
+              </summary>
+              <fieldset className={styles.experiencePreference}>
+                <legend className="sr-only">
+                  {t("Quale formula preferisce per le attività?")}
+                </legend>
+                <p>
+                  {t(
+                    "Le attività private sono riservate al suo gruppo; quelle condivise prevedono anche altri partecipanti. È una preferenza da valutare nella proposta. La formula in barca si sceglie nella scheda dedicata.",
+                  )}
+                </p>
+                <div className={styles.preferenceGrid}>
+                  {[
+                    {
+                      value: "private",
+                      title: "Preferisco esperienze private",
+                      description:
+                        "Attività riservate al suo gruppo, secondo disponibilità.",
+                    },
+                    {
+                      value: "shared",
+                      title: "Valuto anche attività condivise",
+                      description:
+                        "Possiamo proporle attività insieme ad altri ospiti.",
+                    },
+                    {
+                      value: "",
+                      title: "Da concordare insieme",
+                      description:
+                        "La aiutiamo a scegliere la formula più adatta.",
+                    },
+                  ].map((choice) => (
+                    <label key={`${formVersion}-${choice.value}`}>
+                      <input
+                        type="radio"
+                        name="experienceStyle"
+                        value={choice.value}
+                        defaultChecked={
+                          (savedDetails?.experienceStyle || "") === choice.value
+                        }
+                      />
+                      <span>
+                        <strong>{t(choice.title)}</strong>
+                        <small>{t(choice.description)}</small>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+            <section
+              className={styles.selectionSummary}
+              aria-labelledby="selection-summary-title"
+            >
+              <h3 id="selection-summary-title">{t("Le sue esperienze")}</h3>
+              {selectedExperiences.length ? (
+                <ul className={styles.selectedActivities}>
+                  {selectedExperiences.map((value) => (
+                    <li key={value}>
+                      <Check size={15} aria-hidden="true" />
+                      <span>{displayInterest(value)}</span>
+                      <button
+                        type="button"
+                        aria-label={t("Rimuova {experience}", {
+                          experience: displayInterest(value),
+                        })}
+                        onClick={() => toggleInterest(value)}
+                      >
+                        <X size={16} aria-hidden="true" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>
+                  {t(
+                    "Può proseguire e scegliere le attività con il nostro aiuto.",
+                  )}
+                </p>
+              )}
+              <div
+                className={styles.selectionProgress}
+                data-floating={
+                  activeStep === 2 && selectedExperiences.length > 0
+                }
+              >
+                <p aria-live="polite" aria-atomic="true">
+                  {selectedExperiences.length ? (
+                    <>
+                      <strong>{selectedExperiences.length}</strong>{" "}
+                      {selectedExperiences.length === 1
+                        ? t("esperienza selezionata")
+                        : t("esperienze selezionate")}
+                    </>
+                  ) : (
+                    t("Esperienze da concordare")
+                  )}
+                </p>
+                <a
+                  href="#travel-details"
+                  className={styles.darkButton}
+                  onClick={() => trackStep("contacts")}
+                >
+                  {t("Continui ai recapiti")}
+                  <ArrowRight size={17} aria-hidden="true" />
+                </a>
               </div>
-            </fieldset>
+            </section>
           </div>
-          <div id="travel-details" className={styles.unifiedStep}>
+          <div
+            id="travel-details"
+            className={styles.unifiedStep}
+            tabIndex={-1}
+            onFocus={() => trackStep("contacts")}
+          >
             <div className={styles.formSectionTitle}>
               <span>03</span>
               <div>
@@ -1581,6 +1693,14 @@ export function LakeExperience({
             {t("Organizzare le esperienze: ")}
             <em>{t("le risposte.")}</em>
           </h2>
+          <a
+            href="#experience-form"
+            className={`${styles.darkButton} ${styles.faqAction}`}
+            onClick={() => trackStep("start")}
+          >
+            {t("Crei la sua Experience")}
+            <ArrowRight size={17} aria-hidden="true" />
+          </a>
         </div>
         <div>
           {FAQ.map(([question, answer]) => (

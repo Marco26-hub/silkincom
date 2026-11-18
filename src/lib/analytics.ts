@@ -239,3 +239,7 @@ export function trackPurchase(args: {
 export function trackLead(source: string) {
   send('generate_lead', 'Lead', { currency: 'EUR', value: 0, lead_source: source }, { content_name: source });
 }
+
+export function trackExperienceStep(step: 'start' | 'selection' | 'contacts' | 'review') {
+  send('experience_step', null, { step, lead_source: 'experience' }, {});
+}
