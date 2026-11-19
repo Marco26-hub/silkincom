@@ -32,5 +32,24 @@ await role('authenticated',owner);assert.equal((await db.query('select * from ex
 await role('authenticated',other);assert.equal((await db.query('select * from experience_quotes')).rows.length,0);checks++;
 await role('service_role');const sent=(await db.query('select * from experience_quotes where id=$1',[id])).rows[0];await assert.rejects(db.query(sql,[id,trip.id,trip.updated_at,sent.updated_at,...args.slice(4)]));checks++;
 const unknownCost=[{label:'Unknown cost',quantity:1,cost_cents:null,price_cents:10000,service_id:null,supplier_id:null}];await db.query(sql,[null,trip.id,trip.updated_at,null,JSON.stringify(unknownCost),...args.slice(5)]);checks++;
+await db.exec('reset role');
+await db.exec(fs.readFileSync('supabase/migrations/059_experience_booking.sql','utf8'));
+await role('service_role');
+await db.query('insert into experience_bookings(quote_id,trip_id,token_hash) values($1,$2,$3)',[id,trip.id,'qa-secret']);
+const transition = async (action,token,reference,amount) => (await db.query(
+  'select public.experience_booking_transition($1,$2,$3,$4,$5) as ok',[id,action,token,reference,amount])).rows[0].ok;
+assert.equal(await transition('deposit',null,'pi_deposit',10000),false);checks++;
+assert.equal(await transition('accept','wrong',null,null),false);checks++;
+assert.equal(await transition('accept','qa-secret',null,null),true);checks++;
+assert.equal(await transition('balance',null,'pi_balance',10000),false);checks++;
+assert.equal(await transition('deposit',null,'pi_deposit',9999),false);checks++;
+await db.query("update experience_bookings set deposit_session='cs_test' where quote_id=$1",[id]);
+assert.equal(await transition('deposit',null,'bonifico:demo',10000),false);checks++;
+assert.equal(await transition('deposit',null,'pi_deposit',10000),true);checks++;
+assert.equal(await transition('deposit',null,'pi_deposit',10000),true);checks++;
+assert.equal(await transition('deposit',null,'pi_duplicate',10000),false);checks++;
+assert.equal(await transition('balance',null,'bonifico:saldo',10000),true);checks++;
+await role('authenticated',owner);
+await assert.rejects(db.query('select * from experience_bookings'));checks++;
 await role('anon');await assert.rejects(db.query('select * from experience_quote_details'));checks++;
 await db.close();console.log(`Experience admin: ${checks} isolated permissions, pricing and concurrency checks passed.`);

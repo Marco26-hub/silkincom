@@ -75,6 +75,16 @@ def run(base):
                 else []
             )
             return route.fulfill(json={"rows": rows, "total": len(rows), "page": 0})
+        if request.url == base + "/api/admin/experience/partner-quote":
+            data = request.post_data_json
+            expected = {"supplier_id": SUPPLIER, "services": [SERVICE]}
+            if "email" in data:
+                assert data == {**expected, "email": "partner@example.invalid", "request_code": SUPPLIER_CODE}
+                return route.fulfill(json={"ok": True, "code": SUPPLIER_CODE})
+            assert data == expected
+            return route.fulfill(body=b"%PDF-1.4\n%%EOF\n", headers={
+                "Content-Type": "application/pdf", "X-Experience-Request-Code": SUPPLIER_CODE,
+            })
         if request.url == base + f"/api/admin/experience/trips/{TRIP}/supplier-pdf":
             assert request.method == "POST"
             data = request.post_data_json
@@ -181,6 +191,20 @@ def run(base):
         page.locator('select[name="supplier_id"]').select_option(SUPPLIER)
         page.get_by_role("button", name="Salva", exact=True).click()
         expect(page.get_by_role("heading", name="Navetta privata speciale")).to_be_visible()
+        page.set_viewport_size({"width": 390, "height": 844})
+        page.get_by_role("button", name="Chiedi tariffa partner").click()
+        page.get_by_label("1. Scegli il fornitore").select_option(SUPPLIER)
+        page.get_by_role("checkbox", name="Navetta privata speciale").check()
+        page.get_by_role("button", name="3. Prepara il PDF").click()
+        expect(page.get_by_text("PDF pronto.", exact=False)).to_be_visible()
+        assert page.locator("html").evaluate("(el) => el.scrollWidth <= innerWidth")
+        with page.expect_download() as partner_download:
+            page.get_by_role("button", name="Scarica PDF", exact=True).click()
+        assert partner_download.value.suggested_filename == f"SILKinCOM-{SUPPLIER_CODE}.pdf"
+        page.get_by_label("Email per Fornitore demo").fill("partner@example.invalid")
+        page.get_by_role("button", name="Invia richiesta con PDF").click()
+        expect(page.get_by_text("Invio accettato per", exact=False)).to_contain_text("partner@example.invalid")
+        page.set_viewport_size({"width": 1440, "height": 950})
         page.get_by_role("button", name="Pratiche Experience").click()
         page.get_by_role("button", name="Viaggi e preventivi").click()
         page.get_by_role("button", name="Apri viaggio e preventivi").click()
@@ -191,7 +215,10 @@ def run(base):
         expect(transfer).to_contain_text("Hotel demo, Como centro")
         expect(page.get_by_text("Nessuna tappa indicata", exact=True)).to_be_visible()
         expect(page.get_by_text("Nessuna nota del cliente", exact=True)).to_be_visible()
-        page.get_by_text("Crea PDF per fornitore", exact=True).click()
+        expect(page.get_by_role("heading", name="Preventivo da preparare")).to_be_visible()
+        expect(page.get_by_role("button", name="Prepara preventivo", exact=True)).to_be_visible()
+        page.get_by_role("button", name="Quotazioni fornitori", exact=True).click()
+        expect(page.locator("#experience-trip-suppliers")).to_have_attribute("open", "")
         download_button = page.get_by_role("button", name="Scarica PDF per fornitore")
         expect(download_button).to_be_disabled()
         expect(page.get_by_role("checkbox", name="Il lago, dalla barca")).to_have_count(0)
@@ -230,10 +257,13 @@ def run(base):
         expect(page.locator('[aria-current="step"]')).to_have_text("1. Compila")
         table = page.get_by_role("table", name="Voci del preventivo")
         expect(table.get_by_role("columnheader", name="Servizio", exact=True)).to_be_visible()
+        cards = page.get_by_role("region", name="Servizi nel preventivo")
+        expect(cards.get_by_role("button", name="Rimuovi card Il lago con capitano")).to_be_visible()
+        cards.get_by_role("button", name="Rimuovi card Il lago con capitano").click()
+        cards.get_by_role("button", name="Rimuovi card Pick-up", exact=False).click()
         page.get_by_text("Scegli i servizi da quotare", exact=False).click()
         expect(page.get_by_role("checkbox", name="Navetta privata speciale", exact=False)).to_be_visible()
-        page.get_by_role("checkbox", name="Navetta privata speciale", exact=False).check()
-        page.get_by_role("button", name="Aggiungi al preventivo (1)").click()
+        page.get_by_role("button", name="Aggiungi card Navetta privata speciale", exact=True).click()
         expect(table.get_by_label("Costo a noi")).to_have_value("45")
         expect(table.get_by_label("Prezzo unitario cliente")).to_have_value("69")
         expect(table.get_by_label("Fornitore (interno)")).to_have_value(SUPPLIER)

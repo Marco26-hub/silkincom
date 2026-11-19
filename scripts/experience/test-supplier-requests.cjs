@@ -29,6 +29,8 @@ const store = {
     },
   },
 };
+const serviceId = "44444444-4444-4444-8444-444444444444";
+let serviceUpdatedAt = version;
 let role = "admin";
 let available = [operatorA, operatorB];
 let sent = [];
@@ -40,6 +42,17 @@ const mocks = {
   "@/lib/supabase/server": {
     createServiceClient: () => ({
       from(table) {
+        if (table === "experience_services") {
+          let ids;
+          return {
+            select(columns) { assert.equal(columns, "id,title,lake,unit,updated_at"); return this; },
+            eq(field, value) { assert.equal(field, "active"); assert.equal(value, true); return this; },
+            in(field, values) { assert.equal(field, "id"); ids = values; return this; },
+            async order() {
+              return { data: ids.includes(serviceId) ? [{ id: serviceId, title: "Transfer privato demo", lake: "Como", unit: "servizio", updated_at: serviceUpdatedAt }] : [], error: null };
+            },
+          };
+        }
         return {
           select() { return this; },
           eq(field, id) { assert.equal(field, "id"); assert.equal(id, tripId); return this; },
@@ -78,6 +91,12 @@ function load(spec) {
   return mod.exports;
 }
 const { POST } = load("@/app/api/admin/experience/trips/[id]/supplier-pdf/route");
+const { POST: partnerPost } = load("@/app/api/admin/experience/partner-quote/route");
+function callPartner(body, requestOrigin = origin) {
+  return partnerPost(new NextRequest(origin + "/api/admin/experience/partner-quote", {
+    method: "POST", body: JSON.stringify(body), headers: { origin: requestOrigin },
+  }));
+}
 const a = { supplier_id: operatorA, services: ["boat:captain"] };
 const b = { supplier_id: operatorB, services: ["service:pickup"] };
 const single = { trip_version: version, ...a };
@@ -152,6 +171,27 @@ async function main() {
     assert.equal(sent[0].deliveryKey, sent[1].deliveryKey);
     await call({ ...email, email: "secondo@example.invalid" });
     assert.notEqual(sent[1].deliveryKey, sent[2].deliveryKey);
+    const partner = { supplier_id: operatorA, services: [serviceId] };
+    role = "anonymous";
+    assert.equal((await callPartner(partner)).status, 401);
+    role = "admin";
+    assert.equal((await callPartner(partner, "https://other.test")).status, 403);
+    assert.equal((await callPartner({ ...partner, services: [operatorB] })).status, 400);
+    assert.equal((await callPartner({ ...partner, email: email.email })).status, 400);
+    const partnerPdf = await callPartner(partner);
+    assert.equal(partnerPdf.status, 200);
+    const partnerCode = partnerPdf.headers.get("x-experience-request-code");
+    const partnerFile = path.join(dir, "partner.pdf");
+    fs.writeFileSync(partnerFile, Buffer.from(await partnerPdf.arrayBuffer()));
+    const partnerText = execFileSync("pdftotext", [partnerFile, "-"], { encoding: "utf8" });
+    assert.match(partnerText, /Tariffe partner riservate a SILKinCOM/);
+    assert.match(partnerText, /Transfer privato\s+demo/);
+    assert.doesNotMatch(partnerText, /PRIVATE|Numero di ospiti|2431/);
+    const partnerEmail = { ...partner, request_code: partnerCode, email: email.email };
+    assert.equal((await callPartner(partnerEmail)).status, 200);
+    assert.equal(sent.at(-1).code, partnerCode);
+    serviceUpdatedAt = "2026-11-20T12:00:00.000Z";
+    assert.equal((await callPartner(partnerEmail)).status, 409);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

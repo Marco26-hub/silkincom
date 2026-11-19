@@ -4,7 +4,7 @@ import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
 import { antibotGate } from "@/lib/antibot";
 import { sendContactNotification } from "@/lib/email";
-import { isExperiencePhone } from "@/lib/experience-trips";
+import { isExperiencePhone, tripPayloadSchema } from "@/lib/experience-trips";
 
 type ContactData = {
   nome?: string;
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
       telefono,
       numero_ordine,
       messaggio,
+      experiencePayload,
       experienceTripId,
       experienceTripVersion,
     } = body;
@@ -139,6 +140,11 @@ export async function POST(req: NextRequest) {
       requestMessage += `\n\nViaggio account verificato: ${trip.id}\nNome: ${trip.title}\nVersione: ${trip.updated_at}`;
     }
 
+    const structured = experiencePayload === undefined ? null : tripPayloadSchema.safeParse(experiencePayload);
+    if (structured && (!structured.success || !requestMessage.startsWith("SILKinCOM EXPERIENCE"))) {
+      return NextResponse.json({ error: "Scelte Experience non valide." }, { status: 400 });
+    }
+
     // Insert into contacts table — no .select() (anon non ha SELECT policy)
     const { error } = await supabase.from("contacts").insert({
       nome: nome?.trim() || null,
@@ -147,6 +153,7 @@ export async function POST(req: NextRequest) {
       telefono: telefono?.trim() || null,
       numero_ordine: numero_ordine?.trim() || null,
       messaggio: requestMessage,
+      ...(structured?.success ? { experience_payload: structured.data } : {}),
     });
 
     if (error) {

@@ -85,3 +85,13 @@ export function supplierRequestServices(ids: readonly string[]) {
       return { id, ...service };
     });
 }
+
+export const MAX_PARTNER_SERVICES = 30;
+
+export const partnerRequestInput = z.object({
+  supplier_id: z.string().uuid(),
+  services: z.array(z.string().uuid()).min(1).max(MAX_PARTNER_SERVICES)
+    .refine((ids) => new Set(ids).size === ids.length),
+  email: z.string().trim().email().max(254).optional(),
+  request_code: z.string().regex(/^EXP-F-[0-9A-F]{12}$/).optional(),
+}).strict().refine(({ email, request_code }) => Boolean(email) === Boolean(request_code));

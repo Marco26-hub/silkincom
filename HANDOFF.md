@@ -31,6 +31,12 @@ Ultimo aggiornamento: **19 novembre 2026** · ultimo commit Experience verificat
 - Revisione successiva del listino: una riga per ogni formula, con «Sola andata» e «Andata e ritorno» esplicite; 86 campi compilabili. Approfondimento complementare: `output/pdf/SILKinCOM-Experience-ville-e-itinerari-in-barca.pdf`, con ingressi, taxi boat, panoramiche, itinerari con sbarco e riferimenti distinti per Como e Maggiore. Water Experience Center (Faggeto Lario) è il candidato indicato per moto d’acqua sul Como; prezzo esposto da €105, durata e tariffa partner da confermare. Nessun contatto inviato.
 - Flusso fornitori locale: aprire «Crea PDF per fornitore» nel viaggio, scegliere fornitore e servizi, aggiungere alla lista. Si ottiene un PDF per fornitore oppure uno ZIP interno. «Invia email» apre il destinatario precompilato o vuoto; eventuali modifiche valgono solo per l’invio. Il server allega solo il PDF del destinatario, senza dati del cliente. Invio disabilitato in anteprima; Resend con dominio verificato è necessario in produzione. ZIP, segregazione dei PDF, indirizzi modificati o nuovi ed errori sono stati collaudati con API/provider simulati mediante `scripts/experience/test-admin-e2e.py` e `scripts/experience/test-supplier-requests.cjs`. Nessun deploy effettuato.
 
+### Collaudo della pratica con accettazione e pagamenti
+
+- Nuove richieste: le selezioni strutturate alimentano la bozza. Nell’editor solo una tariffa attiva inequivocabile per esperienza e destinazione può precompilare i campi. Per unità orarie o giornaliere occorre verificare quantità e prezzo. La selezione si modifica con le card del catalogo e le card della bozza.
+- Il link privato si genera dal preventivo pubblicato e si invia manualmente. Il cliente può accettare senza account. La scheda consente di registrare pagamenti verificati e consultare gli esiti. Checkout Stripe crea l’importo dal preventivo e registra acconto o saldo da webhook firmato. I vecchi link di pagamento restano consultabili dove già impostati e richiedono riconciliazione manuale.
+- Prima di unire su main applicare `059_experience_booking.sql` al progetto Supabase. Il token CLI è stato rifiutato e l’editor della dashboard non si è aperto. Verificare quindi Checkout e webhook in modalità test prima di verificare la disponibilità live. L’anteprima 3016 usa dati demo e blocca qualsiasi addebito.
+
 ---
 
 ## Storico — luglio 2026

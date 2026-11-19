@@ -111,7 +111,7 @@ export async function GET(req: NextRequest) {
     }[resource as Resource];
     const fields =
       resource === "trips"
-        ? "id,user_id,title,payload,created_at,updated_at,experience_quotes(*,experience_quote_details(*))"
+        ? "id,user_id,guest_contact_id,title,payload,created_at,updated_at,experience_quotes(*,experience_quote_details(*))"
         : resource === "requests"
           ? "id,nome,cognome,email,telefono,messaggio,status,created_at,updated_at"
           : "*";
@@ -140,29 +140,39 @@ export async function GET(req: NextRequest) {
     if (error) throw error;
     let rows: unknown[] = data;
     if (resource === "trips") {
-      const trips = data as unknown as { user_id: string }[];
+      const trips = data as unknown as { user_id: string | null }[];
+      const owners = trips.flatMap(({ user_id }) => user_id ? [user_id] : []);
       let customers: {
         id: string;
         full_name: string | null;
         email: string | null;
       }[] = [];
-      if (trips.length) {
+      if (owners.length) {
         const result = await db
           .from("profiles")
           .select("id,full_name,email")
           .in(
             "id",
-            trips.map((t) => t.user_id),
+            owners,
           );
         if (result.error) throw result.error;
         customers = result.data;
       }
+      const guestIds = (data as unknown as { guest_contact_id: number | null }[])
+        .flatMap(({ guest_contact_id }) => guest_contact_id === null ? [] : [guest_contact_id]);
+      const guests = new Map<string, { full_name: string; email: string }>();
+      if (guestIds.length) {
+        const result = await db.from("contacts").select("id,nome,cognome,email").in("id", guestIds);
+        if (result.error) throw result.error;
+        for (const guest of result.data) guests.set(String(guest.id), {
+          full_name: [guest.nome, guest.cognome].filter(Boolean).join(" "),
+          email: guest.email,
+        });
+      }
       rows = (data as unknown as Record<string, unknown>[]).map((row) => ({
         ...row,
-        customer:
-          customers.find(
-            (c) => c.id === (row as unknown as { user_id: string }).user_id,
-          ) ?? null,
+        customer: customers.find((customer) => customer.id === row.user_id)
+          ?? guests.get(String(row.guest_contact_id)) ?? null,
       }));
     }
     const parsed = z

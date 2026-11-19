@@ -126,6 +126,7 @@ const EXPERIENCE_SOURCES: Record<
   },
 };
 type Brief = {
+  payload: TripPayload;
   savedTrip: { id: string; title: string; updated_at: string } | null;
   name: string;
   surname: string;
@@ -439,6 +440,7 @@ export function LakeExperience({
     const data = new FormData(form);
     const value = (key: string) => String(data.get(key) ?? "").trim();
     const next: Brief = {
+      payload: readTripPayload(),
       savedTrip: accountTrip
         ? {
             id: accountTrip.id,
@@ -576,6 +578,7 @@ export function LakeExperience({
           cognome: brief.surname,
           email: brief.email,
           telefono: brief.phone,
+          experiencePayload: brief.payload,
           experienceTripId: brief.savedTrip?.id,
           experienceTripVersion: brief.savedTrip?.updated_at,
           messaggio,

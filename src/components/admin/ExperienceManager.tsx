@@ -18,6 +18,7 @@ import {
 import {
   MAX_SUPPLIER_REQUESTS,
   supplierEmailInput,
+  MAX_PARTNER_SERVICES,
   supplierRequestServices,
 } from "@/lib/experience-supplier-request";
 import {
@@ -59,6 +60,11 @@ const cls =
 const button =
   "inline-flex min-h-12 items-center justify-center gap-2 rounded-sm border border-soft-black/25 px-4 py-3 text-sm font-medium disabled:opacity-50 hover:border-gold-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-dark";
 const primary = button + " bg-soft-black text-white hover:bg-soft-black/85";
+const confirmAction = button + " bg-[#E6C66D] text-[#241A07] hover:bg-[#F1D993]";
+const supplierAction = button + " bg-[#203B4A] text-white hover:bg-[#2D5062]";
+const successNotice = "rounded-sm border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-950";
+const infoNotice = "rounded-sm border border-sky-200 bg-sky-50 p-3 text-sm text-sky-950";
+const checkNotice = "rounded-sm border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950";
 const catalogGroups = [
   { id: "boat", label: "Formule in barca" },
   ...EXPERIENCE_CATEGORIES.filter(({ id }) => id !== "selection"),
@@ -421,6 +427,7 @@ export function ExperienceManager() {
             <ArrowLeft size={16} />
             {tripFilter ? "Torna alle richieste" : "Torna ai viaggi"}
           </button>
+          {!quote && <TripNextStep trip={trip} onEditQuote={setQuote} />}
           <TripDetails trip={trip} />
           <SupplierPdf key={trip.id} trip={trip} />
           {quote ? (
@@ -432,9 +439,9 @@ export function ExperienceManager() {
               onSaved={saved}
             />
           ) : (
-            <>
+            <section id="experience-trip-quotes" className="scroll-mt-24 space-y-5" aria-labelledby="experience-trip-quotes-title">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="font-display text-3xl">
+                <h2 id="experience-trip-quotes-title" className="font-display text-3xl">
                   Preventivi del viaggio
                 </h2>
                 <button className={primary} onClick={() => setQuote("new")}>
@@ -443,9 +450,8 @@ export function ExperienceManager() {
                 </button>
               </div>
               <p className="text-sm leading-6 text-soft-black/70">
-                Le bozze sono riservate. Solo «Pubblica nell’area cliente»
-                mostra il preventivo al proprietario del viaggio, senza inviare
-                messaggi.
+                Con «Nuovo preventivo» compili la proposta per questo viaggio.
+                Puoi salvarla come bozza e riprenderla in seguito.
               </p>
               {!trip.experience_quotes.length && (
                 <p className="border border-pearl-grey bg-white p-6">
@@ -508,17 +514,24 @@ export function ExperienceManager() {
                         </button>
                       )}
                     </div>
+                    {q.status === "sent" && <BookingPanel quote={q} />}
+                    <p className="text-sm text-soft-black/75">
+                      {q.status === "draft"
+                        ? "Scarica il PDF per controllare il documento o riapri la bozza per completarla."
+                        : "Scarica il PDF pubblicato o crea una nuova bozza partendo da questa proposta."}
+                    </p>
                   </article>
                 ))}
-            </>
+            </section>
           )}
         </section>
       ) : (
         <>
           {tab === "services" && (
-            <h2 className="font-display text-3xl">
-              Voci registrate nel listino
-            </h2>
+            <>
+              <PartnerQuote />
+              <h2 className="font-display text-3xl">Voci registrate nel listino</h2>
+            </>
           )}
           {(tab === "requests" || tab === "trips") && (
             <div className="flex flex-wrap items-end gap-3">
@@ -617,6 +630,13 @@ export function ExperienceManager() {
               )}
             </div>
           </div>
+          {(tab === "services" || tab === "suppliers") && (
+            <p className="text-sm text-soft-black/75">
+              {tab === "services"
+                ? "Con «Nuova voce di listino» salvi un servizio, il costo a noi e il prezzo cliente per i prossimi preventivi."
+                : "Con «Nuovo fornitore» registri l’operatore e il recapito da usare per le richieste di quotazione."}
+            </p>
+          )}
           {tripFilter && (
             <button className={button} onClick={() => setTripFilter("")}>
               Mostra tutti i viaggi
@@ -686,7 +706,7 @@ export function ExperienceManager() {
                           {t.title}
                         </h2>
                         <p className="break-words text-sm">
-                          {t.customer?.full_name || "Cliente registrato"} ·{" "}
+                          {t.customer?.full_name || (t.user_id ? "Cliente registrato" : "Cliente ospite")} ·{" "}
                           {t.customer?.email ||
                             "Email non disponibile nel profilo"}
                         </p>
@@ -699,9 +719,14 @@ export function ExperienceManager() {
                         Aggiornato: {date(t.updated_at)} ·{" "}
                         {t.experience_quotes.length} preventivi
                       </p>
-                      <button className={primary} onClick={() => setTrip(t)}>
-                        Apri viaggio e preventivi
-                      </button>
+                      <div className="space-y-1">
+                        <button className={primary} onClick={() => setTrip(t)}>
+                          Apri viaggio e preventivi
+                        </button>
+                        <p className="text-sm text-soft-black/75">
+                          Consulta le tappe e prepara le richieste ai fornitori o il preventivo cliente.
+                        </p>
+                      </div>
                     </article>
                   );
                 }
@@ -904,6 +929,8 @@ function RequestCard({
   onChange: (request: AdminRequest, next: string) => Promise<void>;
   onOpenTrip: (id: string) => void;
 }) {
+  const [guestBusy, setGuestBusy] = useState(false);
+  const [guestError, setGuestError] = useState("");
   const lines = request.messaggio.split(/\r?\n/);
   const isStructured =
     lines[0] === "SILKinCOM EXPERIENCE — Richiesta di itinerario" &&
@@ -963,6 +990,11 @@ function RequestCard({
           {expanded ? "Chiudi richiesta" : "Leggi la richiesta"}
         </button>
       </header>
+      {!expanded && (
+        <p className="mt-2 text-sm text-soft-black/75">
+          Apri la richiesta per vedere recapiti, preferenze e stato della pratica.
+        </p>
+      )}
       <div
         id={`experience-request-${request.id}`}
         hidden={!expanded}
@@ -1012,9 +1044,21 @@ function RequestCard({
             Apri il viaggio associato
           </button>
         ) : (
-          <p className="text-sm text-soft-black/70">
-            Nessun viaggio associato all’account del cliente.
-          </p>
+          <div className="space-y-2">
+            <button type="button" className={primary} disabled={guestBusy} onClick={async () => {
+              setGuestBusy(true);
+              setGuestError("");
+              try {
+                const result = await bookingAction({ action: "guest", contact: request.id });
+                onOpenTrip(z.string().uuid().parse(result.id));
+              } catch (cause) {
+                setGuestError(cause instanceof Error ? cause.message : "Pratica non disponibile.");
+              } finally {
+                setGuestBusy(false);
+              }
+            }}>{guestBusy ? "Apertura…" : "Apri pratica ospite"}</button>
+            {guestError && <Alert>{guestError}</Alert>}
+          </div>
         )}
       </div>
     </article>
@@ -1056,6 +1100,149 @@ function RequestStatus({
     </Field>
   );
 }
+async function bookingAction(body: Record<string, unknown>) {
+  const response = await fetch("/api/admin/experience/booking", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || "Operazione non disponibile.");
+  return result;
+}
+
+const bookingStatus = z.object({
+  accepted_at: z.string().nullable(),
+  deposit_at: z.string().nullable(),
+  balance_at: z.string().nullable(),
+  deposit_session: z.string().nullable(),
+  balance_session: z.string().nullable(),
+});
+
+function BookingPanel({ quote }: { quote: AdminQuote }) {
+  const [booking, setBooking] = useState<z.infer<typeof bookingStatus> | null>();
+  const [url, setUrl] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [reference, setReference] = useState("");
+  const deposit = Math.ceil(quote.total_cents / 2);
+  const phase = booking?.deposit_at ? "balance" : "deposit";
+  const amount = phase === "deposit" ? deposit : quote.total_cents - deposit;
+  const settled = Boolean(booking?.balance_at || (booking?.deposit_at && amount === 0));
+  const pendingStripe = phase === "deposit" ? booking?.deposit_session : booking?.balance_session;
+
+  async function execute(action: "status" | "share" | "deposit" | "balance") {
+    setBusy(true);
+    setError("");
+    try {
+      if (action === "share") {
+        const result = await bookingAction({ action, quote: quote.id });
+        const path = z.string().regex(/^\/it\/experience\/preventivo#[a-f0-9]{64}$/).parse(result.path);
+        setUrl(new URL(path, window.location.origin).href);
+      } else if (action !== "status") {
+        await bookingAction({ action, quote: quote.id, amount, reference });
+        setReference("");
+      }
+      const result = await bookingAction({ action: "status", quote: quote.id });
+      setBooking(bookingStatus.nullable().parse(result.booking));
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Operazione non disponibile.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="space-y-3 border border-pearl-grey bg-warm-white p-4" aria-label="Accettazione e pagamenti">
+      <h4 className="font-semibold">Accettazione e pagamenti</h4>
+      <p className="text-sm">Invia il link privato al cliente. Può leggere e accettare il preventivo anche senza account.</p>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" className={primary} disabled={busy} onClick={() => void execute("share")}>Genera link privato</button>
+        <button type="button" className={button} disabled={busy} onClick={() => void execute("status")}>Aggiorna stato e incassi</button>
+      </div>
+      {url && <Field label="Link da copiare e inviare al cliente"><input readOnly value={url} className={cls} onFocus={(event) => event.currentTarget.select()} /></Field>}
+      {url && <p className="text-sm">Generando un nuovo link, quello precedente viene revocato.</p>}
+      {booking && <p role="status" className={settled ? successNotice : infoNotice}>{settled ? "Saldo registrato."
+        : booking.deposit_at ? "Acconto registrato. In attesa del saldo."
+        : booking.accepted_at ? "Preventivo accettato. In attesa dell’acconto."
+        : "In attesa dell’accettazione del cliente."}</p>}
+      {booking?.accepted_at && !settled && (pendingStripe
+        ? <p className={infoNotice}>Pagamento con carta avviato. Aggiorna lo stato dopo la verifica di Stripe.</p>
+        : <form className="space-y-2" onSubmit={(event) => { event.preventDefault(); void execute(phase); }}>
+            <Field label="Riferimento del pagamento verificato">
+              <input className={cls} required maxLength={140} value={reference} onChange={(event) => setReference(event.target.value)} />
+            </Field>
+            <button className={confirmAction} disabled={busy || !reference.trim()}>
+              Registra {phase === "deposit" ? "acconto" : "saldo"} · {money(amount)}
+            </button>
+          </form>)}
+      {error && <Alert>{error}</Alert>}
+    </section>
+  );
+}
+
+function TripNextStep({
+  trip,
+  onEditQuote,
+}: {
+  trip: AdminTrip;
+  onEditQuote: (quote: AdminQuote | "new") => void;
+}) {
+  const quotes = [...trip.experience_quotes].sort(
+    (a, b) => Date.parse(b.updated_at) - Date.parse(a.updated_at),
+  );
+  const draft = quotes.find((quote) => quote.status === "draft");
+  const published = quotes.find((quote) => quote.status === "sent");
+  const currentDraft = draft?.trip_updated_at === trip.updated_at ? draft : undefined;
+  const validPublished = published?.trip_updated_at === trip.updated_at
+    && published.valid_until && Date.parse(published.valid_until) > Date.now()
+    ? published
+    : undefined;
+  const previous = draft || published;
+  const needsUpdate = previous && !currentDraft && !validPublished;
+  const status = currentDraft ? "Bozza da completare"
+    : validPublished ? "Preventivo pubblicato"
+    : needsUpdate ? "Preventivo da aggiornare"
+    : "Preventivo da preparare";
+  const description = currentDraft
+    ? "Riprendi la bozza, controlla prezzi e condizioni e pubblicala quando è pronta."
+    : validPublished
+      ? "Il cliente può consultare la proposta e scaricare il PDF in «I miei viaggi»."
+      : needsUpdate
+        ? "Controlla le scelte e la validità della proposta, poi prepara una nuova revisione."
+        : "Verifica disponibilità e costi dei servizi, poi prepara il preventivo per il cliente.";
+
+  function openSupplierQuotes() {
+    const details = document.getElementById("experience-trip-suppliers");
+    if (!(details instanceof HTMLDetailsElement)) return;
+    details.open = true;
+    details.scrollIntoView({ block: "start" });
+    details.querySelector("summary")?.focus({ preventScroll: true });
+  }
+
+  return (
+    <section aria-labelledby="experience-next-step" className="space-y-4 border border-pearl-grey bg-white p-4 sm:p-6">
+      <div className={validPublished && !currentDraft ? successNotice : checkNotice}>
+        <p className="text-xs font-semibold uppercase tracking-wide">Prossimo passo</p>
+        <h2 id="experience-next-step" className="mt-1 text-lg font-semibold">{status}</h2>
+        <p className="mt-1">{description}</p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {validPublished && !currentDraft ? (
+          <a href="#experience-trip-quotes" className={primary}>Visualizza preventivi</a>
+        ) : (
+          <button type="button" className={confirmAction} onClick={() => onEditQuote(
+            currentDraft || (previous ? { ...previous, id: "", status: "draft" } : "new"),
+          )}>
+            {currentDraft ? "Riprendi bozza" : previous ? "Prepara revisione" : "Prepara preventivo"}
+          </button>
+        )}
+        <button type="button" className={supplierAction} onClick={openSupplierQuotes}>
+          Quotazioni fornitori
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function TripDetails({ trip }: { trip: AdminTrip }) {
   const d = trip.payload.details;
   const hasPickup = trip.payload.ids.includes("service:pickup");
@@ -1180,12 +1367,12 @@ async function postSupplierRequest(
 }
 
 function SupplierEmailSender({
-  trip,
   request,
+  sendEmail,
   onClose,
 }: {
-  trip: AdminTrip;
   request: QueuedSupplierRequest;
+  sendEmail: (email: string) => Promise<Response>;
   onClose: () => void;
 }) {
   const [email, setEmail] = useState(request.supplier.email);
@@ -1196,13 +1383,7 @@ function SupplierEmailSender({
   async function send(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy.current || status === "sent") return;
-    const parsed = supplierEmailInput.safeParse({
-      action: "email",
-      trip_version: trip.updated_at,
-      supplier_id: request.supplier.id,
-      services: request.services,
-      email,
-    });
+    const parsed = z.string().trim().email().max(254).safeParse(email);
     if (!parsed.success) {
       setError("Controlli l’indirizzo email del destinatario.");
       return;
@@ -1211,7 +1392,7 @@ function SupplierEmailSender({
     setStatus("busy");
     setError("");
     try {
-      const response = await postSupplierRequest(trip, parsed.data);
+      const response = await sendEmail(parsed.data);
       const result = z
         .object({
           ok: z.literal(true),
@@ -1220,7 +1401,7 @@ function SupplierEmailSender({
         .parse(await response.json());
       setCode(result.code);
       setStatus("sent");
-      setEmail(parsed.data.email);
+      setEmail(parsed.data);
     } catch (error) {
       console.error("[experience-admin] Supplier email failed:", error);
       setError(
@@ -1258,12 +1439,12 @@ function SupplierEmailSender({
       </p>
       {error && <Alert>{error}</Alert>}
       {status === "sent" && (
-        <p role="status" className="text-sm">
+        <p role="status" className={successNotice}>
           Invio accettato per <strong>{email}</strong>. Codice: {code}.
         </p>
       )}
       <div className="flex flex-wrap gap-2">
-        <button type="submit" className={primary} disabled={status !== "idle"}>
+        <button type="submit" className={confirmAction} disabled={status !== "idle"}>
           {status === "busy" ? "Invio in corso…" : "Invia richiesta con PDF"}
         </button>
         <button
@@ -1275,6 +1456,134 @@ function SupplierEmailSender({
           Chiudi
         </button>
       </div>
+    </form>
+  );
+}
+
+async function postPartnerQuote(request: QueuedSupplierRequest, confirmation?: { email: string; request_code: string }) {
+  const response = await fetch("/api/admin/experience/partner-quote", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ supplier_id: request.supplier.id, services: request.services, ...confirmation }),
+  });
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || "Non è stato possibile preparare la richiesta.");
+  }
+  return response;
+}
+
+function PartnerQuote() {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="space-y-3 border border-pearl-grey bg-white p-4 sm:p-6">
+      <button type="button" className={supplierAction} aria-expanded={open} onClick={() => setOpen(!open)}>
+        Chiedi tariffa partner
+      </button>
+      <p className="max-w-prose text-sm text-soft-black/75">
+        Richiedi prezzi riservati a SILKinCOM per uno o più servizi del listino, anche senza una pratica cliente.
+      </p>
+      {open && <PartnerQuoteForm />}
+    </section>
+  );
+}
+
+function PartnerQuoteForm() {
+  const suppliers = useSupplierOptions();
+  const [services, setServices] = useState<Service[] | null>(null);
+  const [supplierId, setSupplierId] = useState("");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [preview, setPreview] = useState<{ request: QueuedSupplierRequest; code: string; pdf: Blob } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    loadOptions("services", controller.signal)
+      .then((rows) => {
+        if (!controller.signal.aborted)
+          setServices(rows.map((row) => resourceSchemas.services.parse(row)).filter((row) => row.active));
+      })
+      .catch((cause) => {
+        if (!controller.signal.aborted) {
+          console.error("[experience-admin] Partner services failed:", cause);
+          setLoadError("Listino non disponibile. Riapri la scheda per riprovare.");
+        }
+      });
+    return () => controller.abort();
+  }, []);
+
+  async function prepare(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const supplier = suppliers.suppliers.find((row) => row.id === supplierId);
+    if (!supplier || !selected.length || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const request = { supplier, services: selected };
+      const response = await postPartnerQuote(request);
+      const code = z.string().regex(/^EXP-F-[0-9A-F]{12}$/).parse(response.headers.get("X-Experience-Request-Code"));
+      setPreview({ request, code, pdf: await response.blob() });
+    } catch (cause) {
+      console.error("[experience-admin] Partner preview failed:", cause);
+      setError(cause instanceof Error ? cause.message : "PDF non disponibile.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (loadError || suppliers.error) return <Alert>{loadError || suppliers.error}</Alert>;
+  if (!services || suppliers.loading) return <p role="status">Caricamento del listino e dei fornitori…</p>;
+  const activeSuppliers = suppliers.suppliers.filter((row) => row.status !== "inactive");
+  if (!activeSuppliers.length) return <p>Aggiungi prima un operatore attivo nella scheda «Fornitori».</p>;
+  if (!services.length) return <p>Aggiungi prima almeno un servizio attivo nel listino.</p>;
+
+  if (preview) return (
+    <div className="space-y-3">
+      <p role="status" className={successNotice}>PDF pronto. Scaricalo per controllarlo, poi verifica il destinatario e invia l’email.</p>
+      <ul className="list-inside list-disc text-sm">
+        {services.filter((row) => selected.includes(row.id)).map((row) => <li key={row.id}>{row.title} · {row.lake}</li>)}
+      </ul>
+      <button type="button" className={button} onClick={() => downloadSupplierFile(preview.pdf, `SILKinCOM-${preview.code}.pdf`)}>
+        Scarica PDF
+      </button>
+      <SupplierEmailSender
+        request={preview.request}
+        sendEmail={(email) => postPartnerQuote(preview.request, { email, request_code: preview.code })}
+        onClose={() => setPreview(null)}
+      />
+    </div>
+  );
+
+  return (
+    <form onSubmit={prepare} className="space-y-3">
+      <Field label="1. Scegli il fornitore">
+        <select className={cls} value={supplierId} required disabled={busy} onChange={(event) => setSupplierId(event.target.value)}>
+          <option value="">Seleziona un fornitore</option>
+          {activeSuppliers.map((row) => <option value={row.id} key={row.id}>{row.name}</option>)}
+        </select>
+      </Field>
+      <fieldset disabled={busy} className="space-y-2">
+        <legend className="mb-2 font-medium">2. Spunta i servizi da quotare</legend>
+        <div className="max-h-64 overflow-y-auto rounded-sm border border-pearl-grey p-2">
+          {services.map((row) => (
+            <label key={row.id} className="flex min-h-11 items-center gap-3 px-2 text-sm">
+              <input type="checkbox" checked={selected.includes(row.id)}
+                disabled={selected.length >= MAX_PARTNER_SERVICES && !selected.includes(row.id)}
+                onChange={(event) => {
+                  const checked = event.target.checked;
+                  setSelected((previous) => checked ? [...previous, row.id] : previous.filter((id) => id !== row.id));
+                }} />
+              {row.title} · {row.lake} · per {row.unit}
+            </label>
+          ))}
+        </div>
+        <p className="text-sm text-soft-black/75">{selected.length} di {MAX_PARTNER_SERVICES} servizi selezionabili per PDF.</p>
+      </fieldset>
+      {error && <Alert>{error}</Alert>}
+      <button type="submit" className={supplierAction} disabled={busy || !supplierId || !selected.length}>
+        {busy ? "Preparazione del PDF…" : "3. Prepara il PDF"}
+      </button>
     </form>
   );
 }
@@ -1370,16 +1679,21 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
   }
 
   return (
-    <details className="border border-pearl-grey bg-white p-5 sm:p-7">
-      <summary className={`${button} cursor-pointer justify-start`}>
-        <FileDown aria-hidden="true" size={18} /> Crea PDF per fornitore
+    <details id="experience-trip-suppliers" className="scroll-mt-24 border border-pearl-grey bg-white p-5 sm:p-7">
+      <summary className="cursor-pointer list-none space-y-2 [&::-webkit-details-marker]:hidden">
+        <span className={`${supplierAction} justify-start`}>
+          <FileDown aria-hidden="true" size={18} /> Crea PDF per fornitore
+        </span>
+        <span className="block max-w-prose text-sm leading-6 text-soft-black/75">
+          Per gli operatori esterni, scelga il fornitore, spunti i servizi e
+          aggiunga il PDF alla lista. Da lì può controllarlo e inviarlo via email.
+        </span>
       </summary>
       <div className="mt-5 space-y-4">
         <p className="max-w-prose text-sm leading-6 text-soft-black/75">
-          Seleziona i servizi da chiedere a questo fornitore. Per ogni servizio
-          il fornitore potrà indicare la disponibilità e le tariffe oraria e a
-          forfait, IVA inclusa, direttamente nel PDF. Il viaggio è identificato
-          da un codice.
+          Il fornitore compila nel PDF la disponibilità e le tariffe orarie o
+          a forfait, IVA inclusa, poi restituisce il modulo rispondendo
+          all’email. Il PDF identifica il viaggio con un codice.
         </p>
         <Field label="Fornitore da consultare">
           <select
@@ -1494,6 +1808,9 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
             className="space-y-3 border-t border-pearl-grey pt-4"
           >
             <h3 className="text-base font-semibold">PDF per i fornitori</h3>
+            <p role="status" className={infoNotice}>
+              Selezione pronta. Controlla il documento con «Scarica PDF». Per spedirlo, scegli «Invia email» e conferma il destinatario.
+            </p>
             <ul className="space-y-2">
               {queue.map((entry) => (
                 <li
@@ -1527,7 +1844,7 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
                     </button>
                     <button
                       type="button"
-                      className={button}
+                      className={supplierAction}
                       disabled={Boolean(emailSupplier)}
                       onClick={() => setEmailSupplier(entry.supplier.id)}
                     >
@@ -1551,8 +1868,11 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
                   </div>
                   {emailSupplier === entry.supplier.id && (
                     <SupplierEmailSender
-                      trip={trip}
                       request={entry}
+                      sendEmail={(email) => postSupplierRequest(trip, supplierEmailInput.parse({
+                        action: "email", trip_version: trip.updated_at,
+                        supplier_id: entry.supplier.id, services: entry.services, email,
+                      }))}
                       onClose={() => setEmailSupplier("")}
                     />
                   )}
@@ -1578,7 +1898,7 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
         )}
         {error && <Alert>{error}</Alert>}
         {requestCode && (
-          <p role="status" className="text-sm">
+          <p role="status" className={successNotice}>
             PDF pronto. Codice richiesta <strong>{requestCode}</strong>.
           </p>
         )}
@@ -2087,10 +2407,8 @@ function QuoteServicePicker({
         <legend className="sr-only">Seleziona i servizi da quotare</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {visible.map((entry) => (
-            <label
-              key={entry.key}
-              className="flex min-h-12 items-center gap-3 border border-pearl-grey bg-white px-3 py-2 text-sm"
-            >
+            <div key={entry.key} className="flex flex-wrap items-center justify-between gap-2 border border-pearl-grey bg-white px-3 py-2 text-sm">
+            <label className="flex min-h-11 min-w-0 items-center gap-3">
               <input
                 type="checkbox"
                 className="h-4 w-4 shrink-0 accent-gold-dark"
@@ -2113,6 +2431,13 @@ function QuoteServicePicker({
                 </span>
               </span>
             </label>
+            <button type="button" className={button} disabled={available < 1}
+              aria-label={`Aggiungi card ${entry.title}`} onClick={() => {
+                onAdd([entry.item]);
+                setSelection((current) => current.filter((key) => key !== entry.key));
+                setNotice("Servizio aggiunto al preventivo.");
+              }}>Aggiungi</button>
+            </div>
           ))}
         </div>
         {visible.length === 0 && (
@@ -2228,13 +2553,29 @@ function QuoteEditor({
   useEffect(() => {
     const controller = new AbortController();
     loadOptions("services", controller.signal)
-      .then((rows) =>
-        setServices(
-          rows
-            .map((x) => resourceSchemas.services.parse(x))
-            .filter((s) => s.active),
-        ),
-      )
+      .then((rows) => {
+        if (controller.signal.aborted) return;
+        const catalogue = rows.map((row) => resourceSchemas.services.parse(row)).filter((row) => row.active);
+        setServices(catalogue);
+        if (existing) return;
+        const lake = trip.payload.lake === "Lago di Como" ? "Como"
+          : trip.payload.lake === "Lago Maggiore" ? "Maggiore" : null;
+        const requested = supplierRequestServices(trip.payload.ids).map(({ id, title }) => {
+          const matches = catalogue.filter((row) => row.experience_id === id &&
+            (row.lake === "Entrambi" || (lake !== null && row.lake === lake)));
+          if (matches.length !== 1) return quoteItem(title);
+          const [row] = matches;
+          const quantity = row.unit === "persona" ? trip.payload.details?.guests
+            : row.unit === "ora" || row.unit === "giorno" ? undefined : 1;
+          return {
+            ...quoteItem(row.title), service_id: row.id, supplier_id: row.supplier_id,
+            quantity: quantity ?? 1,
+            cost_cents: row.cost_cents, price_cents: row.price_cents ?? 0,
+            priceEntered: row.price_cents !== null && quantity !== undefined,
+          };
+        });
+        if (requested.length) setItems((current) => current.some(keepQuoteRow) ? current : requested);
+      })
       .catch((cause) => {
         if (!controller.signal.aborted) {
           console.error("[experience-admin] Price list failed:", cause);
@@ -2373,7 +2714,7 @@ function QuoteEditor({
         <div className="min-w-0">
           <p className="text-sm font-semibold">Destinatario</p>
           <p className="mt-1 break-words text-sm">
-            {trip.customer?.full_name || "Cliente registrato"}
+            {trip.customer?.full_name || (trip.user_id ? "Cliente registrato" : "Cliente ospite")}
             {trip.customer?.email && (
               <span className="block">{trip.customer.email}</span>
             )}
@@ -2411,6 +2752,26 @@ function QuoteEditor({
           </p>
           {optionsError && <Alert>{optionsError}</Alert>}
           {suppliers.error && <Alert>{suppliers.error}</Alert>}
+          {items.some(keepQuoteRow) && (
+            <section aria-label="Servizi nel preventivo" className="space-y-2">
+              <h4 className="font-semibold">Servizi nel preventivo</h4>
+              <p className="text-sm text-soft-black/75">Aggiungi altri servizi dal catalogo o rimuovi una card. Verifica quantità e prezzi nella tabella prima di pubblicare.</p>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {items.map((item, index) => keepQuoteRow(item) && (
+                  <article key={index} className="flex min-w-0 items-start justify-between gap-2 border border-pearl-grey bg-white p-3">
+                    <div className="min-w-0 break-words">
+                      <p className="font-medium">{item.label || "Servizio da definire"}</p>
+                      <p className="text-sm">{item.priceEntered ? money(item.price_cents) + " per unità" : "Prezzo da verificare"}</p>
+                    </div>
+                    <button type="button" className={button} aria-label={`Rimuovi card ${item.label || index + 1}`}
+                      onClick={() => setItems((current) => current.length === 1 ? [quoteItem()] : current.filter((_, row) => row !== index))}>
+                      <X size={16} aria-hidden="true" />
+                    </button>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
           <QuoteServicePicker
             trip={trip}
             services={services}
@@ -2705,6 +3066,11 @@ function QuoteEditor({
           </Field>
           <section className="space-y-4 border border-pearl-grey bg-warm-white p-4">
             <h4 className="font-semibold">Pagamento e acconto</h4>
+            <p className={checkNotice}>
+              Scegli come il cliente potrà versare il 50%. Questo passaggio
+              aggiunge le istruzioni al preventivo, mentre l’incasso si verifica
+              sul conto o su Stripe.
+            </p>
             <Field label="Modalità di pagamento">
               <select
                 className={cls}
@@ -2773,8 +3139,8 @@ function QuoteEditor({
           </details>
           {error && <Alert>{error}</Alert>}
           <p className="text-sm leading-6 text-soft-black/75">
-            Salva la bozza per riprendere il lavoro più tardi. Per consegnare il
-            preventivo, apri l’anteprima e conferma la pubblicazione.
+            «Salva bozza riservata» conserva il lavoro nell’admin. Con
+            «Rivedi il preventivo» controlli prezzi e condizioni come li vedrà il cliente.
           </p>
           <div className="flex flex-col gap-3 border-t border-pearl-grey pt-5 sm:flex-row sm:justify-end">
             <button
@@ -2809,7 +3175,7 @@ function QuoteEditor({
             <div className="min-w-0 break-words">
               <h4 className="font-semibold">Destinatario e programma</h4>
               <p className="mt-1">
-                {trip.customer?.full_name || "Cliente registrato"}
+                {trip.customer?.full_name || (trip.user_id ? "Cliente registrato" : "Cliente ospite")}
               </p>
               <p>
                 {trip.title} · {trip.payload.lake}
@@ -2882,9 +3248,9 @@ function QuoteEditor({
               )}
             </div>
           )}
-          <p className="border border-gold-primary/40 bg-warm-white p-4 text-sm leading-6">
+          <p className={checkNotice}>
             «Pubblica nell’area cliente» rende disponibile il preventivo e il
-            PDF in «I miei viaggi» del destinatario.
+            PDF in «I miei viaggi» per chi ha un account. Dopo la pubblicazione puoi generare un link privato anche per un cliente ospite.
           </p>
           {error && <Alert>{error}</Alert>}
           <div className="flex flex-wrap gap-3">
@@ -2898,7 +3264,7 @@ function QuoteEditor({
             </button>
             <button
               type="button"
-              className={primary}
+              className={confirmAction}
               disabled={busy}
               onClick={() => void save(true)}
             >

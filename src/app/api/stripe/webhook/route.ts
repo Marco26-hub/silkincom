@@ -48,6 +48,23 @@ export async function POST(req: NextRequest) {
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      const quoteId = paymentIntent.metadata.experience_quote_id;
+      if (quoteId) {
+        const stage = paymentIntent.metadata.experience_stage;
+        if (paymentIntent.currency !== 'eur' || (stage !== 'deposit' && stage !== 'balance')) {
+          console.error('[stripe-experience] Invalid payment metadata', paymentIntent.id);
+          return NextResponse.json({ error: 'Invalid Experience payment' }, { status: 400 });
+        }
+        const result = await supabase.rpc('experience_booking_transition', {
+          p_quote: quoteId, p_action: stage, p_token: null,
+          p_reference: paymentIntent.id, p_amount: paymentIntent.amount_received,
+        });
+        if (result.error || !result.data) {
+          console.error('[stripe-experience] Reconciliation failed', paymentIntent.id, result.error?.code);
+          return NextResponse.json({ error: 'Experience payment reconciliation failed' }, { status: 500 });
+        }
+        return NextResponse.json({ received: true });
+      }
       const orderId = paymentIntent.metadata.order_id;
 
       if (!orderId) {

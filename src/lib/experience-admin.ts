@@ -150,7 +150,7 @@ export const adminQuoteSchema = z.object({
 });
 export const adminTripSchema = z.object({
   id: z.string().uuid(),
-  user_id: z.string().uuid(),
+  user_id: z.string().uuid().nullable(),
   title: z.string(),
   payload: tripPayloadSchema,
   created_at: timestamp,
