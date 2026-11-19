@@ -93,23 +93,20 @@ async function fetchProductsFromDB(): Promise<DBProduct[]> {
     return [];
   }
 
-  const rows = (products as unknown as DBProduct[]) || [];
-  const stock = await readStorefrontStock(supabase);
-  if (stock) {
-    for (const product of rows) {
-      const available = stock.filter(row => row.product_id === product.id);
-      product.inventory = available;
-      for (const variant of product.product_variants) variant.inventory = available.filter(row => row.variant_id === variant.id);
-    }
-  }
-  return rows;
+  return (products as unknown as DBProduct[]) || [];
 }
 
-// Cached at the data layer. Admin mutations call revalidateTag('products')
-// for an immediate refresh; the 60s revalidate is a safety net.
+// Catalog metadata is heavier than the live stock feed. Explicit inventory and
+// catalog edits still invalidate both caches via the existing products tag.
 const getCachedProducts = unstable_cache(
   fetchProductsFromDB,
-  ['catalog-products'],
+  ['catalog-product-metadata'],
+  { revalidate: 600, tags: ['products'] }
+);
+
+const getCachedStock = unstable_cache(
+  async () => readStorefrontStock(createPublicClient()),
+  ['catalog-live-stock'],
   { revalidate: 60, tags: ['products'] }
 );
 
@@ -120,7 +117,24 @@ const getCachedProducts = unstable_cache(
 // Production always reads through anon RLS. Only explicit local development
 // preview can append the three named winter drafts using the service role.
 async function getStorefrontProducts(): Promise<DBProduct[]> {
-  const published = await getCachedProducts();
+  const [products, stock] = await Promise.all([getCachedProducts(), getCachedStock()]);
+  const stockByProduct = new Map<string, NonNullable<typeof stock>>();
+  for (const row of stock ?? []) {
+    const group = stockByProduct.get(row.product_id) ?? [];
+    group.push(row);
+    stockByProduct.set(row.product_id, group);
+  }
+  const published = stock ? products.map(product => {
+    const available = stockByProduct.get(product.id) ?? [];
+    return {
+      ...product,
+      inventory: available,
+      product_variants: product.product_variants.map(variant => ({
+        ...variant,
+        inventory: available.filter(row => row.variant_id === variant.id),
+      })),
+    };
+  }) : products;
   if (process.env.NODE_ENV !== 'development' || process.env.WINTER_2026_LOCAL_PREVIEW !== 'true') return published;
   const missingSlugs = WINTER_SLUGS.filter(slug => !published.some(product => product.slug === slug));
   if (missingSlugs.length === 0) return published;
