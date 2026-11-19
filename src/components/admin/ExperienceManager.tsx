@@ -261,7 +261,13 @@ export function ExperienceManager() {
           const linked = parsed.rows
             .map((row) => resourceSchemas.trips.parse(row))
             .find((row) => row.id === tripFilter);
-          if (linked) setTrip(linked);
+          if (linked) {
+            setTrip(linked);
+            const current = linked.experience_quotes.filter((quote) => quote.trip_updated_at === linked.updated_at)
+              .sort((a, b) => Date.parse(b.updated_at) - Date.parse(a.updated_at));
+            if (current[0]?.status !== "sent")
+              setQuote(current.find((quote) => quote.status === "draft") ?? "new");
+          }
           else setError("Il viaggio associato non è più disponibile.");
         }
       } catch (cause) {
@@ -429,7 +435,9 @@ export function ExperienceManager() {
           </button>
           {!quote && <TripNextStep trip={trip} onEditQuote={setQuote} />}
           <TripDetails trip={trip} />
-          <SupplierPdf key={trip.id} trip={trip} />
+          <div hidden={Boolean(quote)}>
+            <SupplierPdf key={trip.id} trip={trip} />
+          </div>
           {quote ? (
             <QuoteEditor
               key={quote === "new" ? "new" : quote.id}
@@ -952,7 +960,7 @@ function RequestCard({
           .slice(noteLine, endNote > noteLine ? endNote : undefined)
           .join("\n")
           .slice(6);
-  const linked = request.messaggio.match(
+  const linked = request.experience_trip_id ?? request.messaggio.match(
     /\n\nViaggio account verificato: ([0-9a-f-]{36})\nNome: [^\r\n]+\nVersione: [^\r\n]+$/i,
   )?.[1];
   return (
@@ -989,6 +997,11 @@ function RequestCard({
         >
           {expanded ? "Chiudi richiesta" : "Leggi la richiesta"}
         </button>
+        {linked && (
+          <button type="button" className={primary} onClick={() => onOpenTrip(linked)}>
+            Apri preventivo della richiesta
+          </button>
+        )}
       </header>
       {!expanded && (
         <p className="mt-2 text-sm text-soft-black/75">
@@ -1035,15 +1048,7 @@ function RequestCard({
             {request.messaggio}
           </p>
         )}
-        {linked ? (
-          <button
-            type="button"
-            className={button}
-            onClick={() => onOpenTrip(linked)}
-          >
-            Apri il viaggio associato
-          </button>
-        ) : (
+        {!linked && (
           <div className="space-y-2">
             <button type="button" className={primary} disabled={guestBusy} onClick={async () => {
               setGuestBusy(true);
@@ -1259,13 +1264,19 @@ function TripDetails({ trip }: { trip: AdminTrip }) {
           ? ` · ${d.guests} ospiti · ${d.arrival || "Arrivo da definire"} / ${d.departure || "Partenza da definire"}`
           : ""}
       </p>
-      <ul className="flex flex-wrap gap-2">
-        {trip.payload.ids.map((id) => (
-          <li className="border border-pearl-grey px-3 py-2 text-sm" key={id}>
-            {experienceLabels[id] || id}
-          </li>
-        ))}
-      </ul>
+      <section aria-label="Pacchetti scelti dal cliente" className="space-y-2">
+        <h3 className="font-semibold">Pacchetti scelti dal cliente</h3>
+        {trip.payload.ids.length ? (
+          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {supplierRequestServices(trip.payload.ids).map(({ id, title, format }) => (
+              <li className="min-w-0 break-words border border-pearl-grey bg-warm-white p-3 text-sm" key={id}>
+                <p className="font-medium">{title}</p>
+                {format && <p className="text-soft-black/75">{format}</p>}
+              </li>
+            ))}
+          </ul>
+        ) : <p className="text-sm text-soft-black/75">Nessuna scelta da importare. Puoi aggiungere i servizi dal listino.</p>}
+      </section>
       {hasPickup && (
         <section
           aria-label="Trasferimento all’arrivo"
@@ -1369,16 +1380,44 @@ async function postSupplierRequest(
 function SupplierEmailSender({
   request,
   sendEmail,
+  loadPdf,
   onClose,
 }: {
   request: QueuedSupplierRequest;
   sendEmail: (email: string) => Promise<Response>;
+  loadPdf: () => Promise<Blob>;
   onClose: () => void;
 }) {
   const [email, setEmail] = useState(request.supplier.email);
   const [status, setStatus] = useState<"idle" | "busy" | "sent">("idle");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const previewUrl = useRef("");
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
+    };
+  }, []);
+  async function previewAttachment() {
+    setPdfBusy(true);
+    setError("");
+    try {
+      const blob = await loadPdf();
+      if (!mounted.current) return;
+      if (blob.type !== "application/pdf") throw new Error("Il PDF non è disponibile.");
+      previewUrl.current = URL.createObjectURL(blob);
+      setPdfUrl(previewUrl.current);
+    } catch (cause) {
+      if (mounted.current) setError(cause instanceof Error ? cause.message : "Anteprima non disponibile.");
+    } finally {
+      if (mounted.current) setPdfBusy(false);
+    }
+  }
   const busy = useRef(false);
   async function send(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1437,6 +1476,22 @@ function SupplierEmailSender({
         L’indirizzo vale per questo invio. L’email contiene il PDF per il
         fornitore.
       </p>
+      <section aria-label="Allegato per il fornitore" className="space-y-2">
+        <p className="font-medium">Servizi nell’allegato</p>
+        <ul className="list-inside list-disc text-sm">
+          {request.services.map((id) => <li key={id}>{experienceLabels[id] ?? "Voce del listino selezionata"}</li>)}
+        </ul>
+        {pdfUrl ? (
+          <>
+            <a className={button} href={pdfUrl} target="_blank" rel="noopener noreferrer">Apri il PDF in una nuova scheda</a>
+            <iframe className="h-80 w-full border border-pearl-grey" src={pdfUrl} title="Anteprima PDF per il fornitore" />
+          </>
+        ) : (
+          <button type="button" className={button} disabled={pdfBusy} onClick={() => void previewAttachment()}>
+            {pdfBusy ? "Preparazione anteprima…" : "Mostra anteprima PDF"}
+          </button>
+        )}
+      </section>
       {error && <Alert>{error}</Alert>}
       {status === "sent" && (
         <p role="status" className={successNotice}>
@@ -1549,6 +1604,7 @@ function PartnerQuoteForm() {
       </button>
       <SupplierEmailSender
         request={preview.request}
+        loadPdf={async () => preview.pdf}
         sendEmail={(email) => postPartnerQuote(preview.request, { email, request_code: preview.code })}
         onClose={() => setPreview(null)}
       />
@@ -1591,6 +1647,7 @@ function PartnerQuoteForm() {
 function SupplierPdf({ trip }: { trip: AdminTrip }) {
   const options = supplierRequestServices(trip.payload.ids);
   const suppliers = useSupplierOptions();
+  const [directRequest, setDirectRequest] = useState<QueuedSupplierRequest | null>(null);
   const [supplierId, setSupplierId] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -1682,11 +1739,10 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
     <details id="experience-trip-suppliers" className="scroll-mt-24 border border-pearl-grey bg-white p-5 sm:p-7">
       <summary className="cursor-pointer list-none space-y-2 [&::-webkit-details-marker]:hidden">
         <span className={`${supplierAction} justify-start`}>
-          <FileDown aria-hidden="true" size={18} /> Crea PDF per fornitore
+          <FileDown aria-hidden="true" size={18} /> Richiesta al fornitore
         </span>
         <span className="block max-w-prose text-sm leading-6 text-soft-black/75">
-          Per gli operatori esterni, scelga il fornitore, spunti i servizi e
-          aggiunga il PDF alla lista. Da lì può controllarlo e inviarlo via email.
+          Scegli i servizi da quotare e invia il modulo all’operatore esterno.
         </span>
       </summary>
       <div className="mt-5 space-y-4">
@@ -1747,6 +1803,7 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
                           ? [...current, id]
                           : current.filter((value) => value !== id),
                       );
+                      setDirectRequest(null);
                       setRequestCode("");
                       setError("");
                     }}
@@ -1758,12 +1815,29 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                className={primary}
+                className={supplier ? button : primary}
                 disabled={busy || !selected.length}
                 onClick={() => void download(selected, supplierId)}
               >
                 Scarica PDF per fornitore
               </button>
+              {supplier && (
+                <button type="button" className={supplierAction} disabled={busy || !selected.length || Boolean(directRequest)}
+                  onClick={() => setDirectRequest({ supplier, services: selected })}>
+                  Prepara email al fornitore
+                </button>
+              )}
+            </div>
+            {directRequest && <SupplierEmailSender request={directRequest}
+              onClose={() => setDirectRequest(null)}
+              loadPdf={async () => (await postSupplierRequest(trip, {
+                supplier_id: directRequest.supplier.id, services: directRequest.services,
+              })).blob()}
+              sendEmail={(email) => postSupplierRequest(trip, {
+                action: "email", supplier_id: directRequest.supplier.id, services: directRequest.services, email,
+              })} />}
+            <details className="space-y-2">
+              <summary className="cursor-pointer text-sm font-medium">Prepara PDF per più fornitori</summary>
               <button
                 type="button"
                 className={button}
@@ -1793,7 +1867,7 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
                   ? "Aggiorna richiesta per il fornitore"
                   : "Aggiungi alla lista dei PDF"}
               </button>
-            </div>
+            </details>
             {queue.length >= MAX_SUPPLIER_REQUESTS && (
               <p className="text-sm">
                 Può preparare fino a {MAX_SUPPLIER_REQUESTS} richieste per
@@ -1869,6 +1943,9 @@ function SupplierPdf({ trip }: { trip: AdminTrip }) {
                   {emailSupplier === entry.supplier.id && (
                     <SupplierEmailSender
                       request={entry}
+                      loadPdf={async () => (await postSupplierRequest(trip, {
+                        supplier_id: entry.supplier.id, services: entry.services,
+                      })).blob()}
                       sendEmail={(email) => postSupplierRequest(trip, supplierEmailInput.parse({
                         action: "email", trip_version: trip.updated_at,
                         supplier_id: entry.supplier.id, services: entry.services, email,
@@ -2560,9 +2637,18 @@ function QuoteEditor({
         if (existing) return;
         const lake = trip.payload.lake === "Lago di Como" ? "Como"
           : trip.payload.lake === "Lago Maggiore" ? "Maggiore" : null;
-        const requested = supplierRequestServices(trip.payload.ids).map(({ id, title }) => {
-          const matches = catalogue.filter((row) => row.experience_id === id &&
-            (row.lake === "Entrambi" || (lake !== null && row.lake === lake)));
+        const normalizeStop = (value: string) => value.trim().toLocaleLowerCase("it").replace(/[\s,]+/g, " ");
+        const activities = supplierRequestServices(trip.payload.ids).map(({ id, title }) => ({
+          title, rates: catalogue.filter((row) => row.experience_id === id),
+        }));
+        const stops = new Map((trip.payload.details?.stops ?? [])
+          .filter((stop) => stop.trim())
+          .map((stop) => [normalizeStop(stop), stop.trim()]));
+        const requested = [...activities, ...Array.from(stops, ([name, title]) => ({
+          title, rates: catalogue.filter((row) => row.experience_id === customExperienceService && normalizeStop(row.title) === name),
+        }))].map(({ title, rates }) => {
+          const localRates = lake ? rates.filter((row) => row.lake === lake) : [];
+          const matches = localRates.length ? localRates : rates.filter((row) => row.lake === "Entrambi");
           if (matches.length !== 1) return quoteItem(title);
           const [row] = matches;
           const quantity = row.unit === "persona" ? trip.payload.details?.guests
@@ -2574,11 +2660,19 @@ function QuoteEditor({
             priceEntered: row.price_cents !== null && quantity !== undefined,
           };
         });
-        if (requested.length) setItems((current) => current.some(keepQuoteRow) ? current : requested);
+        if (requested.length) setItems((current) => current.some(keepQuoteRow) ? current : requested.slice(0, 30));
       })
       .catch((cause) => {
         if (!controller.signal.aborted) {
           console.error("[experience-admin] Price list failed:", cause);
+          if (!existing) {
+            const requested = [
+              ...supplierRequestServices(trip.payload.ids).map(({ title }) => title),
+              ...(trip.payload.details?.stops ?? []).map((stop) => stop.trim()).filter(Boolean),
+            ].slice(0, 30).map(quoteItem);
+            if (requested.length)
+              setItems((current) => current.some(keepQuoteRow) ? current : requested);
+          }
           setOptionsError(
             "Listino non disponibile: può compilare le voci manualmente oppure chiudere e riprovare.",
           );
@@ -2726,36 +2820,31 @@ function QuoteEditor({
           <p className="text-sm text-soft-black/70">{trip.payload.lake}</p>
         </div>
       </div>
-      <ol
-        aria-label="Passaggi del preventivo"
-        className="grid grid-cols-2 gap-2 text-sm"
-      >
-        <li
-          aria-current={!review ? "step" : undefined}
-          className={`border border-pearl-grey p-3 ${!review ? "bg-soft-black text-white" : "bg-warm-white"}`}
-        >
-          1. Compila
-        </li>
-        <li
-          aria-current={review ? "step" : undefined}
-          className={`border border-pearl-grey p-3 ${review ? "bg-soft-black text-white" : "bg-warm-white"}`}
-        >
-          2. Rivedi e pubblica
-        </li>
-      </ol>
+      <p aria-current="step" className="text-sm font-medium text-soft-black/75">
+        {review ? "Passaggio 2 di 2 · Anteprima cliente" : "Passaggio 1 di 2 · Servizi, prezzi e condizioni"}
+      </p>
       {!review ? (
         <>
+          <section className={infoNotice} aria-label="Guida alla compilazione">
+            <h3 className="font-semibold">Come preparare il preventivo</h3>
+            <ul className="mt-2 list-inside list-disc space-y-1">
+              <li>I pacchetti e le tappe richiesti sono già nella bozza. Se il listino ha una tariffa compatibile e univoca, vengono compilati anche fornitore e prezzi disponibili.</li>
+              <li>Verifica la quantità e il prezzo di ogni servizio.</li>
+              <li>Indica condizioni, pagamento e scadenza, poi apri l’anteprima cliente.</li>
+            </ul>
+          </section>
           <h3 className="font-display text-2xl">Servizi e prezzi</h3>
           <p className="text-sm leading-6 text-soft-black/75">
-            Aggiungi una riga per ogni servizio. Inserisci il costo a noi e il
-            prezzo cliente per unità. Il totale si aggiorna con la quantità.
+            Il <strong>costo a noi</strong> è quanto paghi al fornitore e resta interno.
+            Il <strong>prezzo cliente</strong> è quanto paga il cliente per una unità.
+            Per esempio, 2 persone a 45 € ciascuna fanno 90 €.
           </p>
           {optionsError && <Alert>{optionsError}</Alert>}
           {suppliers.error && <Alert>{suppliers.error}</Alert>}
           {items.some(keepQuoteRow) && (
             <section aria-label="Servizi nel preventivo" className="space-y-2">
               <h4 className="font-semibold">Servizi nel preventivo</h4>
-              <p className="text-sm text-soft-black/75">Aggiungi altri servizi dal catalogo o rimuovi una card. Verifica quantità e prezzi nella tabella prima di pubblicare.</p>
+              <p className="text-sm text-soft-black/75">Usa il catalogo per aggiungere un servizio. Premi la × sulla card per toglierlo.</p>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((item, index) => keepQuoteRow(item) && (
                   <article key={index} className="flex min-w-0 items-start justify-between gap-2 border border-pearl-grey bg-white p-3">
@@ -2953,7 +3042,7 @@ function QuoteEditor({
             onClick={() => setItems((current) => [...current, quoteItem()])}
           >
             <Plus size={16} />
-            Aggiungi voce manuale
+            Aggiungi servizio fuori listino
           </button>
           <dl className="grid gap-4 rounded-sm border border-pearl-grey bg-warm-white p-4 sm:grid-cols-3 sm:p-5">
             <div>
@@ -2977,6 +3066,9 @@ function QuoteEditor({
           <h3 className="border-t border-pearl-grey pt-5 font-display text-2xl">
             Condizioni per il cliente
           </h3>
+          <p className="text-sm text-soft-black/75">
+            Spiega cosa comprende il prezzo, quali extra si pagano a parte e come funziona l’annullamento.
+          </p>
           <fieldset className="space-y-3">
             <legend className="font-semibold">Servizi inclusi</legend>
             <p className="text-sm text-soft-black/75">
@@ -3137,10 +3229,20 @@ function QuoteEditor({
               />
             </Field>
           </details>
+          <section className={checkNotice} aria-label="Controlli prima dell’anteprima">
+            <h4 className="font-semibold">Prima di aprire l’anteprima</h4>
+            <ul className="mt-1 list-inside list-disc">
+              <li>{items.every((item) => item.label.trim() && item.priceEntered) && totals.revenue > 0
+                ? "Servizi e prezzi inseriti." : "Controlla che ogni riga abbia un nome e un prezzo e che il totale sia maggiore di zero."}</li>
+              <li>{conditions.trim() ? "Condizioni inserite." : "Scrivi le condizioni da mostrare al cliente."}</li>
+              <li>{validUntil && Date.parse(validUntil) > Date.now()
+                ? "Scadenza futura impostata." : "Scegli una data e un orario di scadenza futuri."}</li>
+            </ul>
+          </section>
           {error && <Alert>{error}</Alert>}
           <p className="text-sm leading-6 text-soft-black/75">
             «Salva bozza riservata» conserva il lavoro nell’admin. Con
-            «Rivedi il preventivo» controlli prezzi e condizioni come li vedrà il cliente.
+            «Apri anteprima cliente» controlli prezzi e condizioni come li vedrà il cliente.
           </p>
           <div className="flex flex-col gap-3 border-t border-pearl-grey pt-5 sm:flex-row sm:justify-end">
             <button
@@ -3152,7 +3254,7 @@ function QuoteEditor({
               {busy ? "Salvataggio…" : "Salva bozza riservata"}
             </button>
             <button className={primary} disabled={busy}>
-              Rivedi il preventivo
+              Apri anteprima cliente
             </button>
           </div>
         </>

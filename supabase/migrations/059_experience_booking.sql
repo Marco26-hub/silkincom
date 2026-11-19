@@ -3,7 +3,14 @@ alter table public.contacts add column experience_payload jsonb
   check (experience_payload is null or pg_column_size(experience_payload)<=32768);
 
 alter table public.experience_trips alter column user_id drop not null;
-alter table public.experience_trips add column guest_contact_id bigint unique references public.contacts(id);
+do $$
+declare contact_id_type text;
+begin
+  select pg_catalog.format_type(atttypid, atttypmod) into strict contact_id_type from pg_catalog.pg_attribute
+    where attrelid='public.contacts'::regclass and attname='id' and not attisdropped;
+  execute format('alter table public.experience_trips add column guest_contact_id %s unique references public.contacts(id)',contact_id_type);
+end;
+$$;
 alter table public.experience_trips add constraint experience_trip_identity
   check ((user_id is null) <> (guest_contact_id is null));
 

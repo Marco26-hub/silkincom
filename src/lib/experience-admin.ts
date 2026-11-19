@@ -168,6 +168,7 @@ export const contactIdSchema = z
   ])
   .transform(String);
 export const adminRequestSchema = z.object({
+  experience_trip_id: z.string().uuid().nullish(),
   id: contactIdSchema,
   nome: z.string().nullable(),
   cognome: z.string().nullable(),

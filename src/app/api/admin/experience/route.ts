@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
       resource === "trips"
         ? "id,user_id,guest_contact_id,title,payload,created_at,updated_at,experience_quotes(*,experience_quote_details(*))"
         : resource === "requests"
-          ? "id,nome,cognome,email,telefono,messaggio,status,created_at,updated_at"
+          ? "id,nome,cognome,email,telefono,messaggio,status,created_at,updated_at,experience_trip_id"
           : "*";
     let query = db.from(table).select(fields, { count: "exact" });
     if (resource === "requests") {
@@ -158,7 +158,7 @@ export async function GET(req: NextRequest) {
         if (result.error) throw result.error;
         customers = result.data;
       }
-      const guestIds = (data as unknown as { guest_contact_id: number | null }[])
+      const guestIds = (data as unknown as { guest_contact_id: number | string | null }[])
         .flatMap(({ guest_contact_id }) => guest_contact_id === null ? [] : [guest_contact_id]);
       const guests = new Map<string, { full_name: string; email: string }>();
       if (guestIds.length) {

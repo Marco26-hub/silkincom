@@ -9,7 +9,7 @@ import { rateLimit } from "@/lib/rate-limit";
 
 const id = z.string().uuid();
 const input = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("guest"), contact: z.string().regex(/^\d{1,18}$/) }),
+  z.object({ action: z.literal("guest"), contact: z.union([id, z.string().regex(/^\d{1,18}$/)]) }),
   z.object({ action: z.literal("share"), quote: id }),
   z.object({ action: z.literal("status"), quote: id }),
   z.object({ action: z.literal("deposit"), quote: id, amount: z.number().int().positive(), reference: z.string().trim().min(1).max(140) }),

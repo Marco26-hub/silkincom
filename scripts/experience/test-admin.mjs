@@ -52,4 +52,15 @@ assert.equal(await transition('balance',null,'bonifico:saldo',10000),true);check
 await role('authenticated',owner);
 await assert.rejects(db.query('select * from experience_bookings'));checks++;
 await role('anon');await assert.rejects(db.query('select * from experience_quote_details'));checks++;
+await db.exec('reset role; alter table contacts add column nome text, add column cognome text, add column email text, add column telefono text; grant select, insert, update on contacts to service_role; grant usage on sequence contacts_id_seq to service_role');
+await db.exec(fs.readFileSync('supabase/migrations/060_experience_intake.sql','utf8'));
+await role('service_role');
+const intake = 'select public.intake_experience_request($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) as created';
+const key = 'a0000000-0000-4000-8000-000000000001';
+const intakeArgs = [key,null,null,null,'Demo','Cliente','demo@example.invalid','0123456789','SILKinCOM EXPERIENCE',JSON.stringify({version:1,ids:['boat:aperitif'],lake:'Lago di Como'})];
+assert.equal((await db.query(intake,intakeArgs)).rows[0].created,true);checks++;
+assert.equal((await db.query(intake,intakeArgs)).rows[0].created,false);checks++;
+const link=(await db.query('select t.user_id,t.payload from contacts c join experience_trips t on c.experience_trip_id=t.id where c.experience_request_key=$1',[key])).rows;
+assert.equal(link.length,1);assert.equal(link[0].user_id,null);assert.deepEqual(link[0].payload.ids,['boat:aperitif']);checks++;
+await role('anon');await assert.rejects(db.query(intake,intakeArgs));checks++;
 await db.close();console.log(`Experience admin: ${checks} isolated permissions, pricing and concurrency checks passed.`);

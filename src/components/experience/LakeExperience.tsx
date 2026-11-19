@@ -126,6 +126,7 @@ const EXPERIENCE_SOURCES: Record<
   },
 };
 type Brief = {
+  requestKey: string;
   payload: TripPayload;
   savedTrip: { id: string; title: string; updated_at: string } | null;
   name: string;
@@ -440,6 +441,7 @@ export function LakeExperience({
     const data = new FormData(form);
     const value = (key: string) => String(data.get(key) ?? "").trim();
     const next: Brief = {
+      requestKey: crypto.randomUUID(),
       payload: readTripPayload(),
       savedTrip: accountTrip
         ? {
@@ -579,6 +581,7 @@ export function LakeExperience({
           email: brief.email,
           telefono: brief.phone,
           experiencePayload: brief.payload,
+          experienceRequestKey: brief.requestKey,
           experienceTripId: brief.savedTrip?.id,
           experienceTripVersion: brief.savedTrip?.updated_at,
           messaggio,

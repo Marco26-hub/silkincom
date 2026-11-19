@@ -39,7 +39,7 @@ def run(base):
             "details": {
                 "arrival": "", "departure": "", "guests": 2, "budget": "",
                 "experienceStyle": "", "arrivalPoint": "Stazione di Como San Giovanni",
-                "hotel": "Hotel demo, Como centro", "stops": [], "notes": "",
+                "hotel": "Hotel demo, Como centro", "stops": ["Pontile di Piazza Cavour, Como", "Villa Olmo, Como"], "notes": "",
             },
         },
         "created_at": DATE, "updated_at": DATE, "experience_quotes": [],
@@ -201,6 +201,9 @@ def run(base):
         with page.expect_download() as partner_download:
             page.get_by_role("button", name="Scarica PDF", exact=True).click()
         assert partner_download.value.suggested_filename == f"SILKinCOM-{SUPPLIER_CODE}.pdf"
+        page.get_by_role("button", name="Mostra anteprima PDF").click()
+        expect(page.get_by_title("Anteprima PDF per il fornitore")).to_be_visible()
+        expect(page.get_by_role("link", name="Apri il PDF in una nuova scheda")).to_be_visible()
         page.get_by_label("Email per Fornitore demo").fill("partner@example.invalid")
         page.get_by_role("button", name="Invia richiesta con PDF").click()
         expect(page.get_by_text("Invio accettato per", exact=False)).to_contain_text("partner@example.invalid")
@@ -213,7 +216,7 @@ def run(base):
         expect(transfer).to_contain_text("Stazione di Como San Giovanni")
         expect(transfer).to_contain_text("A · hotel o prima tappa")
         expect(transfer).to_contain_text("Hotel demo, Como centro")
-        expect(page.get_by_text("Nessuna tappa indicata", exact=True)).to_be_visible()
+        expect(page.get_by_text("Villa Olmo, Como", exact=True)).to_be_visible()
         expect(page.get_by_text("Nessuna nota del cliente", exact=True)).to_be_visible()
         expect(page.get_by_role("heading", name="Preventivo da preparare")).to_be_visible()
         expect(page.get_by_role("button", name="Prepara preventivo", exact=True)).to_be_visible()
@@ -228,6 +231,7 @@ def run(base):
             download_button.click()
         assert supplier_download.value.suggested_filename == f"SILKinCOM-{SUPPLIER_CODE}.pdf"
         expect(page.get_by_text(SUPPLIER_CODE, exact=True)).to_be_visible()
+        page.get_by_text("Prepara PDF per più fornitori", exact=True).click()
         page.get_by_role("button", name="Aggiungi alla lista dei PDF").click()
         page.get_by_label("Fornitore da consultare").select_option(OTHER_SUPPLIER)
         page.get_by_role("checkbox", name="Il lago con capitano").uncheck()
@@ -251,17 +255,32 @@ def run(base):
             expect(row.get_by_role("status")).to_contain_text(address)
             row.get_by_role("button", name="Chiudi", exact=True).click()
         assert len(recipients) == 2
-        page.get_by_text("Crea PDF per fornitore", exact=True).click()
+        page.get_by_text("Richiesta al fornitore", exact=True).click()
+        expect(page.get_by_role("region", name="Pacchetti scelti dal cliente")).to_contain_text("Il lago con capitano")
+        services.append({**services[0], "id": "77777777-7777-4777-8777-777777777777",
+                         "title": "Tour con capitano da listino", "experience_id": "boat:captain",
+                         "lake": "Como", "unit": "persona", "cost_cents": 5000, "price_cents": 8000})
+        services.append({**services[0], "id": "88888888-8888-4888-8888-888888888888",
+                         "title": "Villa Olmo, Como", "experience_id": "custom",
+                         "lake": "Como", "unit": "servizio", "cost_cents": 3000, "price_cents": 4500})
         page.get_by_role("button", name="Nuovo preventivo").click()
         expect(page.get_by_text("demo@example.invalid", exact=True)).to_be_visible()
-        expect(page.locator('[aria-current="step"]')).to_have_text("1. Compila")
+        expect(page.locator('[aria-current="step"]')).to_have_text("Passaggio 1 di 2 · Servizi, prezzi e condizioni")
         table = page.get_by_role("table", name="Voci del preventivo")
         expect(table.get_by_role("columnheader", name="Servizio", exact=True)).to_be_visible()
         cards = page.get_by_role("region", name="Servizi nel preventivo")
-        expect(cards.get_by_role("button", name="Rimuovi card Il lago con capitano")).to_be_visible()
-        cards.get_by_role("button", name="Rimuovi card Il lago con capitano").click()
+        expect(cards.get_by_role("button", name="Rimuovi card Tour con capitano da listino")).to_be_visible()
+        expect(table.get_by_label("Costo a noi").first).to_have_value("50")
+        expect(table.get_by_label("Prezzo unitario cliente").first).to_have_value("80")
+        expect(table.get_by_label("Quantità").first).to_have_value("2")
+        expect(table.get_by_label("Fornitore (interno)").first).to_have_value(SUPPLIER)
+        cards.get_by_role("button", name="Rimuovi card Tour con capitano da listino").click()
         cards.get_by_role("button", name="Rimuovi card Pick-up", exact=False).click()
-        page.get_by_text("Scegli i servizi da quotare", exact=False).click()
+        expect(cards.get_by_text("Pontile di Piazza Cavour, Como", exact=True)).to_be_visible()
+        expect(cards.get_by_text("45,00", exact=False)).to_be_visible()
+        cards.get_by_role("button", name="Rimuovi card Pontile di Piazza Cavour, Como").click()
+        cards.get_by_role("button", name="Rimuovi card Villa Olmo, Como").click()
+        page.get_by_text("Scegli i servizi da quotare (", exact=False).click()
         expect(page.get_by_role("checkbox", name="Navetta privata speciale", exact=False)).to_be_visible()
         page.get_by_role("button", name="Aggiungi card Navetta privata speciale", exact=True).click()
         expect(table.get_by_label("Costo a noi")).to_have_value("45")
@@ -303,7 +322,7 @@ def run(base):
         page.set_viewport_size({"width": 390, "height": 844})
         expect(table.get_by_label("Prezzo unitario cliente")).to_have_value("125")
         assert page.locator("html").evaluate("(el) => el.scrollWidth <= innerWidth")
-        page.get_by_role("button", name="Rivedi il preventivo").click()
+        page.get_by_role("button", name="Apri anteprima cliente").click()
         expect(page.get_by_role("heading", name="Anteprima per il cliente")).to_be_visible()
         expect(page.get_by_text("Emittente del preventivo")).to_be_visible()
         breakdown = page.get_by_role("region", name="Dettaglio dei servizi")
@@ -311,7 +330,7 @@ def run(base):
         expect(breakdown.get_by_text("2 × 125,00", exact=False)).to_be_visible()
         expect(breakdown.get_by_text("250,00", exact=False)).to_be_visible()
         expect(breakdown.get_by_text("70,00", exact=False)).to_have_count(0)
-        expect(page.locator('[aria-current="step"]')).to_have_text("2. Rivedi e pubblica")
+        expect(page.locator('[aria-current="step"]')).to_have_text("Passaggio 2 di 2 · Anteprima cliente")
         expect(page.get_by_text(PUBLIC, exact=True)).to_be_visible()
         expect(page.get_by_text(PRIVATE, exact=True)).to_have_count(0)
         page.get_by_role("button", name="Pubblica nell’area cliente").click()
@@ -325,6 +344,11 @@ def run(base):
             "href", f"/api/experience/quotes/{QUOTE}/pdf?locale=it"
         )
         expect(customer.get_by_text(PRIVATE, exact=True)).to_have_count(0)
+        contact["experience_trip_id"] = TRIP
+        page.goto(base + "/it/qa/admin", wait_until="networkidle")
+        page.get_by_role("button", name="Apri preventivo della richiesta").click()
+        expect(page.get_by_role("heading", name="Preventivi del viaggio")).to_be_visible()
+        expect(page.get_by_text("Pubblicato nell’area cliente", exact=True)).to_be_visible()
         browser.close()
 
 

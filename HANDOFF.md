@@ -35,7 +35,7 @@ Ultimo aggiornamento: **19 novembre 2026** · ultimo commit Experience verificat
 
 - Nuove richieste: le selezioni strutturate alimentano la bozza. Nell’editor solo una tariffa attiva inequivocabile per esperienza e destinazione può precompilare i campi. Per unità orarie o giornaliere occorre verificare quantità e prezzo. La selezione si modifica con le card del catalogo e le card della bozza.
 - Il link privato si genera dal preventivo pubblicato e si invia manualmente. Il cliente può accettare senza account. La scheda consente di registrare pagamenti verificati e consultare gli esiti. Checkout Stripe crea l’importo dal preventivo e registra acconto o saldo da webhook firmato. I vecchi link di pagamento restano consultabili dove già impostati e richiedono riconciliazione manuale.
-- Prima di unire su main applicare `059_experience_booking.sql` al progetto Supabase. Il token CLI è stato rifiutato e l’editor della dashboard non si è aperto. Verificare quindi Checkout e webhook in modalità test prima di verificare la disponibilità live. L’anteprima 3016 usa dati demo e blocca qualsiasi addebito.
+- Migrazioni `059_experience_booking.sql` e `060_experience_intake.sql` applicate insieme dall’editor SQL di produzione il 19/11. Verificata la presenza di `experience_bookings` e `intake_experience_request`. La migrazione rileva il tipo di `contacts.id` (UUID in produzione). Il collaudo con Stripe reale resta da eseguire in modalità test. L’anteprima 3016 usa dati demo e blocca qualsiasi addebito.
 
 ---
 
