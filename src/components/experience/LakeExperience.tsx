@@ -639,8 +639,8 @@ export function LakeExperience({
             }
             className={styles.cardPhoto}
           />
-          <figcaption className={styles.imageDisclaimer}>
-            {t("Immagine illustrativa")}
+          <figcaption className={item.id === "jet-ski" ? styles.imageDisclaimer : `${styles.imageDisclaimer} ${styles.aiImageDisclaimer}`}>
+            {item.id === "jet-ski" ? t("Foto reale") : t("Immagine illustrativa generata con AI")}
           </figcaption>
         </figure>
         <div className={styles.cardTop}>

@@ -129,7 +129,11 @@ def run(base):
                 return route.fulfill(json={"ok": True, "id": int(body["id"])})
             if body["action"] == "service":
                 assert body["data"]["experience_id"] == "custom"
-                services.append({"id": SERVICE, **body["data"], "created_at": DATE, "updated_at": DATE})
+                if body.get("id"):
+                    assert body["id"] == SERVICE and body["updated_at"] == DATE
+                    services[0].update(body["data"])
+                else:
+                    services.append({"id": SERVICE, **body["data"], "created_at": DATE, "updated_at": DATE})
                 return route.fulfill(json={"ok": True, "id": SERVICE})
             assert body["action"] == "quote"
             q = body["data"]
@@ -191,6 +195,15 @@ def run(base):
         page.locator('select[name="supplier_id"]').select_option(SUPPLIER)
         page.get_by_role("button", name="Salva", exact=True).click()
         expect(page.get_by_role("heading", name="Navetta privata speciale")).to_be_visible()
+        page.get_by_role("button", name="Archivia voce").click()
+        expect(page.get_by_role("button", name="Riattiva voce")).to_be_visible()
+        assert services[0]["active"] is False
+        page.get_by_role("button", name="Chiedi tariffa partner").click()
+        expect(page.get_by_text("Aggiungi prima almeno un servizio attivo nel listino.")).to_be_visible()
+        page.get_by_role("button", name="Chiedi tariffa partner").click()
+        page.get_by_role("button", name="Riattiva voce").click()
+        expect(page.get_by_role("button", name="Archivia voce")).to_be_visible()
+        assert services[0]["active"] is True
         page.set_viewport_size({"width": 390, "height": 844})
         page.get_by_role("button", name="Chiedi tariffa partner").click()
         page.get_by_label("1. Scegli il fornitore").select_option(SUPPLIER)
@@ -216,7 +229,7 @@ def run(base):
         expect(transfer).to_contain_text("Stazione di Como San Giovanni")
         expect(transfer).to_contain_text("A · hotel o prima tappa")
         expect(transfer).to_contain_text("Hotel demo, Como centro")
-        expect(page.get_by_text("Villa Olmo, Como", exact=True)).to_be_visible()
+        expect(page.get_by_role("region", name="Voci da quotare").get_by_text("Villa Olmo, Como", exact=True)).to_be_visible()
         expect(page.get_by_text("Nessuna nota del cliente", exact=True)).to_be_visible()
         expect(page.get_by_role("heading", name="Preventivo da preparare")).to_be_visible()
         expect(page.get_by_role("button", name="Prepara preventivo", exact=True)).to_be_visible()
@@ -349,6 +362,9 @@ def run(base):
         page.get_by_role("button", name="Apri preventivo della richiesta").click()
         expect(page.get_by_role("heading", name="Preventivi del viaggio")).to_be_visible()
         expect(page.get_by_text("Pubblicato nell’area cliente", exact=True)).to_be_visible()
+        detail = page.get_by_role("region", name="Servizi del preventivo").first
+        expect(detail).to_contain_text("Barca privata")
+        expect(detail).to_contain_text("250,00")
         browser.close()
 
 

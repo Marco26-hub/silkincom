@@ -203,6 +203,7 @@ export function ExperienceManager() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [updatingService, setUpdatingService] = useState<string | null>(null);
   const [editing, setEditing] = useState<Supplier | Service | "new" | null>(
     null,
   );
@@ -319,6 +320,24 @@ export function ExperienceManager() {
       setError(
         cause instanceof Error ? cause.message : "Aggiornamento non riuscito.",
       );
+    }
+  }
+  async function toggleService(service: Service) {
+    setUpdatingService(service.id);
+    setError("");
+    setNotice("");
+    try {
+      const { id, updated_at, created_at: _createdAt, ...data } = service;
+      await apiSave({ action: "service", id, updated_at, data: { ...data, active: !service.active } });
+      await load();
+      setNotice(service.active
+        ? "Voce archiviata. È esclusa dalle nuove selezioni del listino."
+        : "Voce riattivata e disponibile nelle nuove selezioni.");
+    } catch (cause) {
+      console.error("[experience-admin] Service status failed:", cause);
+      setError(cause instanceof Error ? cause.message : "Impossibile aggiornare la voce.");
+    } finally {
+      setUpdatingService(null);
     }
   }
   async function saved(message = "Dati salvati.") {
@@ -462,9 +481,14 @@ export function ExperienceManager() {
                 Puoi salvarla come bozza e riprenderla in seguito.
               </p>
               {!trip.experience_quotes.length && (
-                <p className="border border-pearl-grey bg-white p-6">
-                  Nessun preventivo: può preparare la prima proposta.
-                </p>
+                <section className="space-y-2 border border-pearl-grey bg-white p-5" aria-label="Voci da quotare">
+                  <h3 className="font-semibold">Voci da quotare</h3>
+                  <p className="text-sm">Apri «Nuovo preventivo» per recuperare le tariffe disponibili nel listino.</p>
+                  <ul className="list-inside list-disc break-words text-sm">
+                    {supplierRequestServices(trip.payload.ids).map(({ id, title }) => <li key={id}>{title}</li>)}
+                    {trip.payload.details?.stops.filter((stop) => stop.trim()).map((stop, index) => <li key={index}>{stop}</li>)}
+                  </ul>
+                </section>
               )}
               {[...trip.experience_quotes]
                 .sort((a, b) => b.published_at.localeCompare(a.published_at))
@@ -495,6 +519,27 @@ export function ExperienceManager() {
                         una versione precedente.
                       </Alert>
                     )}
+                    <section aria-label="Servizi del preventivo" className="space-y-2 border border-pearl-grey bg-warm-white p-4">
+                      <h4 className="font-semibold">Servizi del preventivo</h4>
+                      {q.experience_quote_details?.items.length ? (
+                        <ul className="divide-y divide-pearl-grey text-sm">
+                          {q.experience_quote_details.items.map((item, index) => (
+                            <li key={index} className="flex flex-wrap justify-between gap-x-4 gap-y-1 py-2">
+                              <span className="min-w-0 break-words">{item.label}</span>
+                              <span className="tabular-nums">
+                                {item.quantity} × {money(item.price_cents)} · <strong>{money(item.quantity * item.price_cents)}</strong>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : q.inclusions.length ? (
+                        <ul className="list-inside list-disc break-words text-sm">
+                          {q.inclusions.map((label, index) => <li key={index}>{label}</li>)}
+                        </ul>
+                      ) : (
+                        <p className="text-sm">Nessun dettaglio disponibile per questa versione.</p>
+                      )}
+                    </section>
                     <p className="whitespace-pre-wrap text-sm leading-6">
                       {q.conditions}
                     </p>
@@ -797,9 +842,15 @@ export function ExperienceManager() {
                     <p className="text-sm">
                       {s.active ? "Voce attiva" : "Voce non attiva"}
                     </p>
-                    <button className={button} onClick={() => setEditing(s)}>
-                      Modifica voce di listino
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      <button className={button} disabled={Boolean(updatingService)} onClick={() => setEditing(s)}>
+                        Modifica voce di listino
+                      </button>
+                      <button type="button" className={button} disabled={Boolean(updatingService)}
+                        onClick={() => void toggleService(s)}>
+                        {updatingService === s.id ? "Aggiornamento…" : s.active ? "Archivia voce" : "Riattiva voce"}
+                      </button>
+                    </div>
                   </article>
                 );
               })}
@@ -2686,6 +2737,9 @@ function QuoteEditor({
   useEffect(() => {
     if (review) reviewRef.current?.focus();
   }, [review]);
+  function removeItem(index: number) {
+    setItems((current) => current.length === 1 ? [quoteItem()] : current.filter((_, row) => row !== index));
+  }
   function update(
     index: number,
     field: keyof QuoteEditorItem,
@@ -2853,8 +2907,8 @@ function QuoteEditor({
                       <p className="text-sm">{item.priceEntered ? money(item.price_cents) + " per unità" : "Prezzo da verificare"}</p>
                     </div>
                     <button type="button" className={button} aria-label={`Rimuovi card ${item.label || index + 1}`}
-                      onClick={() => setItems((current) => current.length === 1 ? [quoteItem()] : current.filter((_, row) => row !== index))}>
-                      <X size={16} aria-hidden="true" />
+                      onClick={() => removeItem(index)}>
+                      <X size={16} aria-hidden="true" /> Rimuovi
                     </button>
                   </article>
                 ))}
@@ -3021,12 +3075,8 @@ function QuoteEditor({
                     type="button"
                     className="inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-sm border border-pearl-grey px-2 text-sm hover:border-gold-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-dark disabled:opacity-40"
                     aria-label={`Rimuovi voce ${index + 1}`}
-                    disabled={items.length === 1}
-                    onClick={() =>
-                      setItems((current) =>
-                        current.filter((_, i) => i !== index),
-                      )
-                    }
+                    disabled={!keepQuoteRow(item) && items.length === 1}
+                    onClick={() => removeItem(index)}
                   >
                     <X size={16} aria-hidden="true" />
                     <span className="xl:sr-only">Rimuovi</span>
