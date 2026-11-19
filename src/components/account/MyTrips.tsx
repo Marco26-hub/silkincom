@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Compass, ArrowRight, RefreshCw } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { createExperienceTranslator } from "@/lib/experience-i18n";
+import { splitQuoteConditions } from "@/lib/experience-payment";
 import {
   EXPERIENCE_DRAFT_KEY,
   savedTripSchema,
@@ -140,6 +141,9 @@ export function MyTrips({
             const expired =
               !!quote?.valid_until &&
               Date.parse(quote.valid_until) < Date.now();
+            const terms = splitQuoteConditions(quote?.conditions || "");
+            const cardLink =
+              quoteCurrent && quote?.valid_until && !expired ? terms.link : "";
             return (
               <li
                 key={trip.id}
@@ -230,8 +234,25 @@ export function MyTrips({
                       </div>
                     )}
                     <p className="mt-4 whitespace-pre-wrap text-xs leading-6 text-soft-black/70">
-                      {quote.conditions}
+                      {terms.conditions}
                     </p>
+                    {terms.payment && (
+                      <div className="mt-4 space-y-2 border border-pearl-grey bg-warm-white p-4">
+                        <p className="whitespace-pre-line text-sm leading-6">
+                          {terms.payment}
+                        </p>
+                        {cardLink && (
+                          <a
+                            href={cardLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-12 items-center gap-2 bg-soft-black px-4 text-sm text-white"
+                          >
+                            Stripe <ArrowRight size={15} aria-hidden="true" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                     <a
                       href={`/api/experience/quotes/${quote.id}/pdf?locale=${encodeURIComponent(locale)}`}
                       className="mt-4 inline-flex min-h-12 items-center border border-soft-black/30 px-4 py-2 text-sm font-medium hover:border-gold-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-dark"

@@ -3,6 +3,7 @@ import {
   EXPERIENCES,
   EXPERIENCE_CATEGORIES,
   BOAT_PACKAGES,
+  JOURNEYS,
   LOGISTICS,
   FAQ,
   type ExperienceContent,
@@ -58,6 +59,7 @@ export async function getExperienceLocale(locale: string) {
     EXPERIENCE_CATEGORIES,
     EXPERIENCES,
     BOAT_PACKAGES,
+    JOURNEYS,
     LOGISTICS,
   }) as ExperienceContent;
   content.FAQ = localize(FAQ, "", true) as typeof FAQ;

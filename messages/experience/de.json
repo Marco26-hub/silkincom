@@ -749,5 +749,15 @@
   "Noleggio moto d’acqua con patente nautica": "Jetski-Verleih mit Sportbootführerschein",
   "Patente nautica richiesta": "Sportbootführerschein erforderlich",
   "Richieda il noleggio di una moto d’acqua sul lago scelto.": "Fragen Sie einen Jetski für den See Ihrer Wahl an.",
-  "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.": "Die Anmietung setzt einen gültigen und für das Fahrzeug geeigneten Sportbootführerschein voraus. Vor der Bestätigung klären wir Verfügbarkeit, Unterlagen, erlaubte Fahrgebiete und Mietbedingungen mit dem Anbieter."
+  "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.": "Die Anmietung setzt einen gültigen und für das Fahrzeug geeigneten Sportbootführerschein voraus. Vor der Bestätigung klären wir Verfügbarkeit, Unterlagen, erlaubte Fahrgebiete und Mietbedingungen mit dem Anbieter.",
+  "Nome *": "Vorname *",
+  "Cognome *": "Nachname *",
+  "Budget (facoltativo)": "Budget (optional)",
+  "Compili nome, cognome, email e telefono.": "Bitte geben Sie Ihren Vor- und Nachnamen, Ihre E-Mail-Adresse und Ihre Telefonnummer ein.",
+  "Salvare il viaggio nell’account non invia la richiesta. Può inviarla anche senza registrarsi.": "Beim Speichern der Reise in Ihrem Konto wird keine Anfrage gesendet. Sie können auch ohne Registrierung eine Anfrage senden.",
+  "Immagini la sua giornata": "Stellen Sie sich Ihren Tag vor",
+  "Scelga un percorso da esplorare": "Wählen Sie eine Route aus",
+  "Percorso aggiunto": "Route hinzugefügt",
+  "Aggiunga il percorso": "Route hinzufügen",
+  "Un punto di partenza: può ancora modificare le attività.": "Ein Ausgangspunkt: Sie können die Aktivitäten noch ändern."
 }

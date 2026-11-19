@@ -749,5 +749,15 @@
   "Noleggio moto d’acqua con patente nautica": "Location de jet-ski avec permis bateau",
   "Patente nautica richiesta": "Permis bateau requis",
   "Richieda il noleggio di una moto d’acqua sul lago scelto.": "Demandez la location d’un jet-ski sur le lac de votre choix.",
-  "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.": "La location est réservée aux titulaires d’un permis bateau valide et adapté à la conduite du véhicule. Avant confirmation, nous vérifions auprès de l’opérateur les disponibilités, les documents, les zones de navigation et les conditions de location."
+  "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.": "La location est réservée aux titulaires d’un permis bateau valide et adapté à la conduite du véhicule. Avant confirmation, nous vérifions auprès de l’opérateur les disponibilités, les documents, les zones de navigation et les conditions de location.",
+  "Nome *": "Prénom *",
+  "Cognome *": "Nom *",
+  "Budget (facoltativo)": "Budget (facultatif)",
+  "Compili nome, cognome, email e telefono.": "Indiquez votre prénom, votre nom, votre adresse e-mail et votre numéro de téléphone.",
+  "Salvare il viaggio nell’account non invia la richiesta. Può inviarla anche senza registrarsi.": "Enregistrer le voyage dans votre compte n’envoie pas la demande. Vous pouvez envoyer une demande sans créer de compte.",
+  "Immagini la sua giornata": "Imaginez votre journée",
+  "Scelga un percorso da esplorare": "Choisissez un itinéraire à découvrir",
+  "Percorso aggiunto": "Itinéraire ajouté",
+  "Aggiunga il percorso": "Ajouter l’itinéraire",
+  "Un punto di partenza: può ancora modificare le attività.": "Un point de départ : vous pouvez encore modifier les activités."
 }

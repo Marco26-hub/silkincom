@@ -28,6 +28,7 @@ export const requestStatuses = {
   in_progress: "In lavorazione",
   resolved: "Gestita",
 } as const;
+export const customExperienceService = "custom";
 const timestamp = z.string().datetime({ offset: true });
 const cents = z.number().int().min(0).max(100000000);
 const base = {
@@ -62,7 +63,10 @@ export const serviceInput = z
   .object({
     experience_id: z
       .string()
-      .refine((id) => Object.hasOwn(experienceLabels, id)),
+      .refine(
+        (id) =>
+          id === customExperienceService || Object.hasOwn(experienceLabels, id),
+      ),
     title: z.string().trim().min(1).max(160),
     supplier_id: z.string().uuid().nullable(),
     lake: z.enum(internalLakes),

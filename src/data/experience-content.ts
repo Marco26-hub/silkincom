@@ -567,6 +567,7 @@ export type ExperienceContent = {
   EXPERIENCE_CATEGORIES: typeof EXPERIENCE_CATEGORIES;
   EXPERIENCES: typeof EXPERIENCES;
   BOAT_PACKAGES: typeof BOAT_PACKAGES;
+  JOURNEYS: typeof JOURNEYS;
   LOGISTICS: typeof LOGISTICS;
   FAQ: typeof FAQ;
 };

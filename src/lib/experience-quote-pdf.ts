@@ -1,12 +1,19 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
+import {
+  PDFDocument,
+  PDFHexString,
+  PDFName,
+  StandardFonts,
+  rgb,
+  type PDFDropdown,
+  type PDFFont,
+  type PDFTextField,
+} from "pdf-lib";
 
-export type QuotePdfData = {
+type ExperiencePdfData = {
   title: string;
-  total: string;
-  totalLabel: string;
   status: string;
-  validity: string;
-  reference: string;
+  summary: { label: string; value: string; note?: string };
+  reference?: string;
   facts?: { label: string; value: string }[];
   breakdown?: {
     heading: string;
@@ -18,9 +25,29 @@ export type QuotePdfData = {
       subtotal: string;
     }[];
   };
+  supplierServices?: { title: string; format?: string }[];
+  documentDate?: Date;
   sections: { heading: string; paragraphs: string[] }[];
   warning?: string;
 };
+
+export type QuotePdfData = Omit<ExperiencePdfData, "summary"> & {
+  total: string;
+  totalLabel: string;
+  validity: string;
+};
+
+export function renderQuotePdf({
+  total,
+  totalLabel,
+  validity,
+  ...data
+}: QuotePdfData) {
+  return renderExperiencePdf({
+    ...data,
+    summary: { label: totalLabel, value: total, note: validity },
+  });
+}
 
 function printable(value: string, font: PDFFont) {
   return Array.from(value.normalize("NFC"), (character) => {
@@ -40,8 +67,12 @@ function printable(value: string, font: PDFFont) {
   }).join("");
 }
 
-export async function renderQuotePdf(data: QuotePdfData) {
+export async function renderExperiencePdf(data: ExperiencePdfData) {
   const pdf = await PDFDocument.create();
+  if (data.documentDate) {
+    pdf.setCreationDate(data.documentDate);
+    pdf.setModificationDate(data.documentDate);
+  }
   const regular = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const display = await pdf.embedFont(StandardFonts.TimesRoman);
@@ -52,6 +83,7 @@ export async function renderQuotePdf(data: QuotePdfData) {
   const height = 841.89;
   const margin = 46;
   const column = width - margin * 2;
+  const isSupplierForm = Boolean(data.supplierServices?.length);
   let page = pdf.addPage([width, height]);
   let y = 0;
   function header() {
@@ -108,19 +140,21 @@ export async function renderQuotePdf(data: QuotePdfData) {
       y -= leading;
     }
   }
-  function writeFacts(facts: NonNullable<QuotePdfData["facts"]>) {
-    const labelWidth = 124;
+  function writeFacts(facts: NonNullable<ExperiencePdfData["facts"]>) {
+    const size = isSupplierForm ? 11.5 : 10;
+    const leading = size * 1.5;
+    const labelWidth = isSupplierForm ? 140 : 124;
     for (const { label, value } of facts) {
-      const labels = wrap(label, 10, bold, labelWidth - 14);
-      const values = wrap(value, 10, regular, column - labelWidth);
-      const rowHeight = Math.max(labels.length, values.length) * 15;
+      const labels = wrap(label, size, bold, labelWidth - 14);
+      const values = wrap(value, size, regular, column - labelWidth);
+      const rowHeight = Math.max(labels.length, values.length) * leading;
       ensure(rowHeight);
       labels.forEach((line, index) => {
         if (line)
           page.drawText(line, {
             x: margin,
-            y: y - 10 - index * 15,
-            size: 10,
+            y: y - size - index * leading,
+            size,
             font: bold,
             color: muted,
           });
@@ -129,8 +163,8 @@ export async function renderQuotePdf(data: QuotePdfData) {
         if (line)
           page.drawText(line, {
             x: margin + labelWidth,
-            y: y - 10 - index * 15,
-            size: 10,
+            y: y - size - index * leading,
+            size,
             font: regular,
             color: dark,
           });
@@ -138,7 +172,7 @@ export async function renderQuotePdf(data: QuotePdfData) {
       y -= rowHeight;
     }
   }
-  function writeBreakdown(table: NonNullable<QuotePdfData["breakdown"]>) {
+  function writeBreakdown(table: NonNullable<ExperiencePdfData["breakdown"]>) {
     const widths = [column - 230, 58, 86, 86];
     const left = [
       margin,
@@ -222,11 +256,264 @@ export async function renderQuotePdf(data: QuotePdfData) {
       drawRow(cells, height, false, index % 2 === 1);
     });
   }
+  function writeSupplierForm(
+    services: NonNullable<ExperiencePdfData["supplierServices"]>,
+  ) {
+    const form = pdf.getForm();
+    const autoFitFields: PDFTextField[] = [];
+    const padding = 8;
+    const availabilityPlaceholder = "Selezioni…";
+    const columns = [
+      {
+        key: "tariffa_oraria",
+        label: "Tariffa oraria",
+        unit: "€/ora",
+        width: 79,
+        max: 11,
+      },
+      {
+        key: "tariffa_forfait",
+        label: "Tariffa a forfait",
+        unit: "€ totali",
+        width: 88,
+        max: 11,
+      },
+      {
+        key: "disponibilita",
+        label: "Disponibilità",
+        width: 106,
+        options: [
+          availabilityPlaceholder,
+          "Disponibile",
+          "Da confermare",
+          "Non disponibile",
+        ],
+      },
+      {
+        key: "orario",
+        label: "Giorno e orario",
+        unit: "Facoltativi",
+        width: 101,
+        max: 48,
+        multiline: true,
+      },
+    ];
+    const serviceWidth =
+      column - columns.reduce((sum, item) => sum + item.width, 0);
+
+    function mountField(
+      input: PDFTextField | PDFDropdown,
+      label: string,
+      x: number,
+      top: number,
+      width: number,
+      fieldHeight: number,
+    ) {
+      input.acroField.dict.set(PDFName.of("TU"), PDFHexString.fromText(label));
+      input.addToPage(page, {
+        x,
+        y: top - fieldHeight,
+        width,
+        height: fieldHeight,
+        font: regular,
+        textColor: dark,
+        borderColor: gold,
+        borderWidth: 0.7,
+        backgroundColor: rgb(1, 0.99, 0.97),
+      });
+      input.setFontSize(11.5);
+    }
+    function field(
+      name: string,
+      label: string,
+      x: number,
+      top: number,
+      width: number,
+      fieldHeight: number,
+      max: number,
+      multiline = false,
+    ) {
+      const input = form.createTextField(name);
+      input.setMaxLength(max);
+      input.disableScrolling();
+      if (multiline) {
+        input.enableMultiline();
+        autoFitFields.push(input);
+      }
+      mountField(input, label, x, top, width, fieldHeight);
+    }
+    function tableHeader() {
+      const rowHeight = 36;
+      page.drawRectangle({
+        x: margin,
+        y: y - rowHeight,
+        width: column,
+        height: rowHeight,
+        color: dark,
+      });
+      let x = margin;
+      [
+        { label: "Servizio richiesto", width: serviceWidth, unit: undefined },
+        ...columns,
+      ].forEach((item) => {
+        page.drawText(item.label, {
+          x: x + padding,
+          y: y - (item.unit ? 15 : 22),
+          size: 11,
+          font: bold,
+          color: rgb(1, 1, 1),
+        });
+        if (item.unit) {
+          page.drawText(item.unit, {
+            x: x + padding,
+            y: y - 28,
+            size: 9.5,
+            font: regular,
+            color: rgb(0.92, 0.9, 0.85),
+          });
+        }
+        x += item.width;
+      });
+      y -= rowHeight;
+    }
+
+    ensure(150);
+    y -= 12;
+    const taxLabel = "Importi IVA inclusa";
+    page.drawText(taxLabel, {
+      x: width - margin - bold.widthOfTextAtSize(taxLabel, 11),
+      y: y - 15,
+      font: bold,
+      size: 11,
+      color: gold,
+    });
+    write("Servizi da quotare", 15, bold);
+    write(
+      "Per ogni servizio, scelga la disponibilità dal menu e indichi una o entrambe le tariffe.",
+      11.5,
+      regular,
+      muted,
+    );
+    write(
+      "Salvi il PDF compilato e lo restituisca a SILKinCOM.",
+      11.5,
+      regular,
+      muted,
+    );
+    y -= 6;
+    tableHeader();
+    services.forEach(({ title, format }, index) => {
+      const names = wrap(title, 11.5, bold, serviceWidth - padding * 2);
+      const formats = format
+        ? wrap(format, 10.5, regular, serviceWidth - padding * 2)
+        : [];
+      const rowHeight = Math.max(
+        52,
+        names.length * 15 + formats.length * 14 + 16,
+      );
+      if (y - rowHeight < 56) {
+        ensure(rowHeight + 64);
+        write("Servizi da quotare", 15, bold);
+        y -= 5;
+        tableHeader();
+      }
+      page.drawRectangle({
+        x: margin,
+        y: y - rowHeight,
+        width: column,
+        height: rowHeight,
+        color: index % 2 === 0 ? rgb(0.97, 0.95, 0.91) : rgb(1, 1, 1),
+      });
+      names.forEach((line, lineIndex) => {
+        page.drawText(line, {
+          x: margin + padding,
+          y: y - 19 - lineIndex * 15,
+          size: 11.5,
+          font: bold,
+          color: dark,
+        });
+      });
+      formats.forEach((line, lineIndex) => {
+        page.drawText(line, {
+          x: margin + padding,
+          y: y - 19 - names.length * 15 - lineIndex * 14,
+          size: 10.5,
+          font: regular,
+          color: muted,
+        });
+      });
+      let x = margin + serviceWidth;
+      for (const item of columns) {
+        const fieldHeight = item.multiline ? 46 : 30;
+        const name = `servizio_${index + 1}_${item.key}`;
+        const label = `${item.label}${item.unit ? ` (${item.unit})` : ""} – ${title}`;
+        const top = y - (rowHeight - fieldHeight) / 2;
+        if (item.options) {
+          const dropdown = form.createDropdown(name);
+          dropdown.setOptions(item.options);
+          dropdown.select(availabilityPlaceholder);
+          mountField(dropdown, label, x + 4, top, item.width - 8, fieldHeight);
+        } else {
+          field(
+            name,
+            label,
+            x + 4,
+            top,
+            item.width - 8,
+            fieldHeight,
+            item.max,
+            item.multiline,
+          );
+        }
+        x += item.width;
+      }
+      y -= rowHeight;
+    });
+
+    ensure(242);
+    y -= 18;
+    write("Dettagli dell’offerta", 15, bold);
+    const gap = 12;
+    const shortWidth = (column - gap) / 2;
+    const shortFields = [
+      { key: "aliquota_iva", label: "Aliquota IVA applicata (%)" },
+      { key: "validita", label: "Offerta valida fino al" },
+    ];
+    shortFields.forEach((item, index) => {
+      const x = margin + index * (shortWidth + gap);
+      page.drawText(item.label, {
+        x,
+        y: y - 11,
+        font: bold,
+        size: 11,
+        color: dark,
+      });
+      field(item.key, item.label, x, y - 16, shortWidth, 27, 48);
+    });
+    y -= 51;
+
+    for (const item of [
+      { key: "inclusioni_extra", label: "Servizi inclusi ed eventuali extra" },
+      { key: "condizioni", label: "Condizioni di annullamento e altre note" },
+    ]) {
+      ensure(76);
+      write(item.label, 11, bold);
+      field(item.key, item.label, margin, y, column, 48, 200, true);
+      y -= 58;
+    }
+    form.updateFieldAppearances(regular);
+    form.acroForm.dict.set(
+      PDFName.of("DR"),
+      pdf.context.obj({ Font: { [regular.name]: regular.ref } }),
+    );
+    // Keep the printable appearances and let the PDF reader size multiline input.
+    for (const input of autoFitFields) input.acroField.setFontSize(0);
+  }
   header();
   write(data.status, 10, bold, gold);
   write(data.title, 28, display);
   y -= 15;
-  const summaryHeight = data.validity ? 98 : 81;
+  const summaryHeight = isSupplierForm ? 64 : data.summary.note ? 98 : 81;
   ensure(summaryHeight + 14);
   const summaryBottom = y - summaryHeight;
   page.drawRectangle({
@@ -237,11 +524,11 @@ export async function renderQuotePdf(data: QuotePdfData) {
     color: rgb(0.97, 0.95, 0.91),
   });
   y -= 12;
-  write(data.totalLabel, 11, bold, gold);
-  write(data.total, 28, display);
-  if (data.validity) write(data.validity, 11, regular, muted);
+  write(data.summary.label, 11, bold, gold);
+  write(data.summary.value, isSupplierForm ? 21 : 28, display);
+  if (data.summary.note) write(data.summary.note, 11, regular, muted);
   y = summaryBottom - 12;
-  write(data.reference, 9, regular, muted);
+  if (data.reference) write(data.reference, 9, regular, muted);
   if (data.facts?.length) {
     y -= 8;
     writeFacts(data.facts);
@@ -251,6 +538,7 @@ export async function renderQuotePdf(data: QuotePdfData) {
     write(data.warning, 11, bold, gold);
   }
   if (data.breakdown?.rows.length) writeBreakdown(data.breakdown);
+  if (data.supplierServices?.length) writeSupplierForm(data.supplierServices);
   for (const section of data.sections) {
     if (!section.paragraphs.length) continue;
     ensure(65);
@@ -260,14 +548,18 @@ export async function renderQuotePdf(data: QuotePdfData) {
     for (const paragraph of section.paragraphs) write(paragraph, 11, regular);
   }
   const pages = pdf.getPages();
+  const footerReference = isSupplierForm ? `  |  ${data.summary.value}` : "";
   pages.forEach((item, index) =>
-    item.drawText(`SILKinCOM Experience  |  ${index + 1} / ${pages.length}`, {
-      x: margin,
-      y: 30,
-      font: regular,
-      size: 9,
-      color: muted,
-    }),
+    item.drawText(
+      `SILKinCOM Experience  |  ${index + 1} / ${pages.length}${footerReference}`,
+      {
+        x: margin,
+        y: 30,
+        font: regular,
+        size: 9,
+        color: muted,
+      },
+    ),
   );
   pdf.setTitle("SILKinCOM Experience");
   pdf.setAuthor("SILKinCOM");

@@ -4,6 +4,7 @@ Requires Python Playwright and Chrome/Chromium. Run from any directory:
   python3 scripts/experience/test-admin-e2e.py
 """
 import os
+from io import BytesIO
 from pathlib import Path
 import shutil
 import socket
@@ -11,6 +12,7 @@ import subprocess
 import tempfile
 import time
 import urllib.request
+from zipfile import ZipFile
 
 from playwright.sync_api import expect, sync_playwright
 
@@ -21,15 +23,41 @@ QUOTE = "33333333-3333-4333-8333-333333333333"
 DATE = "2026-11-16T12:00:00.000Z"
 PRIVATE = "Costo riservato del fornitore"
 PUBLIC = "Escursione privata con capitano"
+SUPPLIER_CODE = "EXP-F-ABCDEF123456"
+SUPPLIER = "44444444-4444-4444-8444-444444444444"
+OTHER_SUPPLIER = "66666666-6666-4666-8666-666666666666"
+OTHER_CODE = "EXP-F-ABCDEF654321"
+SERVICE = "55555555-5555-4555-8555-555555555555"
+PAYMENT_LINK = "https://buy.stripe.com/test_123456789"
 
 
 def run(base):
     trip = {
         "id": TRIP, "user_id": OWNER, "title": "Viaggio demo sul Lago di Como",
-        "payload": {"version": 1, "ids": ["boat:captain"], "lake": "Lago di Como"},
+        "payload": {
+            "version": 1, "ids": ["activity:boat", "boat:captain", "service:pickup"], "lake": "Lago di Como",
+            "details": {
+                "arrival": "", "departure": "", "guests": 2, "budget": "",
+                "experienceStyle": "", "arrivalPoint": "Stazione di Como San Giovanni",
+                "hotel": "Hotel demo, Como centro", "stops": [], "notes": "",
+            },
+        },
         "created_at": DATE, "updated_at": DATE, "experience_quotes": [],
         "customer": {"full_name": "Cliente demo", "email": "demo@example.invalid"},
     }
+    contact = {
+        "id": "19", "nome": "Ospite di prova", "cognome": None, "email": "ospite@example.invalid",
+        "telefono": None, "messaggio": "Richiesta di prova", "status": "new",
+        "created_at": DATE, "updated_at": DATE,
+    }
+    suppliers = [{
+        "id": SUPPLIER, "name": "Fornitore demo", "lake": "Como", "contact_name": "",
+        "email": "predefinito@example.invalid", "phone": "", "website": "", "status": "confirmed", "notes": "",
+        "created_at": DATE, "updated_at": DATE,
+    }]
+    suppliers.append({**suppliers[0], "id": OTHER_SUPPLIER, "name": "Secondo fornitore demo", "email": ""})
+    recipients = {}
+    services = []
     saved = None
 
     def mock(route):
@@ -38,16 +66,71 @@ def run(base):
         if not request.url.startswith(base + "/"):
             return route.abort()
         if request.url.startswith(base + "/api/admin/experience?"):
-            rows = [trip] if "resource=trips" in request.url else []
+            rows = (
+                [trip] if "resource=trips" in request.url
+                else [contact] if "resource=requests" in request.url
+                and ("status=" not in request.url or "status=" + contact["status"] in request.url)
+                else suppliers if "resource=suppliers" in request.url
+                else services if "resource=services" in request.url
+                else []
+            )
             return route.fulfill(json={"rows": rows, "total": len(rows), "page": 0})
+        if request.url == base + f"/api/admin/experience/trips/{TRIP}/supplier-pdf":
+            assert request.method == "POST"
+            data = request.post_data_json
+            if "requests" in data:
+                assert data == {"trip_version": DATE, "requests": [
+                    {"supplier_id": SUPPLIER, "services": ["boat:captain"]},
+                    {"supplier_id": OTHER_SUPPLIER, "services": ["service:pickup"]},
+                ]}
+                buffer = BytesIO()
+                with ZipFile(buffer, "w") as archive:
+                    for code in (SUPPLIER_CODE, OTHER_CODE):
+                        archive.writestr(f"SILKinCOM-{code}.pdf", b"%PDF-1.4\n%%EOF\n")
+                return route.fulfill(body=buffer.getvalue(), headers={
+                    "Content-Type": "application/zip",
+                    "X-Experience-Request-Codes": ",".join([SUPPLIER_CODE, OTHER_CODE]),
+                })
+            if data.get("action") == "email":
+                supplier_id = data["supplier_id"]
+                expected = {
+                    SUPPLIER: ("boat:captain", "aggiornato@example.invalid", SUPPLIER_CODE),
+                    OTHER_SUPPLIER: ("service:pickup", "nuovo@example.invalid", OTHER_CODE),
+                }
+                service, address, code = expected[supplier_id]
+                assert data == {"action": "email", "trip_version": DATE,
+                    "supplier_id": supplier_id, "services": [service], "email": address}
+                recipients[supplier_id] = address
+                return route.fulfill(json={"ok": True, "code": code})
+            assert data == {
+                "trip_version": DATE,
+                "services": ["boat:captain"],
+                "supplier_id": SUPPLIER,
+            }
+            return route.fulfill(
+                body=b"%PDF-1.4\n%%EOF\n",
+                headers={"Content-Type": "application/pdf", "X-Experience-Request-Code": SUPPLIER_CODE},
+            )
         if request.url == base + "/api/admin/experience":
             body = request.post_data_json
+            if body["action"] == "request_status":
+                assert body["status"] == "in_progress" and body["id"] == contact["id"]
+                contact["status"] = body["status"]
+                return route.fulfill(json={"ok": True, "id": int(body["id"])})
+            if body["action"] == "service":
+                assert body["data"]["experience_id"] == "custom"
+                services.append({"id": SERVICE, **body["data"], "created_at": DATE, "updated_at": DATE})
+                return route.fulfill(json={"ok": True, "id": SERVICE})
             assert body["action"] == "quote"
             q = body["data"]
             assert q["trip_id"] == TRIP and q["trip_version"] == DATE
             assert q["items"][0]["quantity"] == 2
             assert q["items"][0]["price_cents"] == 12500
             assert q["items"][0]["cost_cents"] == 7000
+            assert q["items"][0]["supplier_id"] == SUPPLIER
+            assert q["inclusions"] == ["Barca privata", PUBLIC]
+            assert "Acconto del 50%" in q["conditions"]
+            assert PAYMENT_LINK in q["conditions"]
             assert q["internal_notes"] == PRIVATE
             if q["publish"]:
                 assert q["id"] == QUOTE and q["quote_version"] == DATE
@@ -81,20 +164,95 @@ def run(base):
         context.route("**/*", mock)
         page = context.new_page()
         page.goto(base + "/it/qa/admin", wait_until="networkidle")
+        expect(page.get_by_role("heading", name="Ospite di prova")).to_be_visible()
+        page.get_by_role("button", name="Leggi la richiesta").click()
+        expect(page.get_by_text("Stato interno. Il cambio di stato non invia email al cliente.")).to_be_visible()
+        page.get_by_label("Stato della richiesta").select_option("in_progress")
+        expect(page.get_by_text("Stato della richiesta aggiornato.")).to_be_visible()
+        page.get_by_label("Filtra per stato").select_option("new")
+        expect(page.get_by_role("heading", name="Nessun risultato")).to_be_visible()
+        page.get_by_role("button", name="Listino interno").click()
+        expect(page.get_by_role("button", name="Aggiungi al listino: Navetta hotel ↔ pontile")).to_be_visible()
+        page.get_by_role("button", name="Nuova voce di listino").click()
+        expect(page.get_by_label("Esperienza di riferimento")).to_have_count(0)
+        page.get_by_label("Nome della voce").fill("Navetta privata speciale")
+        page.get_by_label("Costo a noi (€)").fill("45")
+        page.get_by_label("Prezzo cliente (€)").fill("69")
+        page.locator('select[name="supplier_id"]').select_option(SUPPLIER)
+        page.get_by_role("button", name="Salva", exact=True).click()
+        expect(page.get_by_role("heading", name="Navetta privata speciale")).to_be_visible()
+        page.get_by_role("button", name="Pratiche Experience").click()
         page.get_by_role("button", name="Viaggi e preventivi").click()
         page.get_by_role("button", name="Apri viaggio e preventivi").click()
+        transfer = page.get_by_role("region", name="Trasferimento all’arrivo")
+        expect(transfer).to_contain_text("Da · aeroporto o stazione")
+        expect(transfer).to_contain_text("Stazione di Como San Giovanni")
+        expect(transfer).to_contain_text("A · hotel o prima tappa")
+        expect(transfer).to_contain_text("Hotel demo, Como centro")
+        expect(page.get_by_text("Nessuna tappa indicata", exact=True)).to_be_visible()
+        expect(page.get_by_text("Nessuna nota del cliente", exact=True)).to_be_visible()
+        page.get_by_text("Crea PDF per fornitore", exact=True).click()
+        download_button = page.get_by_role("button", name="Scarica PDF per fornitore")
+        expect(download_button).to_be_disabled()
+        expect(page.get_by_role("checkbox", name="Il lago, dalla barca")).to_have_count(0)
+        page.get_by_role("checkbox", name="Il lago con capitano").check()
+        page.get_by_label("Fornitore da consultare").select_option(SUPPLIER)
+        with page.expect_download() as supplier_download:
+            download_button.click()
+        assert supplier_download.value.suggested_filename == f"SILKinCOM-{SUPPLIER_CODE}.pdf"
+        expect(page.get_by_text(SUPPLIER_CODE, exact=True)).to_be_visible()
+        page.get_by_role("button", name="Aggiungi alla lista dei PDF").click()
+        page.get_by_label("Fornitore da consultare").select_option(OTHER_SUPPLIER)
+        page.get_by_role("checkbox", name="Il lago con capitano").uncheck()
+        page.get_by_role("checkbox", name="Pick-up in aeroporto o in stazione").check()
+        page.get_by_role("button", name="Aggiungi alla lista dei PDF").click()
+        region = page.get_by_role("region", name="PDF per i fornitori")
+        with page.expect_download() as zip_download:
+            region.get_by_role("button", name="Scarica tutti i PDF (2)").click()
+        with ZipFile(zip_download.value.path()) as archive:
+            assert set(archive.namelist()) == {f"SILKinCOM-{code}.pdf" for code in (SUPPLIER_CODE, OTHER_CODE)}
+        for vendor, initial, address in (
+            ("Fornitore demo", "predefinito@example.invalid", "aggiornato@example.invalid"),
+            ("Secondo fornitore demo", "", "nuovo@example.invalid"),
+        ):
+            row = region.get_by_role("listitem").filter(has=page.get_by_text(vendor, exact=True))
+            row.get_by_role("button", name="Invia email", exact=True).click()
+            recipient = row.get_by_role("textbox", name=f"Email per {vendor}")
+            expect(recipient).to_have_value(initial)
+            recipient.fill(address)
+            row.get_by_role("button", name="Invia richiesta con PDF").click()
+            expect(row.get_by_role("status")).to_contain_text(address)
+            row.get_by_role("button", name="Chiudi", exact=True).click()
+        assert len(recipients) == 2
+        page.get_by_text("Crea PDF per fornitore", exact=True).click()
         page.get_by_role("button", name="Nuovo preventivo").click()
         expect(page.get_by_text("demo@example.invalid", exact=True)).to_be_visible()
         expect(page.locator('[aria-current="step"]')).to_have_text("1. Compila")
         table = page.get_by_role("table", name="Voci del preventivo")
         expect(table.get_by_role("columnheader", name="Servizio", exact=True)).to_be_visible()
+        page.get_by_text("Scegli i servizi da quotare", exact=False).click()
+        expect(page.get_by_role("checkbox", name="Navetta privata speciale", exact=False)).to_be_visible()
+        page.get_by_role("checkbox", name="Navetta privata speciale", exact=False).check()
+        page.get_by_role("button", name="Aggiungi al preventivo (1)").click()
+        expect(table.get_by_label("Costo a noi")).to_have_value("45")
+        expect(table.get_by_label("Prezzo unitario cliente")).to_have_value("69")
+        expect(table.get_by_label("Fornitore (interno)")).to_have_value(SUPPLIER)
+        page.get_by_label("Categoria dei servizi da quotare").select_option("boat")
+        page.get_by_role("checkbox", name="Il lago con capitano", exact=False).check()
+        page.get_by_role("button", name="Aggiungi al preventivo (1)").click()
+        table.get_by_role("button", name="Rimuovi voce 1").click()
+        expect(table.get_by_label("Prezzo unitario cliente")).to_have_value("")
         table.get_by_label("Servizio 1").fill("Barca privata")
+        table.get_by_label("Fornitore (interno)").select_option(SUPPLIER)
         table.get_by_label("Quantità").fill("2")
         table.get_by_label("Prezzo unitario cliente").fill("125")
         table.get_by_label("Costo a noi").fill("70")
         expect(table.get_by_role("status")).to_contain_text("250,00")
-        page.get_by_label("Servizi inclusi").fill(PUBLIC)
+        expect(page.get_by_role("checkbox", name="Barca privata", exact=True)).to_be_checked()
+        page.get_by_text("Inclusioni aggiuntive ed esclusioni", exact=True).click()
+        page.get_by_label("Inclusioni aggiuntive").fill(PUBLIC)
         page.get_by_label("Condizioni visibili").fill("Disponibilità da confermare.")
+        page.get_by_label("Link Stripe dell’acconto").fill(PAYMENT_LINK)
         page.get_by_label("Valido fino al").fill("2099-11-30T18:00")
         page.get_by_text("Note riservate all’admin", exact=True).click()
         page.get_by_label("Note interne riservate").fill(PRIVATE)
@@ -117,6 +275,7 @@ def run(base):
         assert page.locator("html").evaluate("(el) => el.scrollWidth <= innerWidth")
         page.get_by_role("button", name="Rivedi il preventivo").click()
         expect(page.get_by_role("heading", name="Anteprima per il cliente")).to_be_visible()
+        expect(page.get_by_text("Emittente del preventivo")).to_be_visible()
         breakdown = page.get_by_role("region", name="Dettaglio dei servizi")
         expect(breakdown.get_by_text("Barca privata", exact=True)).to_be_visible()
         expect(breakdown.get_by_text("2 × 125,00", exact=False)).to_be_visible()
@@ -131,6 +290,7 @@ def run(base):
         customer.reload(wait_until="networkidle")
         expect(customer.get_by_text(PUBLIC, exact=True)).to_be_visible()
         expect(customer.get_by_text("250,00", exact=False)).to_be_visible()
+        expect(customer.get_by_role("link", name="Stripe")).to_have_attribute("href", PAYMENT_LINK)
         expect(customer.get_by_role("link", name="Scarica PDF")).to_have_attribute(
             "href", f"/api/experience/quotes/{QUOTE}/pdf?locale=it"
         )
@@ -203,7 +363,7 @@ def main():
             finally:
                 server.terminate()
                 server.wait(timeout=15)
-    print("Experience E2E passed: desktop table, mobile layout, draft, publish and customer privacy.")
+    print("Experience E2E passed: individual and grouped PDFs, edited and newly entered supplier email, admin and customer quote flow.")
 
 
 if __name__ == "__main__":

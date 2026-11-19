@@ -41,8 +41,8 @@ function getResend() {
 // guessing.
 type ResendSendArgs = Parameters<Resend['emails']['send']>[0];
 
-async function sendEmail(opts: ResendSendArgs) {
-  const result = await getResend().emails.send(opts);
+async function sendEmail(opts: ResendSendArgs, options?: Parameters<Resend['emails']['send']>[1]) {
+  const result = await getResend().emails.send(opts, options);
   if (result.error) {
     const recipient = Array.isArray(opts.to) ? opts.to.join(',') : opts.to;
     const context = {
@@ -93,6 +93,35 @@ const B2B_FROM_EMAIL = DOMAIN_VERIFIED
 const B2B_REPLY_TO =
   process.env.B2B_REPLY_TO_EMAIL ||
   (DOMAIN_VERIFIED ? 'b2b@silkincom.com' : B2B_EMAIL);
+
+export async function sendExperienceSupplierQuoteEmail(data: {
+  recipient: string;
+  code: string;
+  pdf: Uint8Array;
+  deliveryKey: string;
+}) {
+  if (!DOMAIN_VERIFIED || !process.env.RESEND_API_KEY)
+    throw new Error('Experience supplier email is not configured');
+  const result = await sendEmail({
+    from: B2B_FROM_EMAIL,
+    to: data.recipient,
+    replyTo: B2B_REPLY_TO,
+    subject: `SILKinCOM Experience · Richiesta di quotazione ${data.code}`,
+    text: [
+      'Buongiorno,',
+      'in allegato trova i servizi per cui SILKinCOM desidera ricevere disponibilità e tariffa.',
+      'Può compilare il PDF con le condizioni proposte e restituirlo rispondendo a questa email.',
+      `Il codice da riportare nella risposta è ${data.code}.`,
+      'Grazie,\nSILKinCOM Experience',
+    ].join('\n\n'),
+    attachments: [{
+      filename: `SILKinCOM-${data.code}.pdf`,
+      content: Buffer.from(data.pdf),
+    }],
+  }, { idempotencyKey: data.deliveryKey });
+  if (!result.data?.id) throw new Error('Missing Experience supplier email confirmation');
+  return result.data.id;
+}
 
 export type B2BInquiry = {
   nome: string;

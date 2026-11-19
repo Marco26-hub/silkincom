@@ -95,6 +95,12 @@ export async function GET(req: NextRequest) {
   const tripId = req.nextUrl.searchParams.get("trip");
   if (tripId && !z.string().uuid().safeParse(tripId).success)
     return json({ error: "Viaggio non valido." }, 400);
+  const requestStatus = req.nextUrl.searchParams.get("status");
+  if (
+    requestStatus &&
+    !z.enum(["new", "in_progress", "resolved"]).safeParse(requestStatus).success
+  )
+    return json({ error: "Stato non valido." }, 400);
   try {
     const db = createServiceClient();
     const table = {
@@ -110,8 +116,10 @@ export async function GET(req: NextRequest) {
           ? "id,nome,cognome,email,telefono,messaggio,status,created_at,updated_at"
           : "*";
     let query = db.from(table).select(fields, { count: "exact" });
-    if (resource === "requests")
+    if (resource === "requests") {
       query = query.like("messaggio", "SILKinCOM EXPERIENCE%");
+      if (requestStatus) query = query.eq("status", requestStatus);
+    }
     if (tripId && resource === "trips") query = query.eq("id", tripId);
     if (search) {
       const escaped = search.replace(/[\\%_]/g, "\\$&");
@@ -267,7 +275,7 @@ export async function POST(req: NextRequest) {
           },
           409,
         );
-      id = result.data.id;
+      id = contactIdSchema.parse(result.data.id);
     } else {
       const table =
         input.action === "supplier"

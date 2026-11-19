@@ -1,4 +1,8 @@
 import "server-only";
+import {
+  experienceIssuer,
+  splitQuoteConditions,
+} from "@/lib/experience-payment";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { requireAdminApi } from "@/lib/admin-api";
@@ -182,6 +186,7 @@ export async function downloadExperienceQuote(
           "La validità del preventivo è scaduta. Contattateci per una nuova conferma.",
         ),
       );
+    const terms = splitQuoteConditions(quote.conditions);
     const bytes = await renderQuotePdf({
       title: quote.experience_trips.title,
       totalLabel: t("Totale del preventivo"),
@@ -217,7 +222,21 @@ export async function downloadExperienceQuote(
           heading: t("Extra ed esclusioni"),
           paragraphs: quote.exclusions.map((item) => `• ${item}`),
         },
-        { heading: t("Condizioni"), paragraphs: [quote.conditions] },
+        {
+          heading: t("Condizioni"),
+          paragraphs: [
+            terms.conditions,
+            ...(terms.payment ? [terms.payment] : []),
+          ],
+        },
+        {
+          heading: experienceIssuer.name,
+          paragraphs: [
+            experienceIssuer.address,
+            `VAT · ${experienceIssuer.vat}`,
+            experienceIssuer.email,
+          ],
+        },
       ],
     });
     return new NextResponse(Buffer.from(bytes), {

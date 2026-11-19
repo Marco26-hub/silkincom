@@ -8,7 +8,27 @@ import {
 } from "react";
 import { z } from "zod";
 import { Link } from "@/i18n/navigation";
-import { Plus, RefreshCw, ArrowLeft, Compass, X } from "lucide-react";
+import { Plus, RefreshCw, ArrowLeft, Compass, X, FileDown } from "lucide-react";
+import {
+  BOAT_PACKAGES,
+  EXPERIENCES,
+  EXPERIENCE_CATEGORIES,
+  LOGISTICS,
+} from "@/data/experience-content";
+import {
+  MAX_SUPPLIER_REQUESTS,
+  supplierEmailInput,
+  supplierRequestServices,
+} from "@/lib/experience-supplier-request";
+import {
+  combineQuoteConditions,
+  experienceIssuer,
+  quotePaymentMethods,
+  quotePaymentTerms,
+  splitQuoteConditions,
+  stripeQuoteUrl,
+  type QuotePaymentMethod,
+} from "@/lib/experience-payment";
 import {
   resourceSchemas,
   experienceLabels,
@@ -19,6 +39,8 @@ import {
   serviceInput,
   quoteInput,
   quoteTotals,
+  contactIdSchema,
+  customExperienceService,
   type Resource,
   type Supplier,
   type Service,
@@ -28,8 +50,7 @@ import {
   type QuoteItem,
 } from "@/lib/experience-admin";
 const tabs = {
-  requests: "Richieste",
-  trips: "Viaggi e preventivi",
+  requests: "Pratiche Experience",
   services: "Listino interno",
   suppliers: "Fornitori",
 };
@@ -38,6 +59,72 @@ const cls =
 const button =
   "inline-flex min-h-12 items-center justify-center gap-2 rounded-sm border border-soft-black/25 px-4 py-3 text-sm font-medium disabled:opacity-50 hover:border-gold-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-dark";
 const primary = button + " bg-soft-black text-white hover:bg-soft-black/85";
+const catalogGroups = [
+  { id: "boat", label: "Formule in barca" },
+  ...EXPERIENCE_CATEGORIES.filter(({ id }) => id !== "selection"),
+  { id: "logistics", label: "Trasferimenti e soggiorno" },
+];
+type ServiceTemplate = {
+  key: string;
+  experienceId: string;
+  group: string;
+  title: string;
+  description: string;
+  lake: Service["lake"];
+  unit: Service["unit"];
+};
+const serviceCatalog: ServiceTemplate[] = [
+  ...BOAT_PACKAGES.map(
+    (item): ServiceTemplate => ({
+      key: `boat:${item.id}`,
+      experienceId: `boat:${item.id}`,
+      group: "boat",
+      title: item.title,
+      description: item.summary,
+      lake: "Entrambi",
+      unit: "barca",
+    }),
+  ),
+  ...EXPERIENCES.map(
+    (item): ServiceTemplate => ({
+      key: `activity:${item.id}`,
+      experienceId: `activity:${item.id}`,
+      group: item.category,
+      title: item.title,
+      description: item.summary,
+      lake:
+        item.id === "milano"
+          ? "Milano"
+          : item.lakes.length > 1
+            ? "Entrambi"
+            : item.lakes[0] === "como"
+              ? "Como"
+              : "Maggiore",
+      unit: item.id === "boat" ? "barca" : "servizio",
+    }),
+  ),
+  ...LOGISTICS.map(
+    (item): ServiceTemplate => ({
+      key: `service:${item.id}`,
+      experienceId: `service:${item.id}`,
+      group: "logistics",
+      title: item.title,
+      description: item.summary,
+      lake: "Da definire",
+      unit: "servizio",
+    }),
+  ),
+  {
+    key: "transfer:shuttle",
+    experienceId: customExperienceService,
+    group: "logistics",
+    title: "Navetta hotel ↔ pontile",
+    description:
+      "Trasferimento di andata e ritorno, con hotel e pontile da indicare nella voce del preventivo.",
+    lake: "Da definire",
+    unit: "servizio",
+  },
+];
 const money = (value: number | null) =>
   value === null
     ? "Da definire"
@@ -95,26 +182,43 @@ async function apiSave(payload: unknown) {
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || "Salvataggio non riuscito.");
-  return z.object({ ok: z.literal(true), id: z.string().uuid() }).parse(data);
+  return z.object({ ok: z.literal(true), id: contactIdSchema }).parse(data);
 }
 export function ExperienceManager() {
   const [tab, setTab] = useState<Resource>("requests");
-  const [rows, setRows] = useState<unknown[]>([]);
+  const [loaded, setLoaded] = useState<{
+    resource: Resource;
+    rows: unknown[];
+    total: number;
+  } | null>(null);
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [editing, setEditing] = useState<Supplier | Service | "new" | null>(
     null,
   );
+  const [serviceTemplate, setServiceTemplate] =
+    useState<ServiceTemplate | null>(null);
   const [trip, setTrip] = useState<AdminTrip | null>(null);
   const [quote, setQuote] = useState<AdminQuote | "new" | null>(null);
   const [tripFilter, setTripFilter] = useState("");
+  const [requestFilter, setRequestFilter] = useState("");
+  const [recordsView, setRecordsView] = useState<"list" | "cards">("list");
+  const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
+  const loadSequence = useRef(0);
+  const pendingOpen = useRef("");
+  const current = loaded?.resource === tab ? loaded : null;
+  const rows = current?.rows ?? [];
+  const total = current?.total ?? 0;
+  const sectionLoading = loading || (loaded !== null && !current);
   const load = useCallback(
     async (signal?: AbortSignal) => {
+      const generation = ++loadSequence.current;
+      const isCurrent = () =>
+        !signal?.aborted && generation === loadSequence.current;
       setLoading(true);
       setError("");
       try {
@@ -124,6 +228,8 @@ export function ExperienceManager() {
           search: query,
         });
         if (tab === "trips" && tripFilter) params.set("trip", tripFilter);
+        if (tab === "requests" && requestFilter)
+          params.set("status", requestFilter);
         const response = await fetch(`/api/admin/experience?${params}`, {
           cache: "no-store",
           signal,
@@ -138,20 +244,32 @@ export function ExperienceManager() {
             page: z.number().int(),
           })
           .parse(data);
-        setRows(parsed.rows);
-        setTotal(parsed.total);
+        if (!isCurrent()) return;
+        setLoaded({ resource: tab, ...parsed });
+        if (
+          tab === "trips" &&
+          tripFilter &&
+          pendingOpen.current === tripFilter
+        ) {
+          pendingOpen.current = "";
+          const linked = parsed.rows
+            .map((row) => resourceSchemas.trips.parse(row))
+            .find((row) => row.id === tripFilter);
+          if (linked) setTrip(linked);
+          else setError("Il viaggio associato non è più disponibile.");
+        }
       } catch (cause) {
-        if (signal?.aborted) return;
+        if (!isCurrent()) return;
         console.error("[experience-admin] Load failed:", cause);
-        setRows([]);
+        setLoaded({ resource: tab, rows: [], total: 0 });
         setError(
           cause instanceof Error ? cause.message : "Caricamento non riuscito.",
         );
       } finally {
-        if (!signal?.aborted) setLoading(false);
+        if (isCurrent()) setLoading(false);
       }
     },
-    [tab, page, query, tripFilter],
+    [tab, page, query, tripFilter, requestFilter],
   );
   useEffect(() => {
     const controller = new AbortController();
@@ -159,14 +277,18 @@ export function ExperienceManager() {
     return () => controller.abort();
   }, [load]);
   function changeTab(next: Resource) {
+    pendingOpen.current = "";
     setTab(next);
     setPage(0);
     setQuery("");
     setSearch("");
     setEditing(null);
+    setServiceTemplate(null);
     setTrip(null);
     setQuote(null);
     setTripFilter("");
+    setRequestFilter("");
+    setSelectedRequest(null);
     setNotice("");
   }
   async function status(request: AdminRequest, next: string) {
@@ -189,6 +311,7 @@ export function ExperienceManager() {
   }
   async function saved(message = "Dati salvati.") {
     setEditing(null);
+    setServiceTemplate(null);
     setQuote(null);
     setTrip(null);
     setNotice(message);
@@ -196,6 +319,7 @@ export function ExperienceManager() {
   }
   function openLinkedTrip(id: string) {
     changeTab("trips");
+    pendingOpen.current = id;
     setTripFilter(id);
   }
   return (
@@ -218,20 +342,47 @@ export function ExperienceManager() {
       </header>
       <nav
         aria-label="Gestione Experience"
-        className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+        className="grid grid-cols-1 gap-2 sm:grid-cols-3"
       >
         {Object.entries(tabs).map(([key, label]) => (
           <button
             key={key}
             type="button"
             onClick={() => changeTab(key as Resource)}
-            aria-current={tab === key ? "page" : undefined}
-            className={`${button} ${tab === key ? "bg-soft-black text-white" : "bg-white"}`}
+            aria-current={
+              tab === key || (tab === "trips" && key === "requests")
+                ? "page"
+                : undefined
+            }
+            className={`${button} ${tab === key || (tab === "trips" && key === "requests") ? "bg-soft-black text-white" : "bg-white"}`}
           >
             {label}
           </button>
         ))}
       </nav>
+      {(tab === "requests" || tab === "trips") && (
+        <nav
+          aria-label="Viste delle pratiche Experience"
+          className="flex flex-wrap gap-2"
+        >
+          <button
+            type="button"
+            className={button}
+            aria-pressed={tab === "requests"}
+            onClick={() => changeTab("requests")}
+          >
+            Richieste ricevute
+          </button>
+          <button
+            type="button"
+            className={button}
+            aria-pressed={tab === "trips"}
+            onClick={() => changeTab("trips")}
+          >
+            Viaggi e preventivi
+          </button>
+        </nav>
+      )}
       {notice && (
         <p
           role="status"
@@ -243,9 +394,14 @@ export function ExperienceManager() {
       {error && <Alert>{error}</Alert>}
       {editing && (tab === "suppliers" || tab === "services") ? (
         <InternalEditor
+          key={serviceTemplate?.key ?? tab}
           resource={tab}
           record={editing}
-          onCancel={() => setEditing(null)}
+          serviceTemplate={serviceTemplate}
+          onCancel={() => {
+            setEditing(null);
+            setServiceTemplate(null);
+          }}
           onSaved={saved}
         />
       ) : trip ? (
@@ -254,14 +410,19 @@ export function ExperienceManager() {
             type="button"
             className={button}
             onClick={() => {
+              if (tripFilter) {
+                changeTab("requests");
+                return;
+              }
               setTrip(null);
               setQuote(null);
             }}
           >
             <ArrowLeft size={16} />
-            Torna ai viaggi
+            {tripFilter ? "Torna alle richieste" : "Torna ai viaggi"}
           </button>
           <TripDetails trip={trip} />
+          <SupplierPdf key={trip.id} trip={trip} />
           {quote ? (
             <QuoteEditor
               key={quote === "new" ? "new" : quote.id}
@@ -354,6 +515,57 @@ export function ExperienceManager() {
         </section>
       ) : (
         <>
+          {tab === "services" && (
+            <h2 className="font-display text-3xl">
+              Voci registrate nel listino
+            </h2>
+          )}
+          {(tab === "requests" || tab === "trips") && (
+            <div className="flex flex-wrap items-end gap-3">
+              <div
+                className="flex gap-2"
+                aria-label="Visualizzazione"
+                role="group"
+              >
+                <button
+                  type="button"
+                  aria-pressed={recordsView === "list"}
+                  className={`${button} ${recordsView === "list" ? "bg-soft-black text-white" : ""}`}
+                  onClick={() => setRecordsView("list")}
+                >
+                  Elenco compatto
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={recordsView === "cards"}
+                  className={`${button} ${recordsView === "cards" ? "bg-soft-black text-white" : ""}`}
+                  onClick={() => setRecordsView("cards")}
+                >
+                  Schede
+                </button>
+              </div>
+              {tab === "requests" && (
+                <Field label="Filtra per stato">
+                  <select
+                    value={requestFilter}
+                    className={cls}
+                    onChange={(event) => {
+                      setRequestFilter(event.target.value);
+                      setPage(0);
+                      setSelectedRequest(null);
+                    }}
+                  >
+                    <option value="">Tutti gli stati</option>
+                    {Object.entries(requestStatuses).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+              )}
+            </div>
+          )}
           <div className="flex flex-wrap items-end justify-between gap-3">
             <form
               onSubmit={(e) => {
@@ -386,7 +598,7 @@ export function ExperienceManager() {
                 type="button"
                 className={button}
                 onClick={() => void load()}
-                disabled={loading}
+                disabled={sectionLoading}
               >
                 <RefreshCw size={16} />
                 Aggiorna
@@ -411,11 +623,11 @@ export function ExperienceManager() {
             </button>
           )}
           <p className="text-sm text-soft-black/65">
-            {loading
+            {sectionLoading
               ? "Caricamento…"
               : `${total} risultati · Pagina ${page + 1}`}
           </p>
-          {loading ? (
+          {sectionLoading ? (
             <p role="status" className="border border-pearl-grey bg-white p-8">
               Caricamento della sezione…
             </p>
@@ -423,78 +635,62 @@ export function ExperienceManager() {
             <div className="border border-pearl-grey bg-white p-8">
               <h2 className="font-display text-2xl">Nessun risultato</h2>
               <p className="mt-2 text-base text-soft-black/70">
-                {query
-                  ? "Modifichi la ricerca."
+                {query || requestFilter
+                  ? "Modifichi la ricerca o il filtro."
                   : tab === "requests"
                     ? "Qui compariranno le richieste inviate dal modulo Experience, anche senza account."
                     : tab === "trips"
                       ? "Qui compariranno i programmi salvati dai clienti registrati. Salvare un viaggio non equivale a inviare una richiesta."
-                      : "Aggiunga la prima voce. Nessun costo o accordo viene impostato automaticamente."}
+                      : tab === "services"
+                        ? "Scelga un servizio dal catalogo qui sotto per creare la prima voce con i suoi prezzi."
+                        : "Aggiunga il primo fornitore."}
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div
+              className={
+                recordsView === "list" &&
+                (tab === "requests" || tab === "trips")
+                  ? "grid gap-2"
+                  : "grid gap-4 lg:grid-cols-2"
+              }
+            >
               {rows.map((value) => {
                 if (tab === "requests") {
                   const r = resourceSchemas.requests.parse(value);
-                  const linked = r.messaggio.match(
-                    /Viaggio account verificato: ([0-9a-f-]{36})/i,
-                  )?.[1];
                   return (
-                    <article
+                    <RequestCard
                       key={r.id}
-                      className="min-w-0 space-y-4 border border-pearl-grey bg-white p-5"
-                    >
-                      <h2 className="break-words font-display text-2xl">
-                        {[r.nome, r.cognome].filter(Boolean).join(" ") ||
-                          r.email}
-                      </h2>
-                      <p className="break-all text-sm">
-                        {r.email}
-                        {r.telefono ? ` · ${r.telefono}` : ""}
-                      </p>
-                      <p className="text-sm text-soft-black/65">
-                        {date(r.created_at)}
-                      </p>
-                      <RequestStatus request={r} onChange={status} />
-                      <details>
-                        <summary className="min-h-12 cursor-pointer py-3 text-sm font-medium">
-                          Leggi la richiesta
-                        </summary>
-                        <p className="whitespace-pre-wrap break-words text-sm leading-7">
-                          {r.messaggio}
-                        </p>
-                      </details>
-                      {linked ? (
-                        <button
-                          className={button}
-                          onClick={() => openLinkedTrip(linked)}
-                        >
-                          Apri il viaggio associato
-                        </button>
-                      ) : (
-                        <p className="text-sm leading-6 text-soft-black/70">
-                          Richiesta senza viaggio account associato. Non può
-                          pubblicare un preventivo nell’area personale finché il
-                          cliente non salva un viaggio.
-                        </p>
-                      )}
-                    </article>
+                      request={r}
+                      compact={recordsView === "list"}
+                      expanded={selectedRequest === r.id}
+                      onToggle={() =>
+                        setSelectedRequest(
+                          selectedRequest === r.id ? null : r.id,
+                        )
+                      }
+                      onChange={status}
+                      onOpenTrip={openLinkedTrip}
+                    />
                   );
                 }
                 if (tab === "trips") {
                   const t = resourceSchemas.trips.parse(value);
                   return (
                     <article
-                      className="min-w-0 space-y-3 border border-pearl-grey bg-white p-5"
+                      className={`min-w-0 border border-pearl-grey bg-white p-4 ${recordsView === "list" ? "flex flex-wrap items-center justify-between gap-3" : "space-y-3"}`}
                       key={t.id}
                     >
-                      <h2 className="font-display text-2xl">{t.title}</h2>
-                      <p className="break-words text-sm">
-                        {t.customer?.full_name || "Cliente registrato"} ·{" "}
-                        {t.customer?.email ||
-                          "Email non disponibile nel profilo"}
-                      </p>
+                      <div className="min-w-0">
+                        <h2 className="break-words font-display text-xl">
+                          {t.title}
+                        </h2>
+                        <p className="break-words text-sm">
+                          {t.customer?.full_name || "Cliente registrato"} ·{" "}
+                          {t.customer?.email ||
+                            "Email non disponibile nel profilo"}
+                        </p>
+                      </div>
                       <p className="text-sm">
                         {t.payload.lake} ·{" "}
                         {t.payload.details?.guests ?? "Ospiti da definire"}
@@ -543,18 +739,19 @@ export function ExperienceManager() {
                   >
                     <h2 className="font-display text-2xl">{s.title}</h2>
                     <p className="text-sm">
-                      {experienceLabels[s.experience_id]} · {s.lake} · Per{" "}
-                      {s.unit}
+                      {experienceLabels[s.experience_id] ||
+                        "Servizio personalizzato"}{" "}
+                      · {s.lake} · Per {s.unit}
                     </p>
                     <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
                       <div>
-                        <dt>Costo fornitore</dt>
+                        <dt>Costo a noi</dt>
                         <dd className="mt-1 font-medium">
                           {money(s.cost_cents)}
                         </dd>
                       </div>
                       <div>
-                        <dt>Prezzo proposto</dt>
+                        <dt>Prezzo cliente</dt>
                         <dd className="mt-1 font-medium">
                           {money(s.price_cents)}
                         </dd>
@@ -578,24 +775,252 @@ export function ExperienceManager() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <button
               className={button}
-              disabled={page === 0 || loading}
+              disabled={page === 0 || sectionLoading}
               onClick={() => setPage((p) => p - 1)}
             >
               Pagina precedente
             </button>
             <button
               className={button}
-              disabled={(page + 1) * 30 >= total || loading}
+              disabled={(page + 1) * 30 >= total || sectionLoading}
               onClick={() => setPage((p) => p + 1)}
             >
               Pagina successiva
             </button>
           </div>
+          {tab === "services" && (
+            <ServiceCatalog
+              onAdd={(template) => {
+                setServiceTemplate(template);
+                setEditing("new");
+              }}
+            />
+          )}
         </>
       )}
     </div>
   );
 }
+function ServiceCatalog({
+  onAdd,
+}: {
+  onAdd: (template: ServiceTemplate) => void;
+}) {
+  const [group, setGroup] = useState("all");
+  return (
+    <section
+      className="space-y-5 border-t border-pearl-grey pt-6"
+      aria-labelledby="experience-service-catalog"
+    >
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 id="experience-service-catalog" className="font-display text-3xl">
+            Catalogo dei servizi
+          </h2>
+          <p className="mt-2 max-w-prose text-sm leading-6 text-soft-black/75">
+            Parta da una scheda per salvare i suoi prezzi. Può creare voci
+            diverse per lo stesso servizio, per esempio per fornitore, durata o
+            stagione.
+          </p>
+        </div>
+        <Field label="Filtra per categoria">
+          <select
+            className={cls}
+            value={group}
+            onChange={(e) => setGroup(e.target.value)}
+          >
+            <option value="all">Tutte le categorie</option>
+            {catalogGroups.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
+      {catalogGroups
+        .filter((category) => group === "all" || category.id === group)
+        .map((category) => (
+          <div key={category.id} className="space-y-3">
+            <h3 className="font-display text-2xl">{category.label}</h3>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {serviceCatalog
+                .filter((item) => item.group === category.id)
+                .map((item) => (
+                  <article
+                    key={item.key}
+                    className="flex flex-col items-start gap-3 border border-pearl-grey bg-white p-4"
+                  >
+                    <p className="text-xs font-medium uppercase tracking-wider text-soft-black/70">
+                      {item.lake === "Entrambi"
+                        ? "Lago di Como · Lago Maggiore"
+                        : item.lake}
+                    </p>
+                    <h4 className="text-base font-semibold">{item.title}</h4>
+                    <p className="mb-2 flex-1 text-sm leading-6 text-soft-black/75">
+                      {item.description}
+                    </p>
+                    <button
+                      type="button"
+                      className={button}
+                      onClick={() => onAdd(item)}
+                      aria-label={`Aggiungi al listino: ${item.title}`}
+                    >
+                      <Plus size={16} aria-hidden="true" /> Aggiungi al listino
+                    </button>
+                  </article>
+                ))}
+            </div>
+          </div>
+        ))}
+    </section>
+  );
+}
+const requestFacts = [
+  "Destinazione",
+  "Punto di arrivo",
+  "Hotel",
+  "Tappe richieste",
+  "Arrivo",
+  "Partenza",
+  "Ospiti",
+  "Budget totale indicativo",
+  "Interessi",
+  "Formula desiderata",
+] as const;
+
+function RequestCard({
+  request,
+  compact,
+  expanded,
+  onToggle,
+  onChange,
+  onOpenTrip,
+}: {
+  request: AdminRequest;
+  compact: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+  onChange: (request: AdminRequest, next: string) => Promise<void>;
+  onOpenTrip: (id: string) => void;
+}) {
+  const lines = request.messaggio.split(/\r?\n/);
+  const isStructured =
+    lines[0] === "SILKinCOM EXPERIENCE — Richiesta di itinerario" &&
+    requestFacts.every((label, index) =>
+      lines[index + 1]?.startsWith(label + ": "),
+    );
+  const noteLine = isStructured
+    ? lines.findIndex((line) => line.startsWith("Note: "))
+    : -1;
+  const endNote = lines.findIndex(
+    (line, index) =>
+      index > noteLine &&
+      line.startsWith("Informativa privacy presa in visione."),
+  );
+  const notes =
+    noteLine < 0
+      ? ""
+      : lines
+          .slice(noteLine, endNote > noteLine ? endNote : undefined)
+          .join("\n")
+          .slice(6);
+  const linked = request.messaggio.match(
+    /\n\nViaggio account verificato: ([0-9a-f-]{36})\nNome: [^\r\n]+\nVersione: [^\r\n]+$/i,
+  )?.[1];
+  return (
+    <article
+      className={`min-w-0 border border-pearl-grey bg-white p-4 ${compact ? "" : "space-y-4"}`}
+    >
+      <header
+        className={
+          compact
+            ? "grid items-center gap-2 sm:grid-cols-[minmax(0,2fr)_minmax(7rem,1fr)_auto]"
+            : "space-y-2"
+        }
+      >
+        <div className="min-w-0">
+          <h2 className="break-words font-display text-xl">
+            {[request.nome, request.cognome].filter(Boolean).join(" ") ||
+              request.email}
+          </h2>
+          <p className="break-words text-sm">
+            {request.email}
+            {request.telefono ? ` · ${request.telefono}` : ""}
+          </p>
+        </div>
+        <div className="text-sm">
+          <p className="font-medium">{requestStatuses[request.status]}</p>
+          <p className="text-soft-black/70">{date(request.created_at)}</p>
+        </div>
+        <button
+          type="button"
+          className={button}
+          aria-expanded={expanded}
+          aria-controls={`experience-request-${request.id}`}
+          onClick={onToggle}
+        >
+          {expanded ? "Chiudi richiesta" : "Leggi la richiesta"}
+        </button>
+      </header>
+      <div
+        id={`experience-request-${request.id}`}
+        hidden={!expanded}
+        className="mt-4 space-y-4 border-t border-pearl-grey pt-4"
+      >
+        <RequestStatus request={request} onChange={onChange} />
+        {isStructured && (
+          <>
+            <dl className="grid gap-3 bg-warm-white p-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
+              {requestFacts.map((label, index) => (
+                <div key={label} className="min-w-0 break-words">
+                  <dt className="font-semibold">{label}</dt>
+                  <dd>
+                    {lines[index + 1].slice(label.length + 2) || "Non indicato"}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <div>
+              <h3 className="text-base font-semibold">Note del cliente</h3>
+              <p className="whitespace-pre-wrap break-words text-sm">
+                {notes || "Nessuna nota"}
+              </p>
+            </div>
+          </>
+        )}
+        {isStructured ? (
+          <details className="border border-pearl-grey p-3">
+            <summary className="cursor-pointer py-2 text-sm">
+              Testo originale della richiesta
+            </summary>
+            <p className="whitespace-pre-wrap break-words text-sm leading-7">
+              {request.messaggio}
+            </p>
+          </details>
+        ) : (
+          <p className="whitespace-pre-wrap break-words text-sm leading-7">
+            {request.messaggio}
+          </p>
+        )}
+        {linked ? (
+          <button
+            type="button"
+            className={button}
+            onClick={() => onOpenTrip(linked)}
+          >
+            Apri il viaggio associato
+          </button>
+        ) : (
+          <p className="text-sm text-soft-black/70">
+            Nessun viaggio associato all’account del cliente.
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}
+
 function RequestStatus({
   request,
   onChange,
@@ -625,11 +1050,16 @@ function RequestStatus({
           </option>
         ))}
       </select>
+      <span className="block text-xs font-normal text-soft-black/70">
+        Stato interno. Il cambio di stato non invia email al cliente.
+      </span>
     </Field>
   );
 }
 function TripDetails({ trip }: { trip: AdminTrip }) {
   const d = trip.payload.details;
+  const hasPickup = trip.payload.ids.includes("service:pickup");
+  const stops = d?.stops.map((stop) => stop.trim()).filter(Boolean) ?? [];
   return (
     <article className="space-y-4 border border-pearl-grey bg-white p-5 sm:p-7">
       <h2 className="font-display text-3xl">{trip.title}</h2>
@@ -649,16 +1079,36 @@ function TripDetails({ trip }: { trip: AdminTrip }) {
           </li>
         ))}
       </ul>
+      {hasPickup && (
+        <section
+          aria-label="Trasferimento all’arrivo"
+          className="space-y-2 border border-pearl-grey bg-warm-white p-4"
+        >
+          <h3 className="text-base font-semibold">Trasferimento all’arrivo</h3>
+          <dl className="grid gap-3 text-sm leading-6 sm:grid-cols-2">
+            <div className="min-w-0 break-words">
+              <dt className="font-medium">Da · aeroporto o stazione</dt>
+              <dd>{d?.arrivalPoint.trim() || "Da confermare"}</dd>
+            </div>
+            <div className="min-w-0 break-words">
+              <dt className="font-medium">A · hotel o prima tappa</dt>
+              <dd>{d?.hotel.trim() || "Da confermare"}</dd>
+            </div>
+          </dl>
+        </section>
+      )}
       {d && (
         <dl className="grid gap-4 text-sm leading-6 sm:grid-cols-2">
-          <div>
-            <dt className="font-medium">Arrivo / hotel</dt>
-            <dd>
-              {d.arrivalPoint || "Da definire"}
-              <br />
-              {d.hotel || "Da definire"}
-            </dd>
-          </div>
+          {!hasPickup && (
+            <div>
+              <dt className="font-medium">Arrivo / hotel</dt>
+              <dd>
+                {d.arrivalPoint || "Da definire"}
+                <br />
+                {d.hotel || "Da definire"}
+              </dd>
+            </div>
+          )}
           <div>
             <dt className="font-medium">Budget indicativo</dt>
             <dd>
@@ -668,11 +1118,23 @@ function TripDetails({ trip }: { trip: AdminTrip }) {
             </dd>
           </div>
           <div className="sm:col-span-2">
-            <dt className="font-medium">Richieste e tappe</dt>
+            <dt className="font-medium">Tappe richieste</dt>
+            <dd>
+              {stops.length ? (
+                <ol className="list-decimal break-words pl-5">
+                  {stops.map((stop, index) => (
+                    <li key={index}>{stop}</li>
+                  ))}
+                </ol>
+              ) : (
+                "Nessuna tappa indicata"
+              )}
+            </dd>
+          </div>
+          <div className="sm:col-span-2">
+            <dt className="font-medium">Note del cliente</dt>
             <dd className="whitespace-pre-wrap break-words">
-              {d.stops.join(" → ")}
-              <br />
-              {d.notes || "Nessuna nota"}
+              {d.notes.trim() || "Nessuna nota del cliente"}
             </dd>
           </div>
         </dl>
@@ -680,6 +1142,451 @@ function TripDetails({ trip }: { trip: AdminTrip }) {
     </article>
   );
 }
+type QueuedSupplierRequest = {
+  supplier: Supplier;
+  services: string[];
+};
+
+function downloadSupplierFile(contents: Blob, filename: string) {
+  const url = URL.createObjectURL(contents);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function postSupplierRequest(
+  trip: AdminTrip,
+  body: Record<string, unknown>,
+) {
+  const response = await fetch(
+    `/api/admin/experience/trips/${trip.id}/supplier-pdf`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trip_version: trip.updated_at, ...body }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(
+      data.error || "Non è stato possibile preparare la richiesta.",
+    );
+  }
+  return response;
+}
+
+function SupplierEmailSender({
+  trip,
+  request,
+  onClose,
+}: {
+  trip: AdminTrip;
+  request: QueuedSupplierRequest;
+  onClose: () => void;
+}) {
+  const [email, setEmail] = useState(request.supplier.email);
+  const [status, setStatus] = useState<"idle" | "busy" | "sent">("idle");
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
+  const busy = useRef(false);
+  async function send(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy.current || status === "sent") return;
+    const parsed = supplierEmailInput.safeParse({
+      action: "email",
+      trip_version: trip.updated_at,
+      supplier_id: request.supplier.id,
+      services: request.services,
+      email,
+    });
+    if (!parsed.success) {
+      setError("Controlli l’indirizzo email del destinatario.");
+      return;
+    }
+    busy.current = true;
+    setStatus("busy");
+    setError("");
+    try {
+      const response = await postSupplierRequest(trip, parsed.data);
+      const result = z
+        .object({
+          ok: z.literal(true),
+          code: z.string().regex(/^EXP-F-[0-9A-F]{12}$/),
+        })
+        .parse(await response.json());
+      setCode(result.code);
+      setStatus("sent");
+      setEmail(parsed.data.email);
+    } catch (error) {
+      console.error("[experience-admin] Supplier email failed:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "L’invio non è stato confermato.",
+      );
+      setStatus("idle");
+    } finally {
+      busy.current = false;
+    }
+  }
+  return (
+    <form
+      onSubmit={send}
+      className="space-y-3 rounded-sm border border-pearl-grey bg-white p-4"
+    >
+      <Field label={`Email per ${request.supplier.name}`}>
+        <input
+          className={cls}
+          type="email"
+          required
+          value={email}
+          maxLength={254}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setError("");
+          }}
+          disabled={status !== "idle"}
+        />
+      </Field>
+      <p className="text-sm text-soft-black/70">
+        L’indirizzo vale per questo invio. L’email contiene il PDF per il
+        fornitore.
+      </p>
+      {error && <Alert>{error}</Alert>}
+      {status === "sent" && (
+        <p role="status" className="text-sm">
+          Invio accettato per <strong>{email}</strong>. Codice: {code}.
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <button type="submit" className={primary} disabled={status !== "idle"}>
+          {status === "busy" ? "Invio in corso…" : "Invia richiesta con PDF"}
+        </button>
+        <button
+          type="button"
+          className={button}
+          onClick={onClose}
+          disabled={status === "busy"}
+        >
+          Chiudi
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function SupplierPdf({ trip }: { trip: AdminTrip }) {
+  const options = supplierRequestServices(trip.payload.ids);
+  const suppliers = useSupplierOptions();
+  const [supplierId, setSupplierId] = useState("");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [requestCode, setRequestCode] = useState("");
+  const [queue, setQueue] = useState<QueuedSupplierRequest[]>([]);
+  const [archiveCodes, setArchiveCodes] = useState<Record<string, string>>({});
+  const [emailSupplier, setEmailSupplier] = useState("");
+  const supplier = suppliers.suppliers.find(
+    (entry) => entry.id === supplierId && entry.status !== "inactive",
+  );
+  const editingQueued = queue.some((entry) => entry.supplier.id === supplierId);
+
+  async function download(services: string[], id: string) {
+    if (busy || !services.length) return;
+    setBusy(true);
+    setError("");
+    setRequestCode("");
+    try {
+      const response = await postSupplierRequest(trip, {
+        services,
+        ...(id ? { supplier_id: id } : {}),
+      });
+      const code = response.headers.get("x-experience-request-code");
+      if (
+        !code ||
+        !/^EXP-F-[0-9A-F]{12}$/.test(code) ||
+        !response.headers.get("content-type")?.startsWith("application/pdf")
+      ) {
+        throw new Error("Il documento ricevuto non è valido.");
+      }
+      downloadSupplierFile(await response.blob(), `SILKinCOM-${code}.pdf`);
+      setRequestCode(code);
+    } catch (cause) {
+      console.error("[experience-admin] Supplier PDF failed:", cause);
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Non è stato possibile creare il PDF.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function downloadArchive() {
+    if (busy || !queue.length) return;
+    setBusy(true);
+    setError("");
+    setArchiveCodes({});
+    try {
+      const response = await postSupplierRequest(trip, {
+        requests: queue.map((entry) => ({
+          supplier_id: entry.supplier.id,
+          services: entry.services,
+        })),
+      });
+      const codes = (
+        response.headers.get("x-experience-request-codes") || ""
+      ).split(",");
+      if (
+        !response.headers.get("content-type")?.startsWith("application/zip") ||
+        codes.length !== queue.length ||
+        new Set(codes).size !== queue.length ||
+        codes.some((code) => !/^EXP-F-[0-9A-F]{12}$/.test(code))
+      )
+        throw new Error("L’archivio ricevuto non è valido.");
+      downloadSupplierFile(
+        await response.blob(),
+        "SILKinCOM-richieste-fornitori.zip",
+      );
+      setArchiveCodes(
+        Object.fromEntries(
+          queue.map((entry, i) => [entry.supplier.id, codes[i]]),
+        ),
+      );
+    } catch (error) {
+      console.error("[experience-admin] Supplier archive failed:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Non è stato possibile creare l’archivio.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <details className="border border-pearl-grey bg-white p-5 sm:p-7">
+      <summary className={`${button} cursor-pointer justify-start`}>
+        <FileDown aria-hidden="true" size={18} /> Crea PDF per fornitore
+      </summary>
+      <div className="mt-5 space-y-4">
+        <p className="max-w-prose text-sm leading-6 text-soft-black/75">
+          Seleziona i servizi da chiedere a questo fornitore. Per ogni servizio
+          il fornitore potrà indicare la disponibilità e le tariffe oraria e a
+          forfait, IVA inclusa, direttamente nel PDF. Il viaggio è identificato
+          da un codice.
+        </p>
+        <Field label="Fornitore da consultare">
+          <select
+            className={cls}
+            disabled={suppliers.loading || busy || Boolean(suppliers.error)}
+            value={supplierId}
+            onChange={(event) => {
+              setSupplierId(event.target.value);
+              setRequestCode("");
+            }}
+          >
+            <option value="">
+              {suppliers.loading
+                ? "Caricamento dei fornitori…"
+                : "Da assegnare"}
+            </option>
+            {suppliers.suppliers
+              .filter((supplier) => supplier.status !== "inactive")
+              .map((supplier) => (
+                <option key={supplier.id} value={supplier.id}>
+                  {supplier.name}
+                </option>
+              ))}
+          </select>
+        </Field>
+        {suppliers.error && <Alert>{suppliers.error}</Alert>}
+        {options.length === 0 ? (
+          <p className="text-sm">
+            Aggiungi e salva almeno un servizio nel viaggio per creare la
+            richiesta.
+          </p>
+        ) : (
+          <>
+            <fieldset disabled={busy} className="grid gap-2 sm:grid-cols-2">
+              <legend className="mb-2 text-sm font-semibold">
+                Servizi da quotare
+              </legend>
+              {options.map(({ id, title }) => (
+                <label
+                  key={id}
+                  className="flex min-h-12 items-center gap-3 border border-pearl-grey bg-warm-white px-3 py-2 text-sm"
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 shrink-0 accent-gold-dark"
+                    checked={selected.includes(id)}
+                    onChange={(event) => {
+                      const checked = event.target.checked;
+                      setSelected((current) =>
+                        checked
+                          ? [...current, id]
+                          : current.filter((value) => value !== id),
+                      );
+                      setRequestCode("");
+                      setError("");
+                    }}
+                  />
+                  {title}
+                </label>
+              ))}
+            </fieldset>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={primary}
+                disabled={busy || !selected.length}
+                onClick={() => void download(selected, supplierId)}
+              >
+                Scarica PDF per fornitore
+              </button>
+              <button
+                type="button"
+                className={button}
+                disabled={
+                  busy ||
+                  Boolean(emailSupplier) ||
+                  !supplier ||
+                  !selected.length ||
+                  (!editingQueued && queue.length >= MAX_SUPPLIER_REQUESTS)
+                }
+                onClick={() => {
+                  if (!supplier || !selected.length) return;
+                  const request = { supplier, services: selected };
+                  setQueue((current) =>
+                    editingQueued
+                      ? current.map((entry) =>
+                          entry.supplier.id === supplier.id ? request : entry,
+                        )
+                      : [...current, request],
+                  );
+                  setArchiveCodes({});
+                  setEmailSupplier("");
+                  setRequestCode("");
+                }}
+              >
+                {editingQueued
+                  ? "Aggiorna richiesta per il fornitore"
+                  : "Aggiungi alla lista dei PDF"}
+              </button>
+            </div>
+            {queue.length >= MAX_SUPPLIER_REQUESTS && (
+              <p className="text-sm">
+                Può preparare fino a {MAX_SUPPLIER_REQUESTS} richieste per
+                archivio.
+              </p>
+            )}
+          </>
+        )}
+        {queue.length > 0 && (
+          <section
+            aria-label="PDF per i fornitori"
+            className="space-y-3 border-t border-pearl-grey pt-4"
+          >
+            <h3 className="text-base font-semibold">PDF per i fornitori</h3>
+            <ul className="space-y-2">
+              {queue.map((entry) => (
+                <li
+                  key={entry.supplier.id}
+                  className="space-y-2 border border-pearl-grey bg-warm-white p-4"
+                >
+                  <p className="break-words text-sm font-semibold">
+                    {entry.supplier.name}
+                  </p>
+                  <p className="text-sm">
+                    {options
+                      .filter((option) => entry.services.includes(option.id))
+                      .map((option) => option.title)
+                      .join(" · ")}
+                  </p>
+                  {archiveCodes[entry.supplier.id] && (
+                    <p className="text-xs">
+                      Codice PDF: {archiveCodes[entry.supplier.id]}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className={button}
+                      disabled={busy}
+                      onClick={() =>
+                        void download(entry.services, entry.supplier.id)
+                      }
+                    >
+                      Scarica PDF
+                    </button>
+                    <button
+                      type="button"
+                      className={button}
+                      disabled={Boolean(emailSupplier)}
+                      onClick={() => setEmailSupplier(entry.supplier.id)}
+                    >
+                      Invia email
+                    </button>
+                    <button
+                      type="button"
+                      className={button}
+                      disabled={busy || Boolean(emailSupplier)}
+                      onClick={() => {
+                        setQueue((current) =>
+                          current.filter(
+                            (row) => row.supplier.id !== entry.supplier.id,
+                          ),
+                        );
+                        setArchiveCodes({});
+                      }}
+                    >
+                      Rimuovi dalla lista
+                    </button>
+                  </div>
+                  {emailSupplier === entry.supplier.id && (
+                    <SupplierEmailSender
+                      trip={trip}
+                      request={entry}
+                      onClose={() => setEmailSupplier("")}
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className={primary}
+              disabled={busy}
+              onClick={() => void downloadArchive()}
+            >
+              <FileDown size={16} aria-hidden="true" />{" "}
+              {busy
+                ? "Creazione file…"
+                : `Scarica tutti i PDF (${queue.length})`}
+            </button>
+            <p className="text-xs text-soft-black/70">
+              L’archivio ZIP è per uso interno. A ciascun fornitore invii
+              soltanto il suo PDF.
+            </p>
+          </section>
+        )}
+        {error && <Alert>{error}</Alert>}
+        {requestCode && (
+          <p role="status" className="text-sm">
+            PDF pronto. Codice richiesta <strong>{requestCode}</strong>.
+          </p>
+        )}
+      </div>
+    </details>
+  );
+}
+
 async function loadOptions(
   resource: "suppliers" | "services",
   signal: AbortSignal,
@@ -705,14 +1612,42 @@ async function loadOptions(
     "Elenco troppo esteso per questa selezione: restringere le voci attive nel listino.",
   );
 }
+function useSupplierOptions() {
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    loadOptions("suppliers", controller.signal)
+      .then((rows) => {
+        if (!controller.signal.aborted)
+          setSuppliers(rows.map((row) => resourceSchemas.suppliers.parse(row)));
+      })
+      .catch((cause) => {
+        if (!controller.signal.aborted) {
+          console.error("[experience-admin] Suppliers failed:", cause);
+          setError(
+            "Elenco fornitori non disponibile. Riapra la scheda per riprovare.",
+          );
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, []);
+  return { suppliers, loading, error };
+}
 function InternalEditor({
   resource,
   record,
+  serviceTemplate,
   onCancel,
   onSaved,
 }: {
   resource: "suppliers" | "services";
   record: Supplier | Service | "new";
+  serviceTemplate: ServiceTemplate | null;
   onCancel: () => void;
   onSaved: () => Promise<void>;
 }) {
@@ -845,27 +1780,21 @@ function InternalEditor({
           </>
         ) : (
           <>
-            <Field label="Esperienza di riferimento *">
-              <select
-                name="experience_id"
-                defaultValue={
-                  service?.experience_id || Object.keys(experienceLabels)[0]
-                }
-                className={cls}
-              >
-                {Object.entries(experienceLabels).map(([id, title]) => (
-                  <option value={id} key={id}>
-                    {title}
-                  </option>
-                ))}
-              </select>
-            </Field>
+            <input
+              type="hidden"
+              name="experience_id"
+              value={
+                service?.experience_id ??
+                serviceTemplate?.experienceId ??
+                customExperienceService
+              }
+            />
             <Field label="Nome della voce *">
               <input
                 name="title"
                 required
                 maxLength={160}
-                defaultValue={service?.title}
+                defaultValue={service?.title || serviceTemplate?.title}
                 className={cls}
               />
             </Field>
@@ -890,7 +1819,9 @@ function InternalEditor({
             <Field label="Unità di prezzo e costo *">
               <select
                 name="unit"
-                defaultValue={service?.unit || "servizio"}
+                defaultValue={
+                  service?.unit || serviceTemplate?.unit || "servizio"
+                }
                 className={cls}
               >
                 {[
@@ -905,7 +1836,7 @@ function InternalEditor({
                 ))}
               </select>
             </Field>
-            <Field label="Costo fornitore (€)">
+            <Field label="Costo a noi (€)">
               <input
                 name="cost"
                 type="number"
@@ -917,7 +1848,7 @@ function InternalEditor({
                 className={cls}
               />
             </Field>
-            <Field label="Prezzo proposto (€)">
+            <Field label="Prezzo cliente (€)">
               <input
                 name="price"
                 type="number"
@@ -934,7 +1865,12 @@ function InternalEditor({
         <Field label="Territorio">
           <select
             name="lake"
-            defaultValue={supplier?.lake || service?.lake || "Da definire"}
+            defaultValue={
+              supplier?.lake ||
+              service?.lake ||
+              serviceTemplate?.lake ||
+              "Da definire"
+            }
             className={cls}
           >
             {internalLakes.map((lake) => (
@@ -1031,6 +1967,197 @@ function localDateTime(value: string | null) {
     .toISOString()
     .slice(0, 16);
 }
+type QuoteEditorItem = QuoteItem & { included: boolean; priceEntered: boolean };
+
+function keepQuoteRow(item: QuoteEditorItem) {
+  return Boolean(
+    item.label.trim() ||
+    item.priceEntered ||
+    item.cost_cents !== null ||
+    item.supplier_id,
+  );
+}
+
+function quoteItem(label = ""): QuoteEditorItem {
+  return {
+    label,
+    quantity: 1,
+    cost_cents: null,
+    price_cents: 0,
+    service_id: null,
+    supplier_id: null,
+    included: true,
+    priceEntered: false,
+  };
+}
+function QuoteServicePicker({
+  trip,
+  services,
+  loading,
+  available,
+  onAdd,
+}: {
+  trip: AdminTrip;
+  services: Service[];
+  loading: boolean;
+  available: number;
+  onAdd: (items: QuoteEditorItem[]) => void;
+}) {
+  const [group, setGroup] = useState("all");
+  const [search, setSearch] = useState("");
+  const [selection, setSelection] = useState<string[]>([]);
+  const [notice, setNotice] = useState("");
+  const related = new Set(
+    supplierRequestServices(trip.payload.ids).map(({ id }) => id),
+  );
+  const entries = [
+    ...services.map((service) => ({
+      key: service.id,
+      title: service.title,
+      group: "configured",
+      requested: related.has(service.experience_id),
+      summary: `${service.lake} · ${money(service.price_cents)} / ${service.unit}`,
+      item: {
+        ...quoteItem(service.title),
+        price_cents: service.price_cents ?? 0,
+        priceEntered: service.price_cents !== null,
+        cost_cents: service.cost_cents,
+        service_id: service.id,
+        supplier_id: service.supplier_id,
+      },
+    })),
+    ...serviceCatalog.map((service) => ({
+      key: service.key,
+      title: service.title,
+      group: service.group,
+      requested: related.has(service.key),
+      summary: `${service.lake} · Prezzo da inserire`,
+      item: quoteItem(service.title),
+    })),
+  ];
+  const visible = entries.filter(
+    (entry) =>
+      (group === "all" ||
+        (group === "requested" ? entry.requested : entry.group === group)) &&
+      entry.title
+        .toLocaleLowerCase("it")
+        .includes(search.trim().toLocaleLowerCase("it")),
+  );
+  return (
+    <details className="space-y-4 border border-pearl-grey bg-warm-white p-4">
+      <summary className="min-h-10 cursor-pointer py-2 font-semibold">
+        Scegli i servizi da quotare ({entries.length})
+      </summary>
+      <p className="text-sm leading-6 text-soft-black/75">
+        Spunta uno o più servizi. Le tariffe del listino compilano la riga; per
+        le altre voci inserisci il prezzo dopo averle aggiunte.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Cerca un servizio">
+          <input
+            className={cls}
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Field>
+        <Field label="Categoria dei servizi da quotare">
+          <select
+            className={cls}
+            value={group}
+            onChange={(e) => setGroup(e.target.value)}
+          >
+            <option value="all">Tutti i servizi</option>
+            <option value="requested">Richiesti dal cliente</option>
+            <option value="configured">Tariffe salvate nel listino</option>
+            {catalogGroups.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </div>
+      {loading && (
+        <p role="status" className="text-sm">
+          Caricamento delle tariffe salvate…
+        </p>
+      )}
+      <fieldset className="max-h-72 overflow-auto px-1">
+        <legend className="sr-only">Seleziona i servizi da quotare</legend>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {visible.map((entry) => (
+            <label
+              key={entry.key}
+              className="flex min-h-12 items-center gap-3 border border-pearl-grey bg-white px-3 py-2 text-sm"
+            >
+              <input
+                type="checkbox"
+                className="h-4 w-4 shrink-0 accent-gold-dark"
+                checked={selection.includes(entry.key)}
+                onChange={(event) => {
+                  const checked = event.target.checked;
+                  setNotice("");
+                  setSelection((current) =>
+                    checked
+                      ? [...current, entry.key]
+                      : current.filter((key) => key !== entry.key),
+                  );
+                }}
+              />
+              <span className="min-w-0 break-words">
+                <span className="block font-medium">{entry.title}</span>
+                <span className="block text-xs text-soft-black/70">
+                  {entry.summary}
+                  {entry.requested ? " · Richiesto dal cliente" : ""}
+                </span>
+              </span>
+            </label>
+          ))}
+        </div>
+        {visible.length === 0 && (
+          <p className="py-3 text-sm">
+            Nessun servizio in questa selezione. Provi un’altra categoria o
+            ricerca.
+          </p>
+        )}
+      </fieldset>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          className={primary}
+          disabled={selection.length === 0 || selection.length > available}
+          onClick={() => {
+            const selected = entries.filter((entry) =>
+              selection.includes(entry.key),
+            );
+            onAdd(selected.map(({ item }) => item));
+            setNotice(
+              selected.length === 1
+                ? "Servizio aggiunto al preventivo."
+                : `${selected.length} servizi aggiunti al preventivo.`,
+            );
+            setSelection([]);
+          }}
+        >
+          <Plus aria-hidden="true" size={16} /> Aggiungi al preventivo
+          {selection.length ? ` (${selection.length})` : ""}
+        </button>
+        {selection.length > available && (
+          <p className="text-sm">
+            Può aggiungere ancora {available} servizi (massimo 30 righe).
+          </p>
+        )}
+        {notice && (
+          <p className="text-sm" role="status">
+            {notice}
+          </p>
+        )}
+      </div>
+    </details>
+  );
+}
+
 function QuoteEditor({
   trip,
   quote,
@@ -1044,28 +2171,48 @@ function QuoteEditor({
 }) {
   const existing = quote === "new" ? null : quote;
   const initial = existing?.experience_quote_details;
-  const [items, setItems] = useState<QuoteItem[]>(
-    initial?.items || [
-      {
-        label: "",
-        quantity: 1,
-        cost_cents: null,
-        price_cents: 0,
-        service_id: null,
-        supplier_id: null,
-      },
-    ],
+  const initialTerms = splitQuoteConditions(existing?.conditions || "");
+  const [items, setItems] = useState<QuoteEditorItem[]>(() =>
+    initial?.items.length
+      ? initial.items.map((item) => ({
+          ...item,
+          included: Boolean(existing?.inclusions.includes(item.label.trim())),
+          priceEntered: true,
+        }))
+      : [quoteItem()],
   );
   const [services, setServices] = useState<Service[]>([]);
+  const suppliers = useSupplierOptions();
   const [loading, setLoading] = useState(true);
   const [optionsError, setOptionsError] = useState("");
-  const [inclusions, setInclusions] = useState(
-    existing?.inclusions.join("\n") || "",
+  const [additionalInclusions, setAdditionalInclusions] = useState(
+    () =>
+      existing?.inclusions
+        .filter(
+          (text) => !initial?.items.some((item) => item.label.trim() === text),
+        )
+        .join("\n") || "",
+  );
+  const includedServices = Array.from(
+    new Set([
+      ...items
+        .filter((item) => item.included)
+        .map((item) => item.label.trim())
+        .filter(Boolean),
+      ...lines(additionalInclusions),
+    ]),
   );
   const [exclusions, setExclusions] = useState(
     existing?.exclusions.join("\n") || "",
   );
-  const [conditions, setConditions] = useState(existing?.conditions || "");
+  const [conditions, setConditions] = useState(initialTerms.conditions);
+  const [paymentMethod, setPaymentMethod] = useState<QuotePaymentMethod | "">(
+    initialTerms.method ?? (existing ? "" : "either"),
+  );
+  const [cardLink, setCardLink] = useState(initialTerms.link);
+  const [cardAmount, setCardAmount] = useState<number | null>(
+    initialTerms.link ? existing!.total_cents : null,
+  );
   const [validUntil, setValidUntil] = useState(
     localDateTime(existing?.valid_until || null),
   );
@@ -1074,6 +2221,9 @@ function QuoteEditor({
   const [error, setError] = useState("");
   const [review, setReview] = useState(false);
   const totals = quoteTotals(items);
+  const payment = paymentMethod
+    ? quotePaymentTerms(totals.revenue, paymentMethod)
+    : "";
   const reviewRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -1103,8 +2253,8 @@ function QuoteEditor({
   }, [review]);
   function update(
     index: number,
-    field: keyof QuoteItem,
-    value: string | number | null,
+    field: keyof QuoteEditorItem,
+    value: string | number | boolean | null,
   ) {
     setItems((current) =>
       current.map((item, i) =>
@@ -1114,6 +2264,18 @@ function QuoteEditor({
     setReview(false);
   }
   function payload(publish: boolean) {
+    if (!conditions.trim())
+      throw new Error("Inserisca le condizioni del preventivo.");
+    const link =
+      paymentMethod && paymentMethod !== "bank" ? cardLink.trim() : "";
+    if (link && !stripeQuoteUrl(link))
+      throw new Error(
+        "Inserisca un link di pagamento Stripe valido (buy.stripe.com).",
+      );
+    if (link && cardAmount !== totals.revenue)
+      throw new Error(
+        "Il totale è cambiato. Verifichi l’importo dell’acconto su Stripe e reinserisca il link aggiornato.",
+      );
     return {
       action: "quote",
       data: {
@@ -1122,10 +2284,13 @@ function QuoteEditor({
           : {}),
         trip_id: trip.id,
         trip_version: trip.updated_at,
-        items,
-        inclusions: lines(inclusions),
+        items: items.map(
+          ({ included: _included, priceEntered: _priceEntered, ...item }) =>
+            item,
+        ),
+        inclusions: includedServices,
         exclusions: lines(exclusions),
-        conditions,
+        conditions: combineQuoteConditions(conditions, payment, link),
         valid_until: validUntil ? new Date(validUntil).toISOString() : null,
         internal_notes: notes,
         publish,
@@ -1134,11 +2299,21 @@ function QuoteEditor({
   }
   async function save(publish: boolean) {
     setError("");
+    if (items.some((item) => !item.priceEntered)) {
+      setError(
+        "Inserisca il prezzo cliente per ogni servizio. Indichi 0 solo se il servizio è offerto.",
+      );
+      return;
+    }
     let data;
     try {
       data = payload(publish);
-    } catch {
-      setError("Scadenza non valida.");
+    } catch (cause) {
+      setError(
+        cause instanceof RangeError
+          ? "Scadenza non valida."
+          : (cause as Error).message,
+      );
       return;
     }
     const parsed = quoteInput.safeParse(data.data);
@@ -1173,8 +2348,12 @@ function QuoteEditor({
         return;
       }
       setReview(true);
-    } catch {
-      setError("Controlli la scadenza.");
+    } catch (cause) {
+      setError(
+        cause instanceof RangeError
+          ? "Controlli la scadenza."
+          : (cause as Error).message,
+      );
     }
   }
   return (
@@ -1231,41 +2410,19 @@ function QuoteEditor({
             prezzo cliente per unità. Il totale si aggiorna con la quantità.
           </p>
           {optionsError && <Alert>{optionsError}</Alert>}
-          <Field label="Aggiunga una voce dal listino (facoltativo)">
-            <select
-              className={cls}
-              disabled={loading || items.length >= 30}
-              value=""
-              onChange={(event) => {
-                const service = services.find(
-                  (s) => s.id === event.target.value,
-                );
-                if (!service) return;
-                setItems((current) => [
-                  ...current.filter((i) => i.label.trim() || i.price_cents > 0),
-                  {
-                    label: service.title,
-                    quantity: 1,
-                    cost_cents: service.cost_cents,
-                    price_cents: service.price_cents ?? 0,
-                    service_id: service.id,
-                    supplier_id: service.supplier_id,
-                  },
-                ]);
-              }}
-            >
-              <option value="">
-                {loading
-                  ? "Caricamento del listino…"
-                  : "Scelga una voce da aggiungere"}
-              </option>
-              {services.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.title} · {s.lake} · {money(s.price_cents)} / {s.unit}
-                </option>
-              ))}
-            </select>
-          </Field>
+          {suppliers.error && <Alert>{suppliers.error}</Alert>}
+          <QuoteServicePicker
+            trip={trip}
+            services={services}
+            loading={loading}
+            available={30 - items.filter(keepQuoteRow).length}
+            onAdd={(selected) => {
+              setItems((current) => [
+                ...current.filter(keepQuoteRow),
+                ...selected,
+              ]);
+            }}
+          />
           <div
             role="table"
             aria-label="Voci del preventivo"
@@ -1303,6 +2460,45 @@ function QuoteEditor({
                       value={item.label}
                       onChange={(e) => update(index, "label", e.target.value)}
                     />
+                  </label>
+                  <label className="mt-2 block text-xs font-medium">
+                    <span className="mb-1 block">
+                      Fornitore <span className="font-normal">(interno)</span>
+                    </span>
+                    <select
+                      className={cls}
+                      disabled={suppliers.loading || Boolean(suppliers.error)}
+                      value={item.supplier_id ?? ""}
+                      onChange={(event) =>
+                        update(index, "supplier_id", event.target.value || null)
+                      }
+                    >
+                      <option value="">
+                        {suppliers.loading ? "Caricamento…" : "Da assegnare"}
+                      </option>
+                      {item.supplier_id &&
+                        !suppliers.suppliers.some(
+                          (supplier) => supplier.id === item.supplier_id,
+                        ) && (
+                          <option value={item.supplier_id}>
+                            Fornitore già assegnato
+                          </option>
+                        )}
+                      {suppliers.suppliers
+                        .filter(
+                          (supplier) =>
+                            supplier.status !== "inactive" ||
+                            supplier.id === item.supplier_id,
+                        )
+                        .map((supplier) => (
+                          <option key={supplier.id} value={supplier.id}>
+                            {supplier.name}
+                            {supplier.status === "inactive"
+                              ? " (non attivo)"
+                              : ""}
+                          </option>
+                        ))}
+                    </select>
                   </label>
                 </div>
                 <div role="cell" className="min-w-0">
@@ -1352,21 +2548,22 @@ function QuoteEditor({
                       max="1000000"
                       step="0.01"
                       className={cls}
-                      value={toEuro(item.price_cents)}
-                      onChange={(e) =>
-                        update(
-                          index,
-                          "price_cents",
-                          fromEuro(e.target.value) ?? 0,
-                        )
-                      }
+                      placeholder="Da inserire"
+                      value={item.priceEntered ? toEuro(item.price_cents) : ""}
+                      onChange={(event) => {
+                        const value = fromEuro(event.target.value);
+                        update(index, "price_cents", value ?? 0);
+                        update(index, "priceEntered", value !== null);
+                      }}
                     />
                   </label>
                 </div>
                 <div role="cell" className="min-w-0 text-sm">
                   <span className="mb-2 block xl:sr-only">Totale cliente</span>
                   <output className="break-words text-base font-semibold tabular-nums">
-                    {money(item.quantity * item.price_cents)}
+                    {item.priceEntered
+                      ? money(item.quantity * item.price_cents)
+                      : "Da definire"}
                   </output>
                 </div>
                 <div role="cell" className="col-span-2 xl:col-span-1">
@@ -1392,19 +2589,7 @@ function QuoteEditor({
             className={button}
             type="button"
             disabled={items.length >= 30}
-            onClick={() =>
-              setItems((current) => [
-                ...current,
-                {
-                  label: "",
-                  quantity: 1,
-                  cost_cents: null,
-                  price_cents: 0,
-                  service_id: null,
-                  supplier_id: null,
-                },
-              ])
-            }
+            onClick={() => setItems((current) => [...current, quoteItem()])}
           >
             <Plus size={16} />
             Aggiungi voce manuale
@@ -1431,36 +2616,139 @@ function QuoteEditor({
           <h3 className="border-t border-pearl-grey pt-5 font-display text-2xl">
             Condizioni per il cliente
           </h3>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Servizi inclusi · una voce per riga">
-              <textarea
-                rows={5}
-                maxLength={15000}
-                value={inclusions}
-                onChange={(e) => setInclusions(e.target.value)}
-                className={cls}
-              />
-            </Field>
-            <Field label="Extra ed esclusioni · una voce per riga">
-              <textarea
-                rows={5}
-                maxLength={15000}
-                value={exclusions}
-                onChange={(e) => setExclusions(e.target.value)}
-                className={cls}
-              />
-            </Field>
-          </div>
+          <fieldset className="space-y-3">
+            <legend className="font-semibold">Servizi inclusi</legend>
+            <p className="text-sm text-soft-black/75">
+              Spunta i servizi da riportare tra le inclusioni. La spunta non
+              modifica le righe di prezzo o il totale.
+            </p>
+            {items.some((item) => item.label.trim()) ? (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {items.map(
+                  (item, index) =>
+                    item.label.trim() && (
+                      <label
+                        key={index}
+                        className="flex min-h-12 items-center gap-3 border border-pearl-grey bg-warm-white px-3 py-2 text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 shrink-0 accent-gold-dark"
+                          checked={item.included}
+                          onChange={(event) => {
+                            const checked = event.target.checked;
+                            setItems((current) =>
+                              current.map((row, i) =>
+                                i === index
+                                  ? { ...row, included: checked }
+                                  : row,
+                              ),
+                            );
+                          }}
+                        />
+                        <span className="min-w-0 break-words">
+                          {item.label}
+                        </span>
+                      </label>
+                    ),
+                )}
+              </div>
+            ) : (
+              <p className="text-sm">
+                Aggiungi una riga di servizio per poterla selezionare qui.
+              </p>
+            )}
+          </fieldset>
+          <details
+            open={Boolean(
+              existing?.inclusions.some(
+                (text) =>
+                  !initial?.items.some((item) => item.label.trim() === text),
+              ) || existing?.exclusions.length,
+            )}
+            className="space-y-3 border border-pearl-grey bg-warm-white p-4"
+          >
+            <summary className="min-h-10 cursor-pointer py-2 font-medium">
+              Inclusioni aggiuntive ed esclusioni
+            </summary>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Inclusioni aggiuntive · una voce per riga">
+                <textarea
+                  rows={3}
+                  maxLength={15000}
+                  value={additionalInclusions}
+                  onChange={(e) => setAdditionalInclusions(e.target.value)}
+                  className={cls}
+                />
+              </Field>
+              <Field label="Extra ed esclusioni · una voce per riga">
+                <textarea
+                  rows={5}
+                  maxLength={15000}
+                  value={exclusions}
+                  onChange={(e) => setExclusions(e.target.value)}
+                  className={cls}
+                />
+              </Field>
+            </div>
+          </details>
           <Field label="Condizioni visibili al cliente *">
             <textarea
               required
-              rows={5}
-              maxLength={4000}
+              rows={4}
+              maxLength={3500}
+              placeholder="Disponibilità, condizioni di annullamento, scadenza del saldo, variazioni e inclusioni fiscali."
               value={conditions}
               onChange={(e) => setConditions(e.target.value)}
               className={cls}
             />
           </Field>
+          <section className="space-y-4 border border-pearl-grey bg-warm-white p-4">
+            <h4 className="font-semibold">Pagamento e acconto</h4>
+            <Field label="Modalità di pagamento">
+              <select
+                className={cls}
+                value={paymentMethod}
+                onChange={(event) => {
+                  setPaymentMethod(
+                    event.target.value as QuotePaymentMethod | "",
+                  );
+                  if (event.target.value === "bank" || !event.target.value)
+                    setCardLink("");
+                }}
+              >
+                <option value="">Da concordare</option>
+                {Object.entries(quotePaymentMethods).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            {payment && (
+              <p className="whitespace-pre-line text-sm leading-6">{payment}</p>
+            )}
+            {paymentMethod && paymentMethod !== "bank" && (
+              <Field label="Link Stripe dell’acconto (facoltativo)">
+                <input
+                  className={cls}
+                  type="url"
+                  maxLength={180}
+                  placeholder="https://buy.stripe.com/…"
+                  value={cardLink}
+                  onChange={(event) => {
+                    setCardLink(event.target.value);
+                    setCardAmount(totals.revenue);
+                  }}
+                />
+                <span className="block text-xs font-normal text-soft-black/70">
+                  Verifichi su Stripe che il link corrisponda all’importo
+                  dell’acconto. Il link compare solo nell’area cliente finché il
+                  preventivo è valido.
+                </span>
+              </Field>
+            )}
+          </section>
           <Field label="Valido fino al · obbligatorio per pubblicare">
             <input
               type="datetime-local"
@@ -1509,6 +2797,25 @@ function QuoteEditor({
           className="space-y-5 focus:outline-none"
         >
           <h3 className="font-display text-3xl">Anteprima per il cliente</h3>
+          <div className="grid gap-4 border border-pearl-grey p-4 text-sm sm:grid-cols-2">
+            <div>
+              <h4 className="font-semibold">Emittente del preventivo</h4>
+              <p className="mt-1">
+                {experienceIssuer.name} · P. IVA {experienceIssuer.vat}
+              </p>
+              <p>{experienceIssuer.address}</p>
+              <p>{experienceIssuer.email}</p>
+            </div>
+            <div className="min-w-0 break-words">
+              <h4 className="font-semibold">Destinatario e programma</h4>
+              <p className="mt-1">
+                {trip.customer?.full_name || "Cliente registrato"}
+              </p>
+              <p>
+                {trip.title} · {trip.payload.lake}
+              </p>
+            </div>
+          </div>
           <div className="border border-gold-primary/40 bg-warm-white p-5">
             <p className="text-sm font-semibold">Totale del preventivo</p>
             <p className="mt-2 font-display text-5xl">
@@ -1549,7 +2856,7 @@ function QuoteEditor({
           <div>
             <h4 className="font-medium">Servizi inclusi</h4>
             <ul className="mt-2 list-disc pl-5 text-sm leading-7">
-              {lines(inclusions).map((text, index) => (
+              {includedServices.map((text, index) => (
                 <li key={index}>{text}</li>
               ))}
             </ul>
@@ -1563,6 +2870,18 @@ function QuoteEditor({
             </ul>
           </div>
           <p className="whitespace-pre-wrap text-sm leading-7">{conditions}</p>
+          {payment && (
+            <div className="space-y-2 border border-pearl-grey bg-warm-white p-4">
+              <h4 className="font-semibold">Pagamento e acconto</h4>
+              <p className="whitespace-pre-line text-sm leading-6">{payment}</p>
+              {cardLink && (
+                <p className="text-sm">
+                  Link carta disponibile nell’area cliente durante la validità
+                  dell’offerta.
+                </p>
+              )}
+            </div>
+          )}
           <p className="border border-gold-primary/40 bg-warm-white p-4 text-sm leading-6">
             «Pubblica nell’area cliente» rende disponibile il preventivo e il
             PDF in «I miei viaggi» del destinatario.

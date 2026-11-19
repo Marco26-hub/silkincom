@@ -4,6 +4,7 @@ import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
 import { antibotGate } from "@/lib/antibot";
 import { sendContactNotification } from "@/lib/email";
+import { isExperiencePhone } from "@/lib/experience-trips";
 
 type ContactData = {
   nome?: string;
@@ -60,6 +61,26 @@ export async function POST(req: NextRequest) {
     const supabase = await createServerClient();
 
     let requestMessage = messaggio.trim();
+    if (
+      requestMessage.startsWith("SILKinCOM EXPERIENCE") &&
+      (typeof nome !== "string" ||
+        !nome.trim() ||
+        nome.length > 120 ||
+        typeof cognome !== "string" ||
+        !cognome.trim() ||
+        cognome.length > 120 ||
+        ((experienceTripId === undefined || telefono) &&
+          (typeof telefono !== "string" ||
+            !isExperiencePhone(telefono.trim()))))
+    ) {
+      console.warn(
+        "[contacts] Experience request rejected: invalid contact details.",
+      );
+      return NextResponse.json(
+        { error: "Controlli nome, cognome e telefono." },
+        { status: 400 },
+      );
+    }
     if (experienceTripId !== undefined) {
       if (
         !z.string().uuid().safeParse(experienceTripId).success ||

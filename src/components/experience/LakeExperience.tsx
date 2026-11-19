@@ -41,6 +41,7 @@ import { JourneyMapFields } from "./JourneyMapFields";
 import { SaveTripAccount } from "./SaveTripAccount";
 import { useExperienceDraft } from "./useExperienceDraft";
 import {
+  isExperiencePhone,
   tripPayloadSchema,
   savedTripSchema,
   type TripPayload,
@@ -127,6 +128,7 @@ const EXPERIENCE_SOURCES: Record<
 type Brief = {
   savedTrip: { id: string; title: string; updated_at: string } | null;
   name: string;
+  surname: string;
   email: string;
   phone: string;
   arrivalPoint: string;
@@ -152,8 +154,14 @@ export function LakeExperience({
   content: ExperienceContent;
   copy: Record<string, string>;
 }) {
-  const { EXPERIENCES, BOAT_PACKAGES, EXPERIENCE_CATEGORIES, LOGISTICS, FAQ } =
-    content;
+  const {
+    EXPERIENCES,
+    BOAT_PACKAGES,
+    EXPERIENCE_CATEGORIES,
+    JOURNEYS,
+    LOGISTICS,
+    FAQ,
+  } = content;
   const t = useMemo(
     () => createExperienceTranslator(locale, copy),
     [locale, copy],
@@ -213,6 +221,7 @@ export function LakeExperience({
   }, [heroReady, heroSlide, heroPaused, reducedMotion]);
   const [showAll, setShowAll] = useState(false);
   const [category, setCategory] = useState<ExperienceCategory>("selection");
+  const [featuredJourney, setFeaturedJourney] = useState("");
   const [experienceLake, setExperienceLake] = useState<"como" | "maggiore">(
     "como",
   );
@@ -323,6 +332,20 @@ export function LakeExperience({
         ? "maggiore"
         : undefined;
   const lakeName = experienceLake === "como" ? "Lago di Como" : "Lago Maggiore";
+  const journeyOptions = JOURNEYS.filter(
+    (journey) => journey.lake === lakeName,
+  );
+  const journey =
+    journeyOptions.find(({ id }) => id === featuredJourney) ??
+    journeyOptions[0];
+  const journeyActivities = journey
+    ? journey.interests
+        .filter((id) => journey.id !== "silk" || id !== "gourmet")
+        .map((id) => EXPERIENCES.find((activity) => activity.id === id)!.title)
+    : [];
+  const journeyApplied = Boolean(
+    journey && journeyActivities.every(isInterestSelected),
+  );
   const priority =
     experienceLake === "como"
       ? ["boat", "silk", "gourmet", "golf", "milano", "jet-ski"]
@@ -380,6 +403,23 @@ export function LakeExperience({
   function isInterestSelected(title: string) {
     return interests.includes(title) || (title === boatTitle && boatSelected);
   }
+  function applyJourney() {
+    if (!journey || journeyApplied) return;
+    if (lake === "Da scegliere insieme") setLake(journey.lake);
+    setInterests((current) => [
+      ...current,
+      ...journeyActivities.filter(
+        (title) =>
+          !current.includes(title) &&
+          !(
+            title === boatTitle &&
+            current.some((item) => item.startsWith("Barca · "))
+          ),
+      ),
+    ]);
+    trackStep("selection");
+    invalidateBrief();
+  }
   function chooseBoatPackage(option: (typeof BOAT_PACKAGES)[number]) {
     trackStep("selection");
     const title = `Barca · ${option.title}`;
@@ -407,6 +447,7 @@ export function LakeExperience({
           }
         : null,
       name: value("name"),
+      surname: value("surname"),
       email: value("email"),
       phone: value("phone"),
       arrivalPoint: value("arrivalPoint"),
@@ -430,6 +471,14 @@ export function LakeExperience({
       interests: [...interests],
       notes: value("notes"),
     };
+    if (
+      !next.name ||
+      !next.surname ||
+      ((!next.savedTrip || next.phone) && !isExperiencePhone(next.phone))
+    ) {
+      setError(t("Compili nome, cognome, email e telefono."));
+      return;
+    }
     if (
       (next.arrival && next.arrival < today) ||
       (next.departure && next.departure < (next.arrival || today))
@@ -524,6 +573,7 @@ export function LakeExperience({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: brief.name,
+          cognome: brief.surname,
           email: brief.email,
           telefono: brief.phone,
           experienceTripId: brief.savedTrip?.id,
@@ -1125,6 +1175,83 @@ export function LakeExperience({
                 ))}
               </div>
             )}
+            {journey && (
+              <section
+                className={styles.journeyStory}
+                aria-labelledby="journey-story-title"
+              >
+                <h4 id="journey-story-title">
+                  {t("Immagini la sua giornata")}
+                </h4>
+                <div
+                  className={styles.journeyTabs}
+                  role="group"
+                  aria-label={t("Scelga un percorso da esplorare")}
+                >
+                  {journeyOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      aria-pressed={option.id === journey.id}
+                      onClick={() => setFeaturedJourney(option.id)}
+                    >
+                      {option.subtitle}
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.journeyPanel}>
+                  <div className={styles.journeyPhoto}>
+                    <ExperienceImage
+                      src={cardImage(journey.interests[0], experienceLake)}
+                      alt=""
+                      sizes="(max-width: 719px) 90vw, 38vw"
+                    />
+                  </div>
+                  <div className={styles.journeyBody}>
+                    <p className={styles.eyebrow}>{t(journey.lake)}</p>
+                    <h5>{journey.title}</h5>
+                    <p>{journey.description}</p>
+                    <ol className={styles.journeyStops}>
+                      {journey.stops.map((stop) => (
+                        <li key={stop}>{stop}</li>
+                      ))}
+                    </ol>
+                    <button
+                      type="button"
+                      className={styles.darkButton}
+                      onClick={applyJourney}
+                      aria-disabled={journeyApplied}
+                    >
+                      {journeyApplied
+                        ? t("Percorso aggiunto")
+                        : t("Aggiunga il percorso")}
+                      {journeyApplied ? (
+                        <Check size={16} aria-hidden="true" />
+                      ) : (
+                        <Plus size={16} aria-hidden="true" />
+                      )}
+                    </button>
+                    <p className="sr-only" role="status">
+                      {journeyApplied ? t("Percorso aggiunto") : ""}
+                    </p>
+                    {journeyApplied && (
+                      <a
+                        href="#scelte-experience"
+                        className={styles.textButton}
+                      >
+                        {t("Le sue esperienze")}{" "}
+                        <ArrowRight size={15} aria-hidden="true" />
+                      </a>
+                    )}
+                    <p className={styles.journeyHint}>
+                      {t(
+                        "Un punto di partenza: può ancora modificare le attività.",
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </section>
+            )}
             <div className={styles.activitiesLayout}>
               <aside
                 className={styles.boatAside}
@@ -1289,6 +1416,7 @@ export function LakeExperience({
               </fieldset>
             </details>
             <section
+              id="scelte-experience"
               className={styles.selectionSummary}
               aria-labelledby="selection-summary-title"
             >
@@ -1366,15 +1494,26 @@ export function LakeExperience({
             </div>
             <div className={styles.formRow}>
               <label>
-                {t("Nome e cognome *")}
+                {t("Nome *")}
                 <input
                   key={`name-${formVersion}`}
                   name="name"
-                  autoComplete="name"
+                  autoComplete="given-name"
                   required
                   maxLength={120}
                 />
               </label>
+              <label>
+                {t("Cognome *")}
+                <input
+                  name="surname"
+                  autoComplete="family-name"
+                  required
+                  maxLength={120}
+                />
+              </label>
+            </div>
+            <div className={styles.formRow}>
               <label>
                 {t("Email *")}
                 <input
@@ -1385,6 +1524,18 @@ export function LakeExperience({
                   spellCheck={false}
                   required
                   maxLength={200}
+                />
+              </label>
+              <label>
+                {t("Telefono")}
+                {!accountTrip && " *"}
+                <input
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  minLength={6}
+                  maxLength={40}
+                  required={!accountTrip}
                 />
               </label>
             </div>
@@ -1424,19 +1575,10 @@ export function LakeExperience({
             />
             <details className={styles.formDetails}>
               <summary>
-                {t("Telefono e budget (facoltativi)")}{" "}
+                {t("Budget (facoltativo)")}{" "}
                 <Plus size={16} aria-hidden="true" />
               </summary>
               <div className={styles.formRow}>
-                <label>
-                  {t("Telefono")}
-                  <input
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    maxLength={40}
-                  />
-                </label>
                 <label>
                   {t("Budget totale indicativo (\u20AC)")}
                   <input
@@ -1480,6 +1622,11 @@ export function LakeExperience({
                 t={t}
               />
             </details>
+            <p className={styles.categoryDescription}>
+              {t(
+                "Salvare il viaggio nell’account non invia la richiesta. Può inviarla anche senza registrarsi.",
+              )}
+            </p>
             <label className={styles.privacy}>
               <input name="privacy" type="checkbox" required />
               <span>
@@ -1539,7 +1686,7 @@ export function LakeExperience({
                   <div>
                     <dt>{t("Ospite")}</dt>
                     <dd>
-                      {brief.name}
+                      {brief.name} {brief.surname}
                       {t(" \u00B7 ")}
                       {brief.email}
                       {brief.phone && ` · ${brief.phone}`}
@@ -1617,11 +1764,22 @@ export function LakeExperience({
                   )}
                 </dl>
                 {status === "success" ? (
-                  <p role="status">
-                    {t(
-                      "La richiesta è stata registrata. Sarà contattato all’indirizzo indicato per approfondire i dettagli.",
+                  <div>
+                    <p role="status">
+                      {t(
+                        "La richiesta è stata registrata. Sarà contattato all’indirizzo indicato per approfondire i dettagli.",
+                      )}
+                    </p>
+                    {brief.savedTrip && (
+                      <Link
+                        href="/account/viaggi"
+                        className={styles.darkButton}
+                      >
+                        {t("Esperienze salvate")}{" "}
+                        <ArrowRight size={17} aria-hidden="true" />
+                      </Link>
                     )}
-                  </p>
+                  </div>
                 ) : (
                   <>
                     <p className={styles.sendInstructions}>

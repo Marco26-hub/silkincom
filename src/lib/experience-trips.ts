@@ -6,6 +6,14 @@ import {
 } from "@/data/experience-content";
 
 export const EXPERIENCE_DRAFT_KEY = "silkincom.experience.selection.v1";
+export function isExperiencePhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return (
+    /^\+?[0-9(). -]{6,40}$/.test(value) &&
+    digits.length >= 6 &&
+    digits.length <= 15
+  );
+}
 export const tripDestinations = [
   "Da scegliere insieme",
   "Lago di Como",

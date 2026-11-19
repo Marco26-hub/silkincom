@@ -749,5 +749,15 @@
   "Noleggio moto d’acqua con patente nautica": "Alquiler de moto de agua con licencia náutica",
   "Patente nautica richiesta": "Licencia náutica obligatoria",
   "Richieda il noleggio di una moto d’acqua sul lago scelto.": "Solicite el alquiler de una moto de agua en el lago elegido.",
-  "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.": "El alquiler está reservado a titulares de una licencia náutica válida y adecuada para la moto de agua. Antes de la confirmación comprobamos con el operador la disponibilidad, la documentación, las zonas de navegación y las condiciones del alquiler."
+  "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.": "El alquiler está reservado a titulares de una licencia náutica válida y adecuada para la moto de agua. Antes de la confirmación comprobamos con el operador la disponibilidad, la documentación, las zonas de navegación y las condiciones del alquiler.",
+  "Nome *": "Nombre *",
+  "Cognome *": "Apellidos *",
+  "Budget (facoltativo)": "Presupuesto (opcional)",
+  "Compili nome, cognome, email e telefono.": "Indique su nombre, apellidos, correo electrónico y teléfono.",
+  "Salvare il viaggio nell’account non invia la richiesta. Può inviarla anche senza registrarsi.": "Guardar el viaje en su cuenta no envía la solicitud. Puede enviarla sin registrarse.",
+  "Immagini la sua giornata": "Imagine su día",
+  "Scelga un percorso da esplorare": "Elija un itinerario para explorar",
+  "Percorso aggiunto": "Itinerario añadido",
+  "Aggiunga il percorso": "Añadir el itinerario",
+  "Un punto di partenza: può ancora modificare le attività.": "Un punto de partida: aún puede modificar las actividades."
 }
