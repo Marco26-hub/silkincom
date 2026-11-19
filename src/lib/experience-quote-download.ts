@@ -54,6 +54,7 @@ export async function downloadExperienceQuote(
   request: NextRequest,
   id: string,
   admin: boolean,
+  bookingHash?: string,
 ) {
   const limited = rateLimit(request, 30, 60000);
   if (limited) return limited;
@@ -73,7 +74,7 @@ export async function downloadExperienceQuote(
     if (admin) {
       const auth = await requireAdminApi();
       if (!auth.ok) return fail(auth.status);
-    } else {
+    } else if (!bookingHash) {
       const client = await createServerClient();
       const {
         data: { user },
@@ -95,9 +96,10 @@ export async function downloadExperienceQuote(
     let query = db
       .from("experience_quotes")
       .select(
-        "total_cents,currency,status,inclusions,exclusions,conditions,valid_until,trip_updated_at,published_at,updated_at,experience_trips!inner(title,updated_at,payload),experience_quote_details(items)",
+        "total_cents,currency,status,inclusions,exclusions,conditions,valid_until,trip_updated_at,published_at,updated_at,experience_trips!inner(title,updated_at,payload),experience_quote_details(items)" + (bookingHash ? ",experience_bookings!inner(token_hash)" : ""),
       )
       .eq("id", id);
+    if (bookingHash) query = query.eq("status", "sent").eq("experience_bookings.token_hash", bookingHash);
     if (ownerId)
       query = query
         .eq("status", "sent")

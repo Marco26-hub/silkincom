@@ -221,7 +221,7 @@ def run(base):
         page.get_by_role("button", name="Invia richiesta con PDF").click()
         expect(page.get_by_text("Invio accettato per", exact=False)).to_contain_text("partner@example.invalid")
         page.set_viewport_size({"width": 1440, "height": 950})
-        page.get_by_role("button", name="Pratiche Experience").click()
+        page.get_by_role("button", name="Pratiche Experience", exact=True).press("Enter")
         page.get_by_role("button", name="Viaggi e preventivi").click()
         page.get_by_role("button", name="Apri viaggio e preventivi").click()
         transfer = page.get_by_role("region", name="Trasferimento all’arrivo")

@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { bookingJson as json, bookingOriginMatches, guestToken, hashBookingToken } from "@/lib/experience-booking";
 import { splitQuoteConditions } from "@/lib/experience-payment";
 import { rateLimit } from "@/lib/rate-limit";
+import { downloadExperienceQuote } from "@/lib/experience-quote-download";
 import { getStripe } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
   try { body = JSON.parse(raw); } catch { return json({ error: "Richiesta non valida." }, 400); }
   const parsed = z.object({
     token: z.string().regex(guestToken),
-    action: z.enum(["view", "accept", "pay"]),
+    action: z.enum(["view", "accept", "pay", "pdf"]),
   }).strict().safeParse(body);
   if (!parsed.success) return json({ error: "Link non valido." }, 400);
   try {
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
     if (row.error) throw row.error;
     if (!row.data) return json({ error: "Link non disponibile. Chiedi un nuovo link a SILKinCOM." }, 404);
     const booking = row.data;
+    if (parsed.data.action === "pdf") return downloadExperienceQuote(request, booking.quote_id, false, hash);
     const result = await db.from("experience_quotes")
       .select("id,trip_id,total_cents,inclusions,exclusions,conditions,valid_until,trip_updated_at,published_at")
       .eq("id", booking.quote_id).eq("status", "sent").single();

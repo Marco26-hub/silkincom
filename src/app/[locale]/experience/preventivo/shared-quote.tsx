@@ -16,7 +16,7 @@ export function SharedExperienceQuote() {
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
-  const perform = useCallback(async (action: "view" | "accept" | "pay", key: string) => {
+  const perform = useCallback(async (action: "view" | "accept" | "pay" | "pdf", key: string) => {
     setBusy(true);
     setError("");
     try {
@@ -24,6 +24,19 @@ export function SharedExperienceQuote() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, token: key }),
       });
+      if (action === "pdf" && response.ok) {
+        const blob = await response.blob();
+        if (blob.type !== "application/pdf") throw new Error("Il PDF non è disponibile.");
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "SILKinCOM-Preventivo-Experience.pdf";
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return;
+      }
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
       if (action === "pay") {
@@ -81,6 +94,11 @@ export function SharedExperienceQuote() {
             {quote.depositPaid ? "Paga il saldo con carta" : "Versa l’acconto con carta"}
           </button>}
           {quote.accepted && !quote.balancePaid && <button className="ml-2 border px-4 py-3" disabled={busy} onClick={() => void perform("view", token)}>Aggiorna lo stato</button>}
+          <div className="border-t border-pearl-grey pt-4">
+            <button type="button" className="min-h-12 border border-soft-black px-4 py-3 font-medium" disabled={busy} onClick={() => void perform("pdf", token)}>
+              Scarica PDF del preventivo
+            </button>
+          </div>
         </article>
       )}
     </main>

@@ -354,7 +354,7 @@ export function ExperienceManager() {
     setTripFilter(id);
   }
   return (
-    <div className="mx-auto max-w-[1400px] space-y-6">
+    <div className="mx-auto max-w-[1400px] space-y-6 text-base [&_.text-xs]:text-sm [&_.text-sm]:text-base [&_button]:leading-snug [&_label]:leading-relaxed">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="mb-2 text-xs uppercase tracking-widest text-gold-dark">
@@ -1209,12 +1209,12 @@ function BookingPanel({ quote }: { quote: AdminQuote }) {
   return (
     <section className="space-y-3 border border-pearl-grey bg-warm-white p-4" aria-label="Accettazione e pagamenti">
       <h4 className="font-semibold">Accettazione e pagamenti</h4>
-      <p className="text-sm">Invia il link privato al cliente. Può leggere e accettare il preventivo anche senza account.</p>
+      <p className="text-sm">Il link apre il preventivo SILKinCOM. Il cliente può accettarlo anche senza account e, se è abilitata la carta, aprire Stripe dal pulsante di pagamento.</p>
       <div className="flex flex-wrap gap-2">
-        <button type="button" className={primary} disabled={busy} onClick={() => void execute("share")}>Genera link privato</button>
+        <button type="button" className={primary} disabled={busy} onClick={() => void execute("share")}>Genera link al preventivo</button>
         <button type="button" className={button} disabled={busy} onClick={() => void execute("status")}>Aggiorna stato e incassi</button>
       </div>
-      {url && <Field label="Link da copiare e inviare al cliente"><input readOnly value={url} className={cls} onFocus={(event) => event.currentTarget.select()} /></Field>}
+      {url && <Field label="Link al preventivo da inviare al cliente"><input readOnly value={url} className={cls} onFocus={(event) => event.currentTarget.select()} /></Field>}
       {url && <p className="text-sm">Generando un nuovo link, quello precedente viene revocato.</p>}
       {booking && <p role="status" className={settled ? successNotice : infoNotice}>{settled ? "Saldo registrato."
         : booking.deposit_at ? "Acconto registrato. In attesa del saldo."
@@ -2660,7 +2660,7 @@ function QuoteEditor({
   );
   const [conditions, setConditions] = useState(initialTerms.conditions);
   const [paymentMethod, setPaymentMethod] = useState<QuotePaymentMethod | "">(
-    initialTerms.method ?? (existing ? "" : "either"),
+    initialTerms.method ?? (existing ? "" : "card"),
   );
   const [cardLink, setCardLink] = useState(initialTerms.link);
   const [cardAmount, setCardAmount] = useState<number | null>(
