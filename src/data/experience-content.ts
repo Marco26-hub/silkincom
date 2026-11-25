@@ -54,6 +54,58 @@ type Experience = {
 };
 export const EXPERIENCES: readonly Experience[] = [
   {
+    id: "orrido-bellano",
+    lakes: ["como"],
+    category: "lake",
+    title: "Orrido di Bellano",
+    location: "Bellano · Lago di Como",
+    summary: "Scopra un suggestivo orrido e il suo territorio, con un itinerario da personalizzare.",
+    description: "Acqua, roccia e paesaggi del lago: una proposta da costruire attorno all’orrido e ai luoghi vicini, secondo i suoi interessi.",
+    detail: "Percorso, accompagnamento, eventuali ingressi e trasferimenti sono da concordare. Accessibilità, condizioni meteo e aperture devono essere verificati prima della visita.",
+    duration: "2–3 ore",
+    format: "Itinerario con guida",
+    icon: "mountain",
+  },
+  {
+    id: "orrido-faggeto",
+    lakes: ["como"],
+    category: "lake",
+    title: "Orrido di Faggeto",
+    location: "Faggeto Lario · Lago di Como",
+    summary: "Scopra un suggestivo orrido e il suo territorio, con un itinerario da personalizzare.",
+    description: "Acqua, roccia e paesaggi del lago: una proposta da costruire attorno all’orrido e ai luoghi vicini, secondo i suoi interessi.",
+    detail: "Percorso, accompagnamento, eventuali ingressi e trasferimenti sono da concordare. Accessibilità, condizioni meteo e aperture devono essere verificati prima della visita.",
+    duration: "2–3 ore",
+    format: "Itinerario con guida",
+    icon: "mountain",
+  },
+  {
+    id: "orrido-nesso",
+    lakes: ["como"],
+    category: "lake",
+    title: "Orrido di Nesso",
+    location: "Nesso · Lago di Como",
+    summary: "Scopra un suggestivo orrido e il suo territorio, con un itinerario da personalizzare.",
+    description: "Acqua, roccia e paesaggi del lago: una proposta da costruire attorno all’orrido e ai luoghi vicini, secondo i suoi interessi.",
+    detail: "Percorso, accompagnamento, eventuali ingressi e trasferimenti sono da concordare. Accessibilità, condizioni meteo e aperture devono essere verificati prima della visita.",
+    duration: "2–3 ore",
+    format: "Itinerario con guida",
+    icon: "mountain",
+  },
+  {
+    id: "orrido-santanna",
+    lakes: ["maggiore"],
+    category: "lake",
+    title: "Orrido di Sant’Anna",
+    location: "Cannobio · Lago Maggiore",
+    summary: "Scopra un suggestivo orrido e il suo territorio, con un itinerario da personalizzare.",
+    description: "Acqua, roccia e paesaggi del lago: una proposta da costruire attorno all’orrido e ai luoghi vicini, secondo i suoi interessi.",
+    detail: "Percorso, accompagnamento, eventuali ingressi e trasferimenti sono da concordare. Accessibilità, condizioni meteo e aperture devono essere verificati prima della visita.",
+    duration: "2–3 ore",
+    format: "Itinerario con guida",
+    icon: "mountain",
+  },
+  {
     id: "boat",
     duration: "2–4 ore",
     format: "In autonomia o con capitano",
@@ -63,7 +115,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Lago di Como · Lago Maggiore",
     icon: "ship",
     featured: true,
-    summary: "Ville e borghi dall’acqua, in autonomia o con capitano.",
+    summary: "Scopra ville e borghi dall’acqua. Scelga la libertà di guidare o il piacere di affidarsi a un capitano.",
     description:
       "Il lago da una prospettiva speciale: ville affacciate sull’acqua, piccoli approdi e borghi da scoprire. Un’uscita in autonomia, con capitano o con aperitivo a bordo, seguendo il ritmo del suo soggiorno.",
     detail:
@@ -79,7 +131,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Tremezzina · Bellagio · Varenna",
     icon: "landmark",
     featured: true,
-    summary: "Dimore storiche e giardini da scoprire con una guida.",
+    summary: "Passeggi tra giardini affacciati sul Lario e dimore storiche, accompagnato da una guida.",
     description:
       "Giardini sul lago, sale ricche di storia e scorci da ricordare. Una visita accompagnata a Villa del Balbianello, Villa Carlotta, Villa Melzi o Villa Monastero, scegliendo le tappe più adatte al suo viaggio.",
     detail:
@@ -95,7 +147,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Como · Brunate",
     icon: "mountain",
     featured: true,
-    summary: "Il centro di Como e il panorama del lago dall’alto.",
+    summary: "Visiti il centro di Como e salga in funicolare verso Brunate, per ammirare il lago dall’alto.",
     description:
       "Dalle piazze di Como al panorama di Brunate: una visita in città e, quando il servizio è attivo, la salita in funicolare. In cima, il tempo per una passeggiata e una sosta con vista.",
     detail:
@@ -110,7 +162,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Borghi e passeggiate sul lago",
     location: "Località da scegliere sul lago del soggiorno",
     icon: "compass",
-    summary: "Vicoli, lungolago e soste nei borghi della destinazione scelta.",
+    summary: "Si lasci guidare tra vicoli, botteghe e lungolago, con soste nei borghi del lago scelto.",
     description:
       "Vicoli, botteghe e passeggiate sull’acqua. Bellagio o Varenna sul Lago di Como, Stresa e i borghi del Verbano sul Maggiore: una visita accompagnata, con il tempo per fermarsi e assaporare ogni luogo.",
     detail:
@@ -127,7 +179,7 @@ export const EXPERIENCES: readonly Experience[] = [
     icon: "utensils",
     featured: true,
     summary:
-      "Pranzi vista lago e cene degustazione nei ristoranti del territorio.",
+      "Scopra le tavole del territorio, tra pranzi vista lago e cene degustazione da scegliere secondo i suoi gusti.",
     description:
       "Un pranzo vista lago o una cena con menu degustazione. Scegliamo insieme le tavole e i sapori da scoprire, con un percorso gourmet che può accompagnare più giornate del soggiorno.",
     detail:
@@ -142,7 +194,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Gin & Wine Experience",
     location: "Cantine e distillerie da scegliere con i produttori",
     icon: "wine",
-    summary: "Vini, gin e botaniche da scoprire con degustazioni guidate.",
+    summary: "Incontri produttori e scopra vini, gin e botaniche attraverso degustazioni guidate da concordare.",
     description:
       "Un calice di vino, i profumi di un gin, le botaniche raccontate da chi le sceglie. Degustazioni guidate e incontri con i produttori, per scoprire nuovi sapori e abbinarli a una sosta gourmet.",
     detail:
@@ -157,7 +209,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Lezioni di cucina italiana",
     location: "Sede e professionista da concordare",
     icon: "chef",
-    summary: "Una ricetta da preparare con un cuoco e gustare insieme.",
+    summary: "Prepari una ricetta italiana con un cuoco e condivida a tavola il piacere di degustarla.",
     description:
       "Le mani in pasta, una ricetta italiana e i consigli di un cuoco. Un’esperienza da vivere in coppia, in famiglia o con gli amici, con il piacere di assaggiare ciò che si è preparato.",
     detail:
@@ -174,7 +226,7 @@ export const EXPERIENCES: readonly Experience[] = [
     icon: "factory",
     featured: true,
     summary:
-      "Tessitura, tintoria e showroom in un percorso nella seta di Como.",
+      "Entri nel mondo della seta di Como, tra lavorazioni tessili, colore e appuntamenti in showroom.",
     description:
       "Vedere nascere un tessuto, scoprire il lavoro sul colore e riconoscere la qualità della seta. Un percorso guidato tra tessitura, tintoria e showroom del distretto comasco, con acquisti sempre facoltativi.",
     detail:
@@ -190,7 +242,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Menaggio · circolo da confermare",
     icon: "flag",
     featured: true,
-    summary: "Una partita o una lezione, con il tempo per godersi il Lario.",
+    summary: "Dedichi una mezza giornata al golf, con una partita o una lezione in un circolo del territorio comasco.",
     description:
       "Una partita immersa nel paesaggio del Lario, oppure una lezione con un maestro. Valutiamo il circolo e i servizi adatti al suo livello, con il tempo per il gioco e per una cena sul lago.",
     detail:
@@ -205,7 +257,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Passeggiate guidate ed e-bike",
     location: "Percorsi sul lago scelto",
     icon: "bike",
-    summary: "Percorsi panoramici a piedi o in e-bike, al ritmo degli ospiti.",
+    summary: "Esplori sentieri e borghi a piedi o in e-bike, con un percorso scelto per il suo ritmo.",
     description:
       "Una passeggiata con vista o un percorso in e-bike tra natura e borghi, accompagnati da personale competente. Durata, dislivello e ritmo vengono scelti in base alla preparazione degli ospiti.",
     detail:
@@ -220,7 +272,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Kayak, SUP e vela",
     location: "Località e centro nautico da concordare",
     icon: "waves",
-    summary: "Una lezione o un’uscita sul lago con un centro nautico.",
+    summary: "Scelga tra kayak, SUP o vela e viva il lago con una lezione o un’uscita organizzata.",
     description:
       "Pagaiare vicino alla riva, provare il SUP o avvicinarsi alla vela. Una lezione o un’uscita da scegliere con un centro nautico, secondo esperienza, stagione e condizioni del lago.",
     detail:
@@ -235,7 +287,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Benessere e tempo per sé",
     location: "Struttura da scegliere sul lago",
     icon: "sparkles",
-    summary: "Spa, yoga e momenti di relax da inserire nel soggiorno.",
+    summary: "Si conceda una pausa in spa o una sessione di yoga, scegliendo il momento ideale del soggiorno.",
     description:
       "Una pausa in spa, una sessione di yoga, un momento dedicato soltanto a sé. Il piacere di rallentare tra una visita e una cena, scegliendo la struttura e l’attività più adatte al soggiorno.",
     detail:
@@ -250,7 +302,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Noleggio moto d’acqua con patente nautica",
     location: "Centro nautico da concordare sul lago scelto",
     icon: "waves",
-    summary: "Richieda il noleggio di una moto d’acqua sul lago scelto.",
+    summary: "Viva il lago in moto d’acqua. Noleggio su richiesta per ospiti con patente nautica valida.",
     description:
       "Il noleggio è riservato a chi possiede una patente nautica valida e idonea alla conduzione del mezzo. Verifichiamo disponibilità, documenti, aree di navigazione e condizioni di noleggio con l’operatore prima della conferma.",
     detail:
@@ -265,7 +317,7 @@ export const EXPERIENCES: readonly Experience[] = [
     title: "Visit Milano",
     location: "Milano · escursione dal lago",
     icon: "landmark",
-    summary: "Arte, moda e shopping: una giornata nel carattere di Milano.",
+    summary: "Parta dal lago alla scoperta di Milano, tra arte, moda, shopping e una possibile sosta gourmet.",
     description:
       "Dal lago a Milano per una giornata tra il Duomo, la Galleria Vittorio Emanuele II e i quartieri della moda. La visita può abbinare accompagnamento culturale, appuntamenti per lo shopping e una sosta gourmet, seguendo i suoi interessi.",
     detail:
@@ -281,7 +333,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Circuito da concordare in base al soggiorno",
     icon: "flag",
     featured: true,
-    summary: "Il piacere della sfida, in pista con le persone che sceglie.",
+    summary: "Condivida l’emozione della pista con una sessione di kart o una sfida per il suo gruppo.",
     description:
       "Una pausa adrenalinica da condividere in coppia, tra amici o con il proprio gruppo: sessioni di kart su un circuito selezionato in base al soggiorno e alla preparazione dei partecipanti.",
     detail:
@@ -298,7 +350,7 @@ export const EXPERIENCES: readonly Experience[] = [
     icon: "mountain",
     featured: true,
     summary:
-      "Ponti sospesi e percorsi tra gli alberi, per una giornata diversa.",
+      "Viva una giornata nella natura tra ponti sospesi e percorsi sugli alberi, adatti al suo gruppo.",
     description:
       "Un’esperienza nella natura tra percorsi sospesi, passaggi tra gli alberi e momenti da condividere. Il parco e il livello del percorso vengono scelti in base al gruppo, per unire avventura e piacere di stare insieme.",
     detail:
@@ -314,7 +366,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Stresa · Isola Bella · Isola Madre",
     icon: "landmark",
     featured: true,
-    summary: "Navigazione, palazzi e giardini tra le Isole Borromee.",
+    summary: "Navighi da Stresa verso le Isole Borromee e scopra palazzi e giardini in una visita accompagnata.",
     description:
       "Da Stresa alle Isole Borromee, tra palazzi, giardini e scorci sull’acqua. Una visita accompagnata a Isola Bella o Isola Madre, da completare con una sosta sull’Isola dei Pescatori quando il programma lo consente.",
     detail:
@@ -330,7 +382,7 @@ export const EXPERIENCES: readonly Experience[] = [
     location: "Leggiuno · sponda lombarda",
     icon: "landmark",
     featured: true,
-    summary: "L’eremo sul Verbano e una sosta sulla sponda lombarda.",
+    summary: "Visiti l’eremo di Santa Caterina del Sasso, affacciato sul Verbano, e scopra la sponda lombarda.",
     description:
       "Un eremo affacciato sulla parete rocciosa, con il Lago Maggiore davanti agli occhi. Una visita accompagnata a Santa Caterina del Sasso, da abbinare a una passeggiata o a un pranzo sulla sponda lombarda.",
     detail:
@@ -347,7 +399,7 @@ export const EXPERIENCES: readonly Experience[] = [
     icon: "flag",
     featured: true,
     summary:
-      "Golf nel Vergante, con trasferimenti e sosta gourmet da coordinare.",
+      "Giochi a golf tra Stresa e il Vergante, con la possibilità di organizzare trasferimento e sosta gourmet.",
     description:
       "Una giornata di golf tra Stresa e il Vergante, con il tempo per concentrarsi sulla partita. Trasferimenti, attrezzatura ed eventuale lezione si possono coordinare, insieme a una sosta gourmet dopo il gioco.",
     detail:

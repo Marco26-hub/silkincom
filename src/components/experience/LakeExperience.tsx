@@ -61,6 +61,7 @@ const SHARED_IMAGE_IDS = new Set([
   "milano",
 ]);
 function cardImage(id: string, lake: "como" | "maggiore") {
+  if (id.startsWith("orrido-")) return `/experience/cards/outdoor${lake === "maggiore" ? "-maggiore" : ""}.webp`;
   if (id === "jet-ski") return "/experience/cards/jet-ski-user.webp";
   if (id === "golf") return "/experience/cards/golf-inland.webp";
   if (id === "silk") return "/artisans/tessitore-tessitura-como.webp";
