@@ -946,7 +946,8 @@ export function LakeExperience({
                 <span aria-hidden="true">0{index + 1}</span>
               </button>
             ))}
-            {!reducedMotion && (
+            {/* Wait for the first image so hydration does not depend on a client-only motion preference. */}
+            {heroReady && !reducedMotion && (
               <button
                 type="button"
                 aria-label={
