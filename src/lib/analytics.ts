@@ -1,3 +1,4 @@
+import { referralSource, isAiSource } from '@/lib/traffic-source';
 /**
  * Eventi e-commerce + attribuzione.
  *
@@ -54,22 +55,6 @@ function hasConsent(): boolean {
  * Traduce un referrer in sorgente/mezzo quando mancano gli UTM.
  * Senza questo, tutto il traffico social organico finirebbe in "direct".
  */
-function inferFromReferrer(ref: string): { source: string; medium: string } | null {
-  if (!ref) return null;
-  let host: string;
-  try {
-    host = new URL(ref).hostname.replace(/^www\./, '');
-  } catch {
-    return null;
-  }
-  if (host.endsWith('silkincom.com')) return null; // navigazione interna
-
-  const social = /instagram|facebook|fb\.|threads|tiktok|pinterest|youtube|linkedin|t\.co|twitter|x\.com/i;
-  const search = /google|bing|duckduckgo|ecosia|yahoo|qwant/i;
-  if (social.test(host)) return { source: host, medium: 'social' };
-  if (search.test(host)) return { source: host, medium: 'organic' };
-  return { source: host, medium: 'referral' };
-}
 
 /**
  * Salva la prima sorgente conosciuta. Chiamata a ogni caricamento: se
@@ -86,13 +71,13 @@ export function captureAttribution(): Attribution | null {
   // registrata: significa che la persona è tornata da una campagna nuova.
   if (existing && !utmSource) return existing;
 
-  const inferred = inferFromReferrer(document.referrer);
+  const inferred = referralSource(document.referrer);
   const source = utmSource || inferred?.source;
   if (!source && existing) return existing;
 
   const attribution: Attribution = {
     source: source || 'direct',
-    medium: params.get('utm_medium') || inferred?.medium || 'none',
+    medium: params.get('utm_medium') || (utmSource && isAiSource(utmSource) ? 'ai_assistant' : inferred?.medium) || 'none',
     campaign: params.get('utm_campaign') || undefined,
     content: params.get('utm_content') || undefined,
     term: params.get('utm_term') || undefined,

@@ -1,0 +1,440 @@
+{
+  "createdAt": "2026-11-26T16:15:08.836880+00:00",
+  "scope": "Session delta only. Existing modifications preserved. Do not apply this patch over the current checkout.",
+  "codeFiles": [
+    {
+      "path": "messages/de.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "c8c7f51eb4e06588973c91f889e439fabe1c75b06ee21cf3ca817b9c74316ea7",
+      "afterSha256": "dcfb2985884c75c70e5a38a434c077c07355abf90ada48651e130afcd91cf505"
+    },
+    {
+      "path": "messages/en.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "0cafec563879a418375ae1fe2978eb47e411e7f6b1da33e1d3ee037e69c4826b",
+      "afterSha256": "837877b21c4329d785f9581584d22f24765fd3309efd163d117f56a6063a29fa"
+    },
+    {
+      "path": "messages/es.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "30ccee5d16b05753ee506692cbbb95a77ad7a83ac062516cde7756adad92de6a",
+      "afterSha256": "faa788bc50f3107b32dab673b46593cf1a954778e68fd442b2934479bd67f0c3"
+    },
+    {
+      "path": "messages/experience/de.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "409694f4b9af911c46517bb4a728606d3db24c678337fc2997f8d03a4ca8c091",
+      "afterSha256": "ba6251decfbad16010d07d255cf1887c862b456c4d84f5d26840188b755603e6"
+    },
+    {
+      "path": "messages/experience/en.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "060da3090b93dac71a1af5ad8a6779d3422a0b18582df10b9cb460e43260c095",
+      "afterSha256": "1b79778df75df093cd9f3ccf555f07bd58a04270e5f9898899d50c8a3825c1a4"
+    },
+    {
+      "path": "messages/experience/es.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "7e4c83a9597a31e886bc637533419f691d4250bdcf2394c0d3a341506482c241",
+      "afterSha256": "76917eaaff2824ed257e3ee9e438de785ae55d5a8c8d298be2f3408ed2e97187"
+    },
+    {
+      "path": "messages/experience/fr.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "e3101a816c0fc7eee3b823f7169d08b71a6d644ad08e8fee4a4c79d7da6fd071",
+      "afterSha256": "86e01e0afe8cced7c496b45cdda734d35f0c620545b531fb6aefc44392d19df7"
+    },
+    {
+      "path": "messages/experience/nl.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "81980c2268320f39efa0dbd73e11e1baaafa4f97028707f79370ec73b4475be2",
+      "afterSha256": "c97e8c1f527c542d71c84055891ebe2b29479fb1bf54f80a25ee9b87b76f7ca2"
+    },
+    {
+      "path": "messages/experience/pt.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "aa6c4a6cbb7c2288788a9451bd645ba3183965c015c4cf44a5892470813ba8c8",
+      "afterSha256": "11d5d978ada459b47a334054967d6c0b50027394de32cc23b50a62fbc48cb513"
+    },
+    {
+      "path": "messages/fr.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "6c8fca2242430918d66d2330776b70e61899cbd57eab60e6a03ca67a015224b4",
+      "afterSha256": "452ed7cba6ac26ccd5bbda220c3e353493f52023fd807abc238fda9ff53c1ca8"
+    },
+    {
+      "path": "messages/it.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "6b86b3f323b031746a4766db58787c94195053a52d97bd81713e771a6a87e94f",
+      "afterSha256": "02d6dfbae8fe7795abbb1b11c2d15c6dd14e971aae8085a98f2b2c90a1d026c7"
+    },
+    {
+      "path": "messages/nl.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "3da17daee3cf3694c1bb03cba85176c46794e1562b76897610d864466caf774c",
+      "afterSha256": "f5805f2774f0f46247bb951dc3f93a1f127802a20d8edc4275a263409f750f3e"
+    },
+    {
+      "path": "messages/pt.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "4a9b9cbdf262bf7821fb4a1ab3ec312a43b862af23a24700050792da92e96973",
+      "afterSha256": "3c3616a81383087485305ddc9cb6bfdda20667552c4bc026269e5c659d1b54e1"
+    },
+    {
+      "path": "package-lock.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "cb1ceb3db41b30ac040a7cad4c3fcc257791b872fa7719d4020df88d73b81755",
+      "afterSha256": "41d535ebe620f084a4ce74560ab993948b35dc90bf1b28098fc7bfe024f2c6cf"
+    },
+    {
+      "path": "package.json",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "95d612e5222ee8ab26bcc9de53922c345a5812ae079ef3bd3d4a767acd988740",
+      "afterSha256": "3cb7c6b720e3925347fa58adcecb9871eced4b5333dc32f7c1ce1298330864ab"
+    },
+    {
+      "path": "src/app/[locale]/artigiani/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "a316305f76a88f1be39c34bf8d38ba3e431018b4a53f71ecaae6b331e447bf68",
+      "afterSha256": "8bb14eae1021a7de12748913ea3d465f3104133fbe82125a6bc6ceb45cefd93f"
+    },
+    {
+      "path": "src/app/[locale]/auth/callback/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "5daf63089a78ad815505373d420b82dce5d014724c67914cf9149041932173f6",
+      "afterSha256": "94c4a4f91a461a894baf47341bd262e8cb600d9e497acd0b2d7cfb8a309ce15a"
+    },
+    {
+      "path": "src/app/[locale]/b2b/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "5b2dab1cbb89c645d1b7e0a29ff3fc6327eb4eed9817ae81d3c0c87f73d14929",
+      "afterSha256": "487c4413cd344ddc88853d3e01460e6c5627b3adb74f407811019bbfed9771f0"
+    },
+    {
+      "path": "src/app/[locale]/faq/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "3a55e26cbab26df3324a7f359551b5f7d49702bd84fec22e966c552ce956a657",
+      "afterSha256": "948332603d860b906d8099ce8699d3fdf4ab081ed9f24a279a343975d961df62"
+    },
+    {
+      "path": "src/app/[locale]/layout.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "6d6b0e0b407caab50e86e2629f8df2aaa70ff1d4418652bae05532a5b77a2830",
+      "afterSha256": "04d0d8d07e944c1374a021b40c01d9021edf5a7076256158ffc9b4b9f5f794ab"
+    },
+    {
+      "path": "src/app/[locale]/materiali/layout.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "e5c61057bb7eeabb276c4f4814da300082a6054508b31ff3bcc5457a3b9092f6",
+      "afterSha256": "ad00230159f6eab2a5f49c61dcbb9c88e2fbdab69025bfe4c744cfa2ce41a7a5"
+    },
+    {
+      "path": "src/app/[locale]/materiali/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "85a2b35fc61716b0d874c6238ce61852944e90014e7924fcd62c2cbb37429361",
+      "afterSha256": "accb82af4e7b8c615fc679726d24ab931a51617ee305d5495f7a84144a8730ae"
+    },
+    {
+      "path": "src/app/[locale]/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "3bcbf204d8c678159e05e46ddc17911a5826f5680a066d9820894da6a498aaa9",
+      "afterSha256": "068a33629591732bcff55bf89b1e9a227163e9fbc5e2b707b21899b0375dfc62"
+    },
+    {
+      "path": "src/app/[locale]/press/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "a88605b39979a6bd606a09ed1244087b36c6989490d4d2cb8a1aa6fdb2577fcb",
+      "afterSha256": "516b111aaf5212b48feb319e16a4c107c90a26f21e25125a38bfc939a818f16b"
+    },
+    {
+      "path": "src/app/[locale]/prodotto/[slug]/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "d45acdcce45f97a5b2d75db8ee2e9dff1f4dffee95ec31e1c5ba354745732c89",
+      "afterSha256": "c1b9a27b69319b04cfd47852b46567a42ab6beddd99491821242e672835ffcf7"
+    },
+    {
+      "path": "src/app/[locale]/recensioni/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "535d7a45ebb0b46835086ee6b3d94e1bd5ac22ca4bf85688a3a849a18265e4a9",
+      "afterSha256": "2a59884303a3cf067460f2b23953e51dbbdd1db49b5205f53a830f3b88bac08d"
+    },
+    {
+      "path": "src/app/[locale]/trame-di-como/[slug]/page.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "872d5f77df26b7f246e2b30a509f1c9c705168e11c9ca050109f918a431cd432",
+      "afterSha256": "f3d13a032b2c3dcf15a7f210c36078651a4cc6cdbfad1d0fbb0aa004eaab24cd"
+    },
+    {
+      "path": "src/app/[locale]/trame-di-como/layout.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "a79139c56a5dbe337df260f27afd022317b5ff0356f44f167524cd5e9b157321",
+      "afterSha256": "dcfe6bfa64015dd150f7d13cc2e9a4ad695b82b993a9670313522c3d311a6e84"
+    },
+    {
+      "path": "src/app/api/admin/download-image/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "c007277d21a0431d99da34fd0b17e4a349a37576d2c411194682deac97100c91",
+      "afterSha256": "bebaef5fcd0358efc932eee99eb21f0c93e1abf9ad74824b119e961267e4e44a"
+    },
+    {
+      "path": "src/app/api/cron/lifecycle/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "66bc9e019cd2cfd8dabafe7269b1961351465c179e4d363b4a11bb3133359acb",
+      "afterSha256": "bc38cda6ab48b601eb5ee702c6b46f69cd55b2c09aab1c9c5de8fdad7ee34db4"
+    },
+    {
+      "path": "src/app/api/cron/sync-ads/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "3b4f7128de537d75248316f16265e654db327b1e97a2b1030bbeab0c9a6cfefb",
+      "afterSha256": "a2401f06044ad93cc2e86abe96c56cc5d11ff309f2e7d500b7efff7779045176"
+    },
+    {
+      "path": "src/app/api/cron/sync-financial/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "c5d9d21df086cacc26f71d3fe3066d9a74acb68c5e948fc2bcff7eb27c44b203",
+      "afterSha256": "38ca94d375a437a08d6b4de4b3b593ae050141cb500604ae0b29c8e7e7ae6db3"
+    },
+    {
+      "path": "src/app/api/cron/sync-merchant/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "b5590f4c62528e2cadb0b561b2f20ecbdd5a178711896b392bac3c92c302e26e",
+      "afterSha256": "087acd9cc329a32a01cde30bfd39e121a70f96c75df98fb24cb552c039062845"
+    },
+    {
+      "path": "src/app/api/etest/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "438c6196fc0ecaca9f6ddb70ec6e88a52c3c124aab40be3a4c24d37660a777d7",
+      "afterSha256": "0b1afc98ceeb2c6260d947af947f02bed2ae3cc9d978a6cc67ab0cc45464ea96"
+    },
+    {
+      "path": "src/app/api/google-merchant/feed.xml/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "bcc85c7b0ac81243f350c1feb8f498a26c6e6edb3b9cb9fdeb1705c3c4ddd65c",
+      "afterSha256": "3ef47a59dbb8dce874eaaea658c9ba3b3229d1fc637d1eb5f9b1346b611afc95"
+    },
+    {
+      "path": "src/app/llms-full.txt/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "1ebccaa8cfb18da4d476bcb77cc09dd3400cf1037358922866839e7a89442d3a",
+      "afterSha256": "b5e2a333afc64b688af613c82fc43cc7d10f108afe5ee51dd29ac61a9f1590dc"
+    },
+    {
+      "path": "src/app/llms.txt/route.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "de6ff13aded0df3877226325326c82c2c3515560bbb1dafb089fab49ab6c9fc6",
+      "afterSha256": "82ab105317720b8d02f00b11a1db6ec6b35c9c51dbca9d5c28dd920043ecd332"
+    },
+    {
+      "path": "src/app/robots.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "d90d6ec6bb9223c00c1ece5e69ff56565d0d6999177ea41518302e352fa01483",
+      "afterSha256": "c14c0e33d7f7359ee96e6e60a8cf35bf184b2fe00679b3cc87fd1a3cef95a182"
+    },
+    {
+      "path": "src/app/sitemap.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "66cdb3fa27d5ca21187bfd1503821badd666b6d7ac615cf2a6d0697eb893b3db",
+      "afterSha256": "8fd72483193e7efcf70590ee52a79fa2f65df27dc28d776a86a3492abb8cd5b8"
+    },
+    {
+      "path": "src/components/analytics/FirstPartyBeacon.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "36dff5a31ce6113a1f6ae57a37e6bffdcf9a17fa7356d0adbb92cebf7c353bcf",
+      "afterSha256": "f254d12bf0e470574ac822e0dfc2b4785731e8d40224dae3d95f1484948471f4"
+    },
+    {
+      "path": "src/components/cart/CartPageClient.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "69ca5e6079c2f2103dc0a1c7ceb1d3296da13eec3170e9a40e1127393f8df4cf",
+      "afterSha256": "1b3b3d10ac141213616b56bfcde0b3e24e6cf46ab0e4105a18dd5d99402af936"
+    },
+    {
+      "path": "src/components/product/ProductPurchaseSection.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "3c73ca34e2af4896db8a15fcd7990aed87824b69b5c5735d15049de4b679b371",
+      "afterSha256": "373022d9805db5fffe080947815c7a71cdbfdb7d3de8bec23f39b1a60253c223"
+    },
+    {
+      "path": "src/components/schemas/ReviewSchema.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "3e06d3fadf453c660b3393739a4ea57803e1c6dda3eebe92ccf204b5e68f00ac",
+      "afterSha256": "96be151521bca6350a9d4df19693a4499b78b1003b5f2dd98078a10c58ac2673"
+    },
+    {
+      "path": "src/components/sections/BrandStory.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "d39fa2af94c7566d310ac471eb72c7ebd8023565a556f2e3cae35a460527ca82",
+      "afterSha256": "d7cd2b2bdee362c5f1bdc0f025011352713ecd7a2420f171cab7942756e7e121"
+    },
+    {
+      "path": "src/components/sections/Hero.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": true,
+      "beforeSha256": "fb9b392a500c1344ba626d8df8c4a1f0b6b8f079b263d1707b716e7950241b20",
+      "afterSha256": "aee87e4b733225a58bba40f4cf828601863763042f7a46a08b8b58ae43c9bf81"
+    },
+    {
+      "path": "src/components/sections/TrustpilotReviews.tsx",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "c83c9e2c9a317e58b07bb3854ff5a30a7ba4dda916e8e2efbbafee2b4fc25805",
+      "afterSha256": "d2e1d0fb3470b0941a87a37becaa32eb9077b4fd00388c6ea416222c330f054a"
+    },
+    {
+      "path": "src/config/shipping.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "8db6c95ace2383462eff84d84c4f95081723787dd29bb8f2f8bf5bc0c9126f9e",
+      "afterSha256": "8867b23f489819a0e47c1c498938d868698dbe566fe319725382a387994cde2c"
+    },
+    {
+      "path": "src/data/posts.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "0282c0ae7929e7818a6b1ae5dca4e12f208a967d0b1bdf4bd89c13fd1e47a2c0",
+      "afterSha256": "036c9a3bd15f499eb58a9aae965e4a7753b20860018e98edf2ffa126978c0dbd"
+    },
+    {
+      "path": "src/lib/analytics.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "9f9f7f29d49b0b416aa6c8f265c8f5135e5c8ff5e4d0e2aa11c4e92eee87537f",
+      "afterSha256": "a5be808d2b6f61e2893decd3fcb4211a23ed657b9de3135cf2ac7c18e8ddc3eb"
+    },
+    {
+      "path": "src/lib/app-url.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "d558bcd64b655de50a1830b4813fa32f62155fe1304cfe43e1bfed8f90e5f131",
+      "afterSha256": "7fa8039c164c20b9d6e01c289c9393f021226a5ee78b7f303dd2e46f41843d06"
+    },
+    {
+      "path": "src/lib/validations.ts",
+      "existedAtStart": true,
+      "alreadyChangedAtStart": false,
+      "beforeSha256": "cb99839493021795bd524c7ecfd7896bbaf21449e12a1dc93be5bc02759bfb2e",
+      "afterSha256": "69dd4baaaac9115e54ba45b1d3f640cc111853d47fe149e178b80f2cef662028"
+    },
+    {
+      "path": "scripts/security/check-http.mjs",
+      "existedAtStart": false,
+      "afterSha256": "e676daf6fdff67b6f6a22a147feb0603d30be6ba7ac500b5b754eb3741a284ec"
+    },
+    {
+      "path": "scripts/security/test-profile-guard.py",
+      "existedAtStart": false,
+      "afterSha256": "a0ecceff506d1c4483c06a2567d4aa1db41a78e70c24b2704381603bad52870b"
+    },
+    {
+      "path": "scripts/security/test-security.mjs",
+      "existedAtStart": false,
+      "afterSha256": "2bd21a8badd49e5da0bd0d87476ae9b8e78d3a3ba29699f3f9ac5d5fb5fe3a8e"
+    },
+    {
+      "path": "scripts/seo/check-aeo-browser.py",
+      "existedAtStart": false,
+      "afterSha256": "f05aecca3dd63bd3db05ea11a07169bf8c865d28a60b1d8c8cab8d08d882e6da"
+    },
+    {
+      "path": "scripts/seo/check-aeo.mjs",
+      "existedAtStart": false,
+      "afterSha256": "4895041806c41f07c68238345a2bb7a2f0948fd37a9590dd7eec2b13065b03b8"
+    },
+    {
+      "path": "scripts/seo/content-inventory.mjs",
+      "existedAtStart": false,
+      "afterSha256": "95fdb3442300751c0bd6b2ff15041b930b728863baa96218458dfb8472abb8bc"
+    },
+    {
+      "path": "scripts/seo/test-aeo.mjs",
+      "existedAtStart": false,
+      "afterSha256": "cdacf8affe811a238b0b8ba93209797f04397505d9054f31f49cacc3802bd62d"
+    },
+    {
+      "path": "src/app/[locale]/materiali/MaterialiContent.tsx",
+      "existedAtStart": false,
+      "afterSha256": "baa83ad2447e40f3cf67df4c2086aaf2ef91969cfc372e13f76ff4d6b11ac21e"
+    },
+    {
+      "path": "src/components/sections/ProductProvenance.tsx",
+      "existedAtStart": false,
+      "afterSha256": "3e4d4b0961c5a1db48052fc5e3b946e23bcf9ec48cbd5e107cdb67835d4fc022"
+    },
+    {
+      "path": "src/data/blog-translations/t-shirt-bianca-lario-sera-lago-di-como.json",
+      "existedAtStart": false,
+      "afterSha256": "f80a9ca832980141153f5634a338f6c95fa442c05edbe2c298ecbc39cf47c229"
+    },
+    {
+      "path": "src/data/brand.ts",
+      "existedAtStart": false,
+      "afterSha256": "f89b8f32b347adbd379429ebea416104a6fa6f2a9f451dca2b89aa62c680987e"
+    },
+    {
+      "path": "src/lib/editorial-text.ts",
+      "existedAtStart": false,
+      "afterSha256": "4a67e49f8362cbcb350919bd109598977bd079b8d0cd1f8eada8cd63a45ba0d6"
+    },
+    {
+      "path": "src/lib/security/guards.ts",
+      "existedAtStart": false,
+      "afterSha256": "bd872568c814469a73a8d71235f715fb116a118683b5597cc254b7c8dbbe4055"
+    },
+    {
+      "path": "src/lib/traffic-source.ts",
+      "existedAtStart": false,
+      "afterSha256": "41f17442225df2c162d613b9cd7ea89ea9642f21334b3a24b1ef642eee064920"
+    },
+    {
+      "path": "supabase/migrations/058_profile_privilege_guard.sql",
+      "existedAtStart": false,
+      "afterSha256": "8b0777aa155a97808cbbb17c382ecdc2938cc45fd5c93f54e17e2c654197e5ef"
+    }
+  ],
+  "reports": "docs/aeo-2026-11-26",
+  "publication": "No commit, push, deploy, production database mutation, email or review submission."
+}

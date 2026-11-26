@@ -25,6 +25,10 @@ export const dynamic = 'force-dynamic';
 type Step = { step: string; ok: boolean; detail?: unknown; error?: string };
 
 export async function GET(req: NextRequest) {
+  if (process.env.NODE_ENV === 'production' || process.env.E2E_CHECKOUT_ENABLED !== 'true') {
+    console.info('[etest] Checkout simulator disabled: production or explicit local opt-in absent.');
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   const url = new URL(req.url);
   const secret = url.searchParams.get('secret');
   const slug = url.searchParams.get('slug') || 'como-prestige';

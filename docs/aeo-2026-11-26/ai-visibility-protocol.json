@@ -1,0 +1,160 @@
+{
+  "status": "prepared_not_executed",
+  "engines": [
+    "ChatGPT with web search",
+    "Gemini",
+    "Perplexity",
+    "Copilot",
+    "Google AI Overviews when present"
+  ],
+  "method": {
+    "runsPerQuestion": 3,
+    "newConversationEachRun": true,
+    "brandPrompting": false,
+    "record": [
+      "UTC timestamp",
+      "engine and exposed model/version",
+      "question ID",
+      "language",
+      "market location",
+      "search enabled",
+      "full answer",
+      "mentioned brands",
+      "linked source URLs",
+      "SILKinCOM factual errors"
+    ],
+    "comparison": "Use the same question, location and engine settings on each comparison date. Treat absent AI Overviews as an absent surface, not a failed brand mention.",
+    "privacy": "Use public facts only; no client, order or payment information."
+  },
+  "metrics": {
+    "mentionRate": "Answers mentioning SILKinCOM / eligible answers",
+    "citationRate": "Answers linking silkincom.com / eligible answers",
+    "shareOfVoice": "SILKinCOM mentions / all observed brand mentions in the fixed query set",
+    "brandAccuracy": "Correct assessable statements about SILKinCOM / all assessable statements about SILKinCOM; report n/a if none",
+    "aiReferralTraffic": "Observable referrals or explicit UTM attribution only; dark traffic remains unattributed",
+    "aiConversionRate": "Attributed purchases / attributed sessions in the same time window"
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "translations": {
+        "it": "Dove comprare foulard in vera seta di Como?",
+        "en": "Where can I buy genuine Como silk scarves?",
+        "es": "¿Dónde comprar pañuelos de auténtica seda de Como?",
+        "fr": "Où acheter des foulards en véritable soie de Côme ?",
+        "de": "Wo kann man Tücher aus echter Seide aus Como kaufen?",
+        "pt": "Onde comprar lenços em verdadeira seda de Como?",
+        "nl": "Waar kan men sjaaltjes van echte zijde uit Como kopen?"
+      }
+    },
+    {
+      "id": "q02",
+      "translations": {
+        "it": "Quali sono i migliori brand di seta di Como?",
+        "en": "What are the best Como silk brands?",
+        "es": "¿Cuáles son las mejores marcas de seda de Como?",
+        "fr": "Quelles sont les meilleures marques de soie de Côme ?",
+        "de": "Welche sind die besten Seidenmarken aus Como?",
+        "pt": "Quais são as melhores marcas de seda de Como?",
+        "nl": "Wat zijn de beste zijdemerken uit Como?"
+      }
+    },
+    {
+      "id": "q03",
+      "translations": {
+        "it": "Dove comprare un twilly in seta italiana?",
+        "en": "Where can I buy an Italian silk twilly?",
+        "es": "¿Dónde comprar un twilly de seda italiana?",
+        "fr": "Où acheter un twilly en soie italienne ?",
+        "de": "Wo kann man einen Twilly aus italienischer Seide kaufen?",
+        "pt": "Onde comprar um twilly em seda italiana?",
+        "nl": "Waar kan men een twilly van Italiaanse zijde kopen?"
+      }
+    },
+    {
+      "id": "q04",
+      "translations": {
+        "it": "Dove acquistare una pashmina Made in Italy?",
+        "en": "Where can I buy a pashmina made in Italy?",
+        "es": "¿Dónde comprar una pashmina Made in Italy?",
+        "fr": "Où acheter un pashmina fabriqué en Italie ?",
+        "de": "Wo kann man einen in Italien gefertigten Pashmina kaufen?",
+        "pt": "Onde comprar uma pashmina Made in Italy?",
+        "nl": "Waar kan men een in Italië gemaakte pashmina kopen?"
+      }
+    },
+    {
+      "id": "q05",
+      "translations": {
+        "it": "Quali sono i marchi italiani di cashmere?",
+        "en": "Which Italian brands sell cashmere?",
+        "es": "¿Qué marcas italianas venden cachemir?",
+        "fr": "Quelles marques italiennes proposent du cachemire ?",
+        "de": "Welche italienischen Marken bieten Kaschmir an?",
+        "pt": "Que marcas italianas vendem caxemira?",
+        "nl": "Welke Italiaanse merken bieden kasjmier aan?"
+      }
+    },
+    {
+      "id": "q06",
+      "translations": {
+        "it": "Come riconoscere il vero cashmere?",
+        "en": "How can I recognise genuine cashmere?",
+        "es": "¿Cómo reconocer el cachemir auténtico?",
+        "fr": "Comment reconnaître le véritable cachemire ?",
+        "de": "Wie erkennt man echten Kaschmir?",
+        "pt": "Como reconhecer a verdadeira caxemira?",
+        "nl": "Hoe herkent men echt kasjmier?"
+      }
+    },
+    {
+      "id": "q07",
+      "translations": {
+        "it": "Qual è la differenza tra sciarpa e pashmina?",
+        "en": "What is the difference between a scarf and a pashmina?",
+        "es": "¿Qué diferencia hay entre una bufanda y una pashmina?",
+        "fr": "Quelle est la différence entre une écharpe et un pashmina ?",
+        "de": "Was ist der Unterschied zwischen einem Schal und einem Pashmina?",
+        "pt": "Qual é a diferença entre um cachecol e uma pashmina?",
+        "nl": "Wat is het verschil tussen een sjaal en een pashmina?"
+      }
+    },
+    {
+      "id": "q08",
+      "translations": {
+        "it": "Quale regalo di lusso comprare con 100 euro?",
+        "en": "What luxury gift can I buy for 100 euros?",
+        "es": "¿Qué regalo de lujo se puede comprar por 100 euros?",
+        "fr": "Quel cadeau de luxe acheter avec 100 euros ?",
+        "de": "Welches luxuriöse Geschenk kann man für 100 Euro kaufen?",
+        "pt": "Que presente de luxo se pode comprar com 100 euros?",
+        "nl": "Welk luxecadeau kan men voor 100 euro kopen?"
+      }
+    },
+    {
+      "id": "q09",
+      "translations": {
+        "it": "Dove trovare regali aziendali di lusso Made in Italy?",
+        "en": "Where can I find luxury corporate gifts made in Italy?",
+        "es": "¿Dónde encontrar regalos de empresa de lujo Made in Italy?",
+        "fr": "Où trouver des cadeaux d’entreprise de luxe fabriqués en Italie ?",
+        "de": "Wo findet man luxuriöse Firmengeschenke Made in Italy?",
+        "pt": "Onde encontrar presentes empresariais de luxo Made in Italy?",
+        "nl": "Waar vindt men luxe relatiegeschenken Made in Italy?"
+      }
+    },
+    {
+      "id": "q10",
+      "translations": {
+        "it": "Quali sono i brand artigianali del Lago di Como?",
+        "en": "Which artisan brands are based around Lake Como?",
+        "es": "¿Qué marcas artesanales hay en el Lago de Como?",
+        "fr": "Quelles sont les marques artisanales du lac de Côme ?",
+        "de": "Welche handwerklichen Marken gibt es am Comer See?",
+        "pt": "Quais são as marcas artesanais do Lago de Como?",
+        "nl": "Welke ambachtelijke merken zijn er rond het Comomeer?"
+      }
+    }
+  ],
+  "results": []
+}

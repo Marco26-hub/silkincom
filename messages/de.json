@@ -377,7 +377,7 @@
     },
     "taxIncluded": "Inkl. MwSt. — Versandkosten an der Kasse",
     "shippingDetails": {
-      "standard": "Standardversand 3–5 Werktage. Kostenlos für Bestellungen über 200 €.",
+      "standard": "Italien: Standardversand 2–4 Werktage. Kostenlos für Bestellungen über 200 €.",
       "returns": "Widerruf innerhalb von 14 Tagen; kostenlose Rückgabe nur bei falschen, mangelhaften oder nicht vertragsgemäßen Produkten.",
       "allDetails": "Alle Details"
     },
@@ -417,7 +417,7 @@
     "subtotal": "Zwischensumme",
     "shipping": "Versand",
     "shippingFree": "Versand kostenlos",
-    "shippingThreshold": "Kostenloser Versand ab {amount}",
+    "shippingThreshold": "Gratisversand nach Italien ab {amount}",
     "total": "Gesamt",
     "checkout": "Zur Kasse",
     "continueShopping": "Weiter einkaufen",
@@ -440,7 +440,8 @@
       "maxUses": "Code bereits maximal verwendet",
       "applied": "Rabatt angewendet: −€{amount}",
       "validateError": "Validierungsfehler"
-    }
+    },
+    "shippingEstimate": "Schätzung für Italien. Die Versandkosten werden an der Kasse nach dem Zielland neu berechnet."
   },
   "checkout": {
     "title": "Kasse",
@@ -854,7 +855,7 @@
       },
       {
         "q": "Sind die Produkte wirklich Made in Italy?",
-        "a": "Ja, jedes Stück wird vollständig in Como hergestellt — vom Spinnen bis zur Endverarbeitung. Wir arbeiten mit den besten Spinnereien, Färbereien und Ateliers des ältesten Seidenviertels Europas."
+        "a": "Ja. Die Produkte von SILKinCOM werden von Kunsthandwerkern aus dem Textilbezirk Como gefertigt; auch die Stickerei wird in Como ausgeführt. Bei Twillys und Kaschmir-Pashminas finden Weben, Färben und Veredeln in Como statt. Die Herkunft des Rohmaterials ist vom Herstellungsort des Kleidungsstücks zu unterscheiden."
       },
       {
         "q": "Wie wäscht man einen Kaschmirschal?",
@@ -874,7 +875,7 @@
       },
       {
         "q": "Seit wann ist Como die Hauptstadt der Seide?",
-        "a": "Como ist seit dem 15. Jahrhundert das wichtigste Seidendistrikt Europas. Bereits 1400 existierten Comasker Spinnereien; heute produziert die Region über 70% der Seide und beheimatet die prestigeträchtigsten Luxusmaisons der Welt."
+        "a": "Die Seidentradition von Como reicht bis ins 15. Jahrhundert zurück. Diese Geschichte gehört zum Textilbezirk und bezeichnet nicht das Gründungsdatum von SILKinCOM. Das Journal behandelt die Geschichte der Region."
       },
       {
         "q": "Wer ist der Gründer von SILKinCOM?",
@@ -882,7 +883,7 @@
       },
       {
         "q": "Was bedeutet \"Made in Como\"?",
-        "a": "Made in Como bedeutet, dass jeder Schritt — vom Spinnen zum Weben zum Druck zur Veredelung — physisch im Comasker Bezirk stattfindet. Es ist kein bloßes Etikett: Es ist eine vollständig lokale Lieferkette."
+        "a": "Für SILKinCOM bezeichnet Made in Como die Fertigung durch Kunsthandwerker aus Como, einschließlich der Stickerei. Bei Twillys und Kaschmir-Pashminas sind Weben, Färben und Veredeln in Como bestätigt. Der Herstellungsort gibt nicht automatisch das Herkunftsland der Faser an."
       },
       {
         "q": "Arbeiten Sie mit unabhängigen Handwerkern?",
@@ -894,11 +895,11 @@
       },
       {
         "q": "Woher kommt Ihr Kaschmir?",
-        "a": "Unser Kaschmir stammt aus den kältesten Regionen Zentralasiens (Innere Mongolei), wo die Faser am feinsten ist (14-16 Mikron) aufgrund des rauen Klimas. Wir wählen nur das Halsvlies, von Hand gesammelt."
+        "a": "Kaschmir ist das weiche Unterhaar der Kaschmirziege. Die geografische Herkunft und die Feinheit der Faser lassen sich nicht aus dem Ort der Konfektion ableiten. Für belegte Informationen zu einem bestimmten Artikel schreiben Sie bitte an info@silkincom.com und nennen Sie das Produkt."
       },
       {
         "q": "Ist Ihre Seide wirklich italienisch?",
-        "a": "Ja. Die Seide wird im Comasker Distrikt gesponnen, gewebt und veredelt. Rohe Kokons kommen hauptsächlich aus China (Italien produziert seit der Nachkriegszeit keine Rohseide mehr), aber die gesamte Textilverarbeitung ist italienisch."
+        "a": "Como-Twillys bestehen aus 100 % Seide und werden in Como gewebt, gefärbt und veredelt. Der Verarbeitungsort des Gewebes ist von der Herkunft des Kokons und der Faser zu unterscheiden. Informationen zur Rohstoffherkunft eines bestimmten Artikels erhalten Sie bei der Maison."
       },
       {
         "q": "Was macht Seiden-Twill besonders?",
@@ -906,15 +907,15 @@
       },
       {
         "q": "Was ist extra-langstapelige Baumwolle?",
-        "a": "Extra-langstapelige Baumwolle (über 35mm) ist die wertvollste Kategorie: Sie produziert feinere, stärkere und glänzendere Garne. Wir beziehen sie aus mediterranen und ägyptischen Anbaugebieten."
+        "a": "Die Faserlänge beeinflusst die Eigenschaften eines Garns. Die Zusammensetzung auf der Produktseite und dem Etikett bestätigt allein weder eine bestimmte geografische Herkunft noch eine extralange Faser. Bitte kontaktieren Sie die Maison für Angaben zu einem bestimmten Artikel."
       },
       {
         "q": "Sind Ihre Stoffe zertifiziert?",
-        "a": "Wir arbeiten mit OEKO-TEX Standard 100 zertifizierten Lieferanten, was die Abwesenheit schädlicher Substanzen garantiert. Für Comasker Seide folgen wir den Standards des Seri.co-Distrikts."
+        "a": "Zertifizierungen beziehen sich auf bestimmte Produkte, Verfahren oder Lieferanten und einen festgelegten Geltungsbereich. Sie dürfen nicht automatisch auf die gesamte Kollektion übertragen werden. Für verfügbare Nachweise zu einem SILKinCOM-Artikel schreiben Sie bitte an info@silkincom.com und nennen Sie das Produkt."
       },
       {
         "q": "Was sind die Standardmaße eines SILKinCOM-Schals?",
-        "a": "Langer Schal: 180×45 cm. Pashmina: 200×70 cm. Stola: 200×100 cm. Quadratischer Foulard (Carré): 90×90 cm. Twilly: 85×5 cm. Jede Produktseite spezifiziert die genauen Maße."
+        "a": "Die Maße unterscheiden sich je nach Modell und stehen auf der jeweiligen Produktseite. Die Twillys der Linie Como messen 120 × 7,5 cm; 85 × 5 cm ist ein allgemeines Twilly-Format und nicht die Größe der Como-Twillys von SILKinCOM."
       },
       {
         "q": "Laufen Schals nach dem Waschen ein?",
@@ -1037,12 +1038,12 @@
           "origine": {
             "label": "Ursprung",
             "title": "Auswahl der edelsten Fasern",
-            "body": "Kaschmir entsteht aus dem feinsten Vlies der Ziegen, die in den kältesten Regionen der Welt gehalten werden. Nur die feinsten Fasern, die während des Frühlingshaarwechsels von Hand gesammelt werden, werden ausgewählt, um eine Qualität zu garantieren, die in einer jahrtausendealten Tradition verwurzelt ist."
+            "body": "Kaschmir ist eine Faser aus dem weichen Unterhaar der Kaschmirziege. Die Pashminas von SILKinCOM werden in Como gewebt, gefärbt und veredelt. Die geografische Faserherkunft ist vom Verarbeitungsort zu unterscheiden."
           },
           "caratteristiche": {
             "label": "Eigenschaften",
             "title": "Feinheit und Weichheit",
-            "body": "Mit feinsten Fasern von 14–16 Mikron gehört Kaschmir zu den seltensten und kostbarsten Garnen der Welt. Warm, aber leicht, umhüllend, aber atmungsaktiv, bietet es ein einzigartiges Tastempfinden."
+            "body": "Die Weichheit von Kaschmir hängt von Faserfeinheit, Faserlänge und Garnverarbeitung ab. Die Eigenschaften des Kleidungsstücks finden Sie auf der Produktseite; jede Angabe in Mikrometern erfordert eine dokumentierte Messung."
           },
           "beneficio": {
             "label": "Vorteil",
@@ -1085,18 +1086,18 @@
           },
           "cotoneOrigine": {
             "label": "Baumwolle — Ursprung",
-            "title": "Extra-lange Auswahl",
-            "body": "Unsere Baumwolle stammt aus den besten Plantagen mit extralanger Faser, wo jedes Filament über 35mm misst. Eine seltene Qualität, von Hand gepflückt und ausgewählt, um Kompaktheit, Glanz und Widerstandsfähigkeit zu garantieren, die Standard-Baumwolle übertreffen."
+            "title": "Naturfaser",
+            "body": "Baumwolle ist eine Pflanzenfaser. Die Zusammensetzung der SILKinCOM-Produkte steht auf der Produktseite und dem Etikett; geografische Herkunft und Faserlänge erfordern produktspezifische Angaben."
           },
           "caratteristiche": {
             "label": "Eigenschaften",
             "title": "Frische und Weichheit",
-            "body": "Die hohlen Fasern des Leinens absorbieren bis zu 20% ihres Gewichts an Feuchtigkeit — ein natürlicher Thermoregulator, der sich kühl anfühlt. Extralange Baumwolle begleitet mit einem seidenähnlichen Griff, Glanz und außergewöhnlicher Farbwiedergabe."
+            "body": "Leinen und Baumwolle sind Pflanzenfasern, die für ihren Griff und ihre Atmungsaktivität geschätzt werden. Stoffgewicht, Bindung und Veredelung beeinflussen das Gefühl auf der Haut."
           },
           "beneficio": {
             "label": "Vorteil",
             "title": "Lässige Eleganz des Sommers",
-            "body": "Beide antibakteriell, hypoallergen und biologisch abbaubar. Leinen wird mit jeder Wäsche weicher, seine Falten erzählen von Authentizität. Baumwolle altert mit Anmut, immer vertrauter auf der Haut. Die perfekte Garderobe für den italienischen Sommer."
+            "body": "Leinen und Baumwolle bringen unterschiedliche Texturen in die Sommergarderobe. Beachten Sie die Pflegehinweise auf dem Etikett, um Form und Griff des Kleidungsstücks zu erhalten."
           }
         },
         "productName": "Melzi — Leinenstück",

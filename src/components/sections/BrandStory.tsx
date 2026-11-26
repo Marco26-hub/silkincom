@@ -10,7 +10,7 @@ import type { HomeSectionLocalized } from '@/data/home-content';
 const FALLBACK_MAIN = '/artisans/tessitore-tessitura-como.webp';
 const FALLBACK_TILE = '/instagram/ig-07.webp';
 
-export function BrandStory({ section }: { section?: HomeSectionLocalized | null }) {
+export function BrandStory({ section, definition }: { section?: HomeSectionLocalized | null; definition?: string }) {
   const t = useTranslations('home.brandStory');
 
   const content = section?.content || {};
@@ -22,7 +22,7 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
   const titlePlain = content.titlePlain || t('titlePlain');
   const titleAccent = content.titleAccent || t('titleAccent');
   const paragraph1 = content.paragraph1 || t('paragraph1');
-  const paragraph2 = content.paragraph2 || t('paragraph2');
+  const paragraph2 = definition || content.paragraph2 || t('paragraph2');
   const cta = content.cta || t('cta');
   const quote = content.quote || t('quote');
   const quoteAuthor = content.quoteAuthor || t('quoteAuthor');
@@ -30,7 +30,7 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
   const imageTileAlt = imgs[1]?.alt || content.imageTileAlt || t('imageTileAlt');
 
   return (
-    <section className="overflow-hidden bg-[#11100e] py-24 text-warm-white md:py-32">
+    <section id="maison-story" className="overflow-hidden bg-[#11100e] py-24 text-warm-white md:py-32">
       <div className="mx-auto grid max-w-[1500px] grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20 lg:px-10 xl:gap-28">
         <motion.div
           initial={{ opacity: 0 }}
@@ -78,14 +78,14 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={false}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="order-1 max-w-xl lg:order-2"
         >
           <motion.span
-            initial={{ opacity: 0 }}
+            initial={false}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
@@ -94,7 +94,7 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
             {eyebrow}
           </motion.span>
           <motion.h2
-            initial={{ opacity: 0 }}
+            initial={false}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.1 }}
@@ -104,17 +104,17 @@ export function BrandStory({ section }: { section?: HomeSectionLocalized | null 
             <em className="italic text-gold-primary">{titleAccent}</em>
           </motion.h2>
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-5 text-[14px] font-light leading-[1.9] text-warm-white/65 md:text-[15px]"
           >
             <p>{paragraph1}</p>
-            <p>{paragraph2}</p>
+            <p data-brand-definition={definition ? true : undefined}>{paragraph2}</p>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}

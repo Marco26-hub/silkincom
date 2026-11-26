@@ -1,0 +1,5341 @@
+{
+  "checkedAt": "2026-11-26T16:41:30.246Z",
+  "base": "http://localhost:3012",
+  "pages": 105,
+  "total": 1331,
+  "passed": 1331,
+  "failed": 0,
+  "limits": [
+    "HTTP validation is not a Rich Results Test or Search Console inspection.",
+    "No overall AEO score, indexing, rankings, independent reputation or AI visibility is inferred.",
+    "Sampled product and journal pages; use --full to crawl every sitemap URL."
+  ],
+  "checks": [
+    {
+      "name": "robots HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap nonempty and unique",
+      "status": "pass",
+      "detail": "903 URLs"
+    },
+    {
+      "name": "sitemap uses canonical host",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap excludes private paths",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has it homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has en homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has es homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has fr homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has de homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has pt homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has nl homepage",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed nonempty",
+      "status": "pass",
+      "detail": "46 products"
+    },
+    {
+      "name": "Merchant feed URLs in sitemap",
+      "status": "pass"
+    },
+    {
+      "name": "/ HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/ HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/ single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/ title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/ self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/ seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/ indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/ Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/en/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/es/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/fr HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/de/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/pt HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/nl HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq FAQ matches visible questions",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq Como dimensions distinguished",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/faq assistance links localized",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/materiali Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/press Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/artigiani Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/maison/marco-dibenedetto Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/tremezzo-rosa schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/come-annodare-un-twilly no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa G1964-tremezzo-rosa: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/tremezzo-rosa G1964-tremezzo-rosa: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/melzi-1 schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/domaso-dolcevita-lana-merino-nero schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/melzi-1 melzi-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-S: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/domaso-dolcevita-lana-merino-nero IN26-DOM-DOL-ME-NE-XXL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/riva schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/riva riva-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/lario-4 schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-4 lario-4-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/menaggio-berretto-cashmere-grigio schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/prodotto/brunate-maglione-lana-panna schema agrees with feed",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/menaggio-berretto-cashmere-grigio IN26-MEN-BER-CS-GR-U: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/en/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/es/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/de/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-M: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-L: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/brunate-maglione-lana-panna IN26-BRU-MAG-LA-PA-XL: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "OAI-SearchBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "GPTBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "PerplexityBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "Googlebot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "/llms.txt plain-text corpus available",
+      "status": "pass"
+    },
+    {
+      "name": "/llms-full.txt plain-text corpus available",
+      "status": "pass"
+    }
+  ]
+}

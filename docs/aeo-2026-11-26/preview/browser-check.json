@@ -1,0 +1,58 @@
+{
+  "checks": [
+    {
+      "name": "Identity integrated in the existing Maison copy",
+      "status": "pass"
+    },
+    {
+      "name": "FAQ correct Como twilly dimensions",
+      "status": "pass"
+    },
+    {
+      "name": "press confirmed Como production visible",
+      "status": "pass"
+    },
+    {
+      "name": "materiali confirmed Como production visible",
+      "status": "pass"
+    },
+    {
+      "name": "ProductGroup URL preselects M",
+      "status": "pass"
+    },
+    {
+      "name": "English FAQ shipping link stays in English",
+      "status": "pass"
+    },
+    {
+      "name": "English FAQ has no Italian shipping link",
+      "status": "pass"
+    },
+    {
+      "name": "home mobile has no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "faq mobile has no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "journal mobile has no horizontal overflow",
+      "status": "pass"
+    },
+    {
+      "name": "Journal shows semantic body headings",
+      "status": "pass"
+    },
+    {
+      "name": "Journal has no visible HTML tags",
+      "status": "pass"
+    },
+    {
+      "name": "No uncaught browser errors",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "limits": "No form, analytics, cart, payment or external message was sent."
+}

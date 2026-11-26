@@ -377,7 +377,7 @@
     },
     "taxIncluded": "Taxes incluses — Livraison calculée au paiement",
     "shippingDetails": {
-      "standard": "Livraison standard 3–5 jours ouvrés. Offerte pour les commandes supérieures à 200 €.",
+      "standard": "Italie : Livraison standard 2–4 jours ouvrés. Offerte pour les commandes supérieures à 200 €.",
       "returns": "Rétractation sous 14 jours ; retour offert uniquement pour les produits erronés, défectueux ou non conformes.",
       "allDetails": "Tous les détails"
     },
@@ -417,7 +417,7 @@
     "subtotal": "Sous-total",
     "shipping": "Livraison",
     "shippingFree": "Livraison offerte",
-    "shippingThreshold": "Livraison offerte dès {amount}",
+    "shippingThreshold": "Livraison en Italie offerte dès {amount}",
     "total": "Total",
     "checkout": "Procéder au paiement",
     "continueShopping": "Continuer mes achats",
@@ -440,7 +440,8 @@
       "maxUses": "Code déjà utilisé le maximum de fois",
       "applied": "Remise appliquée : −€{amount}",
       "validateError": "Erreur de validation"
-    }
+    },
+    "shippingEstimate": "Estimation pour l’Italie. La livraison est recalculée lors du paiement selon la destination."
   },
   "checkout": {
     "title": "Paiement",
@@ -854,7 +855,7 @@
       },
       {
         "q": "Les produits sont-ils vraiment Made in Italy ?",
-        "a": "Oui, chaque pièce est entièrement produite à Côme — du filage à la confection finale. Nous travaillons avec les meilleures filatures, teintureries et ateliers du plus ancien district séricicole d'Europe."
+        "a": "Oui. Les produits SILKinCOM sont réalisés par des artisans du district de Côme ; la broderie est également réalisée à Côme. Pour les twillies et les pashminas en cachemire, le tissage, la teinture et les finitions ont lieu à Côme. L’origine de la matière première est distincte du lieu de fabrication du vêtement."
       },
       {
         "q": "Comment laver une écharpe en cachemire ?",
@@ -874,7 +875,7 @@
       },
       {
         "q": "Depuis quand Côme est-elle la capitale de la soie ?",
-        "a": "Côme est le district séricicole le plus important d'Europe depuis le XVe siècle. Dès 1400 des filatures comasques existaient ; aujourd'hui la zone produit plus de 70% de la soie et accueille les plus prestigieuses maisons de luxe au monde."
+        "a": "La tradition de la soie à Côme remonte au XVe siècle. Cette histoire appartient au district textile et n’indique pas la date de fondation de SILKinCOM. Le Journal approfondit l’histoire du territoire."
       },
       {
         "q": "Qui est le fondateur de SILKinCOM ?",
@@ -882,7 +883,7 @@
       },
       {
         "q": "Que signifie \"Made in Como\" ?",
-        "a": "Made in Como signifie que chaque étape — du filage au tissage à l'impression à la finition — a lieu physiquement dans le district comasque. Ce n'est pas une simple étiquette : c'est une chaîne d'approvisionnement courte entièrement locale."
+        "a": "Pour SILKinCOM, Made in Como désigne la réalisation des produits par des artisans de Côme, broderie comprise. Le tissage, la teinture et les finitions à Côme sont confirmés pour les twillies et les pashminas en cachemire. Le lieu de fabrication n’identifie pas automatiquement le pays d’origine de la fibre."
       },
       {
         "q": "Travaillez-vous avec des artisans indépendants ?",
@@ -894,11 +895,11 @@
       },
       {
         "q": "D'où vient votre cachemire ?",
-        "a": "Notre cachemire provient des régions les plus froides d'Asie centrale (Mongolie intérieure), où la fibre est la plus fine (14-16 microns) en raison du climat rigoureux. Nous sélectionnons uniquement la toison du cou, récoltée à la main."
+        "a": "Le cachemire est le sous-poil doux de la chèvre cachemire. Son origine géographique et la finesse de la fibre ne peuvent pas être déduites du lieu de confection. Pour des informations documentées sur un article précis, contactez info@silkincom.com en indiquant le produit."
       },
       {
         "q": "Votre soie est-elle vraiment italienne ?",
-        "a": "Oui. La soie est filée, tissée et finie dans le district comasque. Le cocon brut vient principalement de Chine (l'Italie ne produit plus de soie brute depuis l'après-guerre), mais toute la transformation textile est italienne."
+        "a": "Les twillies Como sont en soie 100 %, tissés, teints et finis à Côme. Le lieu de transformation du tissu est distinct de l’origine du cocon et de la fibre. Pour connaître la provenance de la matière première d’un article précis, contactez la Maison."
       },
       {
         "q": "Qu'est-ce qui rend le twill de soie spécial ?",
@@ -906,15 +907,15 @@
       },
       {
         "q": "Qu'est-ce que le coton à fibres extra-longues ?",
-        "a": "Le coton à fibres extra-longues (plus de 35mm) est la catégorie la plus prisée : il produit des fils plus fins, résistants et plus brillants. Nous le sélectionnons auprès de cultures méditerranéennes et égyptiennes."
+        "a": "La longueur de la fibre influe sur les propriétés du fil. La composition indiquée sur la fiche et l’étiquette ne certifie pas à elle seule une origine géographique précise ni une fibre extra-longue. Contactez la Maison pour les informations relatives à un article."
       },
       {
         "q": "Vos tissus sont-ils certifiés ?",
-        "a": "Nous travaillons avec des fournisseurs certifiés OEKO-TEX Standard 100, garantissant l'absence de substances nocives. Pour la soie comasque nous suivons les standards du district Seri.co."
+        "a": "Les certifications concernent des produits, des procédés ou des fournisseurs précis, dans un périmètre de validité défini. Elles ne doivent pas être étendues automatiquement à toute la collection. Pour demander les justificatifs disponibles pour un article SILKinCOM, écrivez à info@silkincom.com en indiquant le produit."
       },
       {
         "q": "Quelles sont les dimensions standard d'une écharpe SILKinCOM ?",
-        "a": "Écharpe longue : 180×45 cm. Pashmina : 200×70 cm. Étole : 200×100 cm. Foulard carré : 90×90 cm. Twilly : 85×5 cm. Chaque fiche produit précise les dimensions exactes."
+        "a": "Les dimensions varient selon le modèle et figurent sur chaque fiche produit. Les twillies de la ligne Como mesurent 120 × 7,5 cm ; 85 × 5 cm est un format générique de twilly, et non celui des twillies Como SILKinCOM."
       },
       {
         "q": "Les écharpes rétrécissent-elles après lavage ?",
@@ -1037,12 +1038,12 @@
           "origine": {
             "label": "Origine",
             "title": "Sélection des fibres les plus nobles",
-            "body": "Le cachemire naît du duvet très fin des chèvres élevées dans les régions les plus froides du monde. Seules les fibres les plus fines, récoltées à la main lors de la mue printanière, sont sélectionnées pour garantir une qualité enracinée dans une tradition millénaire."
+            "body": "Le cachemire est une fibre issue du sous-poil doux de la chèvre cachemire. Les pashminas SILKinCOM sont tissés, teints et finis à Côme. L’origine géographique de la fibre est distincte du lieu de transformation."
           },
           "caratteristiche": {
             "label": "Caractéristiques",
             "title": "Finesse et douceur",
-            "body": "Avec des fibres très fines de 14–16 microns, le cachemire compte parmi les fils les plus rares et précieux au monde. Chaud mais léger, enveloppant mais respirant, il offre une sensation tactile unique."
+            "body": "La douceur du cachemire dépend de la finesse et de la longueur de la fibre ainsi que du travail du fil. Consultez la fiche produit pour les caractéristiques du vêtement ; toute plage en microns nécessite une mesure documentée."
           },
           "beneficio": {
             "label": "Bénéfice",
@@ -1085,18 +1086,18 @@
           },
           "cotoneOrigine": {
             "label": "Coton — Origine",
-            "title": "Sélection extra-longue",
-            "body": "Notre coton provient des meilleures cultures à fibre extra-longue, où chaque filament mesure plus de 35mm. Une qualité rare, cueillie à la main et sélectionnée pour garantir compacité, brillance et résistance supérieures au coton standard."
+            "title": "Fibre naturelle",
+            "body": "Le coton est une fibre végétale. La composition des vêtements SILKinCOM figure sur la fiche et l’étiquette ; l’origine géographique et la longueur de la fibre nécessitent des informations propres au produit."
           },
           "caratteristiche": {
             "label": "Caractéristiques",
             "title": "Fraîcheur et douceur",
-            "body": "Les fibres creuses du lin absorbent jusqu'à 20% de leur poids en humidité — thermorégulateur naturel qui reste frais au toucher. Le coton extra-long accompagne avec une main similaire à la soie, brillance et rendu chromatique exceptionnel."
+            "body": "Le lin et le coton sont des fibres végétales appréciées pour leur toucher et leur respirabilité. Le poids du tissu, son armure et ses finitions contribuent à la sensation du vêtement sur la peau."
           },
           "beneficio": {
             "label": "Bénéfice",
             "title": "Élégance décontractée de l'été",
-            "body": "Tous deux antibactériens, hypoallergéniques et biodégradables. Le lin devient plus doux à chaque lavage, ses plis racontent l'authenticité. Le coton vieillit avec grâce, toujours plus familier sur la peau. La garde-robe parfaite pour l'été italien."
+            "body": "Le lin et le coton apportent des textures différentes au vestiaire estival. Suivez les instructions de l’étiquette pour préserver la forme et le toucher de chaque vêtement."
           }
         },
         "productName": "Melzi — Pièce en Lin",

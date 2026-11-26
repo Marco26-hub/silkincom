@@ -1,0 +1,68 @@
+[
+  {
+    "table": "profiles",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "customers",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "customer_addresses",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "orders",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "order_items",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "payments",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "contacts",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "leads",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "integrations",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "email_lifecycle_jobs",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  },
+  {
+    "table": "financial_records",
+    "anonymousReadableRows": false,
+    "errorCode": null,
+    "limit": "No records or personal data returned; an empty table cannot establish RLS correctness."
+  }
+]

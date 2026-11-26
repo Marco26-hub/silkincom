@@ -1,8 +1,9 @@
+import { cronAuthorized } from '@/lib/security/guards';
 /**
  * Daily cron: push the published catalogue to Google Merchant Center via the
  * Content API (custombatch). Keeps the "Content API" data source fresh so it
  * never goes stale ("da aggiornare"). Triggered by Vercel Cron (vercel.json)
- * at 04:00 Europe/Rome; authenticated via CRON_SECRET (Bearer or x-vercel-cron).
+ * at 04:00 Europe/Rome; authenticated via CRON_SECRET (Bearer header).
  *
  * Pushes both content languages (it + en) for target country IT, with the
  * correct Google product category per brand line (shared mapping).
@@ -18,16 +19,9 @@ export const maxDuration = 120;
 
 const LANGS: Array<'it' | 'en'> = ['it', 'en'];
 
-function authorized(req: NextRequest): boolean {
-  const expected = process.env.CRON_SECRET;
-  if (!expected) return false;
-  if (req.headers.get('authorization') === `Bearer ${expected}`) return true;
-  if (req.headers.get('x-vercel-cron') === '1') return true;
-  return false;
-}
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!cronAuthorized(req.headers)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!isMerchantConfigured()) {
     return NextResponse.json({ ok: false, error: 'Google Merchant non configurato.' }, { status: 400 });
   }

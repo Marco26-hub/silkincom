@@ -171,6 +171,8 @@ export function CartPageClient() {
                 </span>
               </div>
 
+              <p className="text-xs font-light leading-relaxed text-soft-black/60">{t('shippingEstimate')}</p>
+
               {/* Coupon field */}
               {!coupon && (
                 <form onSubmit={handleApplyCoupon} className="pt-2">

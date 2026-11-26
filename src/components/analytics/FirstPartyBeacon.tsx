@@ -11,6 +11,7 @@
  * non-identifying, this runs WITHOUT a cookie-consent gate — unlike GA4/Meta
  * in Analytics.tsx. Uses navigator.sendBeacon so it never blocks navigation.
  */
+import { referralSource, isAiSource } from '@/lib/traffic-source';
 import { useEffect, useRef } from 'react';
 import { usePathname } from '@/i18n/navigation';
 import { useLocale } from 'next-intl';
@@ -57,6 +58,12 @@ function utmParams(): Record<string, string> {
       for (const k of ['utm_source', 'utm_medium', 'utm_campaign'] as const) {
         const v = q.get(k);
         if (v) o[k] = v.slice(0, 120);
+      }
+      if (!o.utm_source) {
+        const referral = referralSource(document.referrer);
+        if (referral) { o.utm_source = referral.source; o.utm_medium = referral.medium; }
+      } else if (!o.utm_medium && isAiSource(o.utm_source)) {
+        o.utm_medium = 'ai_assistant';
       }
       stored = JSON.stringify(o);
       sessionStorage.setItem(UTM_KEY, stored); // capture-once at landing

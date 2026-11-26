@@ -254,7 +254,7 @@ export function Hero({ slides }: { slides?: HeroSlideInput[] }) {
               >
                 <Heading className="home-hero-title font-display font-light">
                   <span className="block">
-                    {slide.titleMain || t("titleMain")}
+                    {slide.titleMain || t("titleMain")}{" "}
                   </span>
                   {(slide.titleAccent || !slide.titleMain) && (
                     <em className="mt-1 block font-light text-[#d8bf89]">

@@ -8,6 +8,7 @@
  *   <ReviewSchema productSlug={slug} productName={name} productUrl={url}
  *                 productImage={image} productPrice={price} />
  */
+import { jsonLd } from '@/lib/editorial-text';
 import { createServiceClient } from '@/lib/supabase/server';
 
 type Props = {
@@ -16,6 +17,7 @@ type Props = {
   productUrl: string;
   productImage?: string;
   productPrice?: number;
+  productGroup?: boolean;
   brandName?: string;
 };
 
@@ -24,7 +26,7 @@ export async function ReviewSchema({
   productName,
   productUrl,
   productImage,
-  productPrice,
+  productGroup = false,
   brandName = 'SILKinCOM',
 }: Props) {
   let reviews: Array<{
@@ -39,7 +41,7 @@ export async function ReviewSchema({
   try {
     const supabase = createServiceClient();
 
-    const [{ data: reviewRows }, { data: statsRows }] = await Promise.all([
+    const [reviewResult, statsResult] = await Promise.all([
       supabase
         .from('reviews_public')
         .select('rating, title, body, author_name, created_at')
@@ -49,6 +51,12 @@ export async function ReviewSchema({
       supabase.rpc('product_review_stats', { p_slug: productSlug }),
     ]);
 
+    if (reviewResult.error || statsResult.error) {
+      console.error('[review-schema] Reviews unavailable; omitting rating markup:', reviewResult.error?.message, statsResult.error?.message);
+      return null;
+    }
+    const reviewRows = reviewResult.data;
+    const statsRows = statsResult.data;
     if (reviewRows) reviews = reviewRows;
     if (statsRows && Array.isArray(statsRows) && statsRows[0]) {
       stats = {
@@ -56,8 +64,8 @@ export async function ReviewSchema({
         average: Number(statsRows[0].average || 0),
       };
     }
-  } catch {
-    // Supabase unreachable or table missing — fail silent (no schema emitted)
+  } catch (error) {
+    console.error('[review-schema] Review data unavailable; omitting rating markup:', error);
     return null;
   }
 
@@ -89,7 +97,7 @@ export async function ReviewSchema({
   // (if present) plus the reviews. Search engines merge by @id.
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': productGroup ? 'ProductGroup' : 'Product',
     '@id': `${productUrl}#product`,
     name: productName,
     image: productImage,
@@ -97,20 +105,13 @@ export async function ReviewSchema({
     brand: { '@type': 'Brand', name: brandName },
     aggregateRating,
     review: reviewSchemas,
-    ...(productPrice !== undefined && {
-      offers: {
-        '@type': 'Offer',
-        price: productPrice,
-        priceCurrency: 'EUR',
-        availability: 'https://schema.org/InStock',
-      },
-    }),
+
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   );
 }

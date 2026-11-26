@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { PRODUCT_SLUGS, CATEGORY_SLUGS, getProducts } from '@/data/catalog';
+import { CATEGORY_SLUGS, getProducts } from '@/data/catalog';
 import { WINTER_PRODUCTS } from '@/data/winter-2026';
 import { WINTER_AREAS, winterAreaProducts } from '@/data/winter-categories';
 import { SEO_CATEGORY_SLUGS } from '@/data/seo-categories';
@@ -41,17 +41,16 @@ function entry(
 /**
  * Build lookup maps of `slug → updated_at` so static SLUG arrays can still
  * drive the sitemap (preserves the existing build-time pipeline) while
- * carrying accurate `lastModified` from the live DB. Falls back to `now`
- * if the DB read fails or the row is missing.
+ * carrying accurate `lastModified` from the live DB. Omits unknown dates rather than inventing a new modification date on every crawl.
  */
 async function getDbLastMod(): Promise<{
   products: Map<string, Date>;
   collections: Map<string, Date>;
-  home: Date;
+  home: Date | undefined;
 }> {
   const products = new Map<string, Date>();
   const collections = new Map<string, Date>();
-  let home = new Date();
+  let home: Date | undefined;
 
   try {
     const supabase = createPublicClient();
@@ -61,7 +60,10 @@ async function getDbLastMod(): Promise<{
       supabase.from('home_slides').select('updated_at').eq('is_active', true).order('updated_at', { ascending: false }).limit(1),
     ]);
     for (const [name, result] of [['products', productResult], ['collections', collectionResult], ['home_slides', slideResult]] as const) {
-      if (result.error) console.error(`[sitemap] ${name} read failed; last-modified data unavailable:`, result.error.message);
+      if (result.error) {
+        console.error(`[sitemap] ${name} read failed; refusing an incomplete sitemap:`, result.error.message);
+        throw new Error(`Sitemap ${name} unavailable`);
+      }
     }
     const prods = productResult.data;
     const cols = collectionResult.data;
@@ -74,55 +76,49 @@ async function getDbLastMod(): Promise<{
     });
     if (slides?.[0]?.updated_at) home = new Date(slides[0].updated_at);
   } catch (e) {
-    console.error('sitemap getDbLastMod', e);
+    console.error('[sitemap] Generation failed:', e);
+    throw e;
   }
 
   return { products, collections, home };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
   const lastMod = await getDbLastMod();
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    ...routing.locales.map((locale): MetadataRoute.Sitemap[number] => ({
-      url: localizedUrl(locale, '/experience'),
-      alternates: { languages: languageAlternates('/experience') },
-      changeFrequency: 'monthly',
-      priority: 0.7,
-      lastModified: new Date('2026-11-13T00:00:00Z'),
-    })),
+    entry('/experience', { changeFrequency: 'monthly', priority: 0.7, lastModified: new Date('2026-11-13T00:00:00Z') }),
     entry('/', { changeFrequency: 'daily', priority: 1.0, lastModified: lastMod.home }),
-    entry('/collezioni', { changeFrequency: 'weekly', priority: 0.9, lastModified: now }),
-    entry('/materiali', { changeFrequency: 'monthly', priority: 0.8, lastModified: now }),
-    entry('/la-nostra-storia', { changeFrequency: 'monthly', priority: 0.7, lastModified: now }),
-    entry('/trame-di-como', { changeFrequency: 'weekly', priority: 0.7, lastModified: now }),
-    entry('/contatti', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
-    entry('/faq', { changeFrequency: 'monthly', priority: 0.5, lastModified: now }),
-    entry('/spedizioni', { changeFrequency: 'yearly', priority: 0.4, lastModified: now }),
-    entry('/resi', { changeFrequency: 'yearly', priority: 0.4, lastModified: now }),
-    entry('/cura-prodotto', { changeFrequency: 'yearly', priority: 0.4, lastModified: now }),
-    entry('/glossario', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
-    entry('/cura-prodotto/seta', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
-    entry('/cura-prodotto/cashmere', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
-    entry('/cura-prodotto/lana', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
-    entry('/cura-prodotto/lino', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
-    entry('/cura-prodotto/cotone', { changeFrequency: 'yearly', priority: 0.5, lastModified: now }),
-    entry('/atelier', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
-    entry('/b2b', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
-    entry('/artigiani', { changeFrequency: 'monthly', priority: 0.6, lastModified: now }),
-    entry('/maison/marco-dibenedetto', { changeFrequency: 'monthly', priority: 0.7, lastModified: now }),
-    entry('/press', { changeFrequency: 'monthly', priority: 0.5, lastModified: now }),
-    entry('/recensioni', { changeFrequency: 'weekly', priority: 0.6, lastModified: now }),
-    entry('/privacy-policy', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
-    entry('/cookie-policy', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
-    entry('/termini', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
-    entry('/accessibilita', { changeFrequency: 'yearly', priority: 0.3, lastModified: now }),
+    entry('/collezioni', { changeFrequency: 'weekly', priority: 0.9 }),
+    entry('/materiali', { changeFrequency: 'monthly', priority: 0.8 }),
+    entry('/la-nostra-storia', { changeFrequency: 'monthly', priority: 0.7 }),
+    entry('/trame-di-como', { changeFrequency: 'weekly', priority: 0.7 }),
+    entry('/contatti', { changeFrequency: 'yearly', priority: 0.5 }),
+    entry('/faq', { changeFrequency: 'monthly', priority: 0.5 }),
+    entry('/spedizioni', { changeFrequency: 'yearly', priority: 0.4 }),
+    entry('/resi', { changeFrequency: 'yearly', priority: 0.4 }),
+    entry('/cura-prodotto', { changeFrequency: 'yearly', priority: 0.4 }),
+    entry('/glossario', { changeFrequency: 'monthly', priority: 0.6 }),
+    entry('/cura-prodotto/seta', { changeFrequency: 'yearly', priority: 0.5 }),
+    entry('/cura-prodotto/cashmere', { changeFrequency: 'yearly', priority: 0.5 }),
+    entry('/cura-prodotto/lana', { changeFrequency: 'yearly', priority: 0.5 }),
+    entry('/cura-prodotto/lino', { changeFrequency: 'yearly', priority: 0.5 }),
+    entry('/cura-prodotto/cotone', { changeFrequency: 'yearly', priority: 0.5 }),
+    entry('/atelier', { changeFrequency: 'monthly', priority: 0.6 }),
+    entry('/b2b', { changeFrequency: 'monthly', priority: 0.6 }),
+    entry('/artigiani', { changeFrequency: 'monthly', priority: 0.6 }),
+    entry('/maison/marco-dibenedetto', { changeFrequency: 'monthly', priority: 0.7 }),
+    entry('/press', { changeFrequency: 'monthly', priority: 0.5 }),
+    entry('/recensioni', { changeFrequency: 'weekly', priority: 0.6 }),
+    entry('/privacy-policy', { changeFrequency: 'yearly', priority: 0.3 }),
+    entry('/cookie-policy', { changeFrequency: 'yearly', priority: 0.3 }),
+    entry('/termini', { changeFrequency: 'yearly', priority: 0.3 }),
+    entry('/accessibilita', { changeFrequency: 'yearly', priority: 0.3 }),
   ];
 
-  const productRoutes: MetadataRoute.Sitemap = [...new Set([...PRODUCT_SLUGS, ...lastMod.products.keys()])].map((slug) =>
+  const productRoutes: MetadataRoute.Sitemap = [...lastMod.products.keys()].map((slug) =>
     entry(`/prodotto/${slug}`, {
-      lastModified: lastMod.products.get(slug) ?? now,
+      lastModified: lastMod.products.get(slug),
       changeFrequency: 'weekly',
       priority: 0.8,
     })
@@ -133,7 +129,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return !winterProduct || lastMod.products.has(winterProduct.slug);
   }).map((slug) =>
     entry(`/collezioni/${slug}`, {
-      lastModified: lastMod.collections.get(slug) ?? now,
+      lastModified: lastMod.collections.get(slug),
       changeFrequency: 'weekly',
       priority: 0.7,
     })
@@ -155,16 +151,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const seoCategoryRoutes: MetadataRoute.Sitemap = SEO_CATEGORY_SLUGS.map((slug) =>
-    entry(`/${slug}`, { lastModified: now, changeFrequency: 'weekly', priority: 0.9 })
+    entry(`/${slug}`, { changeFrequency: 'weekly', priority: 0.9 })
   );
 
   const journalRoutes: MetadataRoute.Sitemap = (await getPosts('it')).map((post) =>
     entry(`/trame-di-como/${post.slug}`, {
-      lastModified: post.date ? new Date(post.date) : now,
+      lastModified: post.updatedAt ? new Date(post.updatedAt) : post.date ? new Date(post.date) : undefined,
       changeFrequency: 'monthly',
       priority: 0.6,
     })
   );
 
-  return [...staticRoutes, ...seoCategoryRoutes, ...productRoutes, ...collectionRoutes, ...winterCategoryRoutes, ...journalRoutes];
+  // Each localized URL must have its own <url> record, with reciprocal
+  // alternates including itself. Hreflang alone is not a replacement for loc.
+  return [...staticRoutes, ...seoCategoryRoutes, ...productRoutes, ...collectionRoutes, ...winterCategoryRoutes, ...journalRoutes]
+    .flatMap(route => routing.locales.map(locale => ({
+      ...route,
+      url: String((route.alternates!.languages! as Record<string, string>)[locale]),
+    })));
+
 }

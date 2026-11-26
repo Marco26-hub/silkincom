@@ -1,0 +1,11 @@
+{
+  "base": "34d3865",
+  "sourceWorkspace": "/Users/md/silkincom_claude",
+  "preserved": "23 newer upstream commits, including Experience operations and PDF support",
+  "alreadyResolvedUpstream": [
+    "src/app/[locale]/auth/callback/route.ts"
+  ],
+  "migration": "061_profile_privilege_guard.sql",
+  "migrationReason": "058 already used upstream; approved SQL content unchanged",
+  "shipping": "Explicitly passed selected destination to checkout and payment API; session manifest had omitted those two files."
+}

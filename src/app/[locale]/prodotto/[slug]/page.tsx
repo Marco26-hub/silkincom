@@ -1,3 +1,5 @@
+import { computeShipping, ITALY_DELIVERY } from '@/config/shipping';
+import { jsonLd } from '@/lib/editorial-text';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
@@ -79,12 +81,12 @@ const TYPE_BY_CAT: Record<string, Record<string, string>> = {
 };
 const SHIP_SUFFIX: Record<string, string> = {
   it: 'Made in Como. Spedizione gratuita oltre €200.',
-  en: 'Made in Como. Free shipping over €200.',
-  de: 'Made in Como. Kostenloser Versand ab €200.',
-  fr: 'Made in Como. Livraison gratuite dès €200.',
-  es: 'Made in Como. Envío gratis desde €200.',
-  pt: 'Made in Como. Portes grátis acima de €200.',
-  nl: 'Made in Como. Gratis verzending vanaf €200.',
+  en: 'Made in Como. Free shipping to Italy from €200.',
+  de: 'Made in Como. Kostenloser Versand nach Italien ab €200.',
+  fr: 'Made in Como. Livraison en Italie offerte dès €200.',
+  es: 'Made in Como. Envío a Italia gratis desde €200.',
+  pt: 'Made in Como. Portes para Itália grátis a partir de €200.',
+  nl: 'Made in Como. Gratis verzending naar Italië vanaf €200.',
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -137,12 +139,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function ProdottoPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProdottoPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ size?: string }> }) {
   const { slug } = await params;
   const locale = await getLocale();
   const p = await getProduct(slug, locale);
   if (!p) notFound();
 
+  const requestedSize = (await searchParams).size;
+  const initialSize = p.variants.some(variant => variant.size === requestedSize) ? requestedSize : undefined;
   const t = await getTranslations('product');
   const tn = await getTranslations('nav');
   const cat = getCategories(locale).find((c) => c.slug === p.category);
@@ -173,19 +177,21 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
   }
 
   // Rating badge under H1 — same product_review_stats RPC as ReviewSchema/
-  // ProductReviews. Fails silent (badge just doesn't render) so a Supabase
+  // ProductReviews. Errors are logged and the badge is omitted so a Supabase
   // hiccup never breaks the PDP.
   let reviewStats = { count: 0, average: 0 };
   try {
     const svc = createServiceClient();
-    const { data: statsRows } = await svc.rpc('product_review_stats', { p_slug: p.slug });
+    const { data: statsRows, error } = await svc.rpc('product_review_stats', { p_slug: p.slug });
+    if (error) throw new Error(error.message);
     if (statsRows && Array.isArray(statsRows) && statsRows[0]) {
       reviewStats = {
         count: Number(statsRows[0].count || 0),
         average: Number(statsRows[0].average || 0),
       };
     }
-  } catch {
+  } catch (error) {
+    console.error('[product] Review rating unavailable; omitting the badge:', error);
     reviewStats = { count: 0, average: 0 };
   }
 
@@ -200,15 +206,15 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
     '@id': `${productUrl}#product`,
     name: productFullName,
     description: p.description,
-    sku: winter ? p.sku : p.slug,
+    sku: p.sku || p.slug,
     // mpn (manufacturer part number) as the global identifier — artisan goods
     // have no GTIN, so brand + mpn satisfies Google. (Was `gtin: p.slug`, an
     // INVALID GTIN that triggered the Merchant "GTIN non valido" warning.)
-    mpn: winter ? p.sku : p.slug,
+    mpn: p.sku || p.slug,
     image: p.images,
     url: productUrl,
     brand: { '@type': 'Brand', name: 'SILKinCOM' },
-    material: materialLabel || 'Fibra naturale pregiata',
+    material: p.composition || materialLabel || undefined,
     color: colorLabel || undefined,
     countryOfOrigin: !winter || p.origin ? 'IT' : undefined,
     category: cat?.name,
@@ -238,18 +244,52 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
         '@type': 'OfferShippingDetails',
         shippingRate: {
           '@type': 'MonetaryAmount',
-          value: p.price >= 200 ? '0' : '9',
+          value: computeShipping(p.price).toFixed(2),
           currency: 'EUR',
         },
         shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IT' },
         deliveryTime: {
           '@type': 'ShippingDeliveryTime',
-          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
-          transitTime: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 4, unitCode: 'DAY' },
+          handlingTime: { '@type': 'QuantitativeValue', minValue: ITALY_DELIVERY.handlingMin, maxValue: ITALY_DELIVERY.handlingMax, unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: ITALY_DELIVERY.transitMin, maxValue: ITALY_DELIVERY.transitMax, unitCode: 'DAY' },
         },
       },
     },
   };
+  const hasSizeVariants = p.variants.length > 1;
+  const structuredProduct = hasSizeVariants ? {
+    '@context': 'https://schema.org',
+    '@type': 'ProductGroup',
+    '@id': `${productUrl}#product`,
+    name: productFullName,
+    description: p.description,
+    url: productUrl,
+    image: p.images,
+    brand: productSchema.brand,
+    material: productSchema.material,
+    productGroupID: p.sku || p.slug,
+    variesBy: ['https://schema.org/size'],
+    hasVariant: p.variants.map(variant => ({
+      '@type': 'Product',
+      '@id': `${productUrl}#variant-${variant.id}`,
+      name: `${productFullName} — ${variant.size}`,
+      description: p.description,
+      sku: variant.sku,
+      size: variant.size,
+      image: p.images,
+      url: `${productUrl}?size=${encodeURIComponent(variant.size)}`,
+      offers: {
+        ...productSchema.offers,
+        url: `${productUrl}?size=${encodeURIComponent(variant.size)}`,
+        price: (variant.priceOverride ?? p.price).toFixed(2),
+        availability: variant.available > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        shippingDetails: {
+          ...productSchema.offers.shippingDetails,
+          shippingRate: { ...productSchema.offers.shippingDetails.shippingRate, value: computeShipping(variant.priceOverride ?? p.price).toFixed(2) },
+        },
+      },
+    })),
+  } : productSchema;
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -263,15 +303,15 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredProduct) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
       {/* AggregateRating + Review schema (emits only if approved reviews exist) */}
       <ReviewSchema
         productSlug={p.slug}
         productName={p.name}
         productUrl={productUrl}
         productImage={p.images?.[0]}
-        productPrice={p.price}
+        productGroup={hasSizeVariants}
       />
       <section className="bg-[#11100e] pb-24 pt-32">
         <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
@@ -369,7 +409,7 @@ export default async function ProdottoPage({ params }: { params: Promise<{ slug:
 
               {/* CTA — size selector (apparel) + AddToCart + Wishlist */}
               <div className="mb-10">
-                <ProductPurchaseSection
+                <ProductPurchaseSection initialSize={initialSize}
                   slug={p.slug}
                   name={p.name}
                   price={p.price}

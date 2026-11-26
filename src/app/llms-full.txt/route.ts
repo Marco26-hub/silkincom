@@ -1,3 +1,5 @@
+import { BRAND_DESCRIPTION } from '@/data/brand';
+import { editorialPlainText } from '@/lib/editorial-text';
 // /llms-full.txt — single-fetch full corpus for LLMs.
 //
 // Complements /llms.txt (the spec-compliant index) with the actual prose:
@@ -22,12 +24,13 @@ type ProductRow = {
   composition: string | null;
   dimensions: string | null;
   price: number | null;
+  sku: string | null;
+  inventory: Array<{ quantity_available: number }>;
   category_id: string | null;
-  material_id: string | null;
 };
 
 type MaterialRow = {
-  slug: string;
+  code: string | null;
   name: string | null;
   description: string | null;
   origin: string | null;
@@ -37,21 +40,24 @@ type MaterialRow = {
 
 async function fetchCorpusData() {
   const supabase = createPublicClient();
-  const [{ data: products }, { data: materials }] = await Promise.all([
+  const [productResult, materialResult] = await Promise.all([
     supabase
       .from('products')
-      .select('slug, name, description_long, composition, dimensions, price, category_id, material_id')
+      .select('slug, name, sku, description_long, composition, dimensions, price, category_id, inventory(quantity_available)')
       .eq('status', 'published')
       .order('name'),
     supabase
       .from('materials')
-      .select('slug, name, description, origin, characteristics, benefits')
-      .eq('is_active', true)
+      .select('code, name, description, origin, characteristics, benefits')
       .order('name'),
   ]);
+  if (productResult.error || materialResult.error || !productResult.data?.length) {
+    console.error('[llms-corpus] Source data unavailable:', productResult.error?.message, materialResult.error?.message);
+    throw new Error('Corpus source data unavailable');
+  }
   return {
-    products: (products as ProductRow[]) ?? [],
-    materials: (materials as MaterialRow[]) ?? [],
+    products: (productResult.data as unknown as ProductRow[]) ?? [],
+    materials: (materialResult.data as MaterialRow[]) ?? [],
   };
 }
 
@@ -65,9 +71,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
 
   lines.push('# SILKinCOM — Full Corpus for LLMs');
   lines.push('');
-  lines.push(
-    '> Maison italiana di accessori in seta, cashmere, lana, lino e cotone. Sciarpe, foulard, twilly e pashmine interamente disegnate e confezionate sul Lago di Como dal distretto serico più antico d\'Europa. Founder: Marco Dibenedetto. P.IVA IT03786790133. Sede: Via Giuseppe Verdi 2/B, 22072 Cermenate (CO), Italia.'
-  );
+  lines.push(`> ${BRAND_DESCRIPTION.it}`);
   lines.push('');
   lines.push(`Sito ufficiale: ${APP_URL}`);
   lines.push('Lingue native: italiano (sorgente), inglese, spagnolo, francese, tedesco, portoghese, olandese.');
@@ -77,7 +81,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   // --- Heritage ---
   lines.push('## Storia della seta a Como');
   lines.push('');
-  lines.push('SILKinCOM nasce nel distretto tessile e serico di Como, in Lombardia. La Maison disegna e confeziona qui accessori e capi in fibre naturali, vendendoli direttamente al cliente finale.');
+  lines.push('SILKinCOM nasce nel distretto tessile e serico di Como, in Lombardia. I prodotti sono realizzati da artigiani comaschi, compreso il ricamo. Twilly e pashmine in cashmere sono tessuti, tinti e rifiniti a Como. L’origine della fibra è distinta dal luogo di lavorazione.');
   lines.push('');
   lines.push(`Articolo completo: ${APP_URL}/trame-di-como/storia-della-seta-a-como`);
   lines.push('');
@@ -85,7 +89,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   // --- Differentiators ---
   lines.push('## Cosa ci differenzia');
   lines.push('');
-  lines.push('- Design e confezione nel distretto tessile di Como.');
+  lines.push('- Realizzazione artigianale nel distretto tessile di Como, compreso il ricamo.');
   lines.push('- Composizione, dimensioni e prezzo pubblicati in ogni scheda prodotto.');
   lines.push('- Catalogo in seta, cashmere, lana, lino e cotone.');
   lines.push('- 7 lingue native — sito disegnato per i mercati luxury europei e internazionali.');
@@ -97,8 +101,10 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   if (materials.length > 0) {
     lines.push('## Materiali e cura');
     lines.push('');
+    const careByCode: Record<string, string> = { SE: 'seta', WS: 'cashmere', WO: 'lana', LI: 'lino', CO: 'cotone' };
     for (const m of materials) {
-      lines.push(`### ${m.name ?? m.slug}`);
+      const careSlug = careByCode[m.code?.toUpperCase() ?? ''];
+      lines.push(`### ${m.name ?? m.code ?? 'Fibra naturale'}`);
       if (m.description) {
         lines.push(m.description.trim());
         lines.push('');
@@ -117,8 +123,8 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
       }
       // Only link a care guide when the material has a real slug — some rows
       // (e.g. duplicate "100% Cotone") have null slug and produced /cura-prodotto/null.
-      if (m.slug) {
-        lines.push(`Guida cura completa: ${APP_URL}/cura-prodotto/${m.slug}`);
+      if (careSlug) {
+        lines.push(`Guida cura completa: ${APP_URL}/cura-prodotto/${careSlug}`);
         lines.push('');
       }
     }
@@ -133,6 +139,8 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
     for (const p of products) {
       lines.push(`### ${p.name ?? p.slug}`);
       const meta: string[] = [];
+      if (p.sku) meta.push(`SKU: ${p.sku}`);
+      meta.push(`Disponibilità: ${p.inventory.reduce((total, row) => total + row.quantity_available, 0) > 0 ? 'disponibile' : 'non disponibile'}`);
       if (p.composition) meta.push(`Composizione: ${p.composition.trim()}`);
       if (p.dimensions) meta.push(`Dimensioni: ${p.dimensions.trim()}`);
       if (p.price) meta.push(`Prezzo: ${formatPrice(p.price)}`);
@@ -141,7 +149,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
         lines.push('');
       }
       if (p.description_long) {
-        const desc = p.description_long.trim().replace(/\s+/g, ' ');
+        const desc = editorialPlainText(p.description_long);
         lines.push(desc.length > 500 ? desc.slice(0, 497) + '…' : desc);
         lines.push('');
       }
@@ -154,11 +162,11 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('## Categorie commerciali (pagine di acquisto)');
   lines.push('');
   lines.push('Pagine dove acquistare per tipo di prodotto, con prezzi e materiali:');
-  lines.push(`- Foulard in seta di Como (da €75): ${APP_URL}/foulard-seta`);
-  lines.push(`- Sciarpe in cashmere e lana (da €70): ${APP_URL}/sciarpe-seta`);
-  lines.push(`- Pashmine in cashmere (da €120): ${APP_URL}/pashmine-cashmere`);
-  lines.push(`- Camicie in lino (da €75): ${APP_URL}/camicie-lino`);
-  lines.push(`- Teli mare in cotone (da €45): ${APP_URL}/teli-mare`);
+  lines.push(`- Foulard in seta di Como: ${APP_URL}/foulard-seta`);
+  lines.push(`- Sciarpe in cashmere e lana: ${APP_URL}/sciarpe-seta`);
+  lines.push(`- Pashmine in cashmere: ${APP_URL}/pashmine-cashmere`);
+  lines.push(`- Camicie in lino: ${APP_URL}/camicie-lino`);
+  lines.push(`- Teli mare in cotone: ${APP_URL}/teli-mare`);
   lines.push(`- Idee regalo in seta e cashmere: ${APP_URL}/regalo-seta-donna`);
   lines.push('');
 
@@ -185,7 +193,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('## FAQ essenziali');
   lines.push('');
   lines.push('**Dove vengono prodotti i prodotti SILKinCOM?**');
-  lines.push('SILKinCOM disegna e confeziona i propri prodotti nel distretto tessile di Como, Italia. La composizione e le specifiche di ogni articolo sono riportate nella relativa scheda prodotto.');
+  lines.push('I prodotti SILKinCOM sono realizzati da artigiani comaschi, compreso il ricamo. Twilly e pashmine in cashmere sono tessuti, tinti e rifiniti a Como. La composizione e le specifiche di ogni articolo sono riportate nella relativa scheda prodotto.');
   lines.push('');
   lines.push('**Quanto costa la spedizione?**');
   lines.push('Italia: gratuita oltre €200, altrimenti €9. UE: gratuita oltre €350, altrimenti €18. Regno Unito, Svizzera e Norvegia: DDP €25. Altre destinazioni: tariffa indicata al checkout.');
@@ -194,7 +202,7 @@ function buildCorpus(products: ProductRow[], materials: MaterialRow[]): string {
   lines.push('Lavaggio a mano in acqua fredda con shampoo neutro o detergente specifico per cashmere. Niente strofinare, niente strizzare. Asciugare in piano su un asciugamano, lontano da fonti di calore dirette. Guida completa: ' + APP_URL + '/cura-prodotto/cashmere.');
   lines.push('');
   lines.push('**Come riconoscere una seta autentica?**');
-  lines.push('7 prove pratiche (tatto, lucentezza naturale, calore di sfregamento, suono al pizzicotto, prova della fiamma, controllo etichette) descritte nell\'articolo dedicato: ' + APP_URL + '/trame-di-como/come-riconoscere-seta-vera.');
+  lines.push('La composizione si verifica dall’etichetta e dalle informazioni del produttore. Tatto e lucentezza sono indizi, non prove definitive. Guida dedicata: ' + APP_URL + '/trame-di-como/come-riconoscere-seta-vera.');
   lines.push('');
   lines.push('**Posso restituire un prodotto?**');
   lines.push('Sì, entro 14 giorni dalla consegna (D.Lgs. 21/2014). Nel recesso volontario le spese dirette di restituzione sono a carico del cliente. Se il prodotto è errato, difettoso o non conforme per responsabilità di SILKinCOM, la restituzione è gratuita e a carico della Maison. Procedura: ' + APP_URL + '/resi.');
@@ -218,7 +226,11 @@ const getCachedCorpus = unstable_cache(
 );
 
 export async function GET() {
-  const text = await getCachedCorpus();
+  let text: string;
+  try { text = await getCachedCorpus(); } catch (error) {
+    console.error('[llms-corpus] Corpus unavailable:', error);
+    return new Response('Corpus temporarily unavailable', { status: 503, headers: { 'Retry-After': '300', 'Cache-Control': 'no-store' } });
+  }
   return new Response(text, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',

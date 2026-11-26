@@ -1,3 +1,4 @@
+import { BRAND_DESCRIPTION } from '@/data/brand';
 // /llms.txt — spec-compliant index for LLMs (H1 + summary + sectioned links).
 //
 // Was a static public/llms.txt frozen at build time — prices and product lines
@@ -17,6 +18,9 @@ export const revalidate = 3600;
 // Prices are never hard-coded here — they come live from the DB.
 const LINE_LABELS: Record<string, string> = {
   Bellagio: 'pashmine in cashmere',
+  Brunate: 'maglioni in lana',
+  Menaggio: 'berretti in cashmere',
+  Domaso: 'dolcevita in lana merino',
   Cernobbio: 'sciarpe in cashmere',
   Tremezzo: 'sciarpe in lana',
   Varenna: 'sciarpe in cashmere',
@@ -35,10 +39,14 @@ function euro(n: number): string {
 
 async function buildLines(): Promise<string> {
   const supabase = createPublicClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('products')
     .select('name, price')
     .eq('status', 'published');
+  if (error || !data?.length) {
+    console.error('[llms-index] Published catalog unavailable:', error?.message ?? 'empty catalog');
+    throw new Error('Published catalog unavailable');
+  }
 
   // Group by product line = first token of the name; track min/max price.
   const groups = new Map<string, { min: number; max: number }>();
@@ -68,7 +76,7 @@ function buildIndex(linesBlock: string): string {
   const today = new Date().toISOString().slice(0, 10);
   return `# SILKinCOM
 
-> Maison italiana di accessori e abbigliamento in fibre naturali, disegnati e confezionati nel distretto tessile di Como, il distretto serico più antico d'Europa.
+> ${BRAND_DESCRIPTION.it}
 
 Sito ufficiale: ${APP_URL}
 Catalogo completo aggiornato: ${APP_URL}/llms-full.txt
@@ -85,6 +93,8 @@ Contatto: info@silkincom.com
 - Lingue del sito: italiano, inglese, spagnolo, francese, tedesco, portoghese e olandese
 
 ## Cosa produce SILKinCOM
+
+Twilly e pashmine in cashmere sono tessuti, tinti e rifiniti a Como. Gli altri prodotti e il ricamo sono realizzati da artigiani comaschi. L’origine delle fibre e le certificazioni vanno verificate per il singolo articolo.
 
 SILKinCOM vende direttamente al cliente finale foulard in seta, pashmine e sciarpe in cashmere, sciarpe in lana, camicie e pantaloncini in lino, t-shirt e cappellini in cotone e teli lago. Composizione, dimensioni, disponibilità e prezzo corrente sono indicati nella singola scheda prodotto.
 
@@ -114,7 +124,7 @@ I prezzi possono cambiare. La scheda prodotto e il feed ufficiale sono la fonte 
 
 ## Servizio e condizioni
 
-- Italia: spedizione tracciata €9 in 2–4 giorni lavorativi; gratuita oltre €200
+- Italia: spedizione tracciata €9, consegna stimata in 2–4 giorni lavorativi; gratuita da €200
 - Unione Europea: spedizione tracciata €18 in 4–7 giorni lavorativi; gratuita oltre €350
 - Regno Unito, Svizzera e Norvegia: spedizione DDP €25 in 5–8 giorni lavorativi
 - Recesso richiedibile entro 14 giorni dalla consegna (D.Lgs. 21/2014): le spese dirette di restituzione sono a carico del cliente
@@ -151,7 +161,11 @@ const getCachedIndex = unstable_cache(
 );
 
 export async function GET() {
-  const text = await getCachedIndex();
+  let text: string;
+  try { text = await getCachedIndex(); } catch (error) {
+    console.error('[llms-index] Index unavailable:', error);
+    return new Response('Catalog temporarily unavailable', { status: 503, headers: { 'Retry-After': '300', 'Cache-Control': 'no-store' } });
+  }
   return new Response(text, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',

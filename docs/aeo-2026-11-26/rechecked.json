@@ -1,0 +1,1169 @@
+{
+  "checkedAt": "2026-11-26T10:35:07.130Z",
+  "base": "http://localhost:3010",
+  "pages": 28,
+  "total": 288,
+  "passed": 287,
+  "failed": 1,
+  "limits": [
+    "HTTP validation is not a Rich Results Test or Search Console inspection.",
+    "No overall AEO score, indexing, rankings, independent reputation or AI visibility is inferred.",
+    "Sampled product and journal pages; use --full to crawl every sitemap URL."
+  ],
+  "checks": [
+    {
+      "name": "robots HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap nonempty and unique",
+      "status": "pass",
+      "detail": "903 URLs"
+    },
+    {
+      "name": "sitemap uses canonical host",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap excludes private paths",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has it homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has en homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has es homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has fr homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has de homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has pt homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has nl homepage",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed nonempty",
+      "status": "pass",
+      "detail": "46 products"
+    },
+    {
+      "name": "Merchant feed URLs in sitemap",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni single H1",
+      "status": "fail"
+    },
+    {
+      "name": "/en/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/en/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/es/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/en/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/es/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/de/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/fr/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/de/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/pt/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/b2b Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/recensioni Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience intentional development noindex",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/experience Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article URL matches locale",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como Article author linked",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como journal body is readable HTML",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/trame-di-como/t-shirt-bianca-lario-sera-lago-di-como no invisible HowTo",
+      "status": "pass"
+    },
+    {
+      "name": "OAI-SearchBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "GPTBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "PerplexityBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "Googlebot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "/llms.txt plain-text corpus available",
+      "status": "pass"
+    },
+    {
+      "name": "/llms-full.txt plain-text corpus available",
+      "status": "pass"
+    }
+  ]
+}

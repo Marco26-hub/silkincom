@@ -1,8 +1,9 @@
+import { cronAuthorized } from '@/lib/security/guards';
 /**
  * Daily cron: pull Stripe + Etsy transactions into financial_records.
  *
  * Triggered by Vercel Cron (vercel.json) at 03:00 Europe/Rome. Authenticated
- * via CRON_SECRET (Bearer header or x-vercel-cron). Writes a row per source
+ * via CRON_SECRET (Bearer header). Writes a row per source
  * into financial_sync_log so admin can see history.
  */
 import { NextRequest, NextResponse } from 'next/server';
@@ -15,17 +16,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
 
-function authorized(req: NextRequest): boolean {
-  const expected = process.env.CRON_SECRET;
-  if (!expected) return false;
-  const header = req.headers.get('authorization');
-  if (header === `Bearer ${expected}`) return true;
-  if (req.headers.get('x-vercel-cron') === '1') return true;
-  return false;
-}
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!cronAuthorized(req.headers)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = createServiceClient();
   const out: Record<string, unknown> = {};

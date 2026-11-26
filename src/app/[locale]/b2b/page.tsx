@@ -1,14 +1,16 @@
 import { Hotel, Gift, Briefcase } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { localizedAlternates } from '@/i18n/routing';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 import { B2BForm } from '@/components/b2b/B2BForm';
 
 export async function generateMetadata() {
+  const locale = await getLocale();
   const t = await getTranslations('b2bPage');
   return {
     title: t('meta.title'),
     description: t('meta.description'),
-    alternates: { canonical: '/b2b' },
+    alternates: localizedAlternates(locale, '/b2b'),
   };
 }
 

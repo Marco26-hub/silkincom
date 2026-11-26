@@ -1,16 +1,18 @@
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, Star } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { localizedAlternates } from '@/i18n/routing';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { BreadcrumbSchema } from '@/components/seo/BreadcrumbSchema';
 import { TrustpilotReviews } from '@/components/sections/TrustpilotReviews';
 
 export async function generateMetadata() {
+  const locale = await getLocale();
   const t = await getTranslations('recensioniPage');
   return {
     title: t('meta.title'),
     description: t('meta.description'),
-    alternates: { canonical: '/recensioni' },
+    alternates: localizedAlternates(locale, '/recensioni'),
   };
 }
 

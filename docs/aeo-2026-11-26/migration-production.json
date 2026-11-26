@@ -1,0 +1,36 @@
+{
+  "projectRef": "fjudulhxsafjizcmrifw",
+  "environment": "main Production",
+  "method": "Supabase Dashboard SQL Editor via browser",
+  "migrationFile": "supabase/migrations/061_profile_privilege_guard.sql",
+  "recordedVersion": "20261126163555",
+  "status": "applied and verified",
+  "preflight": {
+    "profilesRls": true,
+    "guardPreviouslyPresent": false,
+    "ownRowInsertAndUpdateWithoutRoleConstraint": true
+  },
+  "verification": {
+    "triggerEnabled": true,
+    "securityDefiner": true,
+    "lockedSearchPath": "",
+    "profilesRlsEnabled": true,
+    "anonymousDirectExecuteBlocked": true,
+    "authenticatedDirectExecuteBlocked": true
+  },
+  "conditionalSkip": {
+    "table": "public.newsletters",
+    "reason": "Table absent in production; guarded legacy block not executed"
+  },
+  "safety": {
+    "keychainUsed": false,
+    "cliUsed": false,
+    "realCustomerRowsModified": false,
+    "transactionCommitted": true
+  },
+  "sqlEditorUrl": "https://supabase.com/dashboard/project/fjudulhxsafjizcmrifw/sql/4403f6dd-c0a4-44d2-a51d-972b60c9fe47",
+  "review": {
+    "initialAttempt": "Automatic review stopped an unverified editor payload with an RLS warning; no SQL executed at that step.",
+    "resolution": "Cancelled, verified entire SQL via editor select/copy, corrected history serialization; subsequent dialog showed only expected trigger/policy replacement and execution succeeded."
+  }
+}

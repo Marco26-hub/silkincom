@@ -180,7 +180,7 @@ export function CheckoutClient() {
   // Shipping is waived for hand delivery (in-person) or a free_shipping coupon;
   // otherwise the subtotal threshold decides (computeShipping).
   const freeShipping = deliveryMethod === 'hand_delivery' || coupon?.discount_type === 'free_shipping';
-  const shipping = freeShipping ? 0 : computeShipping(subtotal);
+  const shipping = freeShipping ? 0 : computeShipping(subtotal, form.address.country);
   const discountAmount = coupon?.discount_amount ?? 0;
   const grandTotal = Math.max(subtotal - discountAmount, 0) + shipping;
 

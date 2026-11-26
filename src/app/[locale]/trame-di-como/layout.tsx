@@ -1,3 +1,4 @@
+import { editorialPlainText } from '@/lib/editorial-text';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations('journal');
   return {
-    title: `${t('title')} — SILKinCOM`,
+    title: `${editorialPlainText(t('title'))} — SILKinCOM`,
     description: t('intro'),
     alternates: localizedAlternates(locale, '/trame-di-como'),
   };

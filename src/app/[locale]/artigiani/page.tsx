@@ -1,19 +1,23 @@
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { localizedAlternates } from '@/i18n/routing';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { APP_URL } from '@/lib/app-url';
 
 export async function generateMetadata() {
   const t = await getTranslations('artigianiPage');
+  const locale = await getLocale();
   return {
     title: t('metadata.title'),
     description: t('metadata.description'),
-    alternates: { canonical: '/artigiani' },
+    alternates: localizedAlternates(locale, '/artigiani'),
   };
 }
 
 export default async function ArtigianiPage() {
+  const locale = await getLocale();
+  const prefix = locale === 'it' ? '' : `/${locale}`;
   const t = await getTranslations('artigianiPage');
 
   const artisans = [
@@ -49,10 +53,10 @@ export default async function ArtigianiPage() {
   const artisansSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    '@id': `${APP_URL}/artigiani#collectionpage`,
+    '@id': `${APP_URL}${prefix}/artigiani#collectionpage`,
     name: t('metadata.title'),
     description: t('metadata.description'),
-    url: `${APP_URL}/artigiani`,
+    url: `${APP_URL}${prefix}/artigiani`,
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: artisans.length,
@@ -74,8 +78,8 @@ export default async function ArtigianiPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'I Nostri Artigiani', item: `${APP_URL}/artigiani` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${APP_URL}${prefix || '/'}` },
+      { '@type': 'ListItem', position: 2, name: 'I Nostri Artigiani', item: `${APP_URL}${prefix}/artigiani` },
     ],
   };
 

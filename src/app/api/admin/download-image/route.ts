@@ -1,3 +1,4 @@
+import { trustedImageUrl } from '@/lib/security/guards';
 /**
  * Server-side proxy for admin image downloads.
  *
@@ -22,21 +23,6 @@ import { createServerClient } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 
-const ALLOWED_HOSTS = new Set([
-  'static.wixstatic.com',
-  'images.unsplash.com',
-  'images.pexels.com',
-]);
-const ALLOWED_HOST_SUFFIXES = [
-  '.supabase.co',
-  'silkincom.com',
-];
-
-function isAllowedHost(host: string): boolean {
-  if (ALLOWED_HOSTS.has(host)) return true;
-  return ALLOWED_HOST_SUFFIXES.some((s) => host.endsWith(s));
-}
-
 async function requireEditor() {
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -56,27 +42,34 @@ export async function GET(req: NextRequest) {
   const filename = req.nextUrl.searchParams.get('filename') || 'image';
   if (!url) return NextResponse.json({ error: 'url richiesto' }, { status: 400 });
 
-  let target: URL;
-  try {
-    target = new URL(url);
-  } catch {
-    return NextResponse.json({ error: 'url non valido' }, { status: 400 });
+  const initialTarget = trustedImageUrl(url);
+  if (!initialTarget) return NextResponse.json({ error: 'URL immagine non autorizzato' }, { status: 400 });
+  let target: URL = initialTarget;
+  let res: Response | undefined;
+  for (let redirects = 0; redirects <= 3; redirects++) {
+    res = await fetch(target.toString(), { redirect: 'manual', signal: AbortSignal.timeout(30_000) });
+    if (res.status < 300 || res.status >= 400) break;
+    const location: string | null = res.headers.get('location');
+    const next: URL | null = location ? trustedImageUrl(new URL(location, target).toString()) : null;
+    await res.body?.cancel();
+    if (!next || redirects === 3) {
+      console.info('[image-download] Redirect refused: untrusted destination or redirect limit.');
+      return NextResponse.json({ error: 'Redirect immagine non autorizzato' }, { status: 400 });
+    }
+    target = next;
   }
-  if (!['http:', 'https:'].includes(target.protocol)) {
-    return NextResponse.json({ error: 'protocollo non valido' }, { status: 400 });
-  }
-  if (!isAllowedHost(target.hostname)) {
-    return NextResponse.json({ error: `host non autorizzato: ${target.hostname}` }, { status: 400 });
-  }
-
-  const res = await fetch(target.toString(), { redirect: 'follow' });
+  if (!res) return NextResponse.json({ error: 'Immagine non disponibile' }, { status: 502 });
   if (!res.ok || !res.body) {
     return NextResponse.json({ error: `Origin returned HTTP ${res.status}` }, { status: 502 });
   }
 
   const contentType = res.headers.get('content-type') ?? 'application/octet-stream';
+  if (!contentType.toLowerCase().startsWith('image/')) {
+    await res.body.cancel();
+    return NextResponse.json({ error: 'La risorsa non è un’immagine' }, { status: 400 });
+  }
   // Sanitise filename — strip path separators and control chars.
-  const safeName = filename.replace(/[/\\\x00-\x1f]/g, '_').slice(0, 200) || 'image';
+  const safeName = filename.replace(/[/\\"\x00-\x1f]/g, '_').slice(0, 200) || 'image';
 
   return new Response(res.body, {
     headers: {

@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
     // Base shipping from subtotal threshold. Hand delivery is always free
     // (in-person, no carrier). A valid free_shipping coupon also zeroes it
     // (handled in the coupon block below).
-    let shipping_cost = delivery_method === 'hand_delivery' ? 0 : computeShipping(subtotal);
+    let shipping_cost = delivery_method === 'hand_delivery' ? 0 : computeShipping(subtotal, shipping_address.country);
 
     // Server-side coupon validation (don't trust client-supplied discount)
     const normalizedEmail = customer_email.trim().toLowerCase();

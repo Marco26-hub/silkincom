@@ -1,3 +1,4 @@
+import { cronAuthorized } from '@/lib/security/guards';
 /**
  * Cron route — processes due email_lifecycle_jobs.
  *
@@ -25,15 +26,6 @@ export const maxDuration = 60;
 const BATCH_SIZE = 50;
 const MAX_ATTEMPTS = 3;
 
-function authorized(req: NextRequest): boolean {
-  const expected = process.env.CRON_SECRET;
-  if (!expected) return false;
-  const header = req.headers.get('authorization');
-  if (header === `Bearer ${expected}`) return true;
-  // Vercel Cron adds custom header
-  if (req.headers.get('x-vercel-cron') === '1') return true;
-  return false;
-}
 
 type Job = {
   id: string;
@@ -45,7 +37,7 @@ type Job = {
 };
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
+  if (!cronAuthorized(req.headers)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

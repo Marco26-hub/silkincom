@@ -377,7 +377,7 @@
     },
     "taxIncluded": "Impuestos incluidos — Envío calculado en el checkout",
     "shippingDetails": {
-      "standard": "Envío estándar 3–5 días laborables. Gratuito para pedidos superiores a 200 €.",
+      "standard": "Italia: Envío estándar 2–4 días laborables. Gratuito para pedidos superiores a 200 €.",
       "returns": "Desistimiento en 14 días; devolución gratuita solo para productos erróneos, defectuosos o no conformes.",
       "allDetails": "Todos los detalles"
     },
@@ -417,7 +417,7 @@
     "subtotal": "Subtotal",
     "shipping": "Envío",
     "shippingFree": "Envío gratuito",
-    "shippingThreshold": "Envío gratuito a partir de {amount}",
+    "shippingThreshold": "Envío a Italia gratis desde {amount}",
     "total": "Total",
     "checkout": "Ir al pago",
     "continueShopping": "Seguir comprando",
@@ -440,7 +440,8 @@
       "maxUses": "Código ya utilizado el máximo de veces",
       "applied": "Descuento aplicado: −€{amount}",
       "validateError": "Error de validación"
-    }
+    },
+    "shippingEstimate": "Estimación para Italia. El envío se recalcula al finalizar la compra según el destino."
   },
   "checkout": {
     "title": "Pago",
@@ -854,7 +855,7 @@
       },
       {
         "q": "¿Los productos son realmente Made in Italy?",
-        "a": "Sí, cada prenda se produce íntegramente en Como — desde el hilado hasta la confección final. Trabajamos con las mejores hilanderías, tintorerías y talleres del distrito sedero más antiguo de Europa."
+        "a": "Sí. Los productos SILKinCOM son realizados por artesanos del distrito de Como; el bordado también se realiza en Como. En los twillies y las pashminas de cachemir, el tejido, la tintura y el acabado se realizan en Como. El origen de la materia prima es distinto del lugar de elaboración de la prenda."
       },
       {
         "q": "¿Cómo se lava una bufanda de cachemira?",
@@ -874,7 +875,7 @@
       },
       {
         "q": "¿Desde cuándo Como es la capital de la seda?",
-        "a": "Como es el distrito de la seda más importante de Europa desde el siglo XV. Ya en 1400 existían hilanderías comascas; hoy la zona produce más del 70% de la seda y alberga las maisons de lujo más prestigiosas del mundo."
+        "a": "La tradición sedera de Como se remonta al siglo XV. Esta historia pertenece al distrito textil y no indica la fecha de fundación de SILKinCOM. El Journal profundiza en la historia del territorio."
       },
       {
         "q": "¿Quién es el fundador de SILKinCOM?",
@@ -882,7 +883,7 @@
       },
       {
         "q": "¿Qué significa \"Made in Como\"?",
-        "a": "Made in Como significa que cada paso — del hilado al tejido a la estampación a la finalización — ocurre físicamente en el distrito comasco. No es una simple etiqueta: es una cadena de suministro corta totalmente local."
+        "a": "Para SILKinCOM, Made in Como significa que los productos son realizados por artesanos de Como, incluido el bordado. En los twillies y las pashminas de cachemir están confirmados el tejido, la tintura y el acabado en Como. El lugar de elaboración no identifica automáticamente el país de origen de la fibra."
       },
       {
         "q": "¿Trabajáis con artesanos independientes?",
@@ -894,11 +895,11 @@
       },
       {
         "q": "¿De dónde proviene vuestro cashmere?",
-        "a": "Nuestro cashmere proviene de las regiones más frías de Asia Central (Mongolia Interior), donde la fibra es más fina (14-16 micras) por el clima riguroso. Seleccionamos solo el vellón del cuello, recolectado a mano."
+        "a": "El cachemir es el subpelo suave de la cabra de cachemir. El origen geográfico y la finura de la fibra no pueden deducirse del lugar de confección. Para obtener información documentada sobre un artículo concreto, contacten con info@silkincom.com indicando el producto."
       },
       {
         "q": "¿Vuestra seda es realmente italiana?",
-        "a": "Sí. La seda se hila, teje y termina en el distrito comasco. El capullo crudo llega principalmente de China (Italia ya no produce seda cruda desde la posguerra), pero toda la transformación textil es italiana."
+        "a": "Los twillies Como son de seda 100%, tejidos, teñidos y acabados en Como. El lugar de elaboración del tejido es distinto del origen del capullo y de la fibra. Para conocer la procedencia de la materia prima de un artículo concreto, puede consultarse a la Maison."
       },
       {
         "q": "¿Qué hace especial al twill de seda?",
@@ -906,15 +907,15 @@
       },
       {
         "q": "¿Qué es el algodón de fibra extra larga?",
-        "a": "El algodón de fibra extra larga (más de 35mm) es la categoría más preciada: produce hilados más finos, resistentes y con mayor brillo. Lo seleccionamos de cultivos mediterráneos y egipcios."
+        "a": "La longitud de la fibra influye en las propiedades del hilo. La composición indicada en la ficha y la etiqueta no certifica por sí sola un origen geográfico concreto ni una fibra extralarga. Para obtener datos de un artículo, contacten con la Maison."
       },
       {
         "q": "¿Vuestros tejidos están certificados?",
-        "a": "Trabajamos con proveedores certificados OEKO-TEX Standard 100, que garantiza la ausencia de sustancias nocivas en los tejidos. Para la seda comasca seguimos los estándares del distrito Seri.co."
+        "a": "Las certificaciones corresponden a productos, procesos o proveedores específicos y a un ámbito de validez definido. No deben extenderse automáticamente a toda la colección. Para solicitar la documentación disponible de un artículo SILKinCOM, contacten con info@silkincom.com indicando el producto."
       },
       {
         "q": "¿Cuáles son las medidas estándar de una bufanda SILKinCOM?",
-        "a": "Bufanda larga: 180×45 cm. Pashmina: 200×70 cm. Estola: 200×100 cm. Foulard cuadrado (carré): 90×90 cm. Twilly: 85×5 cm. Cada ficha de producto especifica las dimensiones exactas."
+        "a": "Las medidas varían según el modelo y se indican en cada ficha. Los twillies de la línea Como miden 120 × 7,5 cm; 85 × 5 cm es un formato genérico de twilly, no la medida de los twillies Como SILKinCOM."
       },
       {
         "q": "¿Las bufandas encogen tras el lavado?",
@@ -1037,12 +1038,12 @@
           "origine": {
             "label": "Origen",
             "title": "Selección de las fibras más nobles",
-            "body": "La cachemira nace del vellón finísimo de las cabras criadas en las regiones más frías del mundo. Solo las fibras más finas, recogidas a mano durante la muda primaveral, son seleccionadas para garantizar una calidad enraizada en una tradición milenaria."
+            "body": "El cachemir es una fibra obtenida del subpelo suave de la cabra de cachemir. Las pashminas SILKinCOM se tejen, tiñen y acaban en Como. El origen geográfico de la fibra es distinto del lugar de elaboración."
           },
           "caratteristiche": {
             "label": "Características",
             "title": "Finura y suavidad",
-            "body": "Con fibras finísimas de 14–16 micras, la cachemira está entre los hilos más raros y preciosos del mundo. Cálida pero ligera, envolvente pero transpirable, ofrece una sensación táctil única."
+            "body": "La suavidad del cachemir depende de la finura, la longitud de la fibra y la elaboración del hilo. Las características de la prenda se consultan en su ficha; cualquier intervalo en micras requiere una medición documentada."
           },
           "beneficio": {
             "label": "Beneficio",
@@ -1085,18 +1086,18 @@
           },
           "cotoneOrigine": {
             "label": "Algodón — Origen",
-            "title": "Selección extra-larga",
-            "body": "Nuestro algodón procede de los mejores cultivos de fibra extra-larga, donde cada filamento mide más de 35mm. Una calidad rara, recogida a mano y seleccionada para garantizar compacidad, brillo y resistencia superiores al algodón estándar."
+            "title": "Fibra natural",
+            "body": "El algodón es una fibra vegetal. La composición de las prendas SILKinCOM figura en la ficha y la etiqueta; el origen geográfico y la longitud de la fibra requieren información específica del producto."
           },
           "caratteristiche": {
             "label": "Características",
             "title": "Frescura y suavidad",
-            "body": "Las fibras huecas del lino absorben hasta el 20% de su peso en humedad — termorregulador natural que permanece fresco al tacto. El algodón extra-largo acompaña con un tacto similar a la seda, brillo y rendimiento cromático excepcional."
+            "body": "El lino y el algodón son fibras vegetales apreciadas por su tacto y transpirabilidad. El peso del tejido, su estructura y el acabado contribuyen a la sensación de la prenda sobre la piel."
           },
           "beneficio": {
             "label": "Beneficio",
             "title": "Elegancia informal del verano",
-            "body": "Ambos antibacterianos, hipoalergénicos y biodegradables. El lino se vuelve más suave con cada lavado, sus arrugas hablan de autenticidad. El algodón envejece con gracia, cada vez más familiar en la piel. El armario perfecto para el verano italiano."
+            "body": "El lino y el algodón aportan texturas distintas al vestuario de verano. Para conservar la forma y el tacto de la prenda, deben seguirse las instrucciones de la etiqueta."
           }
         },
         "productName": "Melzi — Prenda de Lino",

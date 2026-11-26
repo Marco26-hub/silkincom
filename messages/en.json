@@ -377,7 +377,7 @@
     },
     "taxIncluded": "Taxes included — Shipping calculated at checkout",
     "shippingDetails": {
-      "standard": "Standard shipping 3–5 working days. Free for orders over €200.",
+      "standard": "Italy: Standard shipping 2–4 working days. Free for orders over €200.",
       "returns": "Withdrawal within 14 days; free return only for incorrect, defective or non-conforming products.",
       "allDetails": "Full details"
     },
@@ -417,7 +417,7 @@
     "subtotal": "Subtotal",
     "shipping": "Shipping",
     "shippingFree": "Free shipping",
-    "shippingThreshold": "Free shipping over {amount}",
+    "shippingThreshold": "Free shipping to Italy from {amount}",
     "total": "Total",
     "checkout": "Proceed to checkout",
     "continueShopping": "Continue shopping",
@@ -440,7 +440,8 @@
       "maxUses": "Code already used the maximum number of times",
       "applied": "Discount applied: −€{amount}",
       "validateError": "Validation error"
-    }
+    },
+    "shippingEstimate": "Estimate for Italy. Shipping is recalculated at checkout for the selected destination."
   },
   "checkout": {
     "title": "Checkout",
@@ -854,7 +855,7 @@
       },
       {
         "q": "Are the products really Made in Italy?",
-        "a": "Yes, every garment is entirely produced in Como — from spinning to final crafting. We work with the finest mills, dyehouses and ateliers of the oldest silk district in Europe."
+        "a": "Yes. SILKinCOM products are made by artisans in the Como district; the embroidery is also carried out in Como. For the twillies and cashmere pashminas, weaving, dyeing and finishing take place in Como. The origin of the raw material is separate from the place where a garment is made."
       },
       {
         "q": "How do I wash a cashmere scarf?",
@@ -874,7 +875,7 @@
       },
       {
         "q": "How long has Como been the silk capital?",
-        "a": "Como has been Europe's leading silk district since the 15th century. Como mills existed as early as 1400; today the area produces over 70% of silk and hosts the world's most prestigious luxury maisons."
+        "a": "Como’s silk tradition dates back to the fifteenth century. This history belongs to the textile district and does not indicate when SILKinCOM was founded. The Journal explores the history of the region."
       },
       {
         "q": "Who founded SILKinCOM?",
@@ -882,7 +883,7 @@
       },
       {
         "q": "What does \"Made in Como\" mean?",
-        "a": "Made in Como means every step — from spinning to weaving to printing to finishing — happens physically within the Como silk district. It is not just a label: it is a fully local supply chain."
+        "a": "For SILKinCOM, Made in Como means that products are made by Como artisans, including the embroidery. Weaving, dyeing and finishing in Como are confirmed for twillies and cashmere pashminas. The place of manufacture does not automatically identify a fibre’s country of origin."
       },
       {
         "q": "Do you work with independent artisans?",
@@ -894,11 +895,11 @@
       },
       {
         "q": "Where does your cashmere come from?",
-        "a": "Our cashmere comes from the coldest regions of Central Asia (Inner Mongolia), where the fiber is finest (14-16 microns) due to the harsh climate. We select only the under-neck fleece, harvested by hand."
+        "a": "Cashmere is the soft undercoat of the cashmere goat. Its geographical origin and fibre fineness cannot be inferred from the place of garment manufacture. For documented information about a particular item, contact info@silkincom.com with the product name."
       },
       {
         "q": "Is your silk really Italian?",
-        "a": "Yes. The silk is spun, woven and finished in the Como district. Raw cocoons come mainly from China (Italy no longer produces raw silk since WWII), but all textile transformation is Italian."
+        "a": "Como twillies are 100% silk, woven, dyed and finished in Como. The place where the fabric is processed is separate from the origin of the cocoon and fibre. Please ask the Maison about raw material provenance for a particular item."
       },
       {
         "q": "What makes silk twill special?",
@@ -906,15 +907,15 @@
       },
       {
         "q": "What is extra-long staple cotton?",
-        "a": "Extra-long staple cotton (over 35mm fiber) is the most prized category: it produces finer, stronger and more lustrous yarns than standard cotton. We source it from Mediterranean and Egyptian growers."
+        "a": "Fibre length affects the properties of a yarn. The composition on a product page and label does not, on its own, certify a particular geographical origin or extra-long staple length. Contact the Maison for information about a particular item."
       },
       {
         "q": "Are your fabrics certified?",
-        "a": "We work with OEKO-TEX Standard 100 certified suppliers, guaranteeing no harmful substances in finished fabrics. For Como silk we follow the Seri.co district standards."
+        "a": "Certifications apply to specific products, processes or suppliers within a defined scope. They should not automatically be extended to the entire collection. To request any available documentation for a SILKinCOM item, email info@silkincom.com with the product name."
       },
       {
         "q": "What are SILKinCOM's standard scarf sizes?",
-        "a": "Long scarf: 180×45 cm. Pashmina: 200×70 cm. Stole: 200×100 cm. Square scarf (carré): 90×90 cm. Twilly: 85×5 cm. Each product page specifies exact dimensions."
+        "a": "Dimensions vary by model and are stated on each product page. Como twillies measure 120 × 7.5 cm; 85 × 5 cm is a generic twilly format, not the size of SILKinCOM Como twillies."
       },
       {
         "q": "Do scarves shrink after washing?",
@@ -1037,12 +1038,12 @@
           "origine": {
             "label": "Origin",
             "title": "Selection of the noblest fibres",
-            "body": "Cashmere comes from the ultra-fine fleece of goats raised in the coldest regions of the world. Only the finest fibres, hand-collected during the spring moult, are selected to guarantee a quality rooted in a millennia-old tradition."
+            "body": "Cashmere is a fibre obtained from the soft undercoat of the cashmere goat. SILKinCOM pashminas are woven, dyed and finished in Como. The geographical origin of a fibre is separate from the place where it is processed."
           },
           "caratteristiche": {
             "label": "Characteristics",
             "title": "Fineness and softness",
-            "body": "With ultra-fine fibres of 14–16 microns, cashmere is among the rarest and most precious yarns in the world. Warm yet light, enveloping yet breathable, it offers a unique tactile sensation."
+            "body": "Cashmere softness depends on fibre fineness, length and yarn processing. Refer to the product page for garment specifications; any micron range requires documented measurement."
           },
           "beneficio": {
             "label": "Benefit",
@@ -1085,18 +1086,18 @@
           },
           "cotoneOrigine": {
             "label": "Cotton — Origin",
-            "title": "Extra-long selection",
-            "body": "Our cotton comes from the finest extra-long staple cultivations, where each filament measures over 35mm. A rare quality, hand-picked and selected to guarantee compactness, lustre and resistance superior to standard cotton."
+            "title": "Natural fibre",
+            "body": "Cotton is a plant fibre. The composition of SILKinCOM garments is stated on the product page and label; geographical origin and staple length require product-specific information."
           },
           "caratteristiche": {
             "label": "Characteristics",
             "title": "Freshness and softness",
-            "body": "Linen's hollow fibres absorb up to 20% of their weight in moisture — a natural thermoregulator that stays cool to the touch. Extra-long cotton accompanies with a silk-like hand, lustre and exceptional colour rendering."
+            "body": "Linen and cotton are plant fibres valued for their handle and breathability. Fabric weight, weave and finishing contribute to how a garment feels against the skin."
           },
           "beneficio": {
             "label": "Benefit",
             "title": "Informal summer elegance",
-            "body": "Both antibacterial, hypoallergenic and biodegradable. Linen becomes softer with every wash, its creases tell of authenticity. Cotton ages with grace, ever more familiar on the skin. The perfect wardrobe for Italian summer."
+            "body": "Linen and cotton bring different textures to a summer wardrobe. Follow the care label to preserve the shape and handle of each garment."
           }
         },
         "productName": "Melzi — Linen Piece",

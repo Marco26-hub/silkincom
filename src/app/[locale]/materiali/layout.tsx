@@ -1,3 +1,4 @@
+import { ProductProvenance } from '@/components/sections/ProductProvenance';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { localizedAlternates } from '@/i18n/routing';
@@ -38,7 +39,7 @@ export default async function MaterialiLayout({ children, params }: { children: 
         '@type': 'Thing',
         name: material.name,
         description: material.description,
-        url: `${APP_URL}${prefix}/collezioni/${material.slug}`,
+        url: `${APP_URL}${prefix}/materiali#${material.slug === 'lana' ? 'merino' : ['lino', 'cotone'].includes(material.slug) ? 'lino-cotone' : material.slug}`,
       },
     })),
   };
@@ -55,6 +56,7 @@ export default async function MaterialiLayout({ children, params }: { children: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {children}
+      <ProductProvenance locale={locale} />
     </>
   );
 }

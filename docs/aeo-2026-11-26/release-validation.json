@@ -1,0 +1,33 @@
+{
+  "baseCommit": "34d3865",
+  "integrationBranch": "codex/aeo-security-release",
+  "build": {
+    "result": "passed",
+    "runtime": "Node 24",
+    "framework": "Next.js 15.5.29"
+  },
+  "typescript": "passed",
+  "unitTests": {
+    "passed": 14,
+    "failed": 0
+  },
+  "productionHttp": {
+    "base": "http://localhost:3012",
+    "pages": 105,
+    "passed": 1331,
+    "failed": 0
+  },
+  "securityHttp": {
+    "passed": 11,
+    "failed": 0
+  },
+  "dependencyAudit": {
+    "totalKnownVulnerabilities": 0,
+    "scope": "all dependencies including dev"
+  },
+  "migration": {
+    "status": "applied and verified via browser",
+    "version": "20261126163555"
+  },
+  "deployment": "awaiting authorized push; final live verification recorded separately"
+}

@@ -1,0 +1,193 @@
+{
+  "checkedAt": "2026-11-26T16:13:40.139Z",
+  "base": "http://localhost:3010",
+  "pages": 1,
+  "total": 44,
+  "passed": 44,
+  "failed": 0,
+  "limits": [
+    "HTTP validation is not a Rich Results Test or Search Console inspection.",
+    "No overall AEO score, indexing, rankings, independent reputation or AI visibility is inferred.",
+    "Sampled product and journal pages; use --full to crawl every sitemap URL."
+  ],
+  "checks": [
+    {
+      "name": "robots HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap nonempty and unique",
+      "status": "pass",
+      "detail": "903 URLs"
+    },
+    {
+      "name": "sitemap uses canonical host",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap excludes private paths",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has it homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has en homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has es homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has fr homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has de homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has pt homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has nl homepage",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed nonempty",
+      "status": "pass",
+      "detail": "46 products"
+    },
+    {
+      "name": "Merchant feed URLs in sitemap",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/trame-di-como Organization",
+      "status": "pass"
+    },
+    {
+      "name": "OAI-SearchBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "GPTBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "PerplexityBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "Googlebot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "/llms.txt plain-text corpus available",
+      "status": "pass"
+    },
+    {
+      "name": "/llms-full.txt plain-text corpus available",
+      "status": "pass"
+    }
+  ]
+}

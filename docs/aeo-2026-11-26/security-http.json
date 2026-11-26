@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-11-26T16:41:18.110Z",
+  "base": "http://localhost:3012",
+  "checks": [
+    {
+      "name": "x-content-type-options",
+      "pass": true
+    },
+    {
+      "name": "x-frame-options",
+      "pass": true
+    },
+    {
+      "name": "referrer-policy",
+      "pass": true
+    },
+    {
+      "name": "HSTS enabled",
+      "pass": true
+    },
+    {
+      "name": "/api/admin/products: unauthenticated request refused",
+      "status": 405,
+      "pass": true
+    },
+    {
+      "name": "/api/admin/settings: unauthenticated request refused",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "name": "/api/admin/blog: unauthenticated request refused",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "name": "/api/admin/leads: unauthenticated request refused",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "name": "/api/account/export: unauthenticated request refused",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "name": "/api/admin/download-image?url=https://127.0.0.1/example.jpg: unauthenticated request refused",
+      "status": 401,
+      "pass": true
+    },
+    {
+      "name": "/api/etest: unauthenticated request refused",
+      "status": 404,
+      "pass": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0,
+  "scope": "Read-only HTTP requests. Cron forgery tested only against a pure authorization helper, never against a live sending endpoint."
+}

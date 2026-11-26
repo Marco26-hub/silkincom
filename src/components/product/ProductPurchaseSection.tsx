@@ -17,6 +17,7 @@ type Props = {
   price: number;
   image: string;
   variants: ProductVariant[];
+  initialSize?: string;
   previewOnly?: boolean;
   available?: number;
 };
@@ -25,7 +26,7 @@ type Props = {
 // contained 7-locale copy so it needs no message-file changes.
 const REASSURE = {
   secure: { it: 'Pagamento sicuro', en: 'Secure checkout', de: 'Sichere Zahlung', fr: 'Paiement sécurisé', es: 'Pago seguro', pt: 'Pagamento seguro', nl: 'Veilig betalen' },
-  shipping: { it: 'Spedizione gratuita oltre €200', en: 'Free shipping over €200', de: 'Gratisversand ab €200', fr: 'Livraison gratuite dès €200', es: 'Envío gratis desde €200', pt: 'Portes grátis acima de €200', nl: 'Gratis verzending vanaf €200' },
+  shipping: { it: 'Spedizione gratuita in Italia da €200', en: 'Free shipping to Italy from €200', de: 'Gratisversand nach Italien ab €200', fr: 'Livraison en Italie offerte dès €200', es: 'Envío a Italia gratis desde €200', pt: 'Portes para Itália grátis a partir de €200', nl: 'Gratis verzending naar Italië vanaf €200' },
   returns: { it: 'Recesso 14 gg · difetti a nostro carico', en: '14-day withdrawal · defects covered by us', de: '14 Tage Widerruf · Mängel auf unsere Kosten', fr: 'Rétractation 14 j · défauts à notre charge', es: 'Desistimiento 14 días · defectos a nuestro cargo', pt: 'Livre resolução 14 dias · defeitos a nosso cargo', nl: '14 dagen bedenktijd · gebreken voor onze rekening' },
   whatsapp: { it: 'Domande? Scrivici su WhatsApp', en: 'Questions? Message us on WhatsApp', de: 'Fragen? Schreib uns auf WhatsApp', fr: 'Des questions ? Écrivez-nous sur WhatsApp', es: '¿Dudas? Escríbenos por WhatsApp', pt: 'Dúvidas? Fale connosco no WhatsApp', nl: 'Vragen? App ons op WhatsApp' },
 } as const;
@@ -37,15 +38,20 @@ function fmtPrice(n: number) {
   return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }
 
-export function ProductPurchaseSection({ slug, name, price, image, variants, available, previewOnly = false }: Props) {
+export function ProductPurchaseSection({ slug, name, price, image, variants, initialSize, available, previewOnly = false }: Props) {
   const t = useTranslations('product');
   const locale = useLocale();
   const r = (m: Record<string, string>) => m[locale] ?? m.en ?? m.it;
   const { addItem, items } = useCart();
   const winter = getWinterProduct(slug);
-  const [selectedSize, setSelectedSize] = useState<string | null>(() => variants.length === 1 && variants[0].size === 'UNI' ? 'UNI' : null);
+  const automaticSize = variants.length === 1 && variants[0].size === 'UNI' ? 'UNI' : null;
+  const [selectedSize, setSelectedSize] = useState<string | null>(() => initialSize ?? automaticSize);
   const [added, setAdded] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    setSelectedSize(initialSize ?? automaticSize);
+  }, [initialSize, automaticSize, slug]);
 
   // Vista prodotto: è il segnale su cui Meta costruisce il retargeting e GA4
   // il tasso di conversione per scheda. Una volta sola per prodotto montato.
@@ -142,6 +148,7 @@ export function ProductPurchaseSection({ slug, name, price, image, variants, ava
                   key={v.id}
                   type="button"
                   disabled={outOfStock}
+                  aria-pressed={isSelected}
                   onClick={() => {
                     setSelectedSize(v.size);
                     setShowError(false);

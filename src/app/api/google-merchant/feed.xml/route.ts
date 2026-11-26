@@ -1,3 +1,5 @@
+import { computeShipping, ITALY_DELIVERY } from '@/config/shipping';
+import { editorialPlainText } from '@/lib/editorial-text';
 /**
  * Google Merchant Center product feed (RSS 2.0 + Google namespace).
  *
@@ -62,6 +64,12 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.error('google-merchant feed query failed:', error);
+    return new Response('Feed temporarily unavailable', { status: 503, headers: { 'Retry-After': '300', 'Cache-Control': 'no-store' } });
+  }
+
+  if (!products?.length) {
+    console.error('[merchant-feed] Published catalog empty; refusing an empty successful feed.');
+    return new Response('Feed temporarily unavailable', { status: 503, headers: { 'Retry-After': '300', 'Cache-Control': 'no-store' } });
   }
 
   // category_id -> slug, to map each product to the right Google taxonomy.
@@ -108,8 +116,8 @@ export async function GET(req: NextRequest) {
     <item>
       <g:id>${escapeXml(p.sku || p.id)}</g:id>
       <g:title>${cdata(`${title} — SILKinCOM`)}</g:title>
-      <g:description>${cdata(desc)}</g:description>
-      <g:link>${APP_URL}/prodotto/${escapeXml(p.slug)}</g:link>
+      <g:description>${cdata(editorialPlainText(desc))}</g:description>
+      <g:link>${APP_URL}${lang === 'it' ? '' : '/en'}/prodotto/${escapeXml(p.slug)}</g:link>
       <g:image_link>${escapeXml(primaryImage)}</g:image_link>
       ${additionalImages.map((u: string) => `<g:additional_image_link>${escapeXml(u)}</g:additional_image_link>`).join('\n      ')}
       <g:availability>${availability}</g:availability>
@@ -130,7 +138,11 @@ export async function GET(req: NextRequest) {
       <g:shipping>
         <g:country>IT</g:country>
         <g:service>Standard</g:service>
-        <g:price>${Number(p.price) >= 200 ? '0.00' : '9.00'} EUR</g:price>
+        <g:min_handling_time>${ITALY_DELIVERY.handlingMin}</g:min_handling_time>
+        <g:max_handling_time>${ITALY_DELIVERY.handlingMax}</g:max_handling_time>
+        <g:min_transit_time>${ITALY_DELIVERY.transitMin}</g:min_transit_time>
+        <g:max_transit_time>${ITALY_DELIVERY.transitMax}</g:max_transit_time>
+        <g:price>${computeShipping(Number(p.price)).toFixed(2)} EUR</g:price>
       </g:shipping>
     </item>`;
   }).join('');

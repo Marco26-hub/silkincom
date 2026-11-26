@@ -377,7 +377,7 @@
     },
     "taxIncluded": "Tasse incluse — Spedizione calcolata al checkout",
     "shippingDetails": {
-      "standard": "Spedizione standard 3–5 giorni lavorativi. Gratuita per ordini superiori a €200.",
+      "standard": "Italia: Spedizione standard 2–4 giorni lavorativi. Gratuita per ordini superiori a €200.",
       "returns": "Recesso entro 14 giorni; reso gratuito solo per prodotti errati, difettosi o non conformi.",
       "allDetails": "Tutti i dettagli"
     },
@@ -417,7 +417,7 @@
     "subtotal": "Subtotale",
     "shipping": "Spedizione",
     "shippingFree": "Spedizione gratuita",
-    "shippingThreshold": "Spedizione gratuita oltre {amount}",
+    "shippingThreshold": "Spedizione gratuita in Italia da {amount}",
     "total": "Totale",
     "checkout": "Procedi al pagamento",
     "continueShopping": "Continua lo shopping",
@@ -440,7 +440,8 @@
       "maxUses": "Codice già utilizzato il massimo delle volte",
       "applied": "Sconto applicato: −€{amount}",
       "validateError": "Errore validazione"
-    }
+    },
+    "shippingEstimate": "Stima per l’Italia. La spedizione viene ricalcolata al checkout in base alla destinazione."
   },
   "checkout": {
     "title": "Checkout",
@@ -854,7 +855,7 @@
       },
       {
         "q": "I prodotti sono davvero Made in Italy?",
-        "a": "Sì, ogni capo è interamente prodotto a Como — dalla filatura alla confezione finale. Lavoriamo con le migliori filande, tintorie e atelier del distretto serico più antico d'Europa."
+        "a": "Sì. I prodotti SILKinCOM sono realizzati da artigiani comaschi; anche il ricamo è eseguito a Como. Per i twilly e le pashmine in cashmere, tessitura, tintura e finitura avvengono a Como. L’origine della materia prima è distinta dal luogo di lavorazione del capo."
       },
       {
         "q": "Come si lava una sciarpa in cashmere?",
@@ -874,7 +875,7 @@
       },
       {
         "q": "Da quanto tempo Como è capitale della seta?",
-        "a": "Como è il distretto serico più importante d'Europa dal XV secolo. Già nel 1400 esistevano filande comasche; oggi la zona produce oltre il 70% della seta e ospita le più prestigiose maison del lusso mondiale."
+        "a": "La tradizione serica di Como risale al XV secolo. Questa storia appartiene al distretto tessile e non indica la data di fondazione di SILKinCOM. Il Journal approfondisce la storia del territorio."
       },
       {
         "q": "Chi è il fondatore di SILKinCOM?",
@@ -882,7 +883,7 @@
       },
       {
         "q": "Cosa significa \"Made in Como\"?",
-        "a": "Made in Como significa che ogni passaggio — dalla filatura alla tessitura alla stampa alla rifinitura — avviene fisicamente nel distretto serico comasco. Non è una semplice etichetta: è una filiera corta interamente locale."
+        "a": "Per SILKinCOM, Made in Como indica la realizzazione dei prodotti da parte di artigiani comaschi, compreso il ricamo. Per twilly e pashmine in cashmere sono confermate tessitura, tintura e finitura a Como. Il luogo di lavorazione non identifica automaticamente il paese di origine della fibra."
       },
       {
         "q": "Lavorate con artigiani indipendenti?",
@@ -894,11 +895,11 @@
       },
       {
         "q": "Da dove proviene il vostro cashmere?",
-        "a": "Il nostro cashmere proviene dalle regioni più fredde dell'Asia centrale (Mongolia interna), dove la fibra è più fine (14-16 micron) per via del clima rigido. Selezioniamo solo il vello sotto-collo, raccolto a mano."
+        "a": "Il cashmere è il sottovello della capra da cashmere. L’origine geografica e la finezza della fibra non si possono dedurre dal luogo di confezione: per informazioni documentate su un articolo specifico, contatta info@silkincom.com indicando il prodotto."
       },
       {
         "q": "La vostra seta è davvero italiana?",
-        "a": "Sì. La seta è filata, tessuta e finita nel distretto comasco. Il bozzolo grezzo arriva principalmente dalla Cina (l'Italia non produce più seta grezza dal dopoguerra), ma tutta la trasformazione tessile è italiana."
+        "a": "I twilly Como sono in 100% seta, tessuti, tinti e rifiniti a Como. Il luogo di lavorazione del tessuto è distinto dall’origine del bozzolo e della fibra; per la provenienza della materia prima di un articolo specifico, richiedi informazioni alla Maison."
       },
       {
         "q": "Cosa rende il twill di seta speciale?",
@@ -906,15 +907,15 @@
       },
       {
         "q": "Cos'è il cotone a fibra extra-lunga?",
-        "a": "Il cotone a fibra extra-lunga (oltre 35mm) è la categoria più pregiata: produce filati più fini, resistenti e con maggior brillantezza rispetto al cotone standard. Lo selezioniamo da coltivazioni mediterranee ed egiziane."
+        "a": "La lunghezza della fibra influisce sulle proprietà del filato. La composizione riportata nella scheda e nell’etichetta del prodotto non certifica da sola una specifica origine geografica o una lunghezza extra-lunga. Per dati relativi a un articolo, contatta la Maison."
       },
       {
         "q": "I vostri tessuti sono certificati?",
-        "a": "Lavoriamo con fornitori certificati OEKO-TEX Standard 100, che garantisce l'assenza di sostanze nocive nei tessuti finiti. Per la seta comasca seguiamo gli standard del distretto Seri.co."
+        "a": "Le certificazioni si riferiscono a prodotti, processi o fornitori specifici e al relativo ambito di validità. Non vanno estese automaticamente a tutta la collezione. Per richiedere eventuali attestazioni disponibili per un articolo SILKinCOM, scrivi a info@silkincom.com indicando il prodotto."
       },
       {
         "q": "Quali sono le misure standard di una sciarpa SILKinCOM?",
-        "a": "Sciarpa lunga: 180×45 cm. Pashmina: 200×70 cm. Stola: 200×100 cm. Foulard quadrato (carré): 90×90 cm. Twilly: 85×5 cm. Ogni scheda prodotto specifica le dimensioni esatte."
+        "a": "Le dimensioni variano per modello e sono indicate nella singola scheda prodotto. I twilly della linea Como misurano 120 × 7,5 cm; 85 × 5 cm è un formato generico di twilly, non la misura dei twilly Como SILKinCOM."
       },
       {
         "q": "Le sciarpe accorciano dopo il lavaggio?",
@@ -1037,12 +1038,12 @@
           "origine": {
             "label": "Origine",
             "title": "Selezione delle fibre più nobili",
-            "body": "Il cashmere nasce dal vello sottilissimo delle capre allevate nelle regioni più fredde del mondo. Solo le fibre più fini, raccolte a mano durante la muta primaverile, vengono selezionate per garantire una qualità che affonda le radici in una tradizione millenaria."
+            "body": "Il cashmere è una fibra ricavata dal sottovello della capra da cashmere. Le pashmine SILKinCOM sono tessute, tinte e rifinite a Como. L’origine geografica della fibra va distinta dal luogo di lavorazione."
           },
           "caratteristiche": {
             "label": "Caratteristiche",
             "title": "Finezza e morbidezza",
-            "body": "Con fibre sottilissime di 14–16 micron, il cashmere è tra i filati più rari e pregiati al mondo. Caldo ma leggero, avvolgente ma traspirante, regala una sensazione unica al tatto."
+            "body": "La morbidezza del cashmere dipende da finezza, lunghezza della fibra e lavorazione del filato. Le caratteristiche specifiche del capo si verificano nella scheda prodotto; un intervallo in micron richiede una misurazione documentata."
           },
           "beneficio": {
             "label": "Beneficio",
@@ -1085,18 +1086,18 @@
           },
           "cotoneOrigine": {
             "label": "Cotone — Origine",
-            "title": "Selezione extra-lunga",
-            "body": "Il nostro cotone proviene dalle migliori coltivazioni a fibra extra-lunga, dove ogni filamento misura oltre 35mm. Una qualità rara, raccolta a mano e selezionata per garantire compattezza, lucentezza e resistenza superiori al cotone standard."
+            "title": "Fibra naturale",
+            "body": "Il cotone è una fibra vegetale. Per i capi SILKinCOM la composizione è indicata nella scheda e nell’etichetta; origine geografica e lunghezza della fibra richiedono informazioni specifiche sul prodotto."
           },
           "caratteristiche": {
             "label": "Caratteristiche",
             "title": "Freschezza e morbidezza",
-            "body": "Le fibre cave del lino assorbono fino al 20% del proprio peso in umidità — termoregolatore naturale che resta fresco al tatto. Il cotone extra-lungo affianca con una mano simile alla seta, lucentezza e resa cromatica eccezionale."
+            "body": "Lino e cotone sono fibre vegetali apprezzate per la mano e la traspirabilità. Peso del tessuto, intreccio e finissaggio contribuiscono alla sensazione del capo sulla pelle."
           },
           "beneficio": {
             "label": "Beneficio",
             "title": "Eleganza informale dell'estate",
-            "body": "Entrambi antibatterici, ipoallergenici e biodegradabili. Il lino diventa più morbido ad ogni lavaggio, le sue pieghe raccontano autenticità. Il cotone invecchia con grazia, sempre più familiare sulla pelle. Il guardaroba perfetto per l'estate italiana."
+            "body": "Lino e cotone accompagnano il guardaroba estivo con consistenze diverse. Per conservare forma e mano del capo, segui le istruzioni di cura riportate sull’etichetta."
           }
         },
         "productName": "Melzi — Capo in Lino",

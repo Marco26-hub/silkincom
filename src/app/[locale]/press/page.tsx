@@ -1,3 +1,6 @@
+import { BRAND_DESCRIPTION } from '@/data/brand';
+import { normLocale } from '@/data/catalog-meta';
+import { ProductProvenance } from '@/components/sections/ProductProvenance';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Link } from '@/i18n/navigation';
@@ -168,9 +171,11 @@ export default async function PressPage({
         <div className="relative mx-auto max-w-4xl overflow-hidden border border-gold-primary/15 bg-warm-white px-7 py-12 shadow-[0_24px_80px_rgba(25,22,18,0.06)] md:px-14 md:py-16">
           {/* Thin gold rule across the top of the kit card — Maison accent. */}
           <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-primary/60 to-transparent" />
-          <RichBody body={t('body')} />
+          <p className="mb-10 font-light leading-relaxed text-soft-black/80">{BRAND_DESCRIPTION[normLocale(locale)]}</p>
+          <RichBody body={t('body').replace(/## [^\n]+\n\n[^\n]+\n\n/, '')} />
         </div>
       </section>
+      <ProductProvenance locale={locale} />
     </>
   );
 }

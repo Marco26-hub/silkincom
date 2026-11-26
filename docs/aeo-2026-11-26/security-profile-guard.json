@@ -1,0 +1,35 @@
+{
+  "scope": "Disposable local PostgreSQL only; synthetic identities; production not modified",
+  "checks": [
+    {
+      "name": "Customer can update ordinary profile fields",
+      "pass": true
+    },
+    {
+      "name": "Customer cannot promote their role",
+      "pass": true
+    },
+    {
+      "name": "Customer cannot change profile identity",
+      "pass": true
+    },
+    {
+      "name": "Customer cannot insert a privileged profile",
+      "pass": true
+    },
+    {
+      "name": "Administrator can change a role",
+      "pass": true
+    },
+    {
+      "name": "Service role can manage profiles",
+      "pass": true
+    },
+    {
+      "name": "Authenticated client cannot write the legacy newsletter table",
+      "pass": true
+    }
+  ],
+  "passed": 7,
+  "failed": 0
+}

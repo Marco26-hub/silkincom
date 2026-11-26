@@ -377,7 +377,7 @@
     },
     "taxIncluded": "Inclusief btw — Verzendkosten worden bij afrekenen berekend",
     "shippingDetails": {
-      "standard": "Standaard verzending 3–5 werkdagen. Gratis voor bestellingen boven €200.",
+      "standard": "Italië: Standaard verzending 2–4 werkdagen. Gratis voor bestellingen boven €200.",
       "returns": "Bedenktijd van 14 dagen; gratis retour alleen bij verkeerde, gebrekkige of niet-conforme producten.",
       "allDetails": "Alle details"
     },
@@ -417,7 +417,7 @@
     "subtotal": "Subtotaal",
     "shipping": "Verzending",
     "shippingFree": "Gratis verzending",
-    "shippingThreshold": "Gratis verzending vanaf {amount}",
+    "shippingThreshold": "Gratis verzending naar Italië vanaf {amount}",
     "total": "Totaal",
     "checkout": "Naar afrekenen",
     "continueShopping": "Verder winkelen",
@@ -440,7 +440,8 @@
       "maxUses": "Code is al maximaal gebruikt",
       "applied": "Korting toegepast: −€{amount}",
       "validateError": "Validatiefout"
-    }
+    },
+    "shippingEstimate": "Schatting voor Italië. De verzendkosten worden bij het afrekenen opnieuw berekend voor de gekozen bestemming."
   },
   "checkout": {
     "title": "Afrekenen",
@@ -854,7 +855,7 @@
       },
       {
         "q": "Zijn de producten echt Made in Italy?",
-        "a": "Ja, elk stuk wordt volledig in Como geproduceerd — van spinnen tot eindafwerking. We werken met de beste spinnerijen, ververijen en ateliers van het oudste zijdedistrict van Europa."
+        "a": "Ja. SILKinCOM-producten worden gemaakt door ambachtslieden uit het district Como; ook het borduurwerk wordt in Como uitgevoerd. Voor twilly’s en kasjmier pashmina’s vinden het weven, verven en afwerken in Como plaats. De herkomst van de grondstof staat los van de plaats waar het kledingstuk wordt gemaakt."
       },
       {
         "q": "Hoe was ik een kasjmieren sjaal?",
@@ -874,7 +875,7 @@
       },
       {
         "q": "Hoe lang is Como al de hoofdstad van zijde?",
-        "a": "Como is sinds de 15e eeuw het belangrijkste zijdedistrict van Europa. Al in 1400 bestonden Comasker spinnerijen; vandaag produceert het gebied meer dan 70% van de zijde en herbergt het de meest prestigieuze luxe maisons ter wereld."
+        "a": "De zijdetraditie van Como gaat terug tot de vijftiende eeuw. Deze geschiedenis behoort tot het textieldistrict en geeft niet de oprichtingsdatum van SILKinCOM aan. Het Journal gaat verder in op de geschiedenis van de regio."
       },
       {
         "q": "Wie is de oprichter van SILKinCOM?",
@@ -882,7 +883,7 @@
       },
       {
         "q": "Wat betekent \"Made in Como\"?",
-        "a": "Made in Como betekent dat elke stap — van spinnen tot weven tot bedrukken tot afwerking — fysiek plaatsvindt in het Comasker district. Het is geen simpel etiket: het is een volledig lokale toeleveringsketen."
+        "a": "Voor SILKinCOM betekent Made in Como dat de producten door ambachtslieden uit Como worden gemaakt, inclusief het borduurwerk. Voor twilly’s en kasjmier pashmina’s zijn weven, verven en afwerken in Como bevestigd. De productieplaats geeft niet automatisch het land van herkomst van de vezel aan."
       },
       {
         "q": "Werken jullie met onafhankelijke ambachtslieden?",
@@ -894,11 +895,11 @@
       },
       {
         "q": "Waar komt jullie cashmere vandaan?",
-        "a": "Onze cashmere komt uit de koudste regio's van Centraal-Azië (Binnen-Mongolië), waar de vezel het fijnst is (14-16 micron) door het barre klimaat. We selecteren alleen de halsvacht, met de hand verzameld."
+        "a": "Kasjmier is de zachte ondervacht van de kasjmiergeit. De geografische herkomst en fijnheid van de vezel kunnen niet uit de plaats van confectie worden afgeleid. Neem voor gedocumenteerde informatie over een specifiek artikel contact op met info@silkincom.com en vermeld het product."
       },
       {
         "q": "Is jullie zijde echt Italiaans?",
-        "a": "Ja. De zijde wordt gesponnen, geweven en afgewerkt in het Comasker district. De ruwe cocon komt voornamelijk uit China (Italië produceert sinds de naoorlogse tijd geen ruwe zijde meer), maar alle textielverwerking is Italiaans."
+        "a": "Como-twilly’s zijn van 100% zijde en worden in Como geweven, geverfd en afgewerkt. De plaats waar de stof wordt verwerkt, staat los van de herkomst van de cocon en vezel. Neem voor de grondstofherkomst van een specifiek artikel contact op met de Maison."
       },
       {
         "q": "Wat maakt zijden twill speciaal?",
@@ -906,15 +907,15 @@
       },
       {
         "q": "Wat is extra-lange staple katoen?",
-        "a": "Extra-lange staple katoen (meer dan 35mm) is de meest gewaardeerde categorie: het produceert fijnere, sterkere en glanzendere garens. We selecteren het van mediterrane en Egyptische telers."
+        "a": "De vezellengte beïnvloedt de eigenschappen van het garen. De samenstelling op de productpagina en het etiket certificeert op zichzelf geen specifieke geografische herkomst of extra lange vezel. Neem voor gegevens over een artikel contact op met de Maison."
       },
       {
         "q": "Zijn jullie stoffen gecertificeerd?",
-        "a": "We werken met OEKO-TEX Standard 100 gecertificeerde leveranciers, wat de afwezigheid van schadelijke stoffen garandeert. Voor Comasker zijde volgen we de Seri.co-districtsstandaarden."
+        "a": "Certificeringen gelden voor specifieke producten, processen of leveranciers binnen een bepaald toepassingsgebied. Ze mogen niet automatisch op de hele collectie worden toegepast. Mail voor beschikbare documentatie over een SILKinCOM-artikel naar info@silkincom.com en vermeld het product."
       },
       {
         "q": "Wat zijn de standaardmaten van een SILKinCOM-sjaal?",
-        "a": "Lange sjaal: 180×45 cm. Pashmina: 200×70 cm. Stola: 200×100 cm. Vierkante foulard (carré): 90×90 cm. Twilly: 85×5 cm. Elke productpagina specificeert de exacte afmetingen."
+        "a": "De afmetingen verschillen per model en staan op de afzonderlijke productpagina. Twilly’s uit de Como-lijn meten 120 × 7,5 cm; 85 × 5 cm is een algemeen twilly-formaat en niet de maat van de Como-twilly’s van SILKinCOM."
       },
       {
         "q": "Krimpen sjaals na het wassen?",
@@ -1037,12 +1038,12 @@
           "origine": {
             "label": "Oorsprong",
             "title": "Selectie van de edelste vezels",
-            "body": "Kasjmier ontstaat uit het zeer fijne vacht van geiten die in de koudste regio's ter wereld worden gehouden. Alleen de fijnste vezels, met de hand verzameld tijdens de voorjaarsrui, worden geselecteerd om een kwaliteit te garanderen die geworteld is in een millennia-oude traditie."
+            "body": "Kasjmier is een vezel uit de zachte ondervacht van de kasjmiergeit. SILKinCOM-pashmina’s worden in Como geweven, geverfd en afgewerkt. De geografische herkomst van de vezel staat los van de verwerkingsplaats."
           },
           "caratteristiche": {
             "label": "Eigenschappen",
             "title": "Fijnheid en zachtheid",
-            "body": "Met zeer fijne vezels van 14–16 micron behoort kasjmier tot de zeldzaamste en kostbaarste garens ter wereld. Warm maar licht, omhullend maar ademend, biedt het een uniek tastgevoel."
+            "body": "De zachtheid van kasjmier hangt af van de fijnheid en lengte van de vezel en de verwerking van het garen. Raadpleeg de productpagina voor de eigenschappen van het kledingstuk; elke micronwaarde vereist een gedocumenteerde meting."
           },
           "beneficio": {
             "label": "Voordeel",
@@ -1085,18 +1086,18 @@
           },
           "cotoneOrigine": {
             "label": "Katoen — Oorsprong",
-            "title": "Extra-lange selectie",
-            "body": "Onze katoen komt uit de beste extra-lange-vezelteelt, waar elke filament meer dan 35mm meet. Een zeldzame kwaliteit, met de hand geplukt en geselecteerd om compactheid, glans en weerstand te garanderen die superieur zijn aan standaard katoen."
+            "title": "Natuurvezel",
+            "body": "Katoen is een plantaardige vezel. De samenstelling van SILKinCOM-kleding staat op de productpagina en het etiket; geografische herkomst en vezellengte vereisen productspecifieke informatie."
           },
           "caratteristiche": {
             "label": "Eigenschappen",
             "title": "Frisheid en zachtheid",
-            "body": "De holle vezels van linnen absorberen tot 20% van hun gewicht aan vocht — een natuurlijke thermoregulator die koel aanvoelt. Extra-lang katoen begeleidt met een zijdeachtige greep, glans en uitzonderlijke kleurweergave."
+            "body": "Linnen en katoen zijn plantaardige vezels die worden gewaardeerd om hun gevoel en ademend vermogen. Stofgewicht, weefstructuur en afwerking bepalen mede hoe het kledingstuk op de huid aanvoelt."
           },
           "beneficio": {
             "label": "Voordeel",
             "title": "Informele zomerelegantie",
-            "body": "Beide antibacterieel, hypoallergeen en biologisch afbreekbaar. Linnen wordt zachter bij elke wasbeurt, zijn vouwen vertellen authenticiteit. Katoen veroudert met gratie, steeds vertrouwder op de huid. De perfecte garderobe voor de Italiaanse zomer."
+            "body": "Linnen en katoen brengen verschillende texturen in de zomergarderobe. Volg de onderhoudsinstructies op het etiket om de vorm en het gevoel van het kledingstuk te behouden."
           }
         },
         "productName": "Melzi — Linnen Stuk",

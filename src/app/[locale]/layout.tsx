@@ -1,3 +1,5 @@
+import { BRAND_DESCRIPTION } from '@/data/brand';
+import { jsonLd } from '@/lib/editorial-text';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
@@ -116,15 +118,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 // JSON-LD: Organization + LocalBusiness — boost AI/GEO discoverability
 const organizationSchema = {
   '@context': 'https://schema.org',
-  '@type': ['Organization', 'LocalBusiness'],
+  '@type': 'Organization',
   '@id': `${APP_URL}/#organization`,
   name: 'SILKinCOM',
   alternateName: 'SILK in COM',
   url: APP_URL,
   logo: `${APP_URL}/logo-official.png`,
   image: `${APP_URL}/og-image.jpg`,
-  description:
-    'SILKinCOM produce sciarpe, foulard, twilly e pashmine in pura seta e cashmere, interamente disegnate e confezionate a Como, capitale italiana del tessile di lusso.',
+  description: BRAND_DESCRIPTION.it,
   foundingLocation: 'Como, Italia',
   areaServed: ['IT', 'EU', 'Worldwide'],
   knowsAbout: ['Seta di Como', 'Cashmere', 'Lana Merino', 'Lino', 'Cotone Extra-Lungo', 'Tessile di lusso', 'Made in Italy'],
@@ -140,6 +141,7 @@ const organizationSchema = {
   vatID: 'IT03786790133',
   founder: {
     '@type': 'Person',
+    '@id': `${APP_URL}/maison/marco-dibenedetto#person`,
     name: 'Marco Dibenedetto',
     jobTitle: 'Fondatore',
     url: `${APP_URL}/maison/marco-dibenedetto`,
@@ -210,11 +212,11 @@ export default async function LocaleLayout({
         <link rel="dns-prefetch" href="https://api.stripe.com" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(organizationSchema) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(websiteSchema) }}
         />
       </head>
       <body className="min-h-screen bg-warm-white text-soft-black antialiased">

@@ -1,3 +1,4 @@
+import { editorialHref, jsonLd } from '@/lib/editorial-text';
 import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -21,7 +22,8 @@ function renderInline(text: string): ReactNode {
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) parts.push(text.slice(last, m.index));
     const label = m[1];
-    const url = m[2];
+    const url = editorialHref(m[2]);
+    if (!url) { parts.push(label); last = m.index + m[0].length; continue; }
     if (url.startsWith('/')) {
       parts.push(
         <Link key={k++} href={url} className="text-gold-primary hover:text-gold-dark">{label}</Link>
@@ -63,33 +65,6 @@ const CITATIONS: Record<string, Array<{ label: string; url: string }>> = {
     { label: 'Foulard — Wikipedia', url: 'https://it.wikipedia.org/wiki/Foulard' },
     { label: 'Seta — Wikipedia', url: 'https://it.wikipedia.org/wiki/Seta' },
   ],
-};
-
-// Posts that follow a step-by-step structure also emit schema.org HowTo
-// for better discoverability in voice search and AI/GEO surfaces.
-const HOWTO_POSTS: Record<string, { totalTime: string; steps: Array<{ name: string; text: string }> }> = {
-  'come-riconoscere-seta-vera': {
-    totalTime: 'PT3M',
-    steps: [
-      { name: 'Prova del tatto', text: 'Sfrega il tessuto tra le dita per dieci secondi: la seta autentica si riscalda piano e ridistribuisce il calore. Il poliestere resta freddo o si surriscalda.' },
-      { name: 'Prova del nodo', text: "Annoda il foulard e tira delicatamente: la seta conserva il nodo e poi si scioglie con un drappeggio naturale. Il poliestere scatta via o resta stropicciato." },
-      { name: 'Prova del fuoco', text: "Su una fibra del bordo: la seta brucia lentamente, lascia cenere friabile e nera e un odore di capello bruciato. Il poliestere fonde e fa una pallina dura." },
-      { name: 'Prova della luce', text: "La seta riflette la luce con lucentezza profonda e iridescente che cambia con l'angolazione. Il poliestere riflette in modo piatto, quasi metallico." },
-      { name: 'Prova del prezzo', text: 'Servono circa 2.500 bozzoli per un metro di tessuto: un foulard di pura seta sotto i €40–50 è statisticamente improbabile.' },
-      { name: "Prova dell'etichetta", text: 'Cerca "100% seta" o "100% silk". Etichette generiche come "seta naturale" o "seta-poliestere" sono campanelli d\'allarme.' },
-      { name: "Prova dell'orlo", text: "Una seta di qualità ha l'orlo cucito a mano (rouletté arrotolato verso l'interno), non tagliato a macchina o termo-sigillato." },
-    ],
-  },
-  'come-annodare-un-twilly': {
-    totalTime: 'PT2M',
-    steps: [
-      { name: 'Al collo, il nodo scivolato', text: 'Piega il twilly a nastro stretto, appoggialo dietro il collo con le estremità davanti, incrocia una volta e fai scivolare le code sotto il colletto.' },
-      { name: 'Sul manico della borsa', text: "Avvolgi il twilly attorno al manico con spire regolari e sovrapposte, poi chiudi con un piccolo fiocco piatto vicino all'attacco." },
-      { name: 'Tra i capelli', text: "Raccogli i capelli in una coda bassa, avvolgi il twilly due volte attorno all'elastico e chiudi con un nodo semplice." },
-      { name: 'Al polso, come bracciale', text: 'Piega il twilly a nastro sottile, gira due o tre volte attorno al polso e chiudi con un nodo piatto sul dorso della mano.' },
-      { name: 'Come cravatta morbida', text: 'Passa il twilly sotto il colletto della camicia, incrocia le estremità come una cravatta e ferma con un nodo largo e morbido.' },
-    ],
-  },
 };
 
 // ISR: refresh CMS-backed post pages at most every 2 min; new slugs render
@@ -141,7 +116,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const paragraphs = post.body.split('\n\n').filter(Boolean);
   const others = (await getPosts(locale)).filter((p) => p.slug !== post.slug).slice(0, 3);
 
-  const articleUrl = `${APP_URL}/trame-di-como/${post.slug}`;
+  const prefix = locale === 'it' ? '' : `/${locale}`;
+  const articleUrl = `${APP_URL}${prefix}/trame-di-como/${post.slug}`;
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -149,15 +125,17 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     description: post.description,
     image: post.image ? [post.image.startsWith('http') ? post.image : `${APP_URL}${post.image}`] : [],
     datePublished: post.date || undefined,
-    dateModified: post.date || undefined,
+    dateModified: post.updatedAt || post.date || undefined,
     author: {
       '@type': 'Person',
+      '@id': `${APP_URL}/maison/marco-dibenedetto#person`,
       name: 'Marco Dibenedetto',
-      jobTitle: 'Fondatore',
-      worksFor: { '@id': 'https://silkincom.com/#organization' },
+      url: `${APP_URL}${prefix}/maison/marco-dibenedetto`,
+      worksFor: { '@id': `${APP_URL}/#organization` },
     },
     publisher: {
       '@type': 'Organization',
+      '@id': `${APP_URL}/#organization`,
       name: 'SILKinCOM',
       logo: { '@type': 'ImageObject', url: `${APP_URL}/logo-official.png` },
     },
@@ -166,25 +144,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     inLanguage: locale,
   };
 
-  const howToConfig = HOWTO_POSTS[post.slug];
-  const howToSchema = howToConfig
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'HowTo',
-        name: post.title,
-        description: post.description,
-        totalTime: howToConfig.totalTime,
-        image: post.image ? [post.image.startsWith('http') ? post.image : `${APP_URL}${post.image}`] : undefined,
-        inLanguage: locale,
-        step: howToConfig.steps.map((s, i) => ({
-          '@type': 'HowToStep',
-          position: i + 1,
-          name: s.name,
-          text: s.text,
-        })),
-      }
-    : null;
-  const prefix = locale === 'it' ? '' : `/${locale}`;
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -197,11 +156,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      {howToSchema && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
-      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         {post.image && (
           <Image src={post.image} alt={post.title} fill priority sizes="100vw" className="object-cover object-[center_32%] scale-105 animate-[heroZoom_20s_ease-out_forwards]" />

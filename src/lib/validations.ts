@@ -177,7 +177,7 @@ export const leadOutreachPreviewSchema = z.object({
 
 export const leadOutreachSchema = leadOutreachPreviewSchema.extend({
   previewConfirmed: z.literal(true, {
-    errorMap: () => ({ message: 'Apri e conferma l’anteprima prima dell’invio' }),
+    error: 'Apri e conferma l’anteprima prima dell’invio',
   }),
 });
 

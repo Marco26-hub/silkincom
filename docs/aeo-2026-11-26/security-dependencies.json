@@ -1,0 +1,31 @@
+{
+  "checkedOn": "2026-11-26",
+  "beforeProduction": {
+    "info": 0,
+    "low": 0,
+    "moderate": 2,
+    "high": 6,
+    "critical": 1,
+    "total": 9
+  },
+  "afterAllIncludingDevelopment": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "fixedProductionPackages": [
+    "nanoid",
+    "next",
+    "postcss",
+    "postcss-selector-parser",
+    "qs",
+    "sharp",
+    "source-map-js",
+    "ws",
+    "zod"
+  ],
+  "scope": "Known npm advisories for the current lockfile, not a guarantee against all vulnerabilities."
+}

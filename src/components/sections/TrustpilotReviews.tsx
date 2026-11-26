@@ -108,6 +108,7 @@ export async function TrustpilotReviews({
 }: TrustpilotReviewsProps) {
   const locale = await getLocale();
   const copy = COPY[locale] ?? COPY.it;
+  const checkedLabels: Record<string, string> = { it: 'Rilevazione del', en: 'Snapshot from', es: 'Datos del', fr: 'Relevé du', de: 'Stand vom', pt: 'Dados de', nl: 'Stand van' };
 
   return (
     <section
@@ -159,6 +160,7 @@ export async function TrustpilotReviews({
               {TRUSTPILOT_SUMMARY.reviewCount} {copy.reviews}
             </span>
           </a>
+          <p className="mt-3 text-xs text-soft-black/60">{checkedLabels[locale]}{' '}<time dateTime={TRUSTPILOT_SUMMARY.lastCheckedAt}>{new Date(`${TRUSTPILOT_SUMMARY.lastCheckedAt}T12:00:00Z`).toLocaleDateString(locale)}</time></p>
         </header>
 
         <TrustpilotReviewCarousel
