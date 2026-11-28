@@ -1,0 +1,67 @@
+[
+  {
+    "path": "/fr/fr/trame-di-como/come-riconoscere-seta-vera",
+    "status": 404,
+    "finalUrl": "https://www.silkincom.com/fr/fr/trame-di-como/come-riconoscere-seta-vera"
+  },
+  {
+    "path": "/nl/nl/teli-mare",
+    "status": 404,
+    "finalUrl": "https://www.silkincom.com/nl/nl/teli-mare"
+  },
+  {
+    "path": "/nl/nl/camicie-lino",
+    "status": 404,
+    "finalUrl": "https://www.silkincom.com/nl/nl/camicie-lino"
+  },
+  {
+    "path": "/collezioni",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/collezioni"
+  },
+  {
+    "path": "/prodotto/como-fluido",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/prodotto/como-fluido"
+  },
+  {
+    "path": "/prodotto/cernobbio-beige",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/prodotto/cernobbio-beige"
+  },
+  {
+    "path": "/prodotto/tremezzo-rosa",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/prodotto/tremezzo-rosa"
+  },
+  {
+    "path": "/en/prodotto/bellagio-1",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/en/prodotto/bellagio-1"
+  },
+  {
+    "path": "/prodotto/bellagio-1",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/prodotto/bellagio-1"
+  },
+  {
+    "path": "/prodotto/como-leggero",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/prodotto/como-leggero"
+  },
+  {
+    "path": "/fr/trame-di-como/come-riconoscere-seta-vera",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/fr/trame-di-como/come-riconoscere-seta-vera"
+  },
+  {
+    "path": "/nl/teli-mare",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/nl/teli-mare"
+  },
+  {
+    "path": "/nl/camicie-lino",
+    "status": 200,
+    "finalUrl": "https://www.silkincom.com/nl/camicie-lino"
+  }
+]

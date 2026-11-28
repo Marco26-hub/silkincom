@@ -1,0 +1,245 @@
+{
+  "checkedAt": "2026-11-28T11:24:24.581Z",
+  "base": "https://www.silkincom.com",
+  "pages": 1,
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "limits": [
+    "HTTP validation is not a Rich Results Test or Search Console inspection.",
+    "No overall AEO score, indexing, rankings, independent reputation or AI visibility is inferred.",
+    "Sampled product and journal pages; use --full to crawl every sitemap URL."
+  ],
+  "checks": [
+    {
+      "name": "robots HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots oai-searchbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots gptbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots googlebot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots bingbot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: public pages allowed",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: localized private routes excluded",
+      "status": "pass"
+    },
+    {
+      "name": "robots perplexitybot: Merchant feed allowed",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap nonempty and unique",
+      "status": "pass",
+      "detail": "903 URLs"
+    },
+    {
+      "name": "sitemap uses canonical host",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap excludes private paths",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has it homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has en homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has es homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has fr homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has de homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has pt homepage",
+      "status": "pass"
+    },
+    {
+      "name": "sitemap has nl homepage",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "Merchant feed nonempty",
+      "status": "pass",
+      "detail": "46 products"
+    },
+    {
+      "name": "Merchant feed URLs in sitemap",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 HTTP 200",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 HTML language",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 single H1",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 title contains no raw markup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 self canonical",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 seven hreflang plus default",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 indexable",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 Organization",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 Product or ProductGroup",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 single structured product identity",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 one brand per product identity",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-s: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-s: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-m: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-m: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-l: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-l: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-xl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-xl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-xxl: valid Offer",
+      "status": "pass"
+    },
+    {
+      "name": "/nl/prodotto/lario-1 lario-1-xxl: delivery 2–4 days",
+      "status": "pass"
+    },
+    {
+      "name": "OAI-SearchBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "GPTBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "PerplexityBot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "Googlebot homepage accessible",
+      "status": "pass"
+    },
+    {
+      "name": "/llms.txt plain-text corpus available",
+      "status": "pass"
+    },
+    {
+      "name": "/llms-full.txt plain-text corpus available",
+      "status": "pass"
+    }
+  ]
+}

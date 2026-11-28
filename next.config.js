@@ -70,6 +70,12 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Recover old links that accidentally repeated the same language prefix.
+      ...['en', 'de', 'fr', 'es', 'pt', 'nl'].map((locale) => ({
+        source: `/${locale}/${locale}/:path*`,
+        destination: `/${locale}/:path*`,
+        permanent: true,
+      })),
       // Canonicalizzazione dominio: il dominio Vercel di default
       // (silkincom.vercel.app) serve gli STESSI contenuti del custom domain →
       // Google lo indicizza come DUPLICATO (canonical da solo non basta).

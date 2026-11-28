@@ -10,13 +10,13 @@ import { localizedAlternates } from '@/i18n/routing';
 import { PRODUCT_CAT_TO_SEO, getSeoCategory, pickLocale } from '@/data/seo-categories';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductPurchaseSection } from '@/components/product/ProductPurchaseSection';
-import { ReviewSchema } from '@/components/schemas/ReviewSchema';
+import { getProductReviewMarkup } from '@/components/schemas/ReviewSchema';
 import { ProductReviews } from '@/components/product/ProductReviews';
 import { ArtisanAttribution } from '@/components/product/ArtisanAttribution';
 import { InventoryBadge } from '@/components/product/InventoryBadge';
 import { SizeGuideModal } from '@/components/product/SizeGuideModal';
 import { StarRating } from '@/components/product/StarRating';
-import { createServerClient, createServiceClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import { APP_URL } from '@/lib/app-url';
 import { getWinterProduct } from '@/data/winter-2026';
 import { WINTER_MACRO_ALT, WINTER_MAGAZINE_ALT, winterPhotoClass, isWinterMacro, isWinterMagazine } from '@/data/winter-2026-visuals';
@@ -176,24 +176,12 @@ export default async function ProdottoPage({ params, searchParams }: { params: P
     isAuthenticated = false;
   }
 
-  // Rating badge under H1 — same product_review_stats RPC as ReviewSchema/
-  // ProductReviews. Errors are logged and the badge is omitted so a Supabase
-  // hiccup never breaks the PDP.
-  let reviewStats = { count: 0, average: 0 };
-  try {
-    const svc = createServiceClient();
-    const { data: statsRows, error } = await svc.rpc('product_review_stats', { p_slug: p.slug });
-    if (error) throw new Error(error.message);
-    if (statsRows && Array.isArray(statsRows) && statsRows[0]) {
-      reviewStats = {
-        count: Number(statsRows[0].count || 0),
-        average: Number(statsRows[0].average || 0),
-      };
-    }
-  } catch (error) {
-    console.error('[product] Review rating unavailable; omitting the badge:', error);
-    reviewStats = { count: 0, average: 0 };
-  }
+  // Keep the visible rating and the single structured product node consistent.
+  const reviewMarkup = await getProductReviewMarkup(p.slug);
+  const reviewStats = {
+    count: reviewMarkup?.aggregateRating.reviewCount ?? 0,
+    average: reviewMarkup?.aggregateRating.ratingValue ?? 0,
+  };
 
   // Disambiguated product name for schema + breadcrumb leaf. If the raw product
   // name matches the category (e.g. "Cernobbio") and a color variant exists,
@@ -204,6 +192,7 @@ export default async function ProdottoPage({ params, searchParams }: { params: P
     '@context': 'https://schema.org',
     '@type': 'Product',
     '@id': `${productUrl}#product`,
+    ...reviewMarkup,
     name: productFullName,
     description: p.description,
     sku: p.sku || p.slug,
@@ -261,6 +250,7 @@ export default async function ProdottoPage({ params, searchParams }: { params: P
     '@context': 'https://schema.org',
     '@type': 'ProductGroup',
     '@id': `${productUrl}#product`,
+    ...reviewMarkup,
     name: productFullName,
     description: p.description,
     url: productUrl,
@@ -275,6 +265,7 @@ export default async function ProdottoPage({ params, searchParams }: { params: P
       name: `${productFullName} — ${variant.size}`,
       description: p.description,
       sku: variant.sku,
+      mpn: variant.sku,
       size: variant.size,
       image: p.images,
       url: `${productUrl}?size=${encodeURIComponent(variant.size)}`,
@@ -305,14 +296,6 @@ export default async function ProdottoPage({ params, searchParams }: { params: P
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredProduct) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
-      {/* AggregateRating + Review schema (emits only if approved reviews exist) */}
-      <ReviewSchema
-        productSlug={p.slug}
-        productName={p.name}
-        productUrl={productUrl}
-        productImage={p.images?.[0]}
-        productGroup={hasSizeVariants}
-      />
       <section className="bg-[#11100e] pb-24 pt-32">
         <div className="max-w-[1500px] mx-auto px-6 lg:px-10">
           {/* Breadcrumb */}

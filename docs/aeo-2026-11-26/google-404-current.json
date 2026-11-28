@@ -1,0 +1,62 @@
+[
+  {
+    "path": "/fr/fr/trame-di-como/come-riconoscere-seta-vera",
+    "status": 404,
+    "location": null
+  },
+  {
+    "path": "/nl/nl/teli-mare",
+    "status": 404,
+    "location": null
+  },
+  {
+    "path": "/$",
+    "status": 404,
+    "location": null
+  },
+  {
+    "path": "/nl/nl/camicie-lino",
+    "status": 404,
+    "location": null
+  },
+  {
+    "path": "/category/all-products",
+    "status": 308,
+    "location": "/collezioni"
+  },
+  {
+    "path": "/product-page/como-fluido",
+    "status": 308,
+    "location": "/prodotto/como-fluido"
+  },
+  {
+    "path": "/product-page/cernobbio-beige",
+    "status": 308,
+    "location": "/prodotto/cernobbio-beige"
+  },
+  {
+    "path": "/product-page/tremezzo-rosa",
+    "status": 308,
+    "location": "/prodotto/tremezzo-rosa"
+  },
+  {
+    "path": "/category/collezione-limited-edition",
+    "status": 308,
+    "location": "/collezioni"
+  },
+  {
+    "path": "/en/product-page/bellagio-1",
+    "status": 308,
+    "location": "/en/prodotto/bellagio-1"
+  },
+  {
+    "path": "/product-page/bellagio-1",
+    "status": 308,
+    "location": "/prodotto/bellagio-1"
+  },
+  {
+    "path": "/product-page/como-leggero",
+    "status": 308,
+    "location": "/prodotto/como-leggero"
+  }
+]

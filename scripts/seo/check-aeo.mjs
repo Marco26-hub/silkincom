@@ -99,6 +99,9 @@ async function auditPage(path) {
     if (path.includes('/prodotto/')) {
       const product = structured.find(s => ['Product', 'ProductGroup'].includes(s['@type']) && (s.offers || s.hasVariant));
       record(`${path} Product or ProductGroup`, Boolean(product));
+      const sameProduct = structured.filter(s => s['@id'] === product?.['@id'] && ['Product', 'ProductGroup'].includes(s['@type']));
+      record(`${path} single structured product identity`, Boolean(product) && sameProduct.length === 1);
+      record(`${path} one brand per product identity`, sameProduct.filter(s => s.brand).length === 1);
       const products = product?.hasVariant ?? (product ? [product] : []);
       for (const p of products) {
         const offer = p.offers;

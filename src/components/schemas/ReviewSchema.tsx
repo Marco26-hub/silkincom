@@ -1,34 +1,7 @@
-/**
- * ReviewSchema — emits Schema.org Review + AggregateRating JSON-LD on PDP.
- *
- * Server component. Reads approved reviews from Supabase + product_review_stats
- * SQL function. Returns null if no reviews yet (graceful absence).
- *
- * Usage in src/app/prodotto/[slug]/page.tsx:
- *   <ReviewSchema productSlug={slug} productName={name} productUrl={url}
- *                 productImage={image} productPrice={price} />
- */
-import { jsonLd } from '@/lib/editorial-text';
+/** Approved reviews merged into the page's single Product/ProductGroup node. */
 import { createServiceClient } from '@/lib/supabase/server';
 
-type Props = {
-  productSlug: string;
-  productName: string;
-  productUrl: string;
-  productImage?: string;
-  productPrice?: number;
-  productGroup?: boolean;
-  brandName?: string;
-};
-
-export async function ReviewSchema({
-  productSlug,
-  productName,
-  productUrl,
-  productImage,
-  productGroup = false,
-  brandName = 'SILKinCOM',
-}: Props) {
+export async function getProductReviewMarkup(productSlug: string) {
   let reviews: Array<{
     rating: number;
     title: string | null;
@@ -93,25 +66,5 @@ export async function ReviewSchema({
     reviewBody: r.body || undefined,
   }));
 
-  // Emit a Product schema augmentation referencing existing Product @id
-  // (if present) plus the reviews. Search engines merge by @id.
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': productGroup ? 'ProductGroup' : 'Product',
-    '@id': `${productUrl}#product`,
-    name: productName,
-    image: productImage,
-    url: productUrl,
-    brand: { '@type': 'Brand', name: brandName },
-    aggregateRating,
-    review: reviewSchemas,
-
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
-    />
-  );
+  return { aggregateRating, review: reviewSchemas };
 }
